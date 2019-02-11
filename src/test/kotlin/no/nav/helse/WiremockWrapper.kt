@@ -36,6 +36,7 @@ object WiremockWrapper {
         WireMock.configureFor(wireMockServer.port())
 
         stubJoark()
+        stubGetSystembrukerToken()
 
         logger.info("Mock available on '{}'", wireMockServer.baseUrl())
         return wireMockServer
@@ -54,6 +55,18 @@ object WiremockWrapper {
                                 "journalTilstand": "ENDELIG_JOURNALFOERT"
                             }
                         """.trimIndent())
+                )
+        )
+    }
+
+    private fun stubGetSystembrukerToken() {
+        WireMock.stubFor(
+            WireMock.get(WireMock.urlPathMatching(".*$tokenPath.*"))
+                .willReturn(
+                    WireMock.aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "application/json")
+                        .withBody("{\"access_token\":\"i-am-an-access-token\", \"expires_in\": 5000}")
                 )
         )
     }
