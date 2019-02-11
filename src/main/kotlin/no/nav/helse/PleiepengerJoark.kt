@@ -14,8 +14,12 @@ import no.nav.helse.journalforing.api.metadataStatusPages
 import no.nav.helse.journalforing.gateway.JournalforingGateway
 import no.nav.helse.journalforing.v1.JournalforingV1Service
 import no.nav.helse.validering.valideringStatusPages
+import org.apache.http.HttpHost
+import org.apache.http.impl.conn.SystemDefaultRoutePlanner
+import org.apache.http.impl.nio.client.HttpAsyncClientBuilder
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import java.net.ProxySelector
 
 private val logger: Logger = LoggerFactory.getLogger("nav.PleiepengerJoark")
 
@@ -29,8 +33,12 @@ fun Application.pleiepengerJoark() {
                 ObjectMapper.joark(this)
             }
         }
+        engine {
+            customizeClient { setProxyRoutePlanner() }
+        }
     }
     val configuration = Configuration(environment.config)
+    configuration.logIndirectlyUsedConfiguration()
     val authorizedSystems = configuration.getAuthorizedSystemsForRestApi() // TODO: Check JWT claims to ensure proper system.
 
     install(ContentNegotiation) {
@@ -64,4 +72,8 @@ fun Application.pleiepengerJoark() {
     install(CallLogging) {
         callIdMdc("call_id")
     }
+}
+
+private fun HttpAsyncClientBuilder.setProxyRoutePlanner() {
+    setRoutePlanner(SystemDefaultRoutePlanner(ProxySelector.getDefault()))
 }

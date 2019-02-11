@@ -40,4 +40,20 @@ data class Configuration(private val config : ApplicationConfig) {
     fun getJoarkInngaaendeForseldenseUrl() : URL {
         return URL(getString("nav.joark.inngaaende_forsendelse_url"))
     }
+
+    fun logIndirectlyUsedConfiguration() {
+        logger.info("# Indirectly used configuration")
+        val properties = System.getProperties()
+        logger.info("## System Properties")
+        properties.forEach { key, value ->
+            if (key is String && (key.startsWith(prefix = "http", ignoreCase = true) || key.startsWith(prefix = "https", ignoreCase = true))) {
+                logger.info("$key=$value")
+            }
+        }
+        logger.info("## Environment variables")
+        val environmentVariables = System.getenv()
+        logger.info("HTTP_PROXY=${environmentVariables["HTTP_PROXY"]}")
+        logger.info("HTTPS_PROXY=${environmentVariables["HTTPS_PROXY"]}")
+        logger.info("NO_PROXY=${environmentVariables["NO_PROXY"]}")
+    }
 }
