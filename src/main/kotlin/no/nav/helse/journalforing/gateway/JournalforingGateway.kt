@@ -34,11 +34,11 @@ class JournalforingGateway(
     internal suspend fun jorunalfor(request: JournalPostRequest) : JournalPostResponse {
 
         val httpRequest = HttpRequestBuilder()
+        httpRequest.header(HttpHeaders.Authorization, systembrukerService.getAuthorizationHeader())
         httpRequest.method = HttpMethod.Post
         httpRequest.contentType(ContentType.Application.Json)
         httpRequest.body = request
         httpRequest.url(joarkInngaaendeForsendelseUrl)
-        httpRequest.header(HttpHeaders.Authorization, systembrukerService.getAuthorizationHeader())
 
         return HttpRequest.monitored(
             httpClient = httpClient,

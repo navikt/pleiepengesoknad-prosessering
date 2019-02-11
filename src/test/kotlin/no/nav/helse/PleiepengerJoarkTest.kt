@@ -69,12 +69,15 @@ class PleiepengerJoarkTest {
     }
 
     @Test
-    fun `test isready og isalive`() {
+    fun `test isready, isalive og metrics`() {
         with(engine) {
             handleRequest(HttpMethod.Get, "/isready") {}.apply {
                 assertEquals(HttpStatusCode.OK, response.status())
                 handleRequest(HttpMethod.Get, "/isalive") {}.apply {
                     assertEquals(HttpStatusCode.OK, response.status())
+                    handleRequest(HttpMethod.Get, "/metrics") {}.apply {
+                        assertEquals(HttpStatusCode.OK, response.status())
+                    }
                 }
             }
         }
