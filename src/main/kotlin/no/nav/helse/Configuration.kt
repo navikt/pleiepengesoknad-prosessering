@@ -41,6 +41,29 @@ data class Configuration(private val config : ApplicationConfig) {
         return URL(getString("nav.joark.inngaaende_forsendelse_url"))
     }
 
+    fun getTokenUrl() : URL {
+        return URL(getString("nav.authorization.token_url"))
+    }
+
+    fun getJwksUrl() : URL {
+        return URL(getString("nav.authorization.jwks_url"))
+    }
+
+    fun getServiceAccountUsername(): String {
+        return getString("nav.authorization.service_account.username")
+    }
+
+    fun getServiceAccountPassword(): String {
+        return getString(key = "nav.authorization.service_account.password", secret = true)
+    }
+
+    fun getServiceAccountScopes(): List<String> {
+        return getListFromCsv(
+            key = "nav.authorization.service_account.scopes",
+            builder = { value -> value}
+        )
+    }
+
     fun logIndirectlyUsedConfiguration() {
         logger.info("# Indirectly used configuration")
         val properties = System.getProperties()

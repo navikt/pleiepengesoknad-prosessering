@@ -9,12 +9,15 @@ import io.ktor.features.*
 import io.ktor.jackson.jackson
 import io.ktor.routing.Routing
 import io.ktor.util.KtorExperimentalAPI
+import io.prometheus.client.CollectorRegistry
+import io.prometheus.client.hotspot.DefaultExports
 import no.nav.helse.journalforing.api.journalforingApis
 import no.nav.helse.journalforing.api.metadataStatusPages
 import no.nav.helse.journalforing.gateway.JournalforingGateway
 import no.nav.helse.journalforing.v1.JournalforingV1Service
+import no.nav.helse.systembruker.SystembrukerGateway
+import no.nav.helse.systembruker.SystembrukerService
 import no.nav.helse.validering.valideringStatusPages
-import org.apache.http.HttpHost
 import org.apache.http.impl.conn.SystemDefaultRoutePlanner
 import org.apache.http.impl.nio.client.HttpAsyncClientBuilder
 import org.slf4j.Logger
@@ -27,6 +30,9 @@ fun main(args: Array<String>): Unit  = io.ktor.server.netty.EngineMain.main(args
 
 @KtorExperimentalAPI
 fun Application.pleiepengerJoark() {
+    val collectorRegistry = CollectorRegistry.defaultRegistry
+    DefaultExports.initialize()
+
     val joarkHttpClient = HttpClient(Apache) {
         install(JsonFeature) {
             serializer = JacksonSerializer{
@@ -37,6 +43,17 @@ fun Application.pleiepengerJoark() {
             customizeClient { setProxyRoutePlanner() }
         }
     }
+    val systembrukerHttpClient = HttpClient(Apache) {
+        install(JsonFeature) {
+            serializer = JacksonSerializer{
+                ObjectMapper.server(this)
+            }
+        }
+        engine {
+            customizeClient { setProxyRoutePlanner() }
+        }
+    }
+
     val configuration = Configuration(environment.config)
     configuration.logIndirectlyUsedConfiguration()
     val authorizedSystems = configuration.getAuthorizedSystemsForRestApi() // TODO: Check JWT claims to ensure proper system.
@@ -53,13 +70,26 @@ fun Application.pleiepengerJoark() {
         metadataStatusPages()
     }
 
+    val systembrukerService = SystembrukerService(
+        systembrukerGateway = SystembrukerGateway(
+            httpClient = systembrukerHttpClient,
+            username = configuration.getServiceAccountUsername(),
+            password = configuration.getServiceAccountPassword(),
+            scopes = configuration.getServiceAccountScopes(),
+            tokenUrl = configuration.getTokenUrl()
+        )
+    )
+
     install(Routing) {
-        monitoring()
+        monitoring(
+            collectorRegistry = collectorRegistry
+        )
         journalforingApis(
             journalforingV1Service = JournalforingV1Service(
                 journalforingGateway = JournalforingGateway(
                     httpClient = joarkHttpClient,
-                    joarkInngaaendeForsendelseUrl = configuration.getJoarkInngaaendeForseldenseUrl()
+                    joarkInngaaendeForsendelseUrl = configuration.getJoarkInngaaendeForseldenseUrl(),
+                    systembrukerService = systembrukerService
                 )
             )
         )
