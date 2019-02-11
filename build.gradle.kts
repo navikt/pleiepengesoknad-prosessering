@@ -6,10 +6,9 @@ val ktorVersion = "1.0.1"
 val jacksonVersion = "2.9.2"
 val wiremockVersion = "2.19.0"
 val logstashLogbackVersion = "5.2"
-val kafkaVersion = "2.0.1"
 val prometheusVersion = "0.6.0"
 
-val mainClass = "no.nav.helse.AppKt"
+val mainClass = "no.nav.helse.PleiepengerJoarkKt"
 
 plugins {
     kotlin("jvm") version "1.3.11"
@@ -26,12 +25,7 @@ dependencies {
 
     // Ktor Server
     compile("io.ktor:ktor-server-netty:$ktorVersion")
-    //compile ("io.ktor:ktor-auth-jwt:$ktorVersion")
-    //compile ("io.ktor:ktor-server-core:$ktorVersion")
     compile ("io.ktor:ktor-jackson:$ktorVersion")
-    //compile ("io.ktor:ktor-locations:$ktorVersion")
-    //compile ("io.ktor:ktor-metrics:$ktorVersion")
-    //compile ("io.ktor:ktor-server-host-common:$ktorVersion")
 
     // JSON Serialization
     compile ("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersion")

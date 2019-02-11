@@ -28,6 +28,8 @@ fun Application.pleiepengerJoark() {
             }
         }
     }
+    val configuration = Configuration(environment.config)
+    val authoriedSystems = configuration.getAuthorizedSystemsForRestApi() // TODO: Check JWT claims to ensure proper system.
 
     install(ContentNegotiation) {
         jackson {
