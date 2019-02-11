@@ -45,6 +45,12 @@ dependencies {
     compile ("io.ktor:ktor-client-jackson:$ktorVersion")
     compile ("io.ktor:ktor-client-apache:$ktorVersion")
 
+    // Test
+    testCompile ("com.github.tomakehurst:wiremock:$wiremockVersion")
+    testCompile("io.ktor:ktor-server-test-host:$ktorVersion") {
+        exclude(group = "org.eclipse.jetty")
+    }
+
 }
 
 repositories {
