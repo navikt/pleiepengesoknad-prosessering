@@ -84,6 +84,7 @@ class PleiepengerJoarkTest {
     fun `gyldig melding til joark gir ok response med jorunalpost ID`() {
         val authorizationHeader = Authorization.getAuthorizationHeader()
         val request = MeldingV1(
+            tittel = "Dette er tittelen",
             aktoerId = "1234",
             soknadId = "5678",
             mottatt = ZonedDateTime.now(),

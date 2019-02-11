@@ -9,7 +9,9 @@ internal data class JournalPostRequest(
 
 
 internal data class ForsendelseInformasjon(
+    val tittel: String,
     val bruker: Map<String, Map<String, Map<String, String>>>,
+    val avsender: Map<String, Map<String, Map<String, String>>>,
     val tema: String, /// OMS
     val kanalReferanseId: String, // Vår unike ID
     val forsendelseMottatt: String, // yyyy-MM-dd'T'HH:mm:ssZ
@@ -19,7 +21,8 @@ internal data class ForsendelseInformasjon(
 
 internal data class Dokument(
     val tittel: String,
-    val dokumentVariant: List<DokumentVariant>
+    val dokumentVariant: List<DokumentVariant>,
+    val dokumentTypeId: String
 )
 
 internal data class DokumentVariant(

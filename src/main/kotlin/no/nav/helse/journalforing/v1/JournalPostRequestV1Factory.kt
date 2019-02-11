@@ -1,12 +1,8 @@
 package no.nav.helse.journalforing.v1
 
 import io.ktor.http.ContentType
-import no.nav.helse.journalforing.Kanal
-import no.nav.helse.journalforing.AktoerId
-import no.nav.helse.journalforing.SoknadId
-import no.nav.helse.journalforing.Tema
+import no.nav.helse.journalforing.*
 import no.nav.helse.journalforing.gateway.*
-import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
@@ -17,31 +13,31 @@ private const val IDENT_KEY = "ident"
 private const val PERSON_KEY = "person"
 
 private val PDF_CONTENT_TYPE = ContentType("application","pdf")
-private val DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")
+private val DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssZ")
 
 object JournalPostRequestV1Factory {
     internal fun instance(
+        tittel: String,
         mottaker: AktoerId,
         tema: Tema,
         kanal: Kanal,
         soknadId: SoknadId,
         dokumenter: List<DokumentV1>,
-        mottatt: ZonedDateTime) : JournalPostRequest {
+        mottatt: ZonedDateTime,
+        dokumentType: DokumentType) : JournalPostRequest {
 
         if (dokumenter.isEmpty()) {
             throw IllegalStateException("Det må sendes minst ett dokument")
         }
 
         val forsendelseInformasjon = ForsendelseInformasjon(
-            bruker = lagBrukerStruktur(aktorId = mottaker),
+            tittel = tittel,
+            bruker = lagAktorStruktur(aktorId = mottaker),
+            avsender = lagAktorStruktur(aktorId = mottaker), // I Versjon 1 er det kun innlogget bruker som laster opp vedlegg og fyller ut søknad, så bruker == avsender
             tema = tema.value,
             kanalReferanseId = soknadId.value,
-            forsendelseMottatt = DATE_TIME_FORMATTER.format(
-                ensureUtc(
-                    dateTime = mottatt
-                )
-            ),
-            forsendelseInnsendt = DATE_TIME_FORMATTER.format(LocalDateTime.now(ZoneOffset.UTC)),
+            forsendelseMottatt = formatDate(mottatt),
+            forsendelseInnsendt = formatDate(ZonedDateTime.now()),
             mottaksKanal = kanal.value
         )
 
@@ -51,9 +47,9 @@ object JournalPostRequestV1Factory {
 
         dokumenter.forEach { dokument ->
             if (hovedDokument == null) {
-                hovedDokument = mapDokument(dokument)
+                hovedDokument = mapDokument(dokument, dokumentType)
             } else {
-                vedlegg.add(mapDokument(dokument))
+                vedlegg.add(mapDokument(dokument, dokumentType))
             }
         }
 
@@ -65,11 +61,12 @@ object JournalPostRequestV1Factory {
         )
     }
 
-    private fun ensureUtc(dateTime: ZonedDateTime): ZonedDateTime {
-        return ZonedDateTime.ofInstant(dateTime.toInstant(), ZoneOffset.UTC)
+    private fun formatDate(dateTime: ZonedDateTime) : String {
+        val utc = ZonedDateTime.ofInstant(dateTime.toInstant(), ZoneOffset.UTC)
+        return DATE_TIME_FORMATTER.format(utc)
     }
 
-    private fun lagBrukerStruktur(aktorId: AktoerId): Map<String, Map<String, Map<String, String>>> {
+    private fun lagAktorStruktur(aktorId: AktoerId): Map<String, Map<String, Map<String, String>>> {
         return mapOf(
             Pair(
                 AKTOR_ID_KEY, mapOf(
@@ -81,11 +78,12 @@ object JournalPostRequestV1Factory {
         ))
     }
 
-    private fun mapDokument(dokument : DokumentV1) : Dokument {
+    private fun mapDokument(dokument : DokumentV1, dokumentType: DokumentType) : Dokument {
         val arkivFilType = getArkivFilType(dokument)
 
         return Dokument(
             dokument.tittel,
+            dokumentTypeId = dokumentType.value,
             dokumentVariant = listOf(
                 DokumentVariant(
                     arkivFilType = arkivFilType,

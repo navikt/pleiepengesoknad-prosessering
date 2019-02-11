@@ -1,11 +1,7 @@
 package no.nav.helse.journalforing.v1
 
 import io.ktor.http.ContentType
-import no.nav.helse.journalforing.Kanal
-import no.nav.helse.journalforing.AktoerId
-import no.nav.helse.journalforing.JournalPostId
-import no.nav.helse.journalforing.SoknadId
-import no.nav.helse.journalforing.Tema
+import no.nav.helse.journalforing.*
 import no.nav.helse.journalforing.gateway.JournalforingGateway
 import no.nav.helse.validering.Brudd
 import no.nav.helse.validering.Valideringsfeil
@@ -16,6 +12,7 @@ private val logger: Logger = LoggerFactory.getLogger("nav.JournalforingV1Service
 
 private val OMSORG_TEMA = Tema("OMS")
 private val NAV_NO_KANAL = Kanal("NAV_NO")
+private val PLEIEPENGER_SOKNAD_DOKUMENT_TYPE = DokumentType("PLEIEPENGER_BARN_SOKNAD")
 private val SUPPORTERTE_CONTENT_TYPES = listOf(ContentType("application","pdf"))
 
 class JournalforingV1Service(
@@ -29,12 +26,14 @@ class JournalforingV1Service(
         validerMelding(melding)
 
         val request = JournalPostRequestV1Factory.instance(
+            tittel = melding.tittel,
             mottaker = AktoerId(melding.aktoerId),
             tema = OMSORG_TEMA,
             kanal = NAV_NO_KANAL,
             soknadId = SoknadId(melding.soknadId),
             dokumenter = melding.dokumenter,
-            mottatt = melding.mottatt
+            mottatt = melding.mottatt,
+            dokumentType = PLEIEPENGER_SOKNAD_DOKUMENT_TYPE
         )
 
 
