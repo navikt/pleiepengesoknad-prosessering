@@ -28,7 +28,7 @@ fun Route.journalforingApis(
         val metadata = MetadataV1(version = 1, correlationId = call.request.getCorrelationId())
         val journalPostId = journalforingV1Service.journalfor(melding = melding, metaData = metadata)
 
-        call.respond(HttpStatusCode.OK, Response(journalPostId = journalPostId.value))
+        call.respond(HttpStatusCode.OK, JournalforingResponse(journalPostId = journalPostId.value))
     }
 }
 
@@ -36,4 +36,4 @@ private fun ApplicationRequest.getCorrelationId(): String {
     return header(CORRELATION_ID_HEADER) ?: throw ManglerCorrelationId()
 }
 
-data class Response(val journalPostId: String)
+data class JournalforingResponse(val journalPostId: String)

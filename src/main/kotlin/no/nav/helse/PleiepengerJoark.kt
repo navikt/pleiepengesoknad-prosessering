@@ -8,6 +8,7 @@ import io.ktor.client.features.json.JsonFeature
 import io.ktor.features.*
 import io.ktor.jackson.jackson
 import io.ktor.routing.Routing
+import io.ktor.util.KtorExperimentalAPI
 import no.nav.helse.journalforing.api.journalforingApis
 import no.nav.helse.journalforing.api.metadataStatusPages
 import no.nav.helse.journalforing.gateway.JournalforingGateway
@@ -20,20 +21,21 @@ private val logger: Logger = LoggerFactory.getLogger("nav.PleiepengerJoark")
 
 fun main(args: Array<String>): Unit  = io.ktor.server.netty.EngineMain.main(args)
 
+@KtorExperimentalAPI
 fun Application.pleiepengerJoark() {
-    val httpClient = HttpClient(Apache) {
+    val joarkHttpClient = HttpClient(Apache) {
         install(JsonFeature) {
             serializer = JacksonSerializer{
-                configureObjectMapper(this)
+                ObjectMapper.joark(this)
             }
         }
     }
     val configuration = Configuration(environment.config)
-    val authoriedSystems = configuration.getAuthorizedSystemsForRestApi() // TODO: Check JWT claims to ensure proper system.
+    val authorizedSystems = configuration.getAuthorizedSystemsForRestApi() // TODO: Check JWT claims to ensure proper system.
 
     install(ContentNegotiation) {
         jackson {
-            configureObjectMapper(this)
+            ObjectMapper.server(this)
         }
     }
 
@@ -48,7 +50,8 @@ fun Application.pleiepengerJoark() {
         journalforingApis(
             journalforingV1Service = JournalforingV1Service(
                 journalforingGateway = JournalforingGateway(
-                    httpClient = httpClient
+                    httpClient = joarkHttpClient,
+                    joarkInngaaendeForsendelseUrl = configuration.getJoarkInngaaendeForseldenseUrl()
                 )
             )
         )

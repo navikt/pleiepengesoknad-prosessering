@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory
 private val logger: Logger = LoggerFactory.getLogger("nav.WiremockWrapper")
 private const val jwkSetPath = "/auth-mock/jwk-set"
 private const val tokenPath = "/auth-mock/token"
+private const val joarkInngaaendeForsendelsePath = "/joark-mock/rest/mottaInngaaendeForsendelse"
 
 object WiremockWrapper {
 
@@ -34,8 +35,27 @@ object WiremockWrapper {
         wireMockServer.start()
         WireMock.configureFor(wireMockServer.port())
 
+        stubJoark()
+
         logger.info("Mock available on '{}'", wireMockServer.baseUrl())
         return wireMockServer
+    }
+
+    private fun stubJoark() {
+        WireMock.stubFor(
+            WireMock.post(WireMock.urlMatching(".*$joarkInngaaendeForsendelsePath"))
+                .willReturn(
+                    WireMock.aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "application/json")
+                        .withBody("""
+                            {
+                                "journalpostId": "1234",
+                                "journalTilstand": "ENDELIG_JOURNALFOERT"
+                            }
+                        """.trimIndent())
+                )
+        )
     }
 }
 
@@ -45,4 +65,8 @@ fun WireMockServer.getJwksUrl() : String {
 
 fun WireMockServer.getTokenUrl() : String {
     return baseUrl() + tokenPath
+}
+
+fun WireMockServer.getJoarkInngaaendeForsendelseUrl() : String {
+    return baseUrl() + joarkInngaaendeForsendelsePath
 }

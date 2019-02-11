@@ -1,5 +1,6 @@
 package no.nav.helse.journalforing.v1
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import io.ktor.http.ContentType
 
 data class DokumentV1(
@@ -8,6 +9,7 @@ data class DokumentV1(
     val contentType : String
 ) {
 
+    @JsonIgnore
     val contentTypeObject : ContentType
 
     init {

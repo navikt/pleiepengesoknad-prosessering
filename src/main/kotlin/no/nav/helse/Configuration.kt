@@ -4,6 +4,7 @@ import io.ktor.config.ApplicationConfig
 import io.ktor.util.KtorExperimentalAPI
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import java.net.URL
 
 private val logger: Logger = LoggerFactory.getLogger("nav.Configuration")
 
@@ -36,4 +37,7 @@ data class Configuration(private val config : ApplicationConfig) {
         )
     }
 
+    fun getJoarkInngaaendeForseldenseUrl() : URL {
+        return URL(getString("nav.joark.inngaaende_forsendelse_url"))
+    }
 }
