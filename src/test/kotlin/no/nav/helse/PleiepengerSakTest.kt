@@ -31,7 +31,6 @@ class PleiepengerJoarkTest {
             val fileConfig = ConfigFactory.load()
             val testConfig = ConfigFactory.parseMap(TestConfiguration.asMap(wireMockServer = wireMockServer))
             val mergedConfig = testConfig.withFallback(fileConfig)
-
             return HoconApplicationConfig(mergedConfig)
         }
 

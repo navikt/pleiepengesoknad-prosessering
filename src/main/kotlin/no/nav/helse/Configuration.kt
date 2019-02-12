@@ -45,6 +45,10 @@ data class Configuration(private val config : ApplicationConfig) {
         return URL(getString("nav.authorization.jwks_url"))
     }
 
+    fun getSakBaseUrl() : URL {
+        return URL(getString("nav.sak.base_url"))
+    }
+
     fun getIssuer() : String {
         return getString("nav.authorization.issuer")
     }

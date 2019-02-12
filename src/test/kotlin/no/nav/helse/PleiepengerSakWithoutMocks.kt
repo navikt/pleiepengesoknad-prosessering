@@ -22,11 +22,12 @@ class PleiepengerSakWithoutMocks {
             // nav.authorization.service_account.password Må fortsatt settes som parameter ved oppstart utenom koden
 
             val q1Args = TestConfiguration.asArray(TestConfiguration.asMap(
-                port = 8888,
+                port = 8093,
                 tokenUrl = "https://security-token-service.nais.preprod.local/rest/v1/sts/token",
                 jwkSetUrl = "https://security-token-service.nais.preprod.local/rest/v1/sts/jwks",
                 issuer = "https://security-token-service.nais.preprod.local",
-                authorizedSystems = "srvpleiepenger-joark"
+                authorizedSystems = "srvpleiepenger-sak",
+                sakBaseUrl = "https://sak.nais.preprod.local"
             ))
 
 

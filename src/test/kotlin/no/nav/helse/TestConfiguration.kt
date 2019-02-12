@@ -10,14 +10,16 @@ object TestConfiguration {
         jwkSetUrl : String? = wireMockServer?.getJwksUrl(),
         tokenUrl : String? = wireMockServer?.getTokenUrl(),
         issuer : String? = wireMockServer?.baseUrl(),
-        authorizedSystems : String? = wireMockServer?.getSubject()
+        authorizedSystems : String? = wireMockServer?.getSubject(),
+        sakBaseUrl : String? = wireMockServer?.getSakbaseUrl()
     ) : Map<String, String>{
         return mapOf(
             Pair("ktor.deployment.port","$port"),
             Pair("nav.authorization.token_url","$tokenUrl"),
             Pair("nav.authorization.jwks_url","$jwkSetUrl"),
             Pair("nav.authorization.issuer","$issuer"),
-            Pair("nav.rest_api.authorized_systems","$authorizedSystems")
+            Pair("nav.rest_api.authorized_systems","$authorizedSystems"),
+            Pair("nav.sak.base_url","$sakBaseUrl")
         )
     }
 

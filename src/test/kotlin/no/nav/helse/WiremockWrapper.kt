@@ -12,8 +12,8 @@ private val logger: Logger = LoggerFactory.getLogger("nav.WiremockWrapper")
 private const val jwkSetPath = "/auth-mock/jwk-set"
 private const val tokenPath = "/auth-mock/token"
 private const val getAccessTokenPath = "/auth-mock/get-test-access-token"
-private const val joarkInngaaendeForsendelsePath = "/joark-mock/rest/mottaInngaaendeForsendelse"
-private const val subject = "srvpleiepenger-sak"
+private const val sakPath = "/sak-mock"
+private const val subject = "srvpleiepenger-pro"
 
 
 object WiremockWrapper {
@@ -94,8 +94,8 @@ fun WireMockServer.getTokenUrl() : String {
     return baseUrl() + tokenPath
 }
 
-fun WireMockServer.getJoarkInngaaendeForsendelseUrl() : String {
-    return baseUrl() + joarkInngaaendeForsendelsePath
+fun WireMockServer.getSakbaseUrl() : String {
+    return baseUrl() + sakPath
 }
 
 fun WireMockServer.getSubject() : String {

@@ -18,6 +18,8 @@ import io.prometheus.client.CollectorRegistry
 import io.prometheus.client.hotspot.DefaultExports
 import no.nav.helse.sak.api.metadataStatusPages
 import no.nav.helse.sak.api.sakApis
+import no.nav.helse.sak.gateway.SakGateway
+import no.nav.helse.sak.v1.SakV1Service
 import no.nav.helse.systembruker.SystembrukerGateway
 import no.nav.helse.systembruker.SystembrukerService
 import no.nav.helse.validering.valideringStatusPages
@@ -37,7 +39,7 @@ fun Application.pleiepengerSak() {
     val collectorRegistry = CollectorRegistry.defaultRegistry
     DefaultExports.initialize()
 
-    val sakkHttpClient = HttpClient(Apache) {
+    val sakHttpClient = HttpClient(Apache) {
         install(JsonFeature) {
             serializer = JacksonSerializer{
                 ObjectMapper.sak(this)
@@ -108,8 +110,17 @@ fun Application.pleiepengerSak() {
 
     install(Routing) {
         authenticate {
-            sakApis()
+
         }
+        sakApis(
+            sakV1Service = SakV1Service(
+                sakGateway = SakGateway(
+                    httpClient = sakHttpClient,
+                    sakBaseUrl = configuration.getSakBaseUrl(),
+                    systembrukerService = systembrukerService
+                )
+            )
+        )
         monitoring(
             collectorRegistry = collectorRegistry
         )
