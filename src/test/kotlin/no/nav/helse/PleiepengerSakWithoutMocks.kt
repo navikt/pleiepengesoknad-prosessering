@@ -7,7 +7,7 @@ import io.ktor.server.testing.withApplication
  *  - Setter proxy settings
  *  - Starter på annen port
  */
-class PleiepengerJoarkWithoutMocks {
+class PleiepengerSakWithoutMocks {
     companion object {
 
         @JvmStatic
@@ -24,7 +24,6 @@ class PleiepengerJoarkWithoutMocks {
             val q1Args = TestConfiguration.asArray(TestConfiguration.asMap(
                 port = 8888,
                 tokenUrl = "https://security-token-service.nais.preprod.local/rest/v1/sts/token",
-                joarkInngaaendeForsendelseUrl = "https://dokmotinngaaende-q1.nais.preprod.local/rest/mottaInngaaendeForsendelse",
                 jwkSetUrl = "https://security-token-service.nais.preprod.local/rest/v1/sts/jwks",
                 issuer = "https://security-token-service.nais.preprod.local",
                 authorizedSystems = "srvpleiepenger-joark"

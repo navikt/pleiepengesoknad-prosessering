@@ -19,7 +19,7 @@ object ObjectMapper {
         return objectMapper
     }
 
-    fun joark(
+    fun sak(
         objectMapper: ObjectMapper = jacksonObjectMapper()
     ) : ObjectMapper {
         objectMapper.configure(SerializationFeature.INDENT_OUTPUT, true)

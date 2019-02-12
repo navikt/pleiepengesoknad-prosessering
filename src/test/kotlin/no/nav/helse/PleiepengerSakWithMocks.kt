@@ -4,7 +4,7 @@ import io.ktor.server.testing.withApplication
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
-private val logger: Logger = LoggerFactory.getLogger("nav.PleiepengerJoarkWithMocks")
+private val logger: Logger = LoggerFactory.getLogger("nav.PleiepengerSakWithMocks")
 
 class PleiepengerJoarkWithMocks {
     companion object {

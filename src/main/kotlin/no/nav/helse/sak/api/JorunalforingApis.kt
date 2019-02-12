@@ -1,4 +1,4 @@
-package no.nav.helse.journalforing.api
+package no.nav.helse.sak.api
 
 import io.ktor.application.call
 import io.ktor.http.HttpStatusCode

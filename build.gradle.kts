@@ -8,7 +8,7 @@ val wiremockVersion = "2.19.0"
 val logstashLogbackVersion = "5.2"
 val prometheusVersion = "0.6.0"
 
-val mainClass = "no.nav.helse.PleiepengerJoarkKt"
+val mainClass = "no.nav.helse.PleiepengerSakKt"
 
 plugins {
     kotlin("jvm") version "1.3.11"
