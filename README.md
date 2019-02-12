@@ -6,7 +6,13 @@ Kan også sende samme request som kommer på kafka-topic som et REST API-kall ti
 
 ## Versjon 1
 ### Meldingsformat
-TODO
+- aktoer_id : AtkørID for personen saken skal opprettes på
+
+```json
+{
+    "aktoer_id": "123123"
+}
+```
 
 ### Metadata
 #### REST API
