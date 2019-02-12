@@ -6,7 +6,6 @@ Kan også sende samme request som kommer på kafka-topic som et REST API-kall ti
 
 ## Versjon 1
 ### Meldingsformat
-- tittel : Tittel som vises på journalføring
 - aktoer_id : AtkørID for personen dokumentene skal journalføres på
 - mottatt : tidspunkt for når dokumentene er mottatt på ISO8601 format
 - saks_id : Id opprettet ved opprettelse av sak (pleiepenger-sak)
@@ -17,7 +16,6 @@ Kan også sende samme request som kommer på kafka-topic som et REST API-kall ti
 
 ```json
 {
-    "tittel": "Tittel",
 	"aktoer_id":"123561458",
 	"mottatt": "2018-12-18T20:43:32Z",
 	"saks_id": "1234654",
