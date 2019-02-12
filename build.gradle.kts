@@ -25,6 +25,7 @@ dependencies {
 
     // Ktor Server
     compile("io.ktor:ktor-server-netty:$ktorVersion")
+    compile("io.ktor:ktor-auth-jwt:$ktorVersion")
     compile ("io.ktor:ktor-jackson:$ktorVersion")
 
     // JSON Serialization
@@ -50,7 +51,7 @@ dependencies {
     testCompile("io.ktor:ktor-server-test-host:$ktorVersion") {
         exclude(group = "org.eclipse.jetty")
     }
-
+    testCompile ("com.nimbusds:oauth2-oidc-sdk:5.56")
 }
 
 repositories {

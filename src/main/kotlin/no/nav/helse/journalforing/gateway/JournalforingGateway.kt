@@ -24,7 +24,9 @@ private val nyJournalforing = Histogram.build(
 
 /*
     https://dokmotinngaaende-q1.nais.preprod.local/rest/mottaInngaaendeForsendelse
+
  */
+
 class JournalforingGateway(
     private val httpClient: HttpClient,
     private val joarkInngaaendeForsendelseUrl: URL,

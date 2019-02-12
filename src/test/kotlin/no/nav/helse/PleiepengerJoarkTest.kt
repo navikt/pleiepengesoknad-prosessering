@@ -36,12 +36,7 @@ class PleiepengerJoarkTest {
 
         fun getConfig() : ApplicationConfig {
             val fileConfig = ConfigFactory.load()
-            val testConfig = ConfigFactory.parseMap(mutableMapOf(
-                Pair("nav.authorization.jwks_url", wireMockServer.getJwksUrl()),
-                Pair("nav.authorization.token_url", wireMockServer.getTokenUrl()),
-                Pair("nav.joark.inngaaende_forsendelse_url", wireMockServer.getJoarkInngaaendeForsendelseUrl())
-            ))
-
+            val testConfig = ConfigFactory.parseMap(TestConfiguration.asMap(wireMockServer = wireMockServer))
             val mergedConfig = testConfig.withFallback(fileConfig)
 
             return HoconApplicationConfig(mergedConfig)
@@ -85,9 +80,9 @@ class PleiepengerJoarkTest {
 
     @Test
     fun `gyldig melding til joark gir ok response med jorunalpost ID`() {
-        val authorizationHeader = Authorization.getAuthorizationHeader()
+        val accessToken = Authorization.getAccessToken(wireMockServer.baseUrl(), wireMockServer.getSubject())
+
         val request = MeldingV1(
-            tittel = "Dette er tittelen",
             aktoerId = "1234",
             sakId = "5678",
             mottatt = ZonedDateTime.now(),
@@ -103,7 +98,7 @@ class PleiepengerJoarkTest {
 
         with(engine) {
             handleRequest(HttpMethod.Post, "/v1/journalforing") {
-                addHeader(HttpHeaders.Authorization, authorizationHeader)
+                addHeader(HttpHeaders.Authorization, "Bearer $accessToken")
                 addHeader("Nav-Call-Id", "123156")
                 setBody(objectMapper.writeValueAsString(request))
             }.apply {
@@ -113,7 +108,7 @@ class PleiepengerJoarkTest {
         }
     }
 
-    private fun String.fromResources() : ByteArray {
+    fun String.fromResources() : ByteArray {
         return Thread.currentThread().contextClassLoader.getResource(this).readBytes()
     }
 }

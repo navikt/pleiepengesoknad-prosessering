@@ -49,6 +49,10 @@ data class Configuration(private val config : ApplicationConfig) {
         return URL(getString("nav.authorization.jwks_url"))
     }
 
+    fun getIssuer() : String {
+        return getString("nav.authorization.issuer")
+    }
+
     fun getServiceAccountUsername(): String {
         return getString("nav.authorization.service_account.username")
     }

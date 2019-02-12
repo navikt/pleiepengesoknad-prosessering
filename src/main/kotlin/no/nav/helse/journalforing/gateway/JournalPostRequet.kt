@@ -22,8 +22,8 @@ internal data class ForsendelseInformasjon(
 
 internal data class Dokument(
     val tittel: String,
-    val dokumentVariant: List<DokumentVariant>,
-    val dokumentTypeId: String
+    val dokumentTypeId: String,
+    val dokumentVariant: List<DokumentVariant>
 )
 
 internal data class DokumentVariant(

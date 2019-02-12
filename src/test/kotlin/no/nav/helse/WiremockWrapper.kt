@@ -4,13 +4,17 @@ import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration
 import com.github.tomakehurst.wiremock.extension.Extension
+import no.nav.security.oidc.test.support.JwkGenerator
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 private val logger: Logger = LoggerFactory.getLogger("nav.WiremockWrapper")
 private const val jwkSetPath = "/auth-mock/jwk-set"
 private const val tokenPath = "/auth-mock/token"
+private const val getAccessTokenPath = "/auth-mock/get-test-access-token"
 private const val joarkInngaaendeForsendelsePath = "/joark-mock/rest/mottaInngaaendeForsendelse"
+private const val subject = "srvpleiepenger-sak"
+
 
 object WiremockWrapper {
 
@@ -37,6 +41,9 @@ object WiremockWrapper {
 
         stubJoark()
         stubGetSystembrukerToken()
+        stubJwkSet()
+
+        provideGetAccessTokenEndPoint(wireMockServer.baseUrl())
 
         logger.info("Mock available on '{}'", wireMockServer.baseUrl())
         return wireMockServer
@@ -70,6 +77,31 @@ object WiremockWrapper {
                 )
         )
     }
+
+    private fun stubJwkSet() {
+        WireMock.stubFor(
+            WireMock.get(WireMock.urlPathMatching(".*$jwkSetPath.*"))
+                .willReturn(
+                    WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withStatus(200)
+                        .withBody(WiremockWrapper::class.java.getResource(JwkGenerator.DEFAULT_JWKSET_FILE).readText())
+                )
+        )
+    }
+
+    private fun provideGetAccessTokenEndPoint(issuer: String) {
+        val jwt = Authorization.getAccessToken(issuer, subject)
+        WireMock.stubFor(
+            WireMock.get(WireMock.urlPathMatching(".*$getAccessTokenPath.*"))
+                .willReturn(
+                    WireMock.aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "application/json")
+                        .withBody("{\"access_token\":\"$jwt\", \"expires_in\": 5000}")
+                )
+        )
+    }
 }
 
 fun WireMockServer.getJwksUrl() : String {
@@ -82,4 +114,8 @@ fun WireMockServer.getTokenUrl() : String {
 
 fun WireMockServer.getJoarkInngaaendeForsendelseUrl() : String {
     return baseUrl() + joarkInngaaendeForsendelsePath
+}
+
+fun WireMockServer.getSubject() : String {
+    return subject
 }

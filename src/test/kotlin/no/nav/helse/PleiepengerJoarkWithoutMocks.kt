@@ -20,13 +20,18 @@ class PleiepengerJoarkWithoutMocks {
             System.setProperty("https.proxyPort", "5001")
 
             // nav.authorization.service_account.password Må fortsatt settes som parameter ved oppstart utenom koden
-            val testArgs = arrayOf(
-                "-P:ktor.deployment.port=8888",
-                "-P:nav.authorization.token_url=https://security-token-service.nais.preprod.local/rest/v1/sts/token",
-                "-P:nav.joark.inngaaende_forsendelse_url=https://dokmotinngaaende-q1.nais.preprod.local/rest/mottaInngaaendeForsendelse"
-            )
 
-            withApplication { no.nav.helse.main(testArgs) }
+            val q1Args = TestConfiguration.asArray(TestConfiguration.asMap(
+                port = 8888,
+                tokenUrl = "https://security-token-service.nais.preprod.local/rest/v1/sts/token",
+                joarkInngaaendeForsendelseUrl = "https://dokmotinngaaende-q1.nais.preprod.local/rest/mottaInngaaendeForsendelse",
+                jwkSetUrl = "https://security-token-service.nais.preprod.local/rest/v1/sts/jwks",
+                issuer = "https://security-token-service.nais.preprod.local",
+                authorizedSystems = "srvpleiepenger-joark"
+            ))
+
+
+            withApplication { no.nav.helse.main(q1Args) }
         }
     }
 }

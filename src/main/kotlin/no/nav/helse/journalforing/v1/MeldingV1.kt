@@ -6,6 +6,5 @@ data class MeldingV1 (
     val aktoerId: String,
     val mottatt: ZonedDateTime,
     val sakId: String,
-    val dokumenter: List<DokumentV1>,
-    val tittel: String
+    val dokumenter: List<DokumentV1>
 )

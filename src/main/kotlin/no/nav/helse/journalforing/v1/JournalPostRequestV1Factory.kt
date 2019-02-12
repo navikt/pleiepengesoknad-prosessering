@@ -36,7 +36,7 @@ object JournalPostRequestV1Factory {
             bruker = lagAktorStruktur(aktorId = mottaker),
             avsender = lagAktorStruktur(aktorId = mottaker), // I Versjon 1 er det kun innlogget bruker som laster opp vedlegg og fyller ut søknad, så bruker == avsender
             tema = tema.value,
-            kanalReferanseId = "${sakSystem.kode}-${sakId.value}", // I Versjon 1 settes ID fra sak som kanalReferenseId
+            kanalReferanseId = "${sakSystem.kode}-${sakId.value}", // I Versjon 1 settes ID fra sak som kanalReferenseId - Om flere journalføringer blir gjort på en sak er ikke denne unik...
             forsendelseMottatt = formatDate(mottatt),
             forsendelseInnsendt = formatDate(ZonedDateTime.now()),
             mottaksKanal = kanal.value,
