@@ -5,7 +5,7 @@ import java.time.ZonedDateTime
 data class MeldingV1 (
     val aktoerId: String,
     val mottatt: ZonedDateTime,
-    val soknadId: String,
+    val sakId: String,
     val dokumenter: List<DokumentV1>,
     val tittel: String
 )

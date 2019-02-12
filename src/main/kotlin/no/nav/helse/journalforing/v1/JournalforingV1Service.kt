@@ -12,7 +12,9 @@ private val logger: Logger = LoggerFactory.getLogger("nav.JournalforingV1Service
 
 private val OMSORG_TEMA = Tema("OMS")
 private val NAV_NO_KANAL = Kanal("NAV_NO")
-private val PLEIEPENGER_SOKNAD_DOKUMENT_TYPE = DokumentType("PLEIEPENGER_BARN_SOKNAD")
+private val PLEIEPENGER_SOKNAD_DOKUMENT_TYPE = DokumentType("PLEIEPENGER_BARN_SOKNAD") // TODO: Må endres.
+private val SAK_SAKSYSTEM = SakSystem("SAK","FS22")
+
 private val SUPPORTERTE_CONTENT_TYPES = listOf(ContentType("application","pdf"))
 
 class JournalforingV1Service(
@@ -30,7 +32,8 @@ class JournalforingV1Service(
             mottaker = AktoerId(melding.aktoerId),
             tema = OMSORG_TEMA,
             kanal = NAV_NO_KANAL,
-            soknadId = SoknadId(melding.soknadId),
+            sakId = SakId(melding.sakId),
+            sakSystem = SAK_SAKSYSTEM,
             dokumenter = melding.dokumenter,
             mottatt = melding.mottatt,
             dokumentType = PLEIEPENGER_SOKNAD_DOKUMENT_TYPE

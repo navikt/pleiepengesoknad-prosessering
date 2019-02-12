@@ -11,6 +11,10 @@ import no.nav.helse.HttpRequest
 import java.net.URL
 import java.util.*
 
+/**
+ * Systembruker trenger AD-gruppe for "tema" som brukes mot Joark (Her OMS)
+ */
+
 private val getAccessTokenHistogram = Histogram.build(
     "histogram_hente_system_bruker_acesss_token",
     "Tidsbruk for henting av system bruker Access Tokens"

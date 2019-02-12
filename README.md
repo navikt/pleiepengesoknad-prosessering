@@ -9,7 +9,7 @@ Kan også sende samme request som kommer på kafka-topic som et REST API-kall ti
 - tittel : Tittel som vises på journalføring
 - aktoer_id : AtkørID for personen dokumentene skal journalføres på
 - mottatt : tidspunkt for når dokumentene er mottatt på ISO8601 format
-- soknad_id : unik ID som identifiserer søknaden dokumentene gjelder
+- saks_id : Id opprettet ved opprettelse av sak (pleiepenger-sak)
 - dokumenter : En liste med dokumenter som skal journalføres. Første dokument i listen vil bli "Hoveddokument" i Joark
 - dokument.tittel : Tittel for dokumentet
 - dokument.content_type : Content-Type for dokumentet. Per nå støtte kun 'application/pdf'
@@ -20,7 +20,7 @@ Kan også sende samme request som kommer på kafka-topic som et REST API-kall ti
     "tittel": "Tittel",
 	"aktoer_id":"123561458",
 	"mottatt": "2018-12-18T20:43:32Z",
-	"soknad_id": "1234654",
+	"saks_id": "1234654",
 	"dokumenter": [{
 		"tittel": "Hoveddokument",
 		"content_type": "application/pdf",

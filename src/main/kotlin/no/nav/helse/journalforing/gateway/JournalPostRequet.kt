@@ -16,7 +16,8 @@ internal data class ForsendelseInformasjon(
     val kanalReferanseId: String, // Vår unike ID
     val forsendelseMottatt: String, // yyyy-MM-dd'T'HH:mm:ssZ
     val forsendelseInnsendt: String, // yyyy-MM-dd'T'HH:mm:ssZ
-    val mottaksKanal: String // NAV_NO
+    val mottaksKanal: String, // NAV_NO
+    val arkivSak: ArkivSak
 )
 
 internal data class Dokument(
@@ -41,3 +42,8 @@ enum class VariantFormat  {
     ORIGINAL,
     ARKIV
 }
+
+internal class ArkivSak(
+    val arkivSakSystem: String,
+    val arkivSakId: String
+)
