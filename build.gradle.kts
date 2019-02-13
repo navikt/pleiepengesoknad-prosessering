@@ -1,11 +1,11 @@
 import org.gradle.internal.impldep.org.fusesource.jansi.AnsiRenderer.test
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-val logbackVersion = "1.2.1"
-val ktorVersion = "1.0.1"
-val jacksonVersion = "2.9.2"
+val logbackVersion = "1.2.3"
+val ktorVersion = "1.1.2"
+val jacksonVersion = "2.9.8"
 val wiremockVersion = "2.19.0"
-val logstashLogbackVersion = "5.2"
+val logstashLogbackVersion = "5.3"
 val prometheusVersion = "0.6.0"
 
 val mainClass = "no.nav.helse.PleiepengerSakKt"
