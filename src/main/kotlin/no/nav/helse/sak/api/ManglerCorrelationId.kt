@@ -1,3 +1,5 @@
 package no.nav.helse.sak.api
 
-class ManglerCorrelationId : IllegalStateException("Mangler header Nav-Call-Id")
+import io.ktor.http.HttpHeaders
+
+class ManglerCorrelationId : IllegalStateException("Mangler header ${HttpHeaders.XCorrelationId}")

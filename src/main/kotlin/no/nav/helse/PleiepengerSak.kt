@@ -11,7 +11,9 @@ import io.ktor.client.engine.apache.Apache
 import io.ktor.client.features.json.JacksonSerializer
 import io.ktor.client.features.json.JsonFeature
 import io.ktor.features.*
+import io.ktor.http.HttpHeaders
 import io.ktor.jackson.jackson
+import io.ktor.request.header
 import io.ktor.routing.Routing
 import io.ktor.util.KtorExperimentalAPI
 import io.prometheus.client.CollectorRegistry
@@ -127,11 +129,14 @@ fun Application.pleiepengerSak() {
     }
 
     install(CallId) {
-        header("Nav-Call-Id")
+        header(HttpHeaders.XCorrelationId)
     }
 
     install(CallLogging) {
-        callIdMdc("call_id")
+        callIdMdc("correlation_id")
+        mdc("request_id") { call ->
+            call.request.header(HttpHeaders.XRequestId) ?: "null"
+        }
     }
 }
 
