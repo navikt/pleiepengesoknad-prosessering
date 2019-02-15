@@ -97,5 +97,5 @@ tasks.named<Jar>("jar") {
 }
 
 tasks.withType<Wrapper> {
-    gradleVersion = "5.0"
+    gradleVersion = "5.2.1"
 }
