@@ -103,8 +103,8 @@ fun Application.pleiepengerSak() {
     val systembrukerService = SystembrukerService(
         systembrukerGateway = SystembrukerGateway(
             httpClient = systembrukerHttpClient,
-            username = configuration.getServiceAccountUsername(),
-            password = configuration.getServiceAccountPassword(),
+            clientId = configuration.getServiceAccountClientId(),
+            clientSecret = configuration.getServiceAccountClientSecret(),
             scopes = configuration.getServiceAccountScopes(),
             tokenUrl = configuration.getTokenUrl()
         )

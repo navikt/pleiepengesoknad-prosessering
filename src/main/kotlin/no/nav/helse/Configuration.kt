@@ -53,12 +53,12 @@ data class Configuration(private val config : ApplicationConfig) {
         return getString("nav.authorization.issuer")
     }
 
-    fun getServiceAccountUsername(): String {
-        return getString("nav.authorization.service_account.username")
+    fun getServiceAccountClientId(): String {
+        return getString("nav.authorization.service_account.client_id")
     }
 
-    fun getServiceAccountPassword(): String {
-        return getString(key = "nav.authorization.service_account.password", secret = true)
+    fun getServiceAccountClientSecret(): String {
+        return getString(key = "nav.authorization.service_account.client_secret", secret = true)
     }
 
     fun getServiceAccountScopes(): List<String> {
