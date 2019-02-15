@@ -114,6 +114,7 @@ fun Application.pleiepengerSak() {
         authenticate {
 
         }
+        // TODO: Legg til under authenticate når vi får testet gjennom
         sakApis(
             sakV1Service = SakV1Service(
                 sakGateway = SakGateway(
