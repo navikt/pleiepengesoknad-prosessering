@@ -25,7 +25,7 @@ fun Route.sakApis(
         val melding = call.receive<MeldingV1>()
         val metadata = MetadataV1(version = 1, correlationId = call.request.getCorrelationId(), requestId = call.request.getRequestId())
         val saksId = sakV1Service.opprettSak(melding = melding, metaData = metadata)
-        call.respond(HttpStatusCode.OK, SakResponse(sakId = saksId.value))
+        call.respond(HttpStatusCode.Created, SakResponse(sakId = saksId.value))
     }
 }
 

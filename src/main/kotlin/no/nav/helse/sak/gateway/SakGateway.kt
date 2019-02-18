@@ -4,10 +4,7 @@ import io.ktor.client.HttpClient
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.header
 import io.ktor.client.request.url
-import io.ktor.http.ContentType
-import io.ktor.http.HttpHeaders
-import io.ktor.http.HttpMethod
-import io.ktor.http.contentType
+import io.ktor.http.*
 import io.prometheus.client.Histogram
 import no.nav.helse.HttpRequest
 import no.nav.helse.sak.CorrelationId
@@ -51,7 +48,8 @@ class SakGateway(
         return HttpRequest.monitored(
             httpClient = httpClient,
             httpRequest = httpRequest,
-            histogram = nySak
+            histogram = nySak,
+            expectedStatusCodes = listOf(HttpStatusCode.Created)
         )
     }
 }
