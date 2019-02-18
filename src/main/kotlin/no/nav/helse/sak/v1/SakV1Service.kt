@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory
 private val logger: Logger = LoggerFactory.getLogger("nav.SakV1Service")
 private val GOSYS_FAGSYSTEM = FagSystem("GOSYS", "FS22")
 private val OMSORG_TEMA = Tema("OMS")
+private val ONLY_DIGITS = Regex("\\d+")
 
 class SakV1Service(
     private val sakGateway: SakGateway
@@ -44,7 +45,9 @@ class SakV1Service(
 
     private fun validerMelding(melding: MeldingV1) {
         val brudd = mutableListOf<Brudd>()
-        // TODO: Validering som bør gjøres?
+        if (!melding.aktoerId.matches(ONLY_DIGITS)) {
+            brudd.add(Brudd("aktoer_id", error = "${melding.aktoerId} er ikke en gyldig AktørID. Kan kun være siffer."))
+        }
         if (brudd.isNotEmpty()) {
             throw Valideringsfeil(brudd)
         }

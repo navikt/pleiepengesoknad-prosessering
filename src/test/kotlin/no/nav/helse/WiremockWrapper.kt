@@ -4,6 +4,7 @@ import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration
 import com.github.tomakehurst.wiremock.extension.Extension
+import com.github.tomakehurst.wiremock.matching.ContainsPattern
 import no.nav.security.oidc.test.support.JwkGenerator
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -46,6 +47,26 @@ object WiremockWrapper {
 
         logger.info("Mock available on '{}'", wireMockServer.baseUrl())
         return wireMockServer
+    }
+
+    fun stubSakOk(sakId: String,
+                  aktoerId: String) {
+        WireMock.stubFor(
+            WireMock.post(WireMock.urlPathMatching(".*$sakPath.*"))
+                .withRequestBody(ContainsPattern("""
+                    "aktoerId" : "$aktoerId"
+                """.trimIndent()))
+                .willReturn(
+                    WireMock.aResponse()
+                        .withStatus(201)
+                        .withHeader("Content-Type", "application/json")
+                        .withBody("""
+                        {
+                            "id" : "$sakId"
+                        }
+                        """.trimIndent())
+                )
+        )
     }
 
     private fun stubGetSystembrukerToken() {
