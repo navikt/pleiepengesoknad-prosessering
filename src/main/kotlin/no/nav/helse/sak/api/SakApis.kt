@@ -6,6 +6,7 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.request.ApplicationRequest
 import io.ktor.request.header
 import io.ktor.request.receive
+import io.ktor.response.ApplicationResponse
 import io.ktor.response.respond
 import io.ktor.routing.Route
 import io.ktor.routing.post
@@ -23,7 +24,7 @@ fun Route.sakApis(
 
     post("v1/sak") {
         val melding = call.receive<MeldingV1>()
-        val metadata = MetadataV1(version = 1, correlationId = call.request.getCorrelationId(), requestId = call.request.getRequestId())
+        val metadata = MetadataV1(version = 1, correlationId = call.request.getCorrelationId(), requestId = call.response.getRequestId())
         val saksId = sakV1Service.opprettSak(melding = melding, metaData = metadata)
         call.respond(HttpStatusCode.Created, SakResponse(sakId = saksId.value))
     }
@@ -33,8 +34,8 @@ private fun ApplicationRequest.getCorrelationId(): String {
     return header(HttpHeaders.XCorrelationId) ?: throw ManglerCorrelationId()
 }
 
-private fun ApplicationRequest.getRequestId(): String? {
-    return header(HttpHeaders.XRequestId)
+private fun ApplicationResponse.getRequestId(): String? {
+    return headers[HttpHeaders.XRequestId]
 }
 
 data class SakResponse(val sakId: String)

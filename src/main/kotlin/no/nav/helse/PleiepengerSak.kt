@@ -14,6 +14,7 @@ import io.ktor.features.*
 import io.ktor.http.HttpHeaders
 import io.ktor.jackson.jackson
 import io.ktor.request.header
+import io.ktor.response.header
 import io.ktor.routing.Routing
 import io.ktor.util.KtorExperimentalAPI
 import io.prometheus.client.CollectorRegistry
@@ -30,6 +31,7 @@ import org.apache.http.impl.nio.client.HttpAsyncClientBuilder
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.net.ProxySelector
+import java.util.*
 import java.util.concurrent.TimeUnit
 
 private val logger: Logger = LoggerFactory.getLogger("nav.PleiepengerSak")
@@ -136,7 +138,9 @@ fun Application.pleiepengerSak() {
     install(CallLogging) {
         callIdMdc("correlation_id")
         mdc("request_id") { call ->
-            call.request.header(HttpHeaders.XRequestId) ?: "null"
+            val requestId = call.request.header(HttpHeaders.XRequestId) ?: "generated-${UUID.randomUUID()}"
+            call.response.header(HttpHeaders.XRequestId, requestId)
+            requestId
         }
     }
 }
