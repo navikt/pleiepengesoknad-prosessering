@@ -19,10 +19,15 @@ import io.ktor.routing.Routing
 import io.ktor.util.KtorExperimentalAPI
 import io.prometheus.client.CollectorRegistry
 import io.prometheus.client.hotspot.DefaultExports
-import no.nav.helse.sak.api.metadataStatusPages
-import no.nav.helse.sak.api.sakApis
-import no.nav.helse.sak.gateway.SakGateway
-import no.nav.helse.sak.v1.SakV1Service
+import no.nav.helse.aktoer.AktoerGateway
+import no.nav.helse.aktoer.AktoerService
+import no.nav.helse.gosys.GosysService
+import no.nav.helse.gosys.JoarkGateway
+import no.nav.helse.gosys.OppgaveGateway
+import no.nav.helse.gosys.SakGateway
+import no.nav.helse.prosessering.api.metadataStatusPages
+import no.nav.helse.prosessering.api.prosesseringApis
+import no.nav.helse.prosessering.v1.ProsesseringV1Service
 import no.nav.helse.systembruker.SystembrukerGateway
 import no.nav.helse.systembruker.SystembrukerService
 import no.nav.helse.validering.valideringStatusPages
@@ -34,26 +39,18 @@ import java.net.ProxySelector
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-private val logger: Logger = LoggerFactory.getLogger("nav.PleiepengerSak")
+private val logger: Logger = LoggerFactory.getLogger("nav.PleiepengesoknadProsessering")
+private const val GENERATED_REQUEST_ID_PREFIX = "generated-"
+
 
 fun main(args: Array<String>): Unit  = io.ktor.server.netty.EngineMain.main(args)
 
 @KtorExperimentalAPI
-fun Application.pleiepengerSak() {
+fun Application.pleiepengesoknadProsessering() {
     val collectorRegistry = CollectorRegistry.defaultRegistry
     DefaultExports.initialize()
 
-    val sakHttpClient = HttpClient(Apache) {
-        install(JsonFeature) {
-            serializer = JacksonSerializer{
-                ObjectMapper.sak(this)
-            }
-        }
-        engine {
-            customizeClient { setProxyRoutePlanner() }
-        }
-    }
-    val systembrukerHttpClient = HttpClient(Apache) {
+    val httpClient = HttpClient(Apache) {
         install(JsonFeature) {
             serializer = JacksonSerializer{
                 ObjectMapper.server(this)
@@ -77,7 +74,7 @@ fun Application.pleiepengerSak() {
     install(Authentication) {
         jwt {
             verifier(jwkProvider, configuration.getIssuer())
-            realm = "pleiepenger-sak"
+            realm = "pleiepengesoknad-prosessering"
             validate { credentials ->
                 log.info("authorization attempt for ${credentials.payload.subject}")
                 if (credentials.payload.subject in authorizedSystems) {
@@ -104,7 +101,7 @@ fun Application.pleiepengerSak() {
 
     val systembrukerService = SystembrukerService(
         systembrukerGateway = SystembrukerGateway(
-            httpClient = systembrukerHttpClient,
+            httpClient = httpClient,
             clientId = configuration.getServiceAccountClientId(),
             clientSecret = configuration.getServiceAccountClientSecret(),
             scopes = configuration.getServiceAccountScopes(),
@@ -117,12 +114,31 @@ fun Application.pleiepengerSak() {
 
         }
         // TODO: Legg til under authenticate når vi får testet gjennom
-        sakApis(
-            sakV1Service = SakV1Service(
-                sakGateway = SakGateway(
-                    httpClient = sakHttpClient,
-                    sakBaseUrl = configuration.getSakBaseUrl(),
-                    systembrukerService = systembrukerService
+        prosesseringApis(
+            prosesseringV1Service = ProsesseringV1Service(
+                gosysService = GosysService(
+                    joarkGateway = JoarkGateway(
+                        httpClient = httpClient,
+                        url = configuration.getOpprettJournalPostUrl(),
+                        systembrukerService = systembrukerService
+                    ),
+                    sakGateway = SakGateway(
+                        httpClient = httpClient,
+                        url = configuration.getOpprettSakurl(),
+                        systembrukerService = systembrukerService
+                    ),
+                    oppgaveGateway = OppgaveGateway(
+                        httpClient = httpClient,
+                        url = configuration.getOpprettOppgaveUrl(),
+                        systembrukerService = systembrukerService
+                    )
+                ),
+                aktoerService = AktoerService(
+                    aktoerGateway = AktoerGateway(
+                        httpClient = httpClient,
+                        systembrukerService = systembrukerService,
+                        baseUrl = configuration.getAktoerRegisterBaseUrl()
+                    )
                 )
             )
         )
@@ -138,7 +154,7 @@ fun Application.pleiepengerSak() {
     install(CallLogging) {
         callIdMdc("correlation_id")
         mdc("request_id") { call ->
-            val requestId = call.request.header(HttpHeaders.XRequestId) ?: "generated-${UUID.randomUUID()}"
+            val requestId = call.request.header(HttpHeaders.XRequestId)?.removePrefix(GENERATED_REQUEST_ID_PREFIX) ?: "$GENERATED_REQUEST_ID_PREFIX${UUID.randomUUID()}"
             call.response.header(HttpHeaders.XRequestId, requestId)
             requestId
         }

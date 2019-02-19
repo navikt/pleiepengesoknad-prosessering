@@ -45,8 +45,20 @@ data class Configuration(private val config : ApplicationConfig) {
         return URL(getString("nav.authorization.jwks_url"))
     }
 
-    fun getSakBaseUrl() : URL {
-        return URL(getString("nav.sak.base_url"))
+    fun getAktoerRegisterBaseUrl() : URL {
+        return URL(getString("nav.aktoer_register_base_url"))
+    }
+
+    fun getOpprettSakurl() : URL {
+        return URL(getString("nav.opprett_sak_url"))
+    }
+
+    fun getOpprettOppgaveUrl() : URL {
+        return URL(getString("nav.opprett_oppgave_url"))
+    }
+
+    fun getOpprettJournalPostUrl() : URL {
+        return URL(getString("nav.opprett_journal_post_url"))
     }
 
     fun getIssuer() : String {

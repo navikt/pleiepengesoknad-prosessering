@@ -1,1 +1,1 @@
-rootProject.name = "pleiepenger-sak"
+rootProject.name = "pleiepengesoknad-prosessering"

@@ -1,4 +1,4 @@
-package no.nav.helse.sak.api
+package no.nav.helse.prosessering.api
 
 import io.ktor.application.call
 import io.ktor.features.StatusPages

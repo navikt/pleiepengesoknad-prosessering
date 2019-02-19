@@ -11,7 +11,10 @@ object TestConfiguration {
         tokenUrl : String? = wireMockServer?.getTokenUrl(),
         issuer : String? = wireMockServer?.baseUrl(),
         authorizedSystems : String? = wireMockServer?.getSubject(),
-        sakBaseUrl : String? = wireMockServer?.getSakbaseUrl()
+        aktoerRegisterBaseUrl : String? = wireMockServer?.getAktoerRegisterBaseUrl(),
+        opprettSakUrl : String? = wireMockServer?.getOpprettSakUrl(),
+        opprettOppgaveUrl : String? = wireMockServer?.getOpprettOppgaveUrl(),
+        opprettJournalPostUrl : String? = wireMockServer?.getOpprettJournalPostUrl()
     ) : Map<String, String>{
         return mapOf(
             Pair("ktor.deployment.port","$port"),
@@ -19,7 +22,10 @@ object TestConfiguration {
             Pair("nav.authorization.jwks_url","$jwkSetUrl"),
             Pair("nav.authorization.issuer","$issuer"),
             Pair("nav.rest_api.authorized_systems","$authorizedSystems"),
-            Pair("nav.sak.base_url","$sakBaseUrl")
+            Pair("nav.aktoer_register_base_url","$aktoerRegisterBaseUrl"),
+            Pair("nav.opprett_sak_url","$opprettSakUrl"),
+            Pair("nav.opprett_oppgave_url","$opprettOppgaveUrl"),
+            Pair("nav.opprett_journal_post_url","$opprettJournalPostUrl")
         )
     }
 

@@ -4,19 +4,19 @@ import io.ktor.server.testing.withApplication
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
-private val logger: Logger = LoggerFactory.getLogger("nav.PleiepengerSakWithMocks")
+private val logger: Logger = LoggerFactory.getLogger("nav.PleiepengesoknadProsesseringWithMocks")
 
-class PleiepengerJoarkWithMocks {
+class PleiepengesoknadProsesseringWithMocks {
     companion object {
 
         @JvmStatic
         fun main(args: Array<String>) {
 
-            val wireMockServer = WiremockWrapper.bootstrap(port = 8101)
+            val wireMockServer = WiremockWrapper.bootstrap(port = 8091)
 
             val testArgs = TestConfiguration.asArray(TestConfiguration.asMap(
                 wireMockServer = wireMockServer,
-                port = 8102
+                port = 8092
             ))
 
             Runtime.getRuntime().addShutdownHook(object : Thread() {

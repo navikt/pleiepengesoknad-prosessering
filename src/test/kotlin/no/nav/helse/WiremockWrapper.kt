@@ -4,7 +4,6 @@ import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration
 import com.github.tomakehurst.wiremock.extension.Extension
-import com.github.tomakehurst.wiremock.matching.ContainsPattern
 import no.nav.security.oidc.test.support.JwkGenerator
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -13,9 +12,12 @@ private val logger: Logger = LoggerFactory.getLogger("nav.WiremockWrapper")
 private const val jwkSetPath = "/auth-mock/jwk-set"
 private const val tokenPath = "/auth-mock/token"
 private const val getAccessTokenPath = "/auth-mock/get-test-access-token"
-private const val sakPath = "/sak-mock"
-private const val subject = "srvpleiepenger-pro"
+private const val subject = "srvpleiepengesokna"
 
+private const val aktoerRegisterBasePath = "/aktoerregister-mock"
+private const val opprettSakPath = "/pleiepenger-sak-mock/v1/sak"
+private const val opprettOppgavePath = "/pleiepenger-oppgave-mock/v1/oppgave"
+private const val opprettJournalPostPath = "/pleiepenger-joark-mock/v1/journalforing"
 
 object WiremockWrapper {
 
@@ -47,26 +49,6 @@ object WiremockWrapper {
 
         logger.info("Mock available on '{}'", wireMockServer.baseUrl())
         return wireMockServer
-    }
-
-    fun stubSakOk(sakId: String,
-                  aktoerId: String) {
-        WireMock.stubFor(
-            WireMock.post(WireMock.urlPathMatching(".*$sakPath.*"))
-                .withRequestBody(ContainsPattern("""
-                    "aktoerId" : "$aktoerId"
-                """.trimIndent()))
-                .willReturn(
-                    WireMock.aResponse()
-                        .withStatus(201)
-                        .withHeader("Content-Type", "application/json")
-                        .withBody("""
-                        {
-                            "id" : "$sakId"
-                        }
-                        """.trimIndent())
-                )
-        )
     }
 
     private fun stubGetSystembrukerToken() {
@@ -115,8 +97,20 @@ fun WireMockServer.getTokenUrl() : String {
     return baseUrl() + tokenPath
 }
 
-fun WireMockServer.getSakbaseUrl() : String {
-    return baseUrl() + sakPath
+fun WireMockServer.getAktoerRegisterBaseUrl() : String {
+    return baseUrl() + aktoerRegisterBasePath
+}
+
+fun WireMockServer.getOpprettSakUrl() : String {
+    return baseUrl() + opprettSakPath
+}
+
+fun WireMockServer.getOpprettOppgaveUrl() : String {
+    return baseUrl() + opprettOppgavePath
+}
+
+fun WireMockServer.getOpprettJournalPostUrl() : String {
+    return baseUrl() + opprettJournalPostPath
 }
 
 fun WireMockServer.getSubject() : String {

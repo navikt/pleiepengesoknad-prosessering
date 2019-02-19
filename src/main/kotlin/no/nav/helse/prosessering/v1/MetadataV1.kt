@@ -1,4 +1,4 @@
-package no.nav.helse.sak.v1
+package no.nav.helse.prosessering.v1
 
 data class MetadataV1(
     val version : Int,
