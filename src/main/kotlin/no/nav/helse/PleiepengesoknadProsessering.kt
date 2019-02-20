@@ -21,12 +21,14 @@ import io.prometheus.client.CollectorRegistry
 import io.prometheus.client.hotspot.DefaultExports
 import no.nav.helse.aktoer.AktoerGateway
 import no.nav.helse.aktoer.AktoerService
+import no.nav.helse.dokument.DokumentGateway
 import no.nav.helse.gosys.GosysService
 import no.nav.helse.gosys.JoarkGateway
 import no.nav.helse.gosys.OppgaveGateway
 import no.nav.helse.gosys.SakGateway
 import no.nav.helse.prosessering.api.metadataStatusPages
 import no.nav.helse.prosessering.api.prosesseringApis
+import no.nav.helse.prosessering.v1.PdfV1Generator
 import no.nav.helse.prosessering.v1.ProsesseringV1Service
 import no.nav.helse.systembruker.SystembrukerGateway
 import no.nav.helse.systembruker.SystembrukerService
@@ -139,7 +141,9 @@ fun Application.pleiepengesoknadProsessering() {
                         systembrukerService = systembrukerService,
                         baseUrl = configuration.getAktoerRegisterBaseUrl()
                     )
-                )
+                ),
+                pdfV1Generator = PdfV1Generator(),
+                dokumentGateway = DokumentGateway()
             )
         )
         monitoring(

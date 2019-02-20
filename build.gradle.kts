@@ -46,6 +46,9 @@ dependencies {
     compile ("io.ktor:ktor-client-jackson:$ktorVersion")
     compile ("io.ktor:ktor-client-apache:$ktorVersion")
 
+    // PDF
+    compile ( "com.openhtmltopdf:openhtmltopdf-pdfbox:0.0.1-RC17")
+
     // Test
     testCompile ("com.github.tomakehurst:wiremock:$wiremockVersion")
     testCompile("io.ktor:ktor-server-test-host:$ktorVersion") {
