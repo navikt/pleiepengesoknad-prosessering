@@ -61,6 +61,10 @@ data class Configuration(private val config : ApplicationConfig) {
         return URL(getString("nav.opprett_journal_post_url"))
     }
 
+    fun getPleiepengerDokumentBaseUrl() : URL {
+        return URL(getString("nav.pleiepenger_dokument_base_url"))
+    }
+
     fun getIssuer() : String {
         return getString("nav.authorization.issuer")
     }

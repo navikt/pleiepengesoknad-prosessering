@@ -143,7 +143,11 @@ fun Application.pleiepengesoknadProsessering() {
                     )
                 ),
                 pdfV1Generator = PdfV1Generator(),
-                dokumentGateway = DokumentGateway()
+                dokumentGateway = DokumentGateway(
+                    httpClient = httpClient,
+                    systembrukerService = systembrukerService,
+                    baseUrl = configuration.getPleiepengerDokumentBaseUrl()
+                )
             )
         )
         monitoring(

@@ -14,7 +14,8 @@ object TestConfiguration {
         aktoerRegisterBaseUrl : String? = wireMockServer?.getAktoerRegisterBaseUrl(),
         opprettSakUrl : String? = wireMockServer?.getOpprettSakUrl(),
         opprettOppgaveUrl : String? = wireMockServer?.getOpprettOppgaveUrl(),
-        opprettJournalPostUrl : String? = wireMockServer?.getOpprettJournalPostUrl()
+        opprettJournalPostUrl : String? = wireMockServer?.getOpprettJournalPostUrl(),
+        pleiepeingerDokumentBaseUrl : String? = wireMockServer?.getPleiepengerDokumentBaseUrl()
     ) : Map<String, String>{
         return mapOf(
             Pair("ktor.deployment.port","$port"),
@@ -25,7 +26,8 @@ object TestConfiguration {
             Pair("nav.aktoer_register_base_url","$aktoerRegisterBaseUrl"),
             Pair("nav.opprett_sak_url","$opprettSakUrl"),
             Pair("nav.opprett_oppgave_url","$opprettOppgaveUrl"),
-            Pair("nav.opprett_journal_post_url","$opprettJournalPostUrl")
+            Pair("nav.opprett_journal_post_url","$opprettJournalPostUrl"),
+            Pair("nav.pleiepenger_dokument_base_url","$pleiepeingerDokumentBaseUrl")
         )
     }
 

@@ -29,8 +29,8 @@ class PleiepengesoknadProsesseringWithoutMocks {
                 aktoerRegisterBaseUrl = "https://app-q1.adeo.no/aktoerregister",
                 opprettJournalPostUrl = "http://localhost:8113/v1/journalforing",
                 opprettSakUrl = "http://localhost:8103/v1/sak",
-                opprettOppgaveUrl = "http://localhost:8123/v1/oppgave"
-
+                opprettOppgaveUrl = "http://localhost:8123/v1/oppgave",
+                pleiepeingerDokumentBaseUrl = "http://localhost:8133"
             ))
 
             withApplication { no.nav.helse.main(q1Args) }

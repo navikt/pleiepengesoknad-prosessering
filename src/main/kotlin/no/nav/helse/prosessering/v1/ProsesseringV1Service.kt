@@ -7,7 +7,6 @@ import no.nav.helse.dokument.DokumentGateway
 import no.nav.helse.gosys.GosysService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import java.net.URL
 
 private val logger: Logger = LoggerFactory.getLogger("nav.ProsesseringV1Service")
 
@@ -27,11 +26,15 @@ class ProsesseringV1Service(
 
         val correlationId = CorrelationId(metadata.correlationId)
 
+        logger.trace("Henter AktørID for søkeren.")
         val sokerAktoerId = aktoerService.getAktorId(
             fnr = Fodselsnummer(melding.soker.fodselsnummer),
             correlationId = correlationId
         )
 
+        logger.trace("Sokers AktørID = $sokerAktoerId")
+
+        logger.trace("Henter AktørID for barnet.")
         val barnAktoerId = if (melding.barn.fodselsnummer != null) {
             aktoerService.getAktorId(
                 fnr = Fodselsnummer(melding.barn.fodselsnummer),
@@ -39,15 +42,24 @@ class ProsesseringV1Service(
             )
         } else null
 
+        logger.trace("Barnets AktørID = $barnAktoerId")
+
+        logger.trace("Genererer Oppsummerings-PDF av søknaden.")
+
         val soknadOppsummeringPdf = pdfV1Generator.generateSoknadOppsummeringPdf(melding)
+
+        logger.trace("Generering av PDF OK. Laster opp PDF for mellomlagring.")
 
         val soknadOppsummeringUrl = dokumentGateway.lagrePdf(
             pdf = soknadOppsummeringPdf,
-            aktoerId = sokerAktoerId
+            aktoerId = sokerAktoerId,
+            correlationId = correlationId,
+            tittel = "Søknad om pleiepeinger"
         )
 
-        val dokumenter = mutableListOf<URL>()
-        dokumenter.add(soknadOppsummeringUrl)
+        logger.trace("Mellomlagring OK, Oppretter oppgave i Gosys")
+
+        val dokumenter = mutableListOf(soknadOppsummeringUrl)
         dokumenter.addAll(melding.vedlegg)
 
         gosysService.opprett(
@@ -57,5 +69,7 @@ class ProsesseringV1Service(
             dokumenter = dokumenter.toList(),
             correlationId = correlationId
         )
+
+        logger.trace("Oppgave i Gosys opprettet OK")
     }
 }

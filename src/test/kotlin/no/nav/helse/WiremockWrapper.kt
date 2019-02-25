@@ -18,6 +18,8 @@ private const val aktoerRegisterBasePath = "/aktoerregister-mock"
 private const val opprettSakPath = "/pleiepenger-sak-mock/v1/sak"
 private const val opprettOppgavePath = "/pleiepenger-oppgave-mock/v1/oppgave"
 private const val opprettJournalPostPath = "/pleiepenger-joark-mock/v1/journalforing"
+private const val pleiepengerDokumentBasePath = "/pleiepenger-dokument-mock"
+
 
 object WiremockWrapper {
 
@@ -111,6 +113,10 @@ fun WireMockServer.getOpprettOppgaveUrl() : String {
 
 fun WireMockServer.getOpprettJournalPostUrl() : String {
     return baseUrl() + opprettJournalPostPath
+}
+
+fun WireMockServer.getPleiepengerDokumentBaseUrl() : String {
+    return baseUrl() + pleiepengerDokumentBasePath
 }
 
 fun WireMockServer.getSubject() : String {
