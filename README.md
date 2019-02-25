@@ -13,7 +13,7 @@ Første versjon av tjenesten vil motta og prossesere søknader synkront, men med
 - arbeidsgivere kan være en tom liste
 - arbeidsgivere[x].navn er ikke påkrevd.
 - vedlegg må inneholde minst en entry
-- vedlegg[x] må inneholde en relativ path til vedlegg i tjenesten "pleiepenger-dokumenter"
+- vedlegg[x] må inneholde en URL til vedlegg i tjenesten "pleiepenger-dokumenter"
 
 ```json
 {
