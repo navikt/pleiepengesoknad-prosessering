@@ -12,8 +12,9 @@ Første versjon av tjenesten vil motta og prossesere søknader synkront, men med
 - ingen av attributtene for "barn" er påkrevd.
 - arbeidsgivere kan være en tom liste
 - arbeidsgivere[x].navn er ikke påkrevd.
-- vedlegg må inneholde minst en entry
-- vedlegg[x] må inneholde en URL til vedlegg i tjenesten "pleiepenger-dokumenter"
+- vedlegg_urls[x] kan inneholde en URL til vedlegg i tjenesten "pleiepenger-dokumenter" og peke på dokument som tilhører søkeren.
+- vedlegg[x] kan inneholde en JSON med vedlegg på format som vist i eksempel hvor "content" er base64 encoded vedlegg
+- Det må være satt enten en entry i dokument_urls eller vedlegg
 
 ```json
 {
@@ -38,9 +39,14 @@ Første versjon av tjenesten vil motta og prossesere søknader synkront, men med
 			"organisasjonsnummer": "897895478"
 		}]
 	},
-	"vedlegg": [
-		"https://pleiepenger-dokuement.nav.no/dokument/123123-12312312-1231213"
+	"vedlegg_urls": [
+		"http://localhost:8133/v1/dokument/eyJraWQiOiIxIiwidHlwIjoiSldUIiwiYWxnIjoibm9uZSJ9.eyJqdGkiOiJlZWNlY2NkNS1jNjkyLTQyMDEtYTJhNi04OTFiMWFjZDYwMGMifQ"
 	],
+	"vedlegg": [{
+    	"content": "iVBORw0KGg....ayne82ZEAAAAASUVORK5CYII=",
+    	"content_type": "image/png",
+    	"title": "Legeerklæring"
+    }],
 	"medlemskap" : {
         "har_bodd_i_utlandet_siste_12_mnd" : false,
         "skal_bo_i_utlandet_neste_12_mnd" : false
@@ -56,7 +62,7 @@ Request ID blir ikke propagert videre, og skal ha sitt opphav hos konsumenten.
 #### REST API
 - Correlation ID må sendes som header 'X-Correlation-ID'
 - Request ID kan sendes som heder 'X-Request-ID'
-- Versjon på meldingen avledes fra pathen '/v1/prosesser' -> 1
+- Versjon på meldingen avledes fra pathen '/v1/soknad' -> 1
 
 
 #### Kafka
