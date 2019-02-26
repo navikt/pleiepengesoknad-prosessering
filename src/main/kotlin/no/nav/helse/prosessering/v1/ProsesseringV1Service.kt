@@ -3,7 +3,7 @@ package no.nav.helse.prosessering.v1
 import no.nav.helse.CorrelationId
 import no.nav.helse.aktoer.AktoerService
 import no.nav.helse.aktoer.Fodselsnummer
-import no.nav.helse.dokument.DokumentGateway
+import no.nav.helse.dokument.DokumentService
 import no.nav.helse.gosys.GosysService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -14,9 +14,9 @@ class ProsesseringV1Service(
     private val gosysService: GosysService,
     private val aktoerService: AktoerService,
     private val pdfV1Generator: PdfV1Generator,
-    private val dokumentGateway: DokumentGateway
+    private val dokumentService: DokumentService
 ) {
-    suspend fun prosesser(
+    suspend fun leggSoknadTilProsessering(
         melding: MeldingV1,
         metadata: MetadataV1
     ) {
@@ -32,7 +32,7 @@ class ProsesseringV1Service(
             correlationId = correlationId
         )
 
-        logger.trace("Sokers AktørID = $sokerAktoerId")
+        logger.trace("Søkerens AktørID = $sokerAktoerId")
 
         logger.trace("Henter AktørID for barnet.")
         val barnAktoerId = if (melding.barn.fodselsnummer != null) {
@@ -40,7 +40,7 @@ class ProsesseringV1Service(
                 fnr = Fodselsnummer(melding.barn.fodselsnummer),
                 correlationId = correlationId
             )
-        } else null
+        } else null // TODO: Håndter feil her som null
 
         logger.trace("Barnets AktørID = $barnAktoerId")
 
@@ -48,25 +48,42 @@ class ProsesseringV1Service(
 
         val soknadOppsummeringPdf = pdfV1Generator.generateSoknadOppsummeringPdf(melding)
 
-        logger.trace("Generering av PDF OK. Laster opp PDF for mellomlagring.")
+        logger.trace("Generering av Oppsummerings-PDF OK. Laster opp PDF for mellomlagring.")
 
-        val soknadOppsummeringUrl = dokumentGateway.lagrePdf(
+        val soknadOppsummeringUrl = dokumentService.lagreSoknadsOppsummeringPdf(
             pdf = soknadOppsummeringPdf,
             aktoerId = sokerAktoerId,
-            correlationId = correlationId,
-            tittel = "Søknad om pleiepeinger"
+            correlationId = correlationId
         )
 
-        logger.trace("Mellomlagring OK, Oppretter oppgave i Gosys")
+        logger.trace("Mellomlagring av Oppsummerings-PDF OK")
 
-        val dokumenter = mutableListOf(soknadOppsummeringUrl)
-        dokumenter.addAll(melding.vedlegg)
+        val komplettDokumentUrls = mutableListOf(soknadOppsummeringUrl)
+        if (melding.vedleggUrls.isNotEmpty()) {
+            logger.trace("Legger til ${melding.vedleggUrls.size} vedlegg URL's fra meldingen som dokument.")
+            komplettDokumentUrls.addAll(melding.vedleggUrls)
+        }
+        if (melding.vedlegg.isNotEmpty()) {
+            logger.trace("Meldingen inneholder ${melding.vedlegg.size} vedlegg som må mellomlagres før søknaden legges til prosessering.")
+            val lagredeVedleggUrls = dokumentService.lagreVedlegg(
+                vedlegg = melding.vedlegg,
+                aktoerId = sokerAktoerId,
+                correlationId = correlationId
+            )
+            logger.trace("Mellomlagring OK, legger til URL's som dokument.")
+            komplettDokumentUrls.addAll(lagredeVedleggUrls)
+        }
+
+        logger.trace("Totalt ${komplettDokumentUrls.size} dokumenter")
+        logger.trace(komplettDokumentUrls.joinToString { it.toString() })
+
+        logger.trace("Oppretter oppgave i Gosys")
 
         gosysService.opprett(
             sokerAktoerId = sokerAktoerId,
             barnAktoerId = barnAktoerId,
             mottatt = melding.mottatt,
-            dokumenter = dokumenter.toList(),
+            dokumenter = komplettDokumentUrls.toList(),
             correlationId = correlationId
         )
 

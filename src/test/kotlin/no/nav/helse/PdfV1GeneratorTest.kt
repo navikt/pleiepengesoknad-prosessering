@@ -45,8 +45,7 @@ class PdfV1GeneratorTest {
         medlemskap = Medlemskap(
             harBoddIUtlandetSiste12Mnd = true,
             skalBoIUtlandetNeste12Mnd = false
-        ),
-        vedlegg = emptyList()
+        )
     )
 
     private fun genererPdf(melding: MeldingV1 = gyldigMelding) : ByteArray {

@@ -22,6 +22,7 @@ import io.prometheus.client.hotspot.DefaultExports
 import no.nav.helse.aktoer.AktoerGateway
 import no.nav.helse.aktoer.AktoerService
 import no.nav.helse.dokument.DokumentGateway
+import no.nav.helse.dokument.DokumentService
 import no.nav.helse.gosys.GosysService
 import no.nav.helse.gosys.JoarkGateway
 import no.nav.helse.gosys.OppgaveGateway
@@ -143,10 +144,12 @@ fun Application.pleiepengesoknadProsessering() {
                     )
                 ),
                 pdfV1Generator = PdfV1Generator(),
-                dokumentGateway = DokumentGateway(
-                    httpClient = httpClient,
-                    systembrukerService = systembrukerService,
-                    baseUrl = configuration.getPleiepengerDokumentBaseUrl()
+                dokumentService = DokumentService(
+                    dokumentGateway = DokumentGateway(
+                        httpClient = httpClient,
+                        systembrukerService = systembrukerService,
+                        baseUrl = configuration.getPleiepengerDokumentBaseUrl()
+                    )
                 )
             )
         )

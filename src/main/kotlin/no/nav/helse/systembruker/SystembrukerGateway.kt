@@ -12,7 +12,7 @@ import java.net.URL
 import java.util.*
 
 /**
- * Systembruker trenger AD-gruppe for "tema" som brukes mot Joark (Her OMS)
+ * Systembruker trenger ingen AD-grupper
  */
 
 private val getAccessTokenHistogram = Histogram.build(

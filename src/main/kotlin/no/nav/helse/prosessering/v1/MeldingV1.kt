@@ -12,7 +12,8 @@ data class MeldingV1 (
     val barn : Barn,
     val relasjonTilBarnet : String,
     val arbeidsgivere: Arbeidsgivere,
-    val vedlegg : List<URL>,
+    val vedleggUrls : List<URL> = emptyList(),
+    val vedlegg : List<Vedlegg> = emptyList(),
     val medlemskap: Medlemskap
 )
 
@@ -40,4 +41,10 @@ data class Organisasjon(
 data class Medlemskap(
     val harBoddIUtlandetSiste12Mnd : Boolean,
     val skalBoIUtlandetNeste12Mnd : Boolean
+)
+
+data class Vedlegg (
+    val content : ByteArray,
+    val contentType : String,
+    val title : String
 )

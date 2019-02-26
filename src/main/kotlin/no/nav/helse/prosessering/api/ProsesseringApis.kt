@@ -22,10 +22,10 @@ fun Route.prosesseringApis(
     prosesseringV1Service: ProsesseringV1Service
 ) {
 
-    post("v1/prosesser") {
+    post("v1/soknad") {
         val melding = call.receive<MeldingV1>()
         val metadata = MetadataV1(version = 1, correlationId = call.request.getCorrelationId(), requestId = call.response.getRequestId())
-        prosesseringV1Service.prosesser(melding = melding, metadata = metadata)
+        prosesseringV1Service.leggSoknadTilProsessering(melding = melding, metadata = metadata)
         call.respond(HttpStatusCode.NoContent)
     }
 }
