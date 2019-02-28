@@ -8,6 +8,7 @@ Første versjon av tjenesten vil motta og prossesere søknader synkront, men med
 
 ## Versjon 1
 ### Meldingsformat
+- Gir 202 response
 - soker.mellomnavn er ikke påkrevd.
 - ingen av attributtene for "barn" er påkrevd.
 - arbeidsgivere kan være en tom liste

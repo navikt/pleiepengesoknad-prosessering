@@ -26,7 +26,7 @@ fun Route.prosesseringApis(
         val melding = call.receive<MeldingV1>()
         val metadata = MetadataV1(version = 1, correlationId = call.request.getCorrelationId(), requestId = call.response.getRequestId())
         prosesseringV1Service.leggSoknadTilProsessering(melding = melding, metadata = metadata)
-        call.respond(HttpStatusCode.NoContent)
+        call.respond(HttpStatusCode.Accepted)
     }
 }
 
