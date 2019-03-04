@@ -9,7 +9,6 @@ import io.ktor.http.*
 import io.prometheus.client.Histogram
 import no.nav.helse.CorrelationId
 import no.nav.helse.HttpRequest
-import no.nav.helse.aktoer.AktoerId
 import no.nav.helse.prosessering.v1.Vedlegg
 import no.nav.helse.systembruker.SystembrukerService
 import java.net.URL
@@ -32,13 +31,8 @@ class DokumentGateway(
 
     suspend fun lagreDokument(
         dokument: Dokument,
-        aktoerId: AktoerId,
         correlationId: CorrelationId
     ) : URL {
-        val urlWithAktoerId = HttpRequest.buildURL(
-            baseUrl = completeUrl,
-            queryParameters = mapOf(Pair("aktoer_id", aktoerId.id))
-        )
 
         val httpRequest = HttpRequestBuilder()
         httpRequest.header(HttpHeaders.Authorization, systembrukerService.getAuthorizationHeader())
@@ -46,7 +40,7 @@ class DokumentGateway(
         httpRequest.header(HttpHeaders.ContentType, ContentType.Application.Json)
         httpRequest.method = HttpMethod.Post
         httpRequest.body = dokument
-        httpRequest.url(urlWithAktoerId)
+        httpRequest.url(completeUrl)
 
         val httpResponse = HttpRequest.monitored<HttpResponse>(
             httpClient = httpClient,

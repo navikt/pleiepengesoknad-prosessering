@@ -52,7 +52,6 @@ class ProsesseringV1Service(
 
         val soknadOppsummeringUrl = dokumentService.lagreSoknadsOppsummeringPdf(
             pdf = soknadOppsummeringPdf,
-            aktoerId = sokerAktoerId,
             correlationId = correlationId
         )
 
@@ -67,7 +66,6 @@ class ProsesseringV1Service(
             logger.trace("Meldingen inneholder ${melding.vedlegg.size} vedlegg som må mellomlagres før søknaden legges til prosessering.")
             val lagredeVedleggUrls = dokumentService.lagreVedlegg(
                 vedlegg = melding.vedlegg,
-                aktoerId = sokerAktoerId,
                 correlationId = correlationId
             )
             logger.trace("Mellomlagring OK, legger til URL's som dokument.")
