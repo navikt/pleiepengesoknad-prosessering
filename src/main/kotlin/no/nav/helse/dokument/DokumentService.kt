@@ -5,6 +5,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import no.nav.helse.CorrelationId
+import no.nav.helse.aktoer.AktoerId
 import no.nav.helse.prosessering.v1.Vedlegg
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -18,6 +19,7 @@ class DokumentService(
 
     suspend fun lagreSoknadsOppsummeringPdf(
         pdf : ByteArray,
+        aktoerId: AktoerId,
         correlationId: CorrelationId
     ) : URL {
         return dokumentGateway.lagreDokument(
@@ -26,12 +28,14 @@ class DokumentService(
                 contentType = "application/pdf",
                 title = "Søknad om pleiepeinger"
             ),
-            correlationId = correlationId
+            correlationId = correlationId,
+            aktoerId = aktoerId
         )
     }
 
     suspend fun lagreVedlegg(
         vedlegg : List<Vedlegg>,
+        aktoerId: AktoerId,
         correlationId : CorrelationId
     ) : List<URL> {
         logger.trace("Lagrer ${vedlegg.size} vedlegg")
@@ -41,7 +45,8 @@ class DokumentService(
                 futures.add(async {
                     dokumentGateway.lagreDokument(
                         dokument = DokumentGateway.Dokument(it),
-                        correlationId = correlationId
+                        correlationId = correlationId,
+                        aktoerId = aktoerId
                     )
                 })
 
