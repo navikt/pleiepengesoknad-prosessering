@@ -4,6 +4,7 @@ import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration
 import com.github.tomakehurst.wiremock.extension.Extension
+import no.nav.helse.gosys.JournalPostId
 import no.nav.security.oidc.test.support.JwkGenerator
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -49,6 +50,12 @@ object WiremockWrapper {
 
         provideGetAccessTokenEndPoint(wireMockServer.baseUrl())
 
+        stubOpprettSak()
+        stubJournalfor()
+        stubOpprettOppgave()
+        stubLagreDokument()
+        stubAktoerRegisterGetAktoerId("29099012345", "123456")
+
         logger.info("Mock available on '{}'", wireMockServer.baseUrl())
         return wireMockServer
     }
@@ -87,6 +94,89 @@ object WiremockWrapper {
                         .withHeader("Content-Type", "application/json")
                         .withBody("{\"access_token\":\"$jwt\", \"expires_in\": 5000}")
                 )
+        )
+    }
+
+
+    fun stubAktoerRegisterGetAktoerId(
+        fnr: String,
+        aktoerId: String) {
+        WireMock.stubFor(
+            WireMock.get(WireMock.urlPathMatching(".*$aktoerRegisterBasePath/.*")).willReturn(
+                WireMock.aResponse()
+                    .withHeader("Content-Type", "application/json")
+                    .withBody("""
+                    {
+                      "$fnr": {
+                        "identer": [
+                          {
+                            "ident": "$aktoerId",
+                            "identgruppe": "AktoerId",
+                            "gjeldende": true
+                          }
+                        ],
+                        "feilmelding": null
+                      }
+                    }
+                    """.trimIndent())
+                    .withStatus(200)
+            )
+        )
+    }
+
+    fun stubLagreDokument() {
+        WireMock.stubFor(
+            WireMock.post(WireMock.urlPathMatching(".*$pleiepengerDokumentBasePath.*")).willReturn(
+                WireMock.aResponse()
+                    .withHeader("Content-Type", "application/json")
+                    .withHeader("Location", "http://localhost:1337/dokument")
+                    .withStatus(201)
+            )
+        )
+    }
+
+    fun stubOpprettSak() {
+        WireMock.stubFor(
+            WireMock.post(WireMock.urlPathMatching(".*$opprettSakPath")).willReturn(
+                WireMock.aResponse()
+                    .withHeader("Content-Type", "application/json")
+                    .withBody("""
+                    {
+                        "sak_id" : "1234"
+                    }
+                    """.trimIndent())
+                    .withStatus(201)
+            )
+        )
+    }
+
+    fun stubOpprettOppgave() {
+        WireMock.stubFor(
+            WireMock.post(WireMock.urlPathMatching(".*$opprettOppgavePath")).willReturn(
+                WireMock.aResponse()
+                    .withHeader("Content-Type", "application/json")
+                    .withBody("""
+                    {
+                        "oppgave_id" : "5678"
+                    }
+                    """.trimIndent())
+                    .withStatus(201)
+            )
+        )
+    }
+
+    fun stubJournalfor() {
+        WireMock.stubFor(
+            WireMock.post(WireMock.urlPathMatching(".*$opprettJournalPostPath")).willReturn(
+                WireMock.aResponse()
+                    .withHeader("Content-Type", "application/json")
+                    .withBody("""
+                    {
+                        "journal_post_id" : "9101112"
+                    }
+                    """.trimIndent())
+                    .withStatus(201)
+            )
         )
     }
 }

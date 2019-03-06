@@ -1,5 +1,6 @@
 package no.nav.helse.prosessering.v1
 
+import com.fasterxml.jackson.annotation.JsonProperty
 import java.net.URL
 import java.time.LocalDate
 import java.time.ZonedDateTime
@@ -39,7 +40,9 @@ data class Organisasjon(
 )
 
 data class Medlemskap(
+    @JsonProperty("har_bodd_i_utlandet_siste_12_mnd")
     val harBoddIUtlandetSiste12Mnd : Boolean,
+    @JsonProperty("skal_bo_i_utlandet_neste_12_mnd")
     val skalBoIUtlandetNeste12Mnd : Boolean
 )
 
