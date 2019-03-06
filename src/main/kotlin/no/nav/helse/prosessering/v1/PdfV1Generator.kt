@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory
 import java.io.ByteArrayOutputStream
 import java.lang.IllegalStateException
 import java.time.format.DateTimeFormatter
+import java.util.*
 
 private val logger: Logger = LoggerFactory.getLogger("nav.PdfV1Generator")
 private val DATE_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy")
@@ -21,6 +22,7 @@ class PdfV1Generator {
 
     private val SOKNAD_TEMPLATE = "soknad-oppsummering-template.html".fromResources()
     private val ORGANISASJON_ARBEIDSFORHOLD_TEMPLATE = "organisasjon-arbeidsforhold-template.html".fromResources()
+    private val BASE_URL = Thread.currentThread().contextClassLoader.getResource("img").toString()
 
     fun generateSoknadOppsummeringPdf(
         melding: MeldingV1
@@ -50,7 +52,7 @@ class PdfV1Generator {
         val outputStream = ByteArrayOutputStream()
 
         PdfRendererBuilder()
-            .withHtmlContent(html, "")
+            .withHtmlContent(html, BASE_URL)
             .toStream(outputStream)
             .run()
 
@@ -58,7 +60,7 @@ class PdfV1Generator {
     }
 
     private fun String.fromResources() : String {
-        return Thread.currentThread().contextClassLoader.getResource(this).readText()
+        return Thread.currentThread().contextClassLoader.getResource(this).readText(Charsets.UTF_8)
     }
 
     private fun String.med(key: String, value: String?) : String {
@@ -91,4 +93,15 @@ private fun Boolean.tilJaEllerNei(): String {
 
 private fun Soker.navn(): String? {
     return if (mellomnavn != null) "$fornavn $mellomnavn $etternavn" else "$fornavn $etternavn"
+}
+
+fun main(args: Array<String>) {
+    val img = "img/nav_logo.png".fromResources()
+    val b64 = Base64.getEncoder().encode(img)
+    println("b64 = ${b64}")
+
+}
+
+private fun String.fromResources() : ByteArray {
+    return Thread.currentThread().contextClassLoader.getResourceAsStream(this).readAllBytes()
 }

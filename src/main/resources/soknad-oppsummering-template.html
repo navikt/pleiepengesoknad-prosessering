@@ -1,24 +1,32 @@
+<!DOCTYPE html>
 <html>
-    <h1>Søknad om pleiepenger, sykt barn</h1>
+<head>
+    <meta charset="UTF-8"/>
+    <title>Søknad om pleiepenger, sykt barn</title>
+</head>
+    <body>
+        <img src="img/nav_logo.png" alt="NAV logo"/>
+        <h1>Søknad om pleiepenger, sykt barn</h1>
 
-    <h2>Søker</h2>
-    <h3>Navn: {{soker.navn}}</h3>
-    <h3>Fødselsnummer: {{soker.fodselsnummer}}</h3>
+        <h2>Søker</h2>
+        <h3>Navn: {{soker.navn}}</h3>
+        <h3>Fødselsnummer: {{soker.fodselsnummer}}</h3>
 
-    <h2>Barn</h2>
-    <h3>Navn: {{barn.navn}}</h3>
-    <h3>Fødselsnummer: {{barn.fodselsnummer}}</h3>
-    <h3>D-Nummer/Midlertidig fødselsnummer/Annen ID: {{barn.alternativ_id}}</h3>
+        <h2>Barn</h2>
+        <h3>Navn: {{barn.navn}}</h3>
+        <h3>Fødselsnummer: {{barn.fodselsnummer}}</h3>
+        <h3>D-Nummer/Midlertidig fødselsnummer/Annen ID: {{barn.alternativ_id}}</h3>
 
-    <h2>Annet</h2>
-    <h3>Søknad mottatt: {{annet.mottatt}}</h3>
-    <h3>Periode: {{annet.fra_og_med}} - {{annet.til_og_med}}</h3>
-    <h3>Relasjon til barnet: {{annet.relasjon_til_barnet}}</h3>
+        <h2>Annet</h2>
+        <h3>Søknad mottatt: {{annet.mottatt}}</h3>
+        <h3>Periode: {{annet.fra_og_med}} - {{annet.til_og_med}}</h3>
+        <h3>Relasjon til barnet: {{annet.relasjon_til_barnet}}</h3>
 
-    <h2>Arbeidsgivere</h2>
-    {{arbeidsgivere}}
+        <h2>Arbeidsgivere</h2>
+        {{arbeidsgivere}}
 
-    <h2>Medlemskap</h2>
-    <h3>Har bodd i utlandet i løpet av de siste 12 månedene: {{medlemskap.har_bodd}}</h3>
-    <h3>Skal bo i utlandet i løpet av de neste 12 månedene: {{medlemskap.skal_bo}}</h3>
+        <h2>Medlemskap</h2>
+        <h3>Har bodd i utlandet i løpet av de siste 12 månedene: {{medlemskap.har_bodd}}</h3>
+        <h3>Skal bo i utlandet i løpet av de neste 12 månedene: {{medlemskap.skal_bo}}</h3>
+    </body>
 </html>

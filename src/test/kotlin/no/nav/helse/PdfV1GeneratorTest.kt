@@ -20,7 +20,7 @@ class PdfV1GeneratorTest {
         tilOgMed = LocalDate.now(),
         soker = Soker(
             fornavn = "Erik",
-            mellomnavn = null,
+            mellomnavn = "ÆØÅ",
             etternavn = "Forsman",
             fodselsnummer = "29099012345"
         ),
