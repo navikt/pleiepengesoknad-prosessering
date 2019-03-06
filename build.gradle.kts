@@ -7,6 +7,7 @@ val jacksonVersion = "2.9.8"
 val wiremockVersion = "2.19.0"
 val logstashLogbackVersion = "5.3"
 val prometheusVersion = "0.6.0"
+val openhtmltopdfVersion = "0.0.1-RC17"
 
 val mainClass = "no.nav.helse.PleiepengesoknadProsesseringKt"
 
@@ -47,7 +48,9 @@ dependencies {
     compile ("io.ktor:ktor-client-apache:$ktorVersion")
 
     // PDF
-    compile ( "com.openhtmltopdf:openhtmltopdf-pdfbox:0.0.1-RC17")
+    compile ( "com.openhtmltopdf:openhtmltopdf-pdfbox:$openhtmltopdfVersion")
+    compile ( "com.openhtmltopdf:openhtmltopdf-slf4j:$openhtmltopdfVersion")
+
 
     // Test
     testCompile ("com.github.tomakehurst:wiremock:$wiremockVersion")

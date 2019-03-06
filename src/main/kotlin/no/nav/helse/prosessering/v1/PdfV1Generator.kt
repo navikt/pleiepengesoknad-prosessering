@@ -1,6 +1,7 @@
 package no.nav.helse.prosessering.v1
 
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder
+import com.openhtmltopdf.slf4j.Slf4jLogger
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -8,6 +9,9 @@ import java.io.ByteArrayOutputStream
 import java.lang.IllegalStateException
 import java.time.format.DateTimeFormatter
 import java.util.*
+import com.openhtmltopdf.util.XRLog
+
+
 
 private val logger: Logger = LoggerFactory.getLogger("nav.PdfV1Generator")
 private val DATE_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy")
@@ -24,6 +28,10 @@ class PdfV1Generator {
     private val ORGANISASJON_ARBEIDSFORHOLD_TEMPLATE = "organisasjon-arbeidsforhold-template.html".fromResources()
     private val BASE_URL = Thread.currentThread().contextClassLoader.getResource("img").toString()
 
+    init {
+        XRLog.setLoggerImpl(Slf4jLogger())
+    }
+    
     fun generateSoknadOppsummeringPdf(
         melding: MeldingV1
     ) : ByteArray {
