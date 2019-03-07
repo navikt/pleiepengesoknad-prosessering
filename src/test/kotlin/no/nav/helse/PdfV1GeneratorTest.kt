@@ -19,17 +19,17 @@ class PdfV1GeneratorTest {
         fraOgMed = LocalDate.now(),
         tilOgMed = LocalDate.now(),
         soker = Soker(
-            fornavn = "Erik",
-            mellomnavn = "ÆØÅ",
-            etternavn = "Forsman",
+            fornavn = "Ærling",
+            mellomnavn = "Øverbø",
+            etternavn = "Ånsnes",
             fodselsnummer = "29099012345"
         ),
         barn = Barn(
-            navn = "Barn",
+            navn = "Børge Øverbø Ånsnes",
             fodselsnummer = null,
-            alternativId = null
+            alternativId = "29091812345"
         ),
-        relasjonTilBarnet = "FAR",
+        relasjonTilBarnet = "Far",
         arbeidsgivere = Arbeidsgivere(
             organisasjoner = listOf(
                 Organisasjon(

@@ -114,45 +114,43 @@ fun Application.pleiepengesoknadProsessering() {
 
     install(Routing) {
         authenticate {
-
-        }
-        // TODO: Legg til under authenticate når vi får testet gjennom
-        prosesseringApis(
-            prosesseringV1Service = ProsesseringV1Service(
-                gosysService = GosysService(
-                    joarkGateway = JoarkGateway(
-                        httpClient = httpClient,
-                        url = configuration.getOpprettJournalPostUrl(),
-                        systembrukerService = systembrukerService
+            prosesseringApis(
+                prosesseringV1Service = ProsesseringV1Service(
+                    gosysService = GosysService(
+                        joarkGateway = JoarkGateway(
+                            httpClient = httpClient,
+                            url = configuration.getOpprettJournalPostUrl(),
+                            systembrukerService = systembrukerService
+                        ),
+                        sakGateway = SakGateway(
+                            httpClient = httpClient,
+                            url = configuration.getOpprettSakurl(),
+                            systembrukerService = systembrukerService
+                        ),
+                        oppgaveGateway = OppgaveGateway(
+                            httpClient = httpClient,
+                            url = configuration.getOpprettOppgaveUrl(),
+                            systembrukerService = systembrukerService
+                        )
                     ),
-                    sakGateway = SakGateway(
-                        httpClient = httpClient,
-                        url = configuration.getOpprettSakurl(),
-                        systembrukerService = systembrukerService
+                    aktoerService = AktoerService(
+                        aktoerGateway = AktoerGateway(
+                            httpClient = httpClient,
+                            systembrukerService = systembrukerService,
+                            baseUrl = configuration.getAktoerRegisterBaseUrl()
+                        )
                     ),
-                    oppgaveGateway = OppgaveGateway(
-                        httpClient = httpClient,
-                        url = configuration.getOpprettOppgaveUrl(),
-                        systembrukerService = systembrukerService
-                    )
-                ),
-                aktoerService = AktoerService(
-                    aktoerGateway = AktoerGateway(
-                        httpClient = httpClient,
-                        systembrukerService = systembrukerService,
-                        baseUrl = configuration.getAktoerRegisterBaseUrl()
-                    )
-                ),
-                pdfV1Generator = PdfV1Generator(),
-                dokumentService = DokumentService(
-                    dokumentGateway = DokumentGateway(
-                        httpClient = httpClient,
-                        systembrukerService = systembrukerService,
-                        baseUrl = configuration.getPleiepengerDokumentBaseUrl()
+                    pdfV1Generator = PdfV1Generator(),
+                    dokumentService = DokumentService(
+                        dokumentGateway = DokumentGateway(
+                            httpClient = httpClient,
+                            systembrukerService = systembrukerService,
+                            baseUrl = configuration.getPleiepengerDokumentBaseUrl()
+                        )
                     )
                 )
             )
-        )
+        }
         monitoring(
             collectorRegistry = collectorRegistry
         )

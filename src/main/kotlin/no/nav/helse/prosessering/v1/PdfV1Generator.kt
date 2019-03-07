@@ -8,10 +8,7 @@ import org.slf4j.LoggerFactory
 import java.io.ByteArrayOutputStream
 import java.lang.IllegalStateException
 import java.time.format.DateTimeFormatter
-import java.util.*
 import com.openhtmltopdf.util.XRLog
-
-
 
 private val logger: Logger = LoggerFactory.getLogger("nav.PdfV1Generator")
 private val DATE_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy")
@@ -31,7 +28,7 @@ class PdfV1Generator {
     init {
         XRLog.setLoggerImpl(Slf4jLogger())
     }
-    
+
     fun generateSoknadOppsummeringPdf(
         melding: MeldingV1
     ) : ByteArray {
@@ -101,15 +98,4 @@ private fun Boolean.tilJaEllerNei(): String {
 
 private fun Soker.navn(): String? {
     return if (mellomnavn != null) "$fornavn $mellomnavn $etternavn" else "$fornavn $etternavn"
-}
-
-fun main(args: Array<String>) {
-    val img = "img/nav_logo.png".fromResources()
-    val b64 = Base64.getEncoder().encode(img)
-    println("b64 = ${b64}")
-
-}
-
-private fun String.fromResources() : ByteArray {
-    return Thread.currentThread().contextClassLoader.getResourceAsStream(this).readAllBytes()
 }
