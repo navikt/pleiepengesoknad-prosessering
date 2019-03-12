@@ -5,7 +5,9 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import no.nav.helse.CorrelationId
+import no.nav.helse.ObjectMapper
 import no.nav.helse.aktoer.AktoerId
+import no.nav.helse.prosessering.v1.MeldingV1
 import no.nav.helse.prosessering.v1.Vedlegg
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -16,6 +18,7 @@ private val logger: Logger = LoggerFactory.getLogger("nav.DokumentService")
 class DokumentService(
     private val dokumentGateway: DokumentGateway
 ) {
+    private val objectMapper = ObjectMapper.server()
 
     suspend fun lagreSoknadsOppsummeringPdf(
         pdf : ByteArray,
@@ -27,6 +30,22 @@ class DokumentService(
                 content = pdf,
                 contentType = "application/pdf",
                 title = "Søknad om pleiepeinger"
+            ),
+            correlationId = correlationId,
+            aktoerId = aktoerId
+        )
+    }
+
+    suspend fun lagreSoknadsMelding(
+        melding: MeldingV1,
+        aktoerId: AktoerId,
+        correlationId: CorrelationId
+    ) : URL {
+        return dokumentGateway.lagreDokument(
+            dokument = DokumentGateway.Dokument(
+                content = objectMapper.writeValueAsBytes(melding),
+                contentType = "application/json",
+                title = "Søknad om pleiepeinger som JSON"
             ),
             correlationId = correlationId,
             aktoerId = aktoerId

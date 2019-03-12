@@ -21,16 +21,21 @@ class PleiepengesoknadProsesseringWithoutMocks {
 
             // nav.authorization.service_account.client_secret Må fortsatt settes som parameter ved oppstart utenom koden
 
+            val pleiepengerJoarkLocalhost = true
+            val pleiepengerSakLocalhost = true
+            val pleiepengerOppgaveLocalhost = false
+            val pleiepengerDokumentLocalhost = false
+
             val q1Args = TestConfiguration.asArray(TestConfiguration.asMap(
                 port = 8093,
                 tokenUrl = "https://security-token-service.nais.preprod.local/rest/v1/sts/token",
                 jwkSetUrl = "https://security-token-service.nais.preprod.local/rest/v1/sts/jwks",
                 issuer = "https://security-token-service.nais.preprod.local",
                 aktoerRegisterBaseUrl = "https://app-q1.adeo.no/aktoerregister",
-                opprettJournalPostUrl = "http://localhost:8113/v1/journalforing",
-                opprettSakUrl = "http://localhost:8103/v1/sak",
-                opprettOppgaveUrl = "http://localhost:8123/v1/oppgave",
-                pleiepeingerDokumentBaseUrl = "http://localhost:8133"
+                opprettJournalPostUrl = "${if (pleiepengerJoarkLocalhost) "http://localhost:8113" else "https://pleiepenger-joark.nais.preprod.local"}/v1/journalforing",
+                opprettSakUrl = "${if (pleiepengerSakLocalhost) "http://localhost:8103" else "https://pleiepenger-sak.nais.preprod.local"}/v1/sak",
+                opprettOppgaveUrl = "${if (pleiepengerOppgaveLocalhost) "http://localhost:8123" else "https://pleiepenger-oppgave.nais.preprod.local"}/v1/oppgave",
+                pleiepeingerDokumentBaseUrl = if (pleiepengerDokumentLocalhost) "http://localhost:8133" else "https://pleiepenger-dokument.nais.preprod.local"
             ))
 
             withApplication { no.nav.helse.main(q1Args) }

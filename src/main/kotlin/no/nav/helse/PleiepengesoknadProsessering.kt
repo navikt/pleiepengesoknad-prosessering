@@ -3,7 +3,6 @@ package no.nav.helse
 import com.auth0.jwk.JwkProviderBuilder
 import io.ktor.application.*
 import io.ktor.auth.Authentication
-import io.ktor.auth.authenticate
 import io.ktor.auth.jwt.JWTPrincipal
 import io.ktor.auth.jwt.jwt
 import io.ktor.client.HttpClient
@@ -113,7 +112,7 @@ fun Application.pleiepengesoknadProsessering() {
     )
 
     install(Routing) {
-        authenticate {
+        //authenticate {
             prosesseringApis(
                 prosesseringV1Service = ProsesseringV1Service(
                     gosysService = GosysService(
@@ -150,7 +149,7 @@ fun Application.pleiepengesoknadProsessering() {
                     )
                 )
             )
-        }
+        //}
         monitoring(
             collectorRegistry = collectorRegistry
         )

@@ -48,7 +48,8 @@ class ProsesseringV1Service(
 
         val soknadOppsummeringPdf = pdfV1Generator.generateSoknadOppsummeringPdf(melding)
 
-        logger.trace("Generering av Oppsummerings-PDF OK. Laster opp PDF for mellomlagring.")
+        logger.trace("Generering av Oppsummerings-PDF OK.")
+        logger.trace("Mellomlagrer Oppsummerings-PDF.")
 
         val soknadOppsummeringUrl = dokumentService.lagreSoknadsOppsummeringPdf(
             pdf = soknadOppsummeringPdf,
@@ -57,8 +58,21 @@ class ProsesseringV1Service(
         )
 
         logger.trace("Mellomlagring av Oppsummerings-PDF OK")
+        logger.trace("Mellomlagrer Oppsummerings-JSON")
 
-        val komplettDokumentUrls = mutableListOf(soknadOppsummeringUrl)
+        val soknadJsonUrl = dokumentService.lagreSoknadsMelding(
+            melding = melding,
+            aktoerId = sokerAktoerId,
+            correlationId = correlationId
+        )
+
+        logger.trace("Mellomlagrer Oppsummerings-JSON OK.")
+
+
+        val komplettDokumentUrls = mutableListOf(
+            soknadOppsummeringUrl,
+            soknadJsonUrl
+        )
         if (melding.vedleggUrls.isNotEmpty()) {
             logger.trace("Legger til ${melding.vedleggUrls.size} vedlegg URL's fra meldingen som dokument.")
             komplettDokumentUrls.addAll(melding.vedleggUrls)
