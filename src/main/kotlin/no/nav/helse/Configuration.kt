@@ -11,75 +11,73 @@ private val logger: Logger = LoggerFactory.getLogger("nav.Configuration")
 @KtorExperimentalAPI
 data class Configuration(private val config : ApplicationConfig) {
     private fun getString(key: String,
-                          secret: Boolean = false) : String  {
-        val stringValue = config.property(key).getString()
+                          secret: Boolean,
+                          optional: Boolean) : String? {
+        val configValue = config.propertyOrNull(key) ?: return if (optional) null else throw IllegalArgumentException("$key må settes.")
+        val stringValue = configValue.getString()
+        if (stringValue.isBlank()) {
+            return if (optional) null else throw IllegalArgumentException("$key må settes.")
+        }
         logger.info("{}={}", key, if (secret) "***" else stringValue)
         return stringValue
     }
-
-    private fun <T>getListFromCsv(key: String,
-                                  secret: Boolean = false,
-                                  builder: (value: String) -> T) : List<T> {
-        val csv = getString(key, false)
-        val list = csv.replace(" ", "").split(",")
-        val builtList = mutableListOf<T>()
-        list.forEach { entry ->
-            logger.info("$key entry = ${if (secret) "***" else entry}")
-            builtList.add(builder(entry))
-        }
-        return builtList.toList()
-    }
+    private fun getRequiredString(key: String, secret: Boolean = false) : String = getString(key, secret, false)!!
+    private fun getOptionalString(key: String, secret: Boolean = false) : String? = getString(key, secret, true)
+    private fun <T>getListFromCsv(csv: String, builder: (value: String) -> T) : List<T> = csv.replace(" ", "").split(",").map(builder)
 
     fun getAuthorizedSystemsForRestApi(): List<String> {
+        val csv = getOptionalString("nav.rest_api.authorized_systems") ?: return emptyList()
         return getListFromCsv(
-            key = "nav.rest_api.authorized_systems",
+            csv = csv,
             builder = { value -> value}
         )
     }
 
     fun getTokenUrl() : URL {
-        return URL(getString("nav.authorization.token_url"))
+        return URL(getRequiredString("nav.authorization.token_url"))
     }
 
     fun getJwksUrl() : URL {
-        return URL(getString("nav.authorization.jwks_url"))
+        return URL(getRequiredString("nav.authorization.jwks_url"))
     }
 
     fun getAktoerRegisterBaseUrl() : URL {
-        return URL(getString("nav.aktoer_register_base_url"))
+        return URL(getRequiredString("nav.aktoer_register_base_url"))
     }
 
     fun getOpprettSakurl() : URL {
-        return URL(getString("nav.opprett_sak_url"))
+        return URL(getRequiredString("nav.opprett_sak_url"))
     }
 
     fun getOpprettOppgaveUrl() : URL {
-        return URL(getString("nav.opprett_oppgave_url"))
+        return URL(getRequiredString("nav.opprett_oppgave_url"))
     }
 
     fun getOpprettJournalPostUrl() : URL {
-        return URL(getString("nav.opprett_journal_post_url"))
+        return URL(getRequiredString("nav.opprett_journal_post_url"))
     }
 
     fun getPleiepengerDokumentBaseUrl() : URL {
-        return URL(getString("nav.pleiepenger_dokument_base_url"))
+        return URL(getRequiredString("nav.pleiepenger_dokument_base_url"))
     }
 
     fun getIssuer() : String {
-        return getString("nav.authorization.issuer")
+        return getRequiredString("nav.authorization.issuer")
     }
 
     fun getServiceAccountClientId(): String {
-        return getString("nav.authorization.service_account.client_id")
+        return getRequiredString("nav.authorization.service_account.client_id")
     }
 
     fun getServiceAccountClientSecret(): String {
-        return getString(key = "nav.authorization.service_account.client_secret", secret = true)
+        return getRequiredString(key = "nav.authorization.service_account.client_secret", secret = true)
     }
 
     fun getServiceAccountScopes(): List<String> {
+        val csv = getOptionalString("nav.authorization.service_account.scopes") ?: return emptyList()
+
         return getListFromCsv(
-            key = "nav.authorization.service_account.scopes",
+            csv = csv,
             builder = { value -> value}
         )
     }

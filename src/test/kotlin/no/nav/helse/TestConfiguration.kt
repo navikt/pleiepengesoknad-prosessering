@@ -27,7 +27,8 @@ object TestConfiguration {
             Pair("nav.opprett_sak_url","$opprettSakUrl"),
             Pair("nav.opprett_oppgave_url","$opprettOppgaveUrl"),
             Pair("nav.opprett_journal_post_url","$opprettJournalPostUrl"),
-            Pair("nav.pleiepenger_dokument_base_url","$pleiepeingerDokumentBaseUrl")
+            Pair("nav.pleiepenger_dokument_base_url","$pleiepeingerDokumentBaseUrl"),
+            Pair("nav.authorization.service_account.client_secret", "foo")
         )
     }
 
