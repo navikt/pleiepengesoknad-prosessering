@@ -63,20 +63,21 @@ class ProsesseringV1Service(
         )
 
         logger.trace("Mellomlagring av Oppsummerings-PDF OK")
-        logger.trace("Mellomlagrer Oppsummerings-JSON")
 
-        val soknadJsonUrl = dokumentService.lagreSoknadsMelding(
-            melding = melding,
-            aktoerId = sokerAktoerId,
-            correlationId = correlationId
-        )
-
-        logger.trace("Mellomlagrer Oppsummerings-JSON OK.")
+//        logger.trace("Mellomlagrer Oppsummerings-JSON")
+//
+//        val soknadJsonUrl = dokumentService.lagreSoknadsMelding(
+//            melding = melding,
+//            aktoerId = sokerAktoerId,
+//            correlationId = correlationId
+//        )
+//
+//        logger.trace("Mellomlagrer Oppsummerings-JSON OK.")
 
 
         val komplettDokumentUrls = mutableListOf(
-            soknadOppsummeringUrl,
-            soknadJsonUrl
+            soknadOppsummeringUrl
+            //soknadJsonUrl
         )
         if (melding.vedleggUrls.isNotEmpty()) {
             logger.trace("Legger til ${melding.vedleggUrls.size} vedlegg URL's fra meldingen som dokument.")
