@@ -9,7 +9,7 @@ import no.nav.helse.dokument.DokumentService
 import no.nav.helse.gosys.GosysService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import java.time.Period
+import java.time.temporal.ChronoUnit
 
 private val logger: Logger = LoggerFactory.getLogger("nav.ProsesseringV1Service")
 
@@ -138,8 +138,6 @@ class ProsesseringV1Service(
         valgteArbeidsgivereHistogram.observe(melding.arbeidsgivere.organisasjoner.size.toDouble())
         opplastedeVedleggHistogram.observe( (melding.vedlegg.size + melding.vedleggUrls.size).toDouble() )
         idTypePaaBarnCounter.labels(if (melding.barn.fodselsnummer != null) "fodselsnummer" else "alternativ_id").inc()
-        periodeSoknadGjelderIUkerHistogram.observe(Period.between(melding.fraOgMed, melding.tilOgMed).toWeeks())
+        periodeSoknadGjelderIUkerHistogram.observe(ChronoUnit.WEEKS.between(melding.fraOgMed, melding.tilOgMed).toDouble())
     }
 }
-
-private fun Period.toWeeks(): Double = days.div(7).toDouble()
