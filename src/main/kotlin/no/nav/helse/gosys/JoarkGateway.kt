@@ -21,7 +21,7 @@ class JoarkGateway(
         aktoerId: AktoerId,
         sakId: SakId,
         mottatt: ZonedDateTime,
-        dokumenter: List<URL>,
+        dokumenter: List<List<URL>>,
         correlationId: CorrelationId
     ) : JournalPostId {
 
@@ -51,7 +51,7 @@ private data class JoarkRequest(
     val aktoerId: String,
     val sakId: String,
     val mottatt: ZonedDateTime,
-    val dokumenter: List<URL>
+    val dokumenter: List<List<URL>>
 )
 
 data class JournalPostId(val journalPostId: String)

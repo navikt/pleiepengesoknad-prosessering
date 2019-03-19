@@ -64,24 +64,27 @@ class ProsesseringV1Service(
 
         logger.trace("Mellomlagring av Oppsummerings-PDF OK")
 
-//        logger.trace("Mellomlagrer Oppsummerings-JSON")
-//
-//        val soknadJsonUrl = dokumentService.lagreSoknadsMelding(
-//            melding = melding,
-//            aktoerId = sokerAktoerId,
-//            correlationId = correlationId
-//        )
-//
-//        logger.trace("Mellomlagrer Oppsummerings-JSON OK.")
+        logger.trace("Mellomlagrer Oppsummerings-JSON")
+
+        val soknadJsonUrl = dokumentService.lagreSoknadsMelding(
+            melding = melding,
+            aktoerId = sokerAktoerId,
+            correlationId = correlationId
+        )
+
+        logger.trace("Mellomlagrer Oppsummerings-JSON OK.")
 
 
         val komplettDokumentUrls = mutableListOf(
-            soknadOppsummeringUrl
-            //soknadJsonUrl
+            listOf(
+                soknadOppsummeringUrl,
+                soknadJsonUrl
+            )
         )
+
         if (melding.vedleggUrls.isNotEmpty()) {
             logger.trace("Legger til ${melding.vedleggUrls.size} vedlegg URL's fra meldingen som dokument.")
-            komplettDokumentUrls.addAll(melding.vedleggUrls)
+            komplettDokumentUrls.add(melding.vedleggUrls)
         }
         if (melding.vedlegg.isNotEmpty()) {
             logger.trace("Meldingen inneholder ${melding.vedlegg.size} vedlegg som må mellomlagres før søknaden legges til prosessering.")
@@ -91,11 +94,10 @@ class ProsesseringV1Service(
                 aktoerId = sokerAktoerId
             )
             logger.trace("Mellomlagring OK, legger til URL's som dokument.")
-            komplettDokumentUrls.addAll(lagredeVedleggUrls)
+            komplettDokumentUrls.add(lagredeVedleggUrls)
         }
 
-        logger.trace("Totalt ${komplettDokumentUrls.size} dokumenter")
-        logger.trace(komplettDokumentUrls.joinToString { it.toString() })
+        logger.trace("Totalt ${komplettDokumentUrls.size} dokumentbolker.")
 
         logger.trace("Oppretter oppgave i Gosys")
 

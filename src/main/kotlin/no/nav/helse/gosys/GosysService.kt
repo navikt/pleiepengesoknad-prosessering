@@ -18,7 +18,7 @@ class GosysService(
         sokerAktoerId: AktoerId,
         barnAktoerId: AktoerId?,
         mottatt: ZonedDateTime,
-        dokumenter: List<URL>,
+        dokumenter: List<List<URL>>,
         correlationId: CorrelationId
     ) {
         logger.trace("oppretter sak")
