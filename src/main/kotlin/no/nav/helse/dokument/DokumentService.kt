@@ -1,5 +1,6 @@
 package no.nav.helse.dokument
 
+import com.fasterxml.jackson.databind.node.ObjectNode
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -43,7 +44,7 @@ class DokumentService(
     ) : URL {
         return dokumentGateway.lagreDokument(
             dokument = DokumentGateway.Dokument(
-                content = objectMapper.writeValueAsBytes(melding),
+                content = melding.jsonUtenVedlegg(),
                 contentType = "application/json",
                 title = "Søknad om pleiepeinger som JSON"
             ),
@@ -73,4 +74,12 @@ class DokumentService(
             futures.awaitAll()
         }
     }
+
+    private fun MeldingV1.jsonUtenVedlegg(): ByteArray {
+        val node = objectMapper.valueToTree<ObjectNode>(this)
+        node.remove("vedlegg")
+        node.remove("vedlegg_urls")
+        return objectMapper.writeValueAsBytes(node)
+    }
 }
+

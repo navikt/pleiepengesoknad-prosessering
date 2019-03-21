@@ -56,7 +56,7 @@ class ProsesseringV1Service(
         logger.trace("Generering av Oppsummerings-PDF OK.")
         logger.trace("Mellomlagrer Oppsummerings-PDF.")
 
-        val soknadOppsummeringUrl = dokumentService.lagreSoknadsOppsummeringPdf(
+        val soknadOppsummeringPdfUrl = dokumentService.lagreSoknadsOppsummeringPdf(
             pdf = soknadOppsummeringPdf,
             correlationId = correlationId,
             aktoerId = sokerAktoerId
@@ -77,14 +77,14 @@ class ProsesseringV1Service(
 
         val komplettDokumentUrls = mutableListOf(
             listOf(
-                soknadOppsummeringUrl,
+                soknadOppsummeringPdfUrl,
                 soknadJsonUrl
             )
         )
 
         if (melding.vedleggUrls.isNotEmpty()) {
             logger.trace("Legger til ${melding.vedleggUrls.size} vedlegg URL's fra meldingen som dokument.")
-            komplettDokumentUrls.add(melding.vedleggUrls)
+            melding.vedleggUrls.forEach { it -> komplettDokumentUrls.add(listOf(it))}
         }
         if (melding.vedlegg.isNotEmpty()) {
             logger.trace("Meldingen inneholder ${melding.vedlegg.size} vedlegg som må mellomlagres før søknaden legges til prosessering.")
@@ -94,7 +94,7 @@ class ProsesseringV1Service(
                 aktoerId = sokerAktoerId
             )
             logger.trace("Mellomlagring OK, legger til URL's som dokument.")
-            komplettDokumentUrls.add(lagredeVedleggUrls)
+            lagredeVedleggUrls.forEach { it -> komplettDokumentUrls.add(listOf(it))}
         }
 
         logger.trace("Totalt ${komplettDokumentUrls.size} dokumentbolker.")
