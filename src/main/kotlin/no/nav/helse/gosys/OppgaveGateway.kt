@@ -20,15 +20,13 @@ class OppgaveGateway(
         sokerAktoerId: AktoerId,
         barnAktoerId: AktoerId?,
         journalPostId: JournalPostId,
-        sakId: SakId,
         correlationId: CorrelationId
     ) : OppgaveId {
 
         val request = OppgaveRequest(
             soker = Person(sokerAktoerId.id),
             barn = Person(barnAktoerId?.id),
-            journalPostId = journalPostId.journalPostId,
-            sakId = sakId.sakId
+            journalPostId = journalPostId.journalPostId
         )
 
         val httpRequest = HttpRequestBuilder()
@@ -49,7 +47,6 @@ class OppgaveGateway(
 private data class OppgaveRequest(
     val soker : Person,
     val barn : Person,
-    val sakId: String,
     val journalPostId: String
 )
 private data class Person(

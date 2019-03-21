@@ -4,7 +4,6 @@ import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration
 import com.github.tomakehurst.wiremock.extension.Extension
-import no.nav.helse.gosys.JournalPostId
 import no.nav.security.oidc.test.support.JwkGenerator
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -16,7 +15,6 @@ private const val getAccessTokenPath = "/auth-mock/get-test-access-token"
 private const val subject = "srvpleiepengesokna"
 
 private const val aktoerRegisterBasePath = "/aktoerregister-mock"
-private const val opprettSakPath = "/pleiepenger-sak-mock/v1/sak"
 private const val opprettOppgavePath = "/pleiepenger-oppgave-mock/v1/oppgave"
 private const val opprettJournalPostPath = "/pleiepenger-joark-mock/v1/journalforing"
 private const val pleiepengerDokumentBasePath = "/pleiepenger-dokument-mock"
@@ -50,7 +48,6 @@ object WiremockWrapper {
 
         provideGetAccessTokenEndPoint(wireMockServer.baseUrl())
 
-        stubOpprettSak()
         stubJournalfor()
         stubOpprettOppgave()
         stubLagreDokument()
@@ -135,21 +132,6 @@ object WiremockWrapper {
         )
     }
 
-    fun stubOpprettSak() {
-        WireMock.stubFor(
-            WireMock.post(WireMock.urlPathMatching(".*$opprettSakPath")).willReturn(
-                WireMock.aResponse()
-                    .withHeader("Content-Type", "application/json")
-                    .withBody("""
-                    {
-                        "sak_id" : "1234"
-                    }
-                    """.trimIndent())
-                    .withStatus(201)
-            )
-        )
-    }
-
     fun stubOpprettOppgave() {
         WireMock.stubFor(
             WireMock.post(WireMock.urlPathMatching(".*$opprettOppgavePath")).willReturn(
@@ -191,10 +173,6 @@ fun WireMockServer.getTokenUrl() : String {
 
 fun WireMockServer.getAktoerRegisterBaseUrl() : String {
     return baseUrl() + aktoerRegisterBasePath
-}
-
-fun WireMockServer.getOpprettSakUrl() : String {
-    return baseUrl() + opprettSakPath
 }
 
 fun WireMockServer.getOpprettOppgaveUrl() : String {

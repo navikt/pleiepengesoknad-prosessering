@@ -22,7 +22,6 @@ class PleiepengesoknadProsesseringWithoutMocks {
             // nav.authorization.service_account.client_secret Må fortsatt settes som parameter ved oppstart utenom koden
 
             val pleiepengerJoarkLocalhost = false
-            val pleiepengerSakLocalhost = false
             val pleiepengerOppgaveLocalhost = false
             val pleiepengerDokumentLocalhost = false
 
@@ -33,7 +32,6 @@ class PleiepengesoknadProsesseringWithoutMocks {
                 issuer = "https://security-token-service.nais.preprod.local",
                 aktoerRegisterBaseUrl = "https://app-q1.adeo.no/aktoerregister",
                 opprettJournalPostUrl = "${if (pleiepengerJoarkLocalhost) "http://localhost:8113" else "https://pleiepenger-joark.nais.preprod.local"}/v1/journalforing",
-                opprettSakUrl = "${if (pleiepengerSakLocalhost) "http://localhost:8103" else "https://pleiepenger-sak.nais.preprod.local"}/v1/sak",
                 opprettOppgaveUrl = "${if (pleiepengerOppgaveLocalhost) "http://localhost:8123" else "https://pleiepenger-oppgave.nais.preprod.local"}/v1/oppgave",
                 pleiepeingerDokumentBaseUrl = if (pleiepengerDokumentLocalhost) "http://localhost:8133" else "https://pleiepenger-dokument.nais.preprod.local",
                 clientSecret = null

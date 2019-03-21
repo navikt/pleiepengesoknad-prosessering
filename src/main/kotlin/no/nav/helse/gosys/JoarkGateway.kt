@@ -19,7 +19,6 @@ class JoarkGateway(
 ) {
     suspend fun journalfoer(
         aktoerId: AktoerId,
-        sakId: SakId,
         mottatt: ZonedDateTime,
         dokumenter: List<List<URL>>,
         correlationId: CorrelationId
@@ -27,7 +26,6 @@ class JoarkGateway(
 
         val request = JoarkRequest(
             aktoerId = aktoerId.id,
-            sakId = sakId.sakId,
             mottatt = mottatt,
             dokumenter = dokumenter
         )
@@ -49,7 +47,6 @@ class JoarkGateway(
 }
 private data class JoarkRequest(
     val aktoerId: String,
-    val sakId: String,
     val mottatt: ZonedDateTime,
     val dokumenter: List<List<URL>>
 )

@@ -3,6 +3,7 @@ package no.nav.helse
 import com.auth0.jwk.JwkProviderBuilder
 import io.ktor.application.*
 import io.ktor.auth.Authentication
+import io.ktor.auth.authenticate
 import io.ktor.auth.jwt.JWTPrincipal
 import io.ktor.auth.jwt.jwt
 import io.ktor.client.HttpClient
@@ -25,7 +26,6 @@ import no.nav.helse.dokument.DokumentService
 import no.nav.helse.gosys.GosysService
 import no.nav.helse.gosys.JoarkGateway
 import no.nav.helse.gosys.OppgaveGateway
-import no.nav.helse.gosys.SakGateway
 import no.nav.helse.prosessering.api.metadataStatusPages
 import no.nav.helse.prosessering.api.prosesseringApis
 import no.nav.helse.prosessering.v1.PdfV1Generator
@@ -112,18 +112,13 @@ fun Application.pleiepengesoknadProsessering() {
     )
 
     install(Routing) {
-        //authenticate {
+        authenticate {
             prosesseringApis(
                 prosesseringV1Service = ProsesseringV1Service(
                     gosysService = GosysService(
                         joarkGateway = JoarkGateway(
                             httpClient = httpClient,
                             url = configuration.getOpprettJournalPostUrl(),
-                            systembrukerService = systembrukerService
-                        ),
-                        sakGateway = SakGateway(
-                            httpClient = httpClient,
-                            url = configuration.getOpprettSakurl(),
                             systembrukerService = systembrukerService
                         ),
                         oppgaveGateway = OppgaveGateway(
@@ -149,7 +144,7 @@ fun Application.pleiepengesoknadProsessering() {
                     )
                 )
             )
-        //}
+        }
         monitoring(
             collectorRegistry = collectorRegistry
         )

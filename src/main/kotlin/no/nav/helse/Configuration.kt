@@ -45,10 +45,6 @@ data class Configuration(private val config : ApplicationConfig) {
         return URL(getRequiredString("nav.aktoer_register_base_url"))
     }
 
-    fun getOpprettSakurl() : URL {
-        return URL(getRequiredString("nav.opprett_sak_url"))
-    }
-
     fun getOpprettOppgaveUrl() : URL {
         return URL(getRequiredString("nav.opprett_oppgave_url"))
     }

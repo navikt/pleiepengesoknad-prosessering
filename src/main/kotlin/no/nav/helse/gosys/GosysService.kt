@@ -11,8 +11,7 @@ private val logger: Logger = LoggerFactory.getLogger("nav.GosysService")
 
 class GosysService(
     private val joarkGateway: JoarkGateway,
-    private val oppgaveGateway: OppgaveGateway,
-    private val sakGateway: SakGateway
+    private val oppgaveGateway: OppgaveGateway
 ) {
     suspend fun opprett(
         sokerAktoerId: AktoerId,
@@ -21,17 +20,9 @@ class GosysService(
         dokumenter: List<List<URL>>,
         correlationId: CorrelationId
     ) {
-        logger.trace("oppretter sak")
-        val sakId = sakGateway.lagSak(
-            aktoerId = sokerAktoerId,
-            correlationId = correlationId
-        )
-        logger.trace("sak opprettet med id ${sakId.sakId}")
-
         logger.trace("oppretter journalpost")
         val journalPostId = joarkGateway.journalfoer(
             aktoerId = sokerAktoerId,
-            sakId = sakId,
             mottatt = mottatt,
             dokumenter = dokumenter,
             correlationId = correlationId
@@ -43,7 +34,6 @@ class GosysService(
             sokerAktoerId = sokerAktoerId,
             barnAktoerId = barnAktoerId,
             journalPostId = journalPostId,
-            sakId = sakId,
             correlationId = correlationId
         )
 
