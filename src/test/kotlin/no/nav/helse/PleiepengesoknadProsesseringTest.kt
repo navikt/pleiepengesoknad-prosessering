@@ -56,7 +56,7 @@ class PleiepengesoknadProsesseringTest {
     }
 
     @Test
-    fun `test isready, isalive og metrics`() {
+    fun `test isready, isalive, health og metrics`() {
         with(engine) {
             handleRequest(HttpMethod.Get, "/isready") {}.apply {
                 assertEquals(HttpStatusCode.OK, response.status())
@@ -64,6 +64,9 @@ class PleiepengesoknadProsesseringTest {
                     assertEquals(HttpStatusCode.OK, response.status())
                     handleRequest(HttpMethod.Get, "/metrics") {}.apply {
                         assertEquals(HttpStatusCode.OK, response.status())
+                        handleRequest(HttpMethod.Get, "/health") {}.apply {
+                            assertEquals(HttpStatusCode.OK, response.status())
+                        }
                     }
                 }
             }
