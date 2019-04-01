@@ -52,7 +52,7 @@ fun Application.pleiepengesoknadProsessering() {
     val httpClient = HttpClient(Apache) {
         install(JsonFeature) {
             serializer = JacksonSerializer{
-                ObjectMapper.server(this)
+                dusseldorfConfigured()
             }
         }
         engine {

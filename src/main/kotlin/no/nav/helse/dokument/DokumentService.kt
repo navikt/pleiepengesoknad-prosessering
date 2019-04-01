@@ -1,13 +1,14 @@
 package no.nav.helse.dokument
 
 import com.fasterxml.jackson.databind.node.ObjectNode
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import no.nav.helse.CorrelationId
-import no.nav.helse.ObjectMapper
 import no.nav.helse.aktoer.AktoerId
+import no.nav.helse.dusseldorf.ktor.jackson.dusseldorfConfigured
 import no.nav.helse.prosessering.v1.MeldingV1
 import no.nav.helse.prosessering.v1.Vedlegg
 import org.slf4j.Logger
@@ -19,7 +20,7 @@ private val logger: Logger = LoggerFactory.getLogger("nav.DokumentService")
 class DokumentService(
     private val dokumentGateway: DokumentGateway
 ) {
-    private val objectMapper = ObjectMapper.server()
+    private val objectMapper = jacksonObjectMapper().dusseldorfConfigured()
 
     suspend fun lagreSoknadsOppsummeringPdf(
         pdf : ByteArray,
