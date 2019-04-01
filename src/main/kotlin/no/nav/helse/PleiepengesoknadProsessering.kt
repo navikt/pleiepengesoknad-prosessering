@@ -35,8 +35,6 @@ import no.nav.helse.gosys.OppgaveGateway
 import no.nav.helse.prosessering.api.prosesseringApis
 import no.nav.helse.prosessering.v1.PdfV1Generator
 import no.nav.helse.prosessering.v1.ProsesseringV1Service
-import no.nav.helse.systembruker.SystembrukerGateway
-import no.nav.helse.systembruker.SystembrukerService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.util.concurrent.TimeUnit
@@ -98,16 +96,6 @@ fun Application.pleiepengesoknadProsessering() {
         JacksonStatusPages()
     }
 
-    val systembrukerService = SystembrukerService(
-        systembrukerGateway = SystembrukerGateway(
-            httpClient = httpClient,
-            clientId = configuration.getServiceAccountClientId(),
-            clientSecret = configuration.getServiceAccountClientSecret(),
-            scopes = configuration.getServiceAccountScopes(),
-            tokenUrl = configuration.getTokenUrl()
-        )
-    )
-
     val systemCredentialsProvider = Oauth2ClientCredentialsProvider(
         monitoredHttpClient = MonitoredHttpClient(
             source = appId,
@@ -143,18 +131,18 @@ fun Application.pleiepengesoknadProsessering() {
                             joarkGateway = JoarkGateway(
                                 httpClient = httpClient,
                                 baseUrl = configuration.getPleiepengerJoarkBaseUrl(),
-                                systembrukerService = systembrukerService
+                                systemCredentialsProvider = systemCredentialsProvider
                             ),
                             oppgaveGateway = OppgaveGateway(
                                 httpClient = httpClient,
                                 baseUrl = configuration.getPleiepengerOppgaveBaseUrl(),
-                                systembrukerService = systembrukerService
+                                systemCredentialsProvider = systemCredentialsProvider
                             )
                         ),
                         aktoerService = AktoerService(
                             aktoerGateway = AktoerGateway(
                                 httpClient = httpClient,
-                                systembrukerService = systembrukerService,
+                                systemCredentialsProvider = systemCredentialsProvider,
                                 baseUrl = configuration.getAktoerRegisterBaseUrl()
                             )
                         ),
@@ -162,7 +150,7 @@ fun Application.pleiepengesoknadProsessering() {
                         dokumentService = DokumentService(
                             dokumentGateway = DokumentGateway(
                                 httpClient = httpClient,
-                                systembrukerService = systembrukerService,
+                                systemCredentialsProvider = systemCredentialsProvider,
                                 baseUrl = configuration.getPleiepengerDokumentBaseUrl()
                             )
                         )

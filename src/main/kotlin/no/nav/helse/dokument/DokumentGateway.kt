@@ -10,8 +10,8 @@ import io.prometheus.client.Histogram
 import no.nav.helse.CorrelationId
 import no.nav.helse.HttpRequest
 import no.nav.helse.aktoer.AktoerId
+import no.nav.helse.dusseldorf.ktor.client.SystemCredentialsProvider
 import no.nav.helse.prosessering.v1.Vedlegg
-import no.nav.helse.systembruker.SystembrukerService
 import java.net.URL
 
 private val lagreDokumentHistogram = Histogram.build(
@@ -21,7 +21,7 @@ private val lagreDokumentHistogram = Histogram.build(
 
 class DokumentGateway(
     private val httpClient: HttpClient,
-    private val systembrukerService: SystembrukerService,
+    private val systemCredentialsProvider: SystemCredentialsProvider,
     baseUrl : URL
 ){
 
@@ -38,7 +38,7 @@ class DokumentGateway(
 
         val urlMedEier = HttpRequest.buildURL(baseUrl = completeUrl, queryParameters = mapOf(Pair("eier", aktoerId.id)))
         val httpRequest = HttpRequestBuilder()
-        httpRequest.header(HttpHeaders.Authorization, systembrukerService.getAuthorizationHeader())
+        httpRequest.header(HttpHeaders.Authorization, systemCredentialsProvider.getAuthorizationHeader())
         httpRequest.header(HttpHeaders.XCorrelationId, correlationId.value)
         httpRequest.header(HttpHeaders.ContentType, ContentType.Application.Json)
         httpRequest.method = HttpMethod.Post

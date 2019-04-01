@@ -11,7 +11,7 @@ import io.ktor.http.HttpMethod
 import io.prometheus.client.Histogram
 import no.nav.helse.CorrelationId
 import no.nav.helse.HttpRequest
-import no.nav.helse.systembruker.SystembrukerService
+import no.nav.helse.dusseldorf.ktor.client.SystemCredentialsProvider
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.net.URL
@@ -30,7 +30,7 @@ private val getAktoerIdHistogram = Histogram.build(
 class AktoerGateway(
     private val httpClient: HttpClient,
     baseUrl: URL,
-    private val systembrukerService: SystembrukerService
+    private val systemCredentialsProvider: SystemCredentialsProvider
 ) {
     private val completeUrl : URL = HttpRequest.buildURL(
         baseUrl = baseUrl,
@@ -47,7 +47,7 @@ class AktoerGateway(
     ) : AktoerId {
 
         val httpRequest = HttpRequestBuilder()
-        httpRequest.header(HttpHeaders.Authorization, systembrukerService.getAuthorizationHeader())
+        httpRequest.header(HttpHeaders.Authorization, systemCredentialsProvider.getAuthorizationHeader())
         httpRequest.header("Nav-Consumer-Id", "pleiepengesoknad-prosesseringh")
         httpRequest.header("Nav-Personidenter", fnr.value)
         httpRequest.header("Nav-Call-Id", correlationId.value)
