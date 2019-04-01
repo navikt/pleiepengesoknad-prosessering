@@ -1,25 +1,45 @@
 package no.nav.helse.gosys
 
+import com.fasterxml.jackson.databind.DeserializationFeature
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.PropertyNamingStrategy
 import io.ktor.client.HttpClient
+import io.ktor.client.engine.apache.Apache
+import io.ktor.client.features.json.JacksonSerializer
+import io.ktor.client.features.json.JsonFeature
+import io.ktor.client.features.logging.Logging
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.header
 import io.ktor.client.request.url
 import io.ktor.http.*
 import no.nav.helse.CorrelationId
-import no.nav.helse.HttpRequest
 import no.nav.helse.aktoer.AktoerId
-import no.nav.helse.dusseldorf.ktor.client.SystemCredentialsProvider
-import no.nav.helse.dusseldorf.ktor.client.buildURL
+import no.nav.helse.dusseldorf.ktor.client.*
 import java.net.URL
 
 class OppgaveGateway(
-    private val httpClient : HttpClient,
     baseUrl : URL,
     private val systemCredentialsProvider: SystemCredentialsProvider
 ) {
     private val completeUrl = Url.buildURL(
         baseUrl = baseUrl,
         pathParts = listOf("v1", "oppgave")
+    )
+
+    private val monitoredHttpClient = MonitoredHttpClient(
+        source = "pleiepengesoknad-prosessering",
+        destination = "pleiepenger-oppgave",
+        httpClient = HttpClient(Apache) {
+            install(JsonFeature) {
+                serializer = JacksonSerializer { configureObjectMapper(this) }
+            }
+            engine {
+                customizeClient { setProxyRoutePlanner() }
+            }
+            install (Logging) {
+                sl4jLogger("pleiepenger-oppgave")
+            }
+        }
     )
 
     suspend fun lagOppgave(
@@ -43,11 +63,16 @@ class OppgaveGateway(
         httpRequest.body = request
         httpRequest.url(completeUrl)
 
-        return HttpRequest.monitored(
-            httpClient = httpClient,
-            expectedStatusCodes = listOf(HttpStatusCode.Created),
-            httpRequest = httpRequest
+        return monitoredHttpClient.requestAndReceive(
+            httpRequestBuilder = httpRequest,
+            expectedHttpResponseCodes = setOf(HttpStatusCode.Created)
         )
+    }
+
+    private fun configureObjectMapper(objectMapper: ObjectMapper) : ObjectMapper {
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+        objectMapper.propertyNamingStrategy = PropertyNamingStrategy.SNAKE_CASE
+        return objectMapper
     }
 }
 private data class OppgaveRequest(

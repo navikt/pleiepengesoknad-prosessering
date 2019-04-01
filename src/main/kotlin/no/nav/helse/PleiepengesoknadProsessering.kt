@@ -49,17 +49,6 @@ fun Application.pleiepengesoknadProsessering() {
     logProxyProperties()
     DefaultExports.initialize()
 
-    val httpClient = HttpClient(Apache) {
-        install(JsonFeature) {
-            serializer = JacksonSerializer{
-                dusseldorfConfigured()
-            }
-        }
-        engine {
-            customizeClient { setProxyRoutePlanner() }
-        }
-    }
-
     val configuration = Configuration(environment.config)
 
     val authorizedSystems = configuration.getAuthorizedSystemsForRestApi()
@@ -129,19 +118,16 @@ fun Application.pleiepengesoknadProsessering() {
                     prosesseringV1Service = ProsesseringV1Service(
                         gosysService = GosysService(
                             joarkGateway = JoarkGateway(
-                                httpClient = httpClient,
                                 baseUrl = configuration.getPleiepengerJoarkBaseUrl(),
                                 systemCredentialsProvider = systemCredentialsProvider
                             ),
                             oppgaveGateway = OppgaveGateway(
-                                httpClient = httpClient,
                                 baseUrl = configuration.getPleiepengerOppgaveBaseUrl(),
                                 systemCredentialsProvider = systemCredentialsProvider
                             )
                         ),
                         aktoerService = AktoerService(
                             aktoerGateway = AktoerGateway(
-                                httpClient = httpClient,
                                 systemCredentialsProvider = systemCredentialsProvider,
                                 baseUrl = configuration.getAktoerRegisterBaseUrl()
                             )
@@ -149,7 +135,6 @@ fun Application.pleiepengesoknadProsessering() {
                         pdfV1Generator = PdfV1Generator(),
                         dokumentService = DokumentService(
                             dokumentGateway = DokumentGateway(
-                                httpClient = httpClient,
                                 systemCredentialsProvider = systemCredentialsProvider,
                                 baseUrl = configuration.getPleiepengerDokumentBaseUrl()
                             )

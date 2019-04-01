@@ -1,33 +1,47 @@
 package no.nav.helse.dokument
 
+import com.fasterxml.jackson.databind.DeserializationFeature
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.PropertyNamingStrategy
 import io.ktor.client.HttpClient
+import io.ktor.client.engine.apache.Apache
+import io.ktor.client.features.json.JacksonSerializer
+import io.ktor.client.features.json.JsonFeature
+import io.ktor.client.features.logging.Logging
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.header
 import io.ktor.client.request.url
-import io.ktor.client.response.HttpResponse
 import io.ktor.http.*
-import io.prometheus.client.Histogram
 import no.nav.helse.CorrelationId
-import no.nav.helse.HttpRequest
 import no.nav.helse.aktoer.AktoerId
-import no.nav.helse.dusseldorf.ktor.client.SystemCredentialsProvider
+import no.nav.helse.dusseldorf.ktor.client.*
 import no.nav.helse.prosessering.v1.Vedlegg
 import java.net.URL
 
-private val lagreDokumentHistogram = Histogram.build(
-    "histogram_lagre_dokument",
-    "Tidsbruk for lagring av dokument"
-).register()
-
 class DokumentGateway(
-    private val httpClient: HttpClient,
     private val systemCredentialsProvider: SystemCredentialsProvider,
     baseUrl : URL
 ){
 
-    private val completeUrl = HttpRequest.buildURL(
+    private val completeUrl = Url.buildURL(
         baseUrl = baseUrl,
         pathParts = listOf("v1", "dokument")
+    )
+
+    private val monitoredHttpClient = MonitoredHttpClient(
+        source = "pleiepengesoknad-prosessering",
+        destination = "pleiepenger-dokument",
+        httpClient = HttpClient(Apache) {
+            install(JsonFeature) {
+                serializer = JacksonSerializer { configureObjectMapper(this) }
+            }
+            engine {
+                customizeClient { setProxyRoutePlanner() }
+            }
+            install (Logging) {
+                sl4jLogger("pleiepenger-dokument")
+            }
+        }
     )
 
     suspend fun lagreDokument(
@@ -36,7 +50,10 @@ class DokumentGateway(
         correlationId: CorrelationId
     ) : URL {
 
-        val urlMedEier = HttpRequest.buildURL(baseUrl = completeUrl, queryParameters = mapOf(Pair("eier", aktoerId.id)))
+        val urlMedEier = Url.buildURL(
+            baseUrl = completeUrl,
+            queryParameters = mapOf("eier" to listOf(aktoerId.id))
+        )
         val httpRequest = HttpRequestBuilder()
         httpRequest.header(HttpHeaders.Authorization, systemCredentialsProvider.getAuthorizationHeader())
         httpRequest.header(HttpHeaders.XCorrelationId, correlationId.value)
@@ -45,14 +62,19 @@ class DokumentGateway(
         httpRequest.body = dokument
         httpRequest.url(urlMedEier)
 
-        val httpResponse = HttpRequest.monitored<HttpResponse>(
-            httpClient = httpClient,
-            httpRequest = httpRequest,
-            expectedStatusCodes = listOf(HttpStatusCode.Created),
-            histogram = lagreDokumentHistogram
+        val httpResponse = monitoredHttpClient.request(
+            httpRequestBuilder = httpRequest,
+            expectedHttpResponseCodes = setOf(HttpStatusCode.Created)
         )
+        return httpResponse.use {
+            URL(it.headers[HttpHeaders.Location])
+        }
+    }
 
-        return URL(httpResponse.headers[HttpHeaders.Location])
+    private fun configureObjectMapper(objectMapper: ObjectMapper) : ObjectMapper {
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+        objectMapper.propertyNamingStrategy = PropertyNamingStrategy.SNAKE_CASE
+        return objectMapper
     }
 
     data class Dokument(
