@@ -29,12 +29,12 @@ data class Configuration(private val config : ApplicationConfig) {
         return URL(config.getRequiredString("nav.aktoer_register_base_url", secret = false))
     }
 
-    fun getOpprettOppgaveUrl() : URL {
-        return URL(config.getRequiredString("nav.opprett_oppgave_url", secret = false))
+    fun getPleiepengerOppgaveBaseUrl() : URL {
+        return URL(config.getRequiredString("nav.pleiepenger_oppgave_base_url", secret = false))
     }
 
-    fun getOpprettJournalPostUrl() : URL {
-        return URL(config.getRequiredString("nav.opprett_journal_post_url", secret = false))
+    fun getPleiepengerJoarkBaseUrl() : URL {
+        return URL(config.getRequiredString("nav.pleiepenger_joark_base_url", secret = false))
     }
 
     fun getPleiepengerDokumentBaseUrl() : URL {

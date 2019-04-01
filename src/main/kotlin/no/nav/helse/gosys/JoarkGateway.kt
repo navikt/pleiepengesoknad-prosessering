@@ -8,15 +8,23 @@ import io.ktor.http.*
 import no.nav.helse.CorrelationId
 import no.nav.helse.HttpRequest
 import no.nav.helse.aktoer.AktoerId
+import no.nav.helse.dusseldorf.ktor.client.buildURL
 import no.nav.helse.systembruker.SystembrukerService
 import java.net.URL
 import java.time.ZonedDateTime
 
 class JoarkGateway(
     private val httpClient : HttpClient,
-    private val url : URL,
+    baseUrl : URL,
     private val systembrukerService: SystembrukerService
 ) {
+
+    private val completeUrl = Url.buildURL(
+        baseUrl = baseUrl,
+        pathParts = listOf("v1","journalforing")
+    )
+
+
     suspend fun journalfoer(
         aktoerId: AktoerId,
         mottatt: ZonedDateTime,
@@ -36,7 +44,7 @@ class JoarkGateway(
         httpRequest.method = HttpMethod.Post
         httpRequest.contentType(ContentType.Application.Json)
         httpRequest.body = request
-        httpRequest.url(url)
+        httpRequest.url(completeUrl)
 
         return HttpRequest.monitored(
             httpClient = httpClient,

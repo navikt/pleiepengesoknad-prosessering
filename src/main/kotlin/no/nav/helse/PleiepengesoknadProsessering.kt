@@ -14,6 +14,7 @@ import io.ktor.client.features.json.JsonFeature
 import io.ktor.client.features.logging.Logging
 import io.ktor.features.*
 import io.ktor.http.HttpStatusCode
+import io.ktor.http.Url
 import io.ktor.jackson.jackson
 import io.ktor.routing.Routing
 import io.ktor.util.KtorExperimentalAPI
@@ -141,12 +142,12 @@ fun Application.pleiepengesoknadProsessering() {
                         gosysService = GosysService(
                             joarkGateway = JoarkGateway(
                                 httpClient = httpClient,
-                                url = configuration.getOpprettJournalPostUrl(),
+                                baseUrl = configuration.getPleiepengerJoarkBaseUrl(),
                                 systembrukerService = systembrukerService
                             ),
                             oppgaveGateway = OppgaveGateway(
                                 httpClient = httpClient,
-                                url = configuration.getOpprettOppgaveUrl(),
+                                baseUrl = configuration.getPleiepengerOppgaveBaseUrl(),
                                 systembrukerService = systembrukerService
                             )
                         ),
@@ -179,7 +180,10 @@ fun Application.pleiepengesoknadProsessering() {
                 HttpRequestHealthCheck(
                     app = appId,
                     urlExpectedHttpStatusCodeMap = mapOf(
-                        configuration.getJwksUrl() to HttpStatusCode.OK
+                        configuration.getJwksUrl() to HttpStatusCode.OK,
+                        Url.buildURL(baseUrl = configuration.getPleiepengerDokumentBaseUrl(), pathParts = listOf("health")) to HttpStatusCode.OK,
+                        Url.buildURL(baseUrl = configuration.getPleiepengerJoarkBaseUrl(), pathParts = listOf("health")) to HttpStatusCode.OK,
+                        Url.buildURL(baseUrl = configuration.getPleiepengerOppgaveBaseUrl(), pathParts = listOf("health")) to HttpStatusCode.OK
                     )
                 )
             )

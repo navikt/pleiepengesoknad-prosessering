@@ -6,7 +6,8 @@
         </encoder>
     </appender>
 
-    <logger name="nav" level="TRACE"/>
+    <logger name="no.nav" level="DEBUG"/>
+    <logger name="nav" level="DEBUG"/>
 
     <root level="INFO">
         <appender-ref ref="STDOUT"/>

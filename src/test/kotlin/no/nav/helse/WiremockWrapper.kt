@@ -15,10 +15,9 @@ private const val getAccessTokenPath = "/auth-mock/get-test-access-token"
 private const val subject = "srvpleiepengesokna"
 
 private const val aktoerRegisterBasePath = "/aktoerregister-mock"
-private const val opprettOppgavePath = "/pleiepenger-oppgave-mock/v1/oppgave"
-private const val opprettJournalPostPath = "/pleiepenger-joark-mock/v1/journalforing"
+private const val pleiepengerOppgaveBaseUrl = "/pleiepenger-oppgave-mock"
+private const val pleiepengerJoarkBaseUrl = "/pleiepenger-joark-mock"
 private const val pleiepengerDokumentBasePath = "/pleiepenger-dokument-mock"
-
 
 object WiremockWrapper {
 
@@ -48,10 +47,15 @@ object WiremockWrapper {
 
         provideGetAccessTokenEndPoint(wireMockServer.baseUrl())
 
+        stubHealthEndpoint("$pleiepengerOppgaveBaseUrl/health")
+        stubHealthEndpoint("$pleiepengerDokumentBasePath/health")
+        stubHealthEndpoint("$pleiepengerJoarkBaseUrl/health")
+
         stubJournalfor()
         stubOpprettOppgave()
         stubLagreDokument()
         stubAktoerRegisterGetAktoerId("29099012345", "123456")
+
 
         logger.info("Mock available on '{}'", wireMockServer.baseUrl())
         return wireMockServer
@@ -134,7 +138,7 @@ object WiremockWrapper {
 
     fun stubOpprettOppgave() {
         WireMock.stubFor(
-            WireMock.post(WireMock.urlPathMatching(".*$opprettOppgavePath")).willReturn(
+            WireMock.post(WireMock.urlPathMatching(".*$pleiepengerOppgaveBaseUrl.*")).willReturn(
                 WireMock.aResponse()
                     .withHeader("Content-Type", "application/json")
                     .withBody("""
@@ -149,7 +153,7 @@ object WiremockWrapper {
 
     fun stubJournalfor() {
         WireMock.stubFor(
-            WireMock.post(WireMock.urlPathMatching(".*$opprettJournalPostPath")).willReturn(
+            WireMock.post(WireMock.urlPathMatching(".*$pleiepengerJoarkBaseUrl.*")).willReturn(
                 WireMock.aResponse()
                     .withHeader("Content-Type", "application/json")
                     .withBody("""
@@ -158,6 +162,17 @@ object WiremockWrapper {
                     }
                     """.trimIndent())
                     .withStatus(201)
+            )
+        )
+    }
+
+    private fun stubHealthEndpoint(
+        path : String
+    ) {
+        WireMock.stubFor(
+            WireMock.get(WireMock.urlPathMatching(".*$path")).willReturn(
+                WireMock.aResponse()
+                    .withStatus(200)
             )
         )
     }
@@ -175,12 +190,12 @@ fun WireMockServer.getAktoerRegisterBaseUrl() : String {
     return baseUrl() + aktoerRegisterBasePath
 }
 
-fun WireMockServer.getOpprettOppgaveUrl() : String {
-    return baseUrl() + opprettOppgavePath
+fun WireMockServer.getPleiepengerOppgaveBaseUrl() : String {
+    return baseUrl() + pleiepengerOppgaveBaseUrl
 }
 
-fun WireMockServer.getOpprettJournalPostUrl() : String {
-    return baseUrl() + opprettJournalPostPath
+fun WireMockServer.getPleiepengerJoarkBaseUrl() : String {
+    return baseUrl() + pleiepengerJoarkBaseUrl
 }
 
 fun WireMockServer.getPleiepengerDokumentBaseUrl() : String {

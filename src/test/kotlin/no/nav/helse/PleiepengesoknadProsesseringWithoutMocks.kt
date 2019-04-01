@@ -31,8 +31,8 @@ class PleiepengesoknadProsesseringWithoutMocks {
                 jwkSetUrl = "https://security-token-service.nais.preprod.local/rest/v1/sts/jwks",
                 issuer = "https://security-token-service.nais.preprod.local",
                 aktoerRegisterBaseUrl = "https://app-q1.adeo.no/aktoerregister",
-                opprettJournalPostUrl = "${if (pleiepengerJoarkLocalhost) "http://localhost:8113" else "https://pleiepenger-joark.nais.preprod.local"}/v1/journalforing",
-                opprettOppgaveUrl = "${if (pleiepengerOppgaveLocalhost) "http://localhost:8123" else "https://pleiepenger-oppgave.nais.preprod.local"}/v1/oppgave",
+                pleiepengerJoarkBaseUrl = if (pleiepengerJoarkLocalhost) "http://localhost:8113" else "https://pleiepenger-joark.nais.preprod.local",
+                pleiepengerOppgaveBaseUrl = if (pleiepengerOppgaveLocalhost) "http://localhost:8123" else "https://pleiepenger-oppgave.nais.preprod.local",
                 pleiepeingerDokumentBaseUrl = if (pleiepengerDokumentLocalhost) "http://localhost:8133" else "https://pleiepenger-dokument.nais.preprod.local",
                 clientSecret = null
             ))
