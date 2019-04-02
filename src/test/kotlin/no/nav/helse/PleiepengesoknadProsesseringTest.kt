@@ -37,6 +37,7 @@ class PleiepengesoknadProsesseringTest {
         private val wireMockServer: WireMockServer = WiremockWrapper.bootstrap()
         private val objectMapper = jacksonObjectMapper().dusseldorfConfigured()
         private val authorizedAccessToken = Authorization.getAccessToken(wireMockServer.baseUrl(), wireMockServer.getSubject())
+        private val unAauthorizedAccessToken = Authorization.getAccessToken(wireMockServer.baseUrl(), "srvikketilgang")
 
         // Se https://github.com/navikt/dusseldorf-ktor#f%C3%B8dselsnummer
         private val gyldigFodselsnummerA = "02119970078"
@@ -125,12 +126,48 @@ class PleiepengesoknadProsesseringTest {
 
     @Test
     fun `Request fra ikke autorisert system feiler`() {
+        val melding = gyldigMelding(
+            fodselsnummerSoker = gyldigFodselsnummerA,
+            fodselsnummerBarn = gyldigFodselsnummerB
+        )
 
+        requestAndAssert(
+            request = melding,
+            expectedCode = HttpStatusCode.Unauthorized,
+            expectedResponse = null,
+            accessToken = unAauthorizedAccessToken
+        )
     }
 
     @Test
     fun `Request uten corelation id feiler`() {
+        val melding = gyldigMelding(
+            fodselsnummerSoker = gyldigFodselsnummerA,
+            fodselsnummerBarn = gyldigFodselsnummerB
+        )
 
+        requestAndAssert(
+            request = melding,
+            expectedCode = HttpStatusCode.BadRequest,
+            expectedResponse = """
+                {
+                    "type": "/problem-details/invalid-request-parameters",
+                    "title": "invalid-request-parameters",
+                    "detail": "Requesten inneholder ugyldige paramtere.",
+                    "status": 400,
+                    "instance": "about:blank",
+                    "invalid_parameters" : [
+                        {
+                            "name" : "X-Correlation-ID",
+                            "reason" : "Correlation ID må settes.",
+                            "type": "header",
+                            "invalid_value": null
+                        }
+                    ]
+                }
+            """.trimIndent(),
+            leggTilCorrelationId = false
+        )
     }
 
     @Test
