@@ -6,9 +6,11 @@ import no.nav.helse.CorrelationId
 import no.nav.helse.aktoer.AktoerService
 import no.nav.helse.aktoer.Fodselsnummer
 import no.nav.helse.dokument.DokumentService
+import no.nav.helse.dusseldorf.ktor.core.*
 import no.nav.helse.gosys.GosysService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 
 private val logger: Logger = LoggerFactory.getLogger("nav.ProsesseringV1Service")
@@ -25,7 +27,7 @@ class ProsesseringV1Service(
     ) {
         logger.info(metadata.toString())
 
-        // TODO: Validere melding
+        validerMelding(melding)
 
         reportMetrics(melding = melding)
 
@@ -141,5 +143,82 @@ class ProsesseringV1Service(
         opplastedeVedleggHistogram.observe( (melding.vedlegg.size + melding.vedleggUrls.size).toDouble() )
         idTypePaaBarnCounter.labels(if (melding.barn.fodselsnummer != null) "fodselsnummer" else "alternativ_id").inc()
         periodeSoknadGjelderIUkerHistogram.observe(ChronoUnit.WEEKS.between(melding.fraOgMed, melding.tilOgMed).toDouble())
+    }
+
+    private fun validerMelding(melding : MeldingV1) {
+        val violations = mutableSetOf<Violation>()
+        if (melding.vedlegg.isEmpty() && melding.vedleggUrls.isEmpty()) {
+            violations.add(Violation(
+                parameterName = "vedlegg",
+                parameterType = ParameterType.ENTITY,
+                reason = "Det må sendes minst et vedlegg eller en vedlegg URL.",
+                invalidValue = melding.vedlegg
+            ))
+            violations.add(Violation(
+                parameterName = "vedlegg_urls",
+                parameterType = ParameterType.ENTITY,
+                reason = "Det må sendes minst et vedlegg eller en vedlegg URL.",
+                invalidValue = melding.vedleggUrls
+            ))
+        }
+
+        // TODO: Validere innhold av listen "vedlegg"
+
+        if (!melding.soker.fodselsnummer.erGyldigFodselsnummer()) {
+            violations.add(Violation(
+                parameterName = "soker.fodselsnummer",
+                parameterType = ParameterType.ENTITY,
+                reason = "Ikke gyldig fødselsnummer.",
+                invalidValue = melding.soker.fodselsnummer
+            ))
+        }
+
+        if (melding.barn.fodselsnummer != null && !melding.barn.fodselsnummer.erGyldigFodselsnummer()) {
+            violations.add(Violation(
+                parameterName = "barn.fodselsnummer",
+                parameterType = ParameterType.ENTITY,
+                reason = "Ikke gyldig fødselsnummer.",
+                invalidValue = melding.barn.fodselsnummer
+            ))
+        }
+
+        if (melding.barn.alternativId != null && !melding.barn.alternativId.erKunSiffer()) {
+            violations.add(Violation(
+                parameterName = "barn.alternativ_id",
+                parameterType = ParameterType.ENTITY,
+                reason = "Ikke gyldig alternativ id. Kan kun inneholde tall.",
+                invalidValue = melding.barn.alternativId
+            ))
+        }
+
+        melding.arbeidsgivere.organisasjoner.mapIndexed { index, organisasjon ->
+            if (!organisasjon.organisasjonsnummer.erGyldigOrganisasjonsnummer()) {
+                violations.add(Violation(
+                    parameterName = "arbeidsgivere.organisasjoner[$index].organisasjonsnummer",
+                    parameterType = ParameterType.ENTITY,
+                    reason = "Ikke gyldig organisasjonsnummer.",
+                    invalidValue = organisasjon.organisasjonsnummer
+                ))
+            }
+        }
+
+        if (!melding.tilOgMed.isAfter(melding.fraOgMed)) {
+            violations.add(Violation(
+                parameterName = "fra_og_med",
+                parameterType = ParameterType.ENTITY,
+                reason = "Fra og med må være før til og med.",
+                invalidValue = DateTimeFormatter.ISO_DATE.format(melding.fraOgMed)
+            ))
+            violations.add(Violation(
+                parameterName = "til_og_med",
+                parameterType = ParameterType.ENTITY,
+                reason = "Til og med må være etter fra og med.",
+                invalidValue = DateTimeFormatter.ISO_DATE.format(melding.tilOgMed)
+            ))
+        }
+
+        if (violations.isNotEmpty()) {
+            throw Throwblem(ValidationProblemDetails(violations))
+        }
     }
 }
