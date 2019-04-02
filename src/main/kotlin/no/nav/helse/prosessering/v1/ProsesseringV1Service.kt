@@ -43,11 +43,16 @@ class ProsesseringV1Service(
 
         logger.trace("Henter AktørID for barnet.")
         val barnAktoerId = if (melding.barn.fodselsnummer != null) {
-            aktoerService.getAktorId(
-                fnr = Fodselsnummer(melding.barn.fodselsnummer),
-                correlationId = correlationId
-            )
-        } else null // TODO: Håndter feil her som null
+            try {
+                aktoerService.getAktorId(
+                    fnr = Fodselsnummer(melding.barn.fodselsnummer),
+                    correlationId = correlationId
+                )
+            } catch (cause: Throwable) {
+                logger.warn("Feil ved oppslag på Aktør ID basert på barnets fødselsnummer. Kan være at det ikke er registrert i Aktørregisteret enda.")
+                null
+            }
+        } else null
 
         logger.trace("Barnets AktørID = $barnAktoerId")
 
