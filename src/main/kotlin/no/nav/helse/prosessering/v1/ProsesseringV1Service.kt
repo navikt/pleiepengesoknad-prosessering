@@ -49,7 +49,7 @@ class ProsesseringV1Service(
                     correlationId = correlationId
                 )
             } catch (cause: Throwable) {
-                logger.warn("Feil ved oppslag på Aktør ID basert på barnets fødselsnummer. Kan være at det ikke er registrert i Aktørregisteret enda.")
+                logger.warn("Feil ved oppslag på Aktør ID basert på barnets fødselsnummer. Kan være at det ikke er registrert i Aktørregisteret enda. ${cause.message}")
                 null
             }
         } else null
@@ -117,6 +117,8 @@ class ProsesseringV1Service(
         )
 
         logger.trace("Oppgave i Gosys opprettet OK")
+
+        // TODO: Slette dokumenter.
     }
 
     private val periodeSoknadGjelderIUkerHistogram = Histogram.build()

@@ -63,7 +63,7 @@ class AktoerGateway(
 
         val httpRequest = HttpRequestBuilder()
         httpRequest.header(HttpHeaders.Authorization, systemCredentialsProvider.getAuthorizationHeader())
-        httpRequest.header("Nav-Consumer-Id", "pleiepengesoknad-prosesseringh")
+        httpRequest.header("Nav-Consumer-Id", "pleiepengesoknad-prosessering")
         httpRequest.header("Nav-Personidenter", fnr.value)
         httpRequest.header("Nav-Call-Id", correlationId.value)
         httpRequest.method = HttpMethod.Get
@@ -85,6 +85,10 @@ class AktoerGateway(
             logger.warn("Mottok feilmelding fra AktørRegister : '${identResponse.feilmelding}'")
         }
 
+        if (identResponse.identer == null) {
+            throw IllegalStateException("Fikk 0 AktørID'er for det forsespurte fødselsnummeret mot '$completeUrl'")
+        }
+
         if (identResponse.identer.size != 1) {
             throw IllegalStateException("Fikk ${identResponse.identer.size} AktørID'er for det forsespurte fødselsnummeret mot '$completeUrl'")
         }
@@ -100,4 +104,4 @@ class AktoerGateway(
 }
 
 data class Ident(val ident: String, val identgruppe: String)
-data class IdentResponse(val feilmelding : String?, val identer : List<Ident>)
+data class IdentResponse(val feilmelding : String?, val identer : List<Ident>?)

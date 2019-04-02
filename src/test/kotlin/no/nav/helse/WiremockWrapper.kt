@@ -4,6 +4,7 @@ import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration
 import com.github.tomakehurst.wiremock.extension.Extension
+import com.github.tomakehurst.wiremock.matching.EqualToPattern
 import no.nav.security.oidc.test.support.JwkGenerator
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -98,12 +99,31 @@ object WiremockWrapper {
         )
     }
 
+    fun stubAktoerRegisterGetAktoerIdNotFound(
+        fnr: String) {
+        WireMock.stubFor(
+            WireMock.get(WireMock.urlPathMatching(".*$aktoerRegisterBasePath/.*")).withHeader("Nav-Personidenter", EqualToPattern(fnr)).willReturn(
+                WireMock.aResponse()
+                    .withHeader("Content-Type", "application/json")
+                    .withBody("""
+                    {
+                      "$fnr": {
+                        "identer": null,
+                        "feilmelding": "Den angitte personidenten finnes ikke"
+                      }
+                    }
+                    """.trimIndent())
+                    .withStatus(200)
+            )
+        )
+    }
+
 
     fun stubAktoerRegisterGetAktoerId(
         fnr: String,
         aktoerId: String) {
         WireMock.stubFor(
-            WireMock.get(WireMock.urlPathMatching(".*$aktoerRegisterBasePath/.*")).willReturn(
+            WireMock.get(WireMock.urlPathMatching(".*$aktoerRegisterBasePath/.*")).withHeader("Nav-Personidenter", EqualToPattern(fnr)).willReturn(
                 WireMock.aResponse()
                     .withHeader("Content-Type", "application/json")
                     .withBody("""

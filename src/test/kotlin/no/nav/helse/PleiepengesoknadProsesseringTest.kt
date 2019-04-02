@@ -21,11 +21,12 @@ import org.junit.BeforeClass
 import org.skyscreamer.jsonassert.JSONAssert
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import java.net.URL
 import java.time.LocalDate
 import java.time.ZonedDateTime
 import kotlin.test.*
 
-private val logger: Logger = LoggerFactory.getLogger("nav.PleiepengesoknadProsessering")
+private val logger: Logger = LoggerFactory.getLogger("nav.PleiepengesoknadProsesseringTest")
 
 @KtorExperimentalAPI
 class PleiepengesoknadProsesseringTest {
@@ -36,6 +37,11 @@ class PleiepengesoknadProsesseringTest {
         private val wireMockServer: WireMockServer = WiremockWrapper.bootstrap()
         private val objectMapper = jacksonObjectMapper().dusseldorfConfigured()
         private val authorizedAccessToken = Authorization.getAccessToken(wireMockServer.baseUrl(), wireMockServer.getSubject())
+
+        // Se https://github.com/navikt/dusseldorf-ktor#f%C3%B8dselsnummer
+        private val gyldigFodselsnummerA = "02119970078"
+        private val gyldigFodselsnummerB = "19066672169"
+        private val gyldigFodselsnummerC = "20037473937"
 
         fun getConfig() : ApplicationConfig {
             val fileConfig = ConfigFactory.load()
@@ -85,12 +91,36 @@ class PleiepengesoknadProsesseringTest {
 
     @Test
     fun `Gylding melding blir lagt til prosessering`() {
+        val melding = gyldigMelding(
+            fodselsnummerSoker = gyldigFodselsnummerA,
+            fodselsnummerBarn = gyldigFodselsnummerB
+        )
 
+        WiremockWrapper.stubAktoerRegisterGetAktoerId(gyldigFodselsnummerA, "12121212")
+        WiremockWrapper.stubAktoerRegisterGetAktoerId(gyldigFodselsnummerB, "23232323")
+
+        requestAndAssert(
+            request = melding,
+            expectedCode = HttpStatusCode.Accepted,
+            expectedResponse = null
+        )
     }
 
     @Test
     fun `Melding lagt til prosessering selv om oppslag paa aktoer ID for barn feiler`() {
+        val melding = gyldigMelding(
+            fodselsnummerSoker = gyldigFodselsnummerA,
+            fodselsnummerBarn = gyldigFodselsnummerC
+        )
 
+        WiremockWrapper.stubAktoerRegisterGetAktoerId(gyldigFodselsnummerA, "12121212")
+        WiremockWrapper.stubAktoerRegisterGetAktoerIdNotFound(gyldigFodselsnummerC)
+
+        requestAndAssert(
+            request = melding,
+            expectedCode = HttpStatusCode.Accepted,
+            expectedResponse = null
+        )
     }
 
     @Test
@@ -236,4 +266,36 @@ class PleiepengesoknadProsesseringTest {
             }
         }
     }
+
+    private fun gyldigMelding(
+        fodselsnummerSoker : String,
+        fodselsnummerBarn: String
+    ) : MeldingV1 = MeldingV1(
+        mottatt = ZonedDateTime.now(),
+        fraOgMed = LocalDate.now(),
+        tilOgMed = LocalDate.now().plusWeeks(1),
+        soker = Soker(
+            fodselsnummer = fodselsnummerSoker,
+            etternavn = "Nordmann",
+            mellomnavn = "Mellomnavn",
+            fornavn = "Ola"
+        ),
+        barn = Barn(
+            navn = "Kari",
+            fodselsnummer = fodselsnummerBarn,
+            alternativId = null
+        ),
+        relasjonTilBarnet = "Mor",
+        arbeidsgivere = Arbeidsgivere(
+            organisasjoner = listOf(
+                Organisasjon("917755736", "Gyldig")
+            )
+        ),
+        vedleggUrls = listOf(URL("http://localhost:8080/1234")),
+        vedlegg = listOf(),
+        medlemskap = Medlemskap(
+            harBoddIUtlandetSiste12Mnd = true,
+            skalBoIUtlandetNeste12Mnd = true
+        )
+    )
 }
