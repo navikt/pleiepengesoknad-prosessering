@@ -1,10 +1,7 @@
 package no.nav.helse.dokument
 
-import com.fasterxml.jackson.databind.node.ObjectNode
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.helse.CorrelationId
 import no.nav.helse.aktoer.AktoerId
-import no.nav.helse.dusseldorf.ktor.jackson.dusseldorfConfigured
 import no.nav.helse.prosessering.v1.MeldingV1
 import no.nav.helse.prosessering.v1.Vedlegg
 import org.slf4j.Logger
@@ -16,9 +13,6 @@ private val logger: Logger = LoggerFactory.getLogger("nav.DokumentService")
 class DokumentService(
     private val dokumentGateway: DokumentGateway
 ) {
-    private val objectMapper = jacksonObjectMapper().dusseldorfConfigured()
-
-
     private suspend fun lagreDokument(
         dokument: DokumentGateway.Dokument,
         aktoerId: AktoerId,
@@ -54,7 +48,7 @@ class DokumentService(
     ) : URL {
         return lagreDokument(
             dokument = DokumentGateway.Dokument(
-                content = melding.jsonUtenVedlegg(),
+                content = JournalforingsFormat.somJson(melding),
                 contentType = "application/json",
                 title = "Søknad om pleiepenger som JSON"
             ),
@@ -93,14 +87,6 @@ class DokumentService(
             aktoerId = aktoerId,
             correlationId = correlationId
         )
-    }
-
-
-    private fun MeldingV1.jsonUtenVedlegg(): ByteArray {
-        val node = objectMapper.valueToTree<ObjectNode>(this)
-        node.remove("vedlegg")
-        node.remove("vedlegg_urls")
-        return objectMapper.writeValueAsBytes(node)
     }
 }
 
