@@ -94,7 +94,7 @@ class AktoerGateway(
         }
 
         val aktoerId = AktoerId(identResponse.identer[0].ident)
-        logger.info("Resolved AktørID $aktoerId")
+        logger.trace("Resolved AktørID $aktoerId")
         return aktoerId
     }
     private fun configureObjectMapper(objectMapper: ObjectMapper) : ObjectMapper {

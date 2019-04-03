@@ -20,16 +20,16 @@ class GosysService(
         dokumenter: List<List<URL>>,
         correlationId: CorrelationId
     ) {
-        logger.trace("oppretter journalpost")
+        logger.trace("Oppretter JournalPost")
         val journalPostId = joarkGateway.journalfoer(
             aktoerId = sokerAktoerId,
             mottatt = mottatt,
             dokumenter = dokumenter,
             correlationId = correlationId
         )
-        logger.trace("journalpost opprettet med id ${journalPostId.journalPostId}")
+        logger.info("Opprettet JournalPostID = $journalPostId")
 
-        logger.trace("oppretter oppgave")
+        logger.trace("Oppretter Oppgave")
         val oppgaveId = oppgaveGateway.lagOppgave(
             sokerAktoerId = sokerAktoerId,
             barnAktoerId = barnAktoerId,
@@ -37,6 +37,6 @@ class GosysService(
             correlationId = correlationId
         )
 
-        logger.trace("oppgave opprettet med id ${oppgaveId.oppgaveId}")
+        logger.info("Opprettet OppgaveID = $oppgaveId")
     }
 }

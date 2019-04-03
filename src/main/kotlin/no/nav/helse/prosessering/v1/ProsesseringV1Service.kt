@@ -39,7 +39,7 @@ class ProsesseringV1Service(
             correlationId = correlationId
         )
 
-        logger.trace("Søkerens AktørID = $sokerAktoerId")
+        logger.info("Søkerens AktørID = $sokerAktoerId")
 
         logger.trace("Henter AktørID for barnet.")
         val barnAktoerId = if (melding.barn.fodselsnummer != null) {
@@ -54,7 +54,7 @@ class ProsesseringV1Service(
             }
         } else null
 
-        logger.trace("Barnets AktørID = $barnAktoerId")
+        logger.info("Barnets AktørID = $barnAktoerId")
 
         logger.trace("Genererer Oppsummerings-PDF av søknaden.")
 
