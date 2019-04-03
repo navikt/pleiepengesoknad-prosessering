@@ -2,10 +2,6 @@ package no.nav.helse.dokument
 
 import com.fasterxml.jackson.databind.node.ObjectNode
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.coroutineScope
 import no.nav.helse.CorrelationId
 import no.nav.helse.aktoer.AktoerId
 import no.nav.helse.dusseldorf.ktor.jackson.dusseldorfConfigured
@@ -22,59 +18,83 @@ class DokumentService(
 ) {
     private val objectMapper = jacksonObjectMapper().dusseldorfConfigured()
 
-    suspend fun lagreSoknadsOppsummeringPdf(
+
+    private suspend fun lagreDokument(
+        dokument: DokumentGateway.Dokument,
+        aktoerId: AktoerId,
+        correlationId: CorrelationId
+    ) : URL {
+        return dokumentGateway.lagreDokmenter(
+            dokumenter = setOf(dokument),
+            correlationId = correlationId,
+            aktoerId = aktoerId
+        ).first()
+    }
+
+    internal suspend fun lagreSoknadsOppsummeringPdf(
         pdf : ByteArray,
         aktoerId: AktoerId,
         correlationId: CorrelationId
     ) : URL {
-        return dokumentGateway.lagreDokument(
+        return lagreDokument(
             dokument = DokumentGateway.Dokument(
                 content = pdf,
                 contentType = "application/pdf",
                 title = "Søknad om pleiepeinger"
             ),
-            correlationId = correlationId,
-            aktoerId = aktoerId
+            aktoerId = aktoerId,
+            correlationId = correlationId
         )
     }
 
-    suspend fun lagreSoknadsMelding(
+    internal suspend fun lagreSoknadsMelding(
         melding: MeldingV1,
         aktoerId: AktoerId,
         correlationId: CorrelationId
     ) : URL {
-        return dokumentGateway.lagreDokument(
+        return lagreDokument(
             dokument = DokumentGateway.Dokument(
                 content = melding.jsonUtenVedlegg(),
                 contentType = "application/json",
                 title = "Søknad om pleiepeinger som JSON"
             ),
-            correlationId = correlationId,
-            aktoerId = aktoerId
+            aktoerId = aktoerId,
+            correlationId = correlationId
         )
     }
 
-    suspend fun lagreVedlegg(
+    internal suspend fun lagreVedlegg(
         vedlegg : List<Vedlegg>,
         aktoerId: AktoerId,
         correlationId : CorrelationId
     ) : List<URL> {
-        logger.trace("Lagrer ${vedlegg.size} vedlegg")
-        return coroutineScope {
-            val futures = mutableListOf<Deferred<URL>>()
-            vedlegg.forEach {
-                futures.add(async {
-                    dokumentGateway.lagreDokument(
-                        dokument = DokumentGateway.Dokument(it),
-                        correlationId = correlationId,
-                        aktoerId = aktoerId
-                    )
-                })
+        val dokumenter = vedlegg.map { DokumentGateway.Dokument(it) }.toSet()
 
-            }
-            futures.awaitAll()
-        }
+        logger.trace("Lagrer ${vedlegg.size} vedlegg")
+        return dokumentGateway.lagreDokmenter(
+            dokumenter = dokumenter,
+            aktoerId = aktoerId,
+            correlationId = correlationId
+
+        )
     }
+
+    internal suspend fun slettDokumeter(
+        urlBolks: List<List<URL>>,
+        aktoerId: AktoerId,
+        correlationId : CorrelationId
+    ) {
+        val urls = mutableListOf<URL>()
+        urlBolks.forEach { urls.addAll(it) }
+
+        logger.trace("Sletter ${urls.size} dokumenter")
+        dokumentGateway.slettDokmenter(
+            urls = urls,
+            aktoerId = aktoerId,
+            correlationId = correlationId
+        )
+    }
+
 
     private fun MeldingV1.jsonUtenVedlegg(): ByteArray {
         val node = objectMapper.valueToTree<ObjectNode>(this)

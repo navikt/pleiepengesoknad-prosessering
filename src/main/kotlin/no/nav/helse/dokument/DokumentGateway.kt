@@ -12,11 +12,19 @@ import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.header
 import io.ktor.client.request.url
 import io.ktor.http.*
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import no.nav.helse.CorrelationId
 import no.nav.helse.aktoer.AktoerId
 import no.nav.helse.dusseldorf.ktor.client.*
 import no.nav.helse.prosessering.v1.Vedlegg
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import java.net.URL
+
+private val logger: Logger = LoggerFactory.getLogger("nav.DokumentGateway")
 
 class DokumentGateway(
     private val systemCredentialsProvider: SystemCredentialsProvider,
@@ -44,10 +52,81 @@ class DokumentGateway(
         }
     )
 
-    suspend fun lagreDokument(
-        dokument: Dokument,
+    internal suspend fun lagreDokmenter(
+        dokumenter: Set<Dokument>,
         aktoerId: AktoerId,
         correlationId: CorrelationId
+    ) : List<URL> {
+        val authorizationHeader = systemCredentialsProvider.getAuthorizationHeader()
+
+        return coroutineScope {
+            val deferred = mutableListOf<Deferred<URL>>()
+            dokumenter.forEach {
+                deferred.add(async {
+                    requestLagreDokument(
+                        dokument = it,
+                        correlationId = correlationId,
+                        aktoerId = aktoerId,
+                        authorizationHeader = authorizationHeader
+                    )
+                })
+            }
+            deferred.awaitAll()
+        }
+    }
+
+    internal suspend fun slettDokmenter(
+        urls: List<URL>,
+        aktoerId: AktoerId,
+        correlationId: CorrelationId
+    ) {
+        val authorizationHeader = systemCredentialsProvider.getAuthorizationHeader()
+
+        coroutineScope {
+            val deferred = mutableListOf<Deferred<Unit>>()
+            urls.forEach {
+                deferred.add(async {
+                    requestSlettDokument(
+                        url = it,
+                        correlationId = correlationId,
+                        aktoerId = aktoerId,
+                        authorizationHeader = authorizationHeader
+                    )
+                })
+            }
+            deferred.awaitAll()
+        }
+    }
+
+    private suspend fun requestSlettDokument(
+        url: URL,
+        aktoerId: AktoerId,
+        correlationId: CorrelationId,
+        authorizationHeader: String
+    ) {
+
+        val urlMedEier = Url.buildURL(
+            baseUrl = url,
+            queryParameters = mapOf("eier" to listOf(aktoerId.id))
+        )
+
+        val httpRequest = HttpRequestBuilder()
+        httpRequest.header(HttpHeaders.Authorization, authorizationHeader)
+        httpRequest.header(HttpHeaders.XCorrelationId, correlationId.value)
+        httpRequest.method = HttpMethod.Delete
+        httpRequest.url(urlMedEier)
+
+        monitoredHttpClient.request(
+            httpRequestBuilder = httpRequest,
+            expectedHttpResponseCodes = setOf(HttpStatusCode.NoContent)
+        ).use {}
+    }
+
+    private suspend fun requestLagreDokument(
+        dokument: Dokument,
+        aktoerId: AktoerId,
+        correlationId: CorrelationId,
+        authorizationHeader: String
     ) : URL {
 
         val urlMedEier = Url.buildURL(
@@ -55,7 +134,7 @@ class DokumentGateway(
             queryParameters = mapOf("eier" to listOf(aktoerId.id))
         )
         val httpRequest = HttpRequestBuilder()
-        httpRequest.header(HttpHeaders.Authorization, systemCredentialsProvider.getAuthorizationHeader())
+        httpRequest.header(HttpHeaders.Authorization, authorizationHeader)
         httpRequest.header(HttpHeaders.XCorrelationId, correlationId.value)
         httpRequest.header(HttpHeaders.ContentType, ContentType.Application.Json)
         httpRequest.method = HttpMethod.Post
@@ -66,6 +145,7 @@ class DokumentGateway(
             httpRequestBuilder = httpRequest,
             expectedHttpResponseCodes = setOf(HttpStatusCode.Created)
         )
+
         return httpResponse.use {
             URL(it.headers[HttpHeaders.Location])
         }

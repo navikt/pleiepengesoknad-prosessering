@@ -108,17 +108,27 @@ class ProsesseringV1Service(
 
         logger.trace("Oppretter oppgave i Gosys")
 
+        val komplettDokumentUrlsList = komplettDokumentUrls.toList()
+
         gosysService.opprett(
             sokerAktoerId = sokerAktoerId,
             barnAktoerId = barnAktoerId,
             mottatt = melding.mottatt,
-            dokumenter = komplettDokumentUrls.toList(),
+            dokumenter = komplettDokumentUrlsList,
             correlationId = correlationId
         )
 
         logger.trace("Oppgave i Gosys opprettet OK")
 
-        // TODO: Slette dokumenter.
+        logger.trace("Sletter dokumenter.")
+
+        try { dokumentService.slettDokumeter(
+            urlBolks = komplettDokumentUrlsList,
+            aktoerId = sokerAktoerId,
+            correlationId = correlationId
+        )} catch (cause: Throwable) {
+            logger.warn("Feil ved sletting av dokumenter etter oppgave opprettet i Gosys", cause)
+        }
     }
 
     private val periodeSoknadGjelderIUkerHistogram = Histogram.build()

@@ -8,6 +8,7 @@ import com.github.tomakehurst.wiremock.matching.EqualToPattern
 import no.nav.security.oidc.test.support.JwkGenerator
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import java.util.*
 
 private val logger: Logger = LoggerFactory.getLogger("nav.WiremockWrapper")
 private const val jwkSetPath = "/auth-mock/jwk-set"
@@ -54,7 +55,8 @@ object WiremockWrapper {
 
         stubJournalfor()
         stubOpprettOppgave()
-        stubLagreDokument()
+        stubLagreDokument(wireMockServer.getPleiepengerDokumentBaseUrl())
+        stubSlettDokument()
         stubAktoerRegisterGetAktoerId("29099012345", "123456")
 
 
@@ -145,18 +147,27 @@ object WiremockWrapper {
         )
     }
 
-    fun stubLagreDokument() {
+    private fun stubLagreDokument(baseUrl : String) {
         WireMock.stubFor(
             WireMock.post(WireMock.urlPathMatching(".*$pleiepengerDokumentBasePath.*")).willReturn(
                 WireMock.aResponse()
                     .withHeader("Content-Type", "application/json")
-                    .withHeader("Location", "http://localhost:1337/dokument")
+                    .withHeader("Location", "$baseUrl/v1/dokument/${UUID.randomUUID()}")
                     .withStatus(201)
             )
         )
     }
 
-    fun stubOpprettOppgave() {
+    private fun stubSlettDokument() {
+        WireMock.stubFor(
+            WireMock.delete(WireMock.urlPathMatching(".*$pleiepengerDokumentBasePath.*")).willReturn(
+                WireMock.aResponse()
+                    .withStatus(204)
+            )
+        )
+    }
+
+    private fun stubOpprettOppgave() {
         WireMock.stubFor(
             WireMock.post(WireMock.urlPathMatching(".*$pleiepengerOppgaveBaseUrl.*")).willReturn(
                 WireMock.aResponse()
@@ -171,7 +182,7 @@ object WiremockWrapper {
         )
     }
 
-    fun stubJournalfor() {
+    private fun stubJournalfor() {
         WireMock.stubFor(
             WireMock.post(WireMock.urlPathMatching(".*$pleiepengerJoarkBaseUrl.*")).willReturn(
                 WireMock.aResponse()

@@ -24,6 +24,7 @@ import org.slf4j.LoggerFactory
 import java.net.URL
 import java.time.LocalDate
 import java.time.ZonedDateTime
+import java.util.*
 import kotlin.test.*
 
 private val logger: Logger = LoggerFactory.getLogger("nav.PleiepengesoknadProsesseringTest")
@@ -95,6 +96,24 @@ class PleiepengesoknadProsesseringTest {
         val melding = gyldigMelding(
             fodselsnummerSoker = gyldigFodselsnummerA,
             fodselsnummerBarn = gyldigFodselsnummerB
+        )
+
+        WiremockWrapper.stubAktoerRegisterGetAktoerId(gyldigFodselsnummerA, "12121212")
+        WiremockWrapper.stubAktoerRegisterGetAktoerId(gyldigFodselsnummerB, "23232323")
+
+        requestAndAssert(
+            request = melding,
+            expectedCode = HttpStatusCode.Accepted,
+            expectedResponse = null
+        )
+    }
+
+    @Test
+    fun `Melding lagt til prosessering selv om sletting av vedlegg feiler`() {
+        val melding = gyldigMelding(
+            fodselsnummerSoker = gyldigFodselsnummerA,
+            fodselsnummerBarn = gyldigFodselsnummerB,
+            vedleggUrl = URL("http://localhost:8080/vedlegg/1")
         )
 
         WiremockWrapper.stubAktoerRegisterGetAktoerId(gyldigFodselsnummerA, "12121212")
@@ -306,7 +325,8 @@ class PleiepengesoknadProsesseringTest {
 
     private fun gyldigMelding(
         fodselsnummerSoker : String,
-        fodselsnummerBarn: String
+        fodselsnummerBarn: String,
+        vedleggUrl : URL = URL("${wireMockServer.getPleiepengerDokumentBaseUrl()}/v1/dokument/${UUID.randomUUID()}")
     ) : MeldingV1 = MeldingV1(
         mottatt = ZonedDateTime.now(),
         fraOgMed = LocalDate.now(),
@@ -328,7 +348,7 @@ class PleiepengesoknadProsesseringTest {
                 Organisasjon("917755736", "Gyldig")
             )
         ),
-        vedleggUrls = listOf(URL("http://localhost:8080/1234")),
+        vedleggUrls = listOf(vedleggUrl),
         vedlegg = listOf(),
         medlemskap = Medlemskap(
             harBoddIUtlandetSiste12Mnd = true,
