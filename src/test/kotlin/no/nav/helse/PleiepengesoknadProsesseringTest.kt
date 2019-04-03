@@ -113,7 +113,7 @@ class PleiepengesoknadProsesseringTest {
         val melding = gyldigMelding(
             fodselsnummerSoker = gyldigFodselsnummerA,
             fodselsnummerBarn = gyldigFodselsnummerB,
-            vedleggUrl = URL("http://localhost:8080/vedlegg/1")
+            vedleggUrl = URL("http://localhost:8080/jeg-skal-feile/1")
         )
 
         WiremockWrapper.stubAktoerRegisterGetAktoerId(gyldigFodselsnummerA, "12121212")
