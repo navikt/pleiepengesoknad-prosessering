@@ -3,6 +3,7 @@ package no.nav.helse.gosys
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.PropertyNamingStrategy
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.apache.Apache
 import io.ktor.client.features.json.JacksonSerializer
@@ -75,6 +76,7 @@ class JoarkGateway(
     private fun configureObjectMapper(objectMapper: ObjectMapper) : ObjectMapper {
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
         objectMapper.propertyNamingStrategy = PropertyNamingStrategy.SNAKE_CASE
+        objectMapper.registerModule(JavaTimeModule())
         return objectMapper
     }
 }

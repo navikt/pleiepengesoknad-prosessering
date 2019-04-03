@@ -37,6 +37,7 @@ import no.nav.helse.prosessering.v1.PdfV1Generator
 import no.nav.helse.prosessering.v1.ProsesseringV1Service
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import java.net.URL
 import java.util.concurrent.TimeUnit
 
 private val logger: Logger = LoggerFactory.getLogger("nav.PleiepengesoknadProsessering")
@@ -154,9 +155,9 @@ fun Application.pleiepengesoknadProsessering() {
                     app = appId,
                     urlExpectedHttpStatusCodeMap = mapOf(
                         configuration.getJwksUrl() to HttpStatusCode.OK,
-                        Url.buildURL(baseUrl = configuration.getPleiepengerDokumentBaseUrl(), pathParts = listOf("health")) to HttpStatusCode.OK,
-                        Url.buildURL(baseUrl = configuration.getPleiepengerJoarkBaseUrl(), pathParts = listOf("health")) to HttpStatusCode.OK,
-                        Url.buildURL(baseUrl = configuration.getPleiepengerOppgaveBaseUrl(), pathParts = listOf("health")) to HttpStatusCode.OK
+                        Url.healthURL(configuration.getPleiepengerDokumentBaseUrl(), id = 1) to HttpStatusCode.OK,
+                        Url.healthURL(configuration.getPleiepengerJoarkBaseUrl(), id = 2) to HttpStatusCode.OK,
+                        Url.healthURL(configuration.getPleiepengerOppgaveBaseUrl(), id = 3) to HttpStatusCode.OK
                     )
                 )
             )
@@ -172,3 +173,7 @@ fun Application.pleiepengesoknadProsessering() {
         logRequests()
     }
 }
+// TODO: Hvorfor blir URL med forskjelige subdomains oppfattet som samme URL ...? (Derfor det legges til "id" query)
+private fun Url.Companion.healthURL(baseUrl: URL, id : Int) : URL = Url.buildURL(baseUrl = baseUrl, pathParts = listOf("health"), queryParameters = mapOf("id" to listOf("$id")))
+
+
