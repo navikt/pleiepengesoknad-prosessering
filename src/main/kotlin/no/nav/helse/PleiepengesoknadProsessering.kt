@@ -28,6 +28,7 @@ import no.nav.helse.dusseldorf.ktor.core.*
 import no.nav.helse.dusseldorf.ktor.health.HealthRoute
 import no.nav.helse.dusseldorf.ktor.jackson.JacksonStatusPages
 import no.nav.helse.dusseldorf.ktor.jackson.dusseldorfConfigured
+import no.nav.helse.dusseldorf.ktor.metrics.CallMonitoring
 import no.nav.helse.dusseldorf.ktor.metrics.MetricsRoute
 import no.nav.helse.gosys.GosysService
 import no.nav.helse.gosys.JoarkGateway
@@ -162,6 +163,10 @@ fun Application.pleiepengesoknadProsessering() {
                 )
             )
         )
+    }
+
+    install(CallMonitoring) {
+        app = appId
     }
 
     install(CallId) {
