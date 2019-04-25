@@ -6,27 +6,31 @@
 </head>
     <body>
         <img src="img/nav_logo.png" alt="NAV logo"/>
-        <h1>Søknad om pleiepenger, sykt barn</h1>
+        <h2>Søknad om pleiepenger, sykt barn</h2>
 
-        <h2>Søker</h2>
-        <h3>Navn: {{soker.navn}}</h3>
-        <h3>Fødselsnummer: {{soker.fodselsnummer}}</h3>
+        <h3>Søker</h3>
+        <p>Navn: {{soker.navn}}</p>
+        <p>Fødselsnummer: {{soker.fodselsnummer}}</p>
 
-        <h2>Barn</h2>
-        <h3>Navn: {{barn.navn}}</h3>
-        <h3>Fødselsnummer: {{barn.fodselsnummer}}</h3>
-        <h3>D-Nummer/Midlertidig fødselsnummer/Annen ID: {{barn.alternativ_id}}</h3>
+        <h3>Barn</h3>
+        <p>Navn: {{barn.navn}}</p>
+        <p>Fødselsnummer: {{barn.fodselsnummer}}</p>
+        <p>D-Nummer/Midlertidig fødselsnummer/Annen Id: {{barn.alternativ_id}}</p>
 
-        <h2>Annet</h2>
-        <h3>Søknad mottatt: {{annet.mottatt}}</h3>
-        <h3>Periode: {{annet.fra_og_med}} - {{annet.til_og_med}}</h3>
-        <h3>Relasjon til barnet: {{annet.relasjon_til_barnet}}</h3>
+        <h3>Annet</h3>
+        <p>Søknad mottatt: {{annet.mottatt}}</p>
+        <p>Periode: {{annet.fra_og_med}} - {{annet.til_og_med}}</p>
+        <p>Relasjon til barnet: {{annet.relasjon_til_barnet}}</p>
+        <p>Grad: {{annet.grad}} %</p>
+        <p>Skal andre søke innenfor samme periode?: {{annet.har_medsoker}}</p>
+        <p>Er selvstending næringsdrivende eller frilanser?: {{annet.er_selvstending_naeringsdrivende_eller_frilanser}}</p>
+        <p>Forventes det at barnet kan være i etablert tilsynsordning?: {{annet.forventes_at_barnet_kan_vaere_i_etablert_tilsynsordning}}</p>
 
-        <h2>Arbeidsgivere</h2>
+        <h3>Arbeidsgivere</h3>
         {{arbeidsgivere}}
 
-        <h2>Medlemskap</h2>
-        <h3>Har bodd i utlandet i løpet av de siste 12 månedene: {{medlemskap.har_bodd}}</h3>
-        <h3>Skal bo i utlandet i løpet av de neste 12 månedene: {{medlemskap.skal_bo}}</h3>
+        <h3>Medlemskap</h3>
+        <p>Har bodd i utlandet i løpet av de siste 12 månedene?: {{medlemskap.har_bodd}}</p>
+        <p>Skal bo i utlandet i løpet av de neste 12 månedene?: {{medlemskap.skal_bo}}</p>
     </body>
 </html>

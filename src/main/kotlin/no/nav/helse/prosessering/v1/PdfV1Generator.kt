@@ -45,6 +45,10 @@ class PdfV1Generator {
             .med("annet.mottatt", DATE_TIME_FORMATTER.format(melding.mottatt))
             .med("annet.fra_og_med", DATE_FORMATTER.format(melding.mottatt))
             .med("annet.til_og_med", DATE_FORMATTER.format(melding.mottatt))
+            .med("annet.grad", melding.grad.toString())
+            .med("annet.har_medsoker", melding.harMedsoker.tilJaEllerNei())
+            .med("annet.er_selvstending_naeringsdrivende_eller_frilanser", melding.erSelvstendigNaeringsdrivendeEllerFrilanser.tilJaEllerNei())
+            .med("annet.forventes_at_barnet_kan_vaere_i_etablert_tilsynsordning", melding.forventesAtBarnetKanVaereIEtablertTilsynsordning.tilJaEllerNei())
 
             .med("medlemskap.har_bodd", melding.medlemskap.harBoddIUtlandetSiste12Mnd.tilJaEllerNei())
             .med("medlemskap.skal_bo", melding.medlemskap.skalBoIUtlandetNeste12Mnd.tilJaEllerNei())
@@ -52,7 +56,6 @@ class PdfV1Generator {
             .medArbeidsgivere(melding.arbeidsgivere)
 
             .valider()
-
 
         val outputStream = ByteArrayOutputStream()
 
@@ -93,7 +96,7 @@ class PdfV1Generator {
 }
 
 private fun Boolean.tilJaEllerNei(): String {
-    return if (this) "JA" else "NEI"
+    return if (this) "Ja" else "Nei"
 }
 
 private fun Soker.navn(): String? {
