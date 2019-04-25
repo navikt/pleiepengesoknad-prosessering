@@ -2,7 +2,7 @@ import org.gradle.internal.impldep.org.fusesource.jansi.AnsiRenderer.test
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 val ktorVersion = ext.get("ktorVersion").toString()
-val dusseldorfKtorVersion = "1.1.3.2d0b51a"
+val dusseldorfKtorVersion = "1.1.5.2daa394"
 
 val wiremockVersion = "2.19.0"
 val openhtmltopdfVersion = "0.0.1-RC19"
@@ -10,13 +10,13 @@ val openhtmltopdfVersion = "0.0.1-RC19"
 val mainClass = "no.nav.helse.PleiepengesoknadProsesseringKt"
 
 plugins {
-    kotlin("jvm") version "1.3.21"
+    kotlin("jvm") version "1.3.30"
 }
 
 buildscript {
-    apply("https://raw.githubusercontent.com/navikt/dusseldorf-ktor/2d0b51a6956d1ff797e37527232211027f6970ff/gradle/dusseldorf-ktor.gradle.kts")
+    apply("https://raw.githubusercontent.com/navikt/dusseldorf-ktor/2daa394a9a89518b727e4d5e7f23b8de4c524f76/gradle/dusseldorf-ktor.gradle.kts")
     dependencies {
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.21")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.30")
     }
 }
 
@@ -37,7 +37,6 @@ dependencies {
     // PDF
     compile ( "com.openhtmltopdf:openhtmltopdf-pdfbox:$openhtmltopdfVersion")
     compile ( "com.openhtmltopdf:openhtmltopdf-slf4j:$openhtmltopdfVersion")
-
 
     // Test
     testCompile ("com.github.tomakehurst:wiremock:$wiremockVersion")
@@ -91,5 +90,5 @@ tasks.named<Jar>("jar") {
 }
 
 tasks.withType<Wrapper> {
-    gradleVersion = "5.2.1"
+    gradleVersion = "5.4"
 }
