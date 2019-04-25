@@ -15,7 +15,12 @@ data class MeldingV1 (
     val arbeidsgivere: Arbeidsgivere,
     val vedleggUrls : List<URL> = emptyList(),
     val vedlegg : List<Vedlegg> = emptyList(),
-    val medlemskap: Medlemskap
+    val medlemskap: Medlemskap,
+    val grad : Int,
+    val harMedsoker : Boolean,
+    val erSelvstendigNaeringsdrivendeEllerFrilanser : Boolean,
+    @JsonProperty("forventes_at_barnet_kan_vaere_i_etablert_tilsynsordning")
+    val forventesAtBarnetKanVaereIEtablertTilsynsordning: Boolean
 )
 
 data class Soker(
@@ -36,7 +41,7 @@ data class Arbeidsgivere(
 
 data class Organisasjon(
     val organisasjonsnummer: String,
-    val navn: String
+    val navn: String?
 )
 
 data class Medlemskap(

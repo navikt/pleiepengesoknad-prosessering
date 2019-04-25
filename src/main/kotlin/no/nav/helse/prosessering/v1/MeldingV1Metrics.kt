@@ -22,6 +22,12 @@ private val opplastedeVedleggHistogram = Histogram.build()
     .help("Antall vedlegg lastet opp i søknader")
     .register()
 
+private val gradHistogram = Histogram.build()
+    .buckets(20.0, 30.0, 40.0, 50.0, 60.0, 70.0, 80.0, 90.0, 100.0)
+    .name("grad_histogram")
+    .help("Graden søknaden gjelder")
+    .register()
+
 private val idTypePaaBarnCounter = Counter.build()
     .name("id_type_paa_barn_counter")
     .help("Teller for hva slags ID-Type som er benyttet for å identifisere barnet")
@@ -33,4 +39,5 @@ internal fun MeldingV1.reportMetrics() {
     opplastedeVedleggHistogram.observe( (vedlegg.size + vedleggUrls.size).toDouble() )
     idTypePaaBarnCounter.labels(if (barn.fodselsnummer != null) "fodselsnummer" else "alternativ_id").inc()
     periodeSoknadGjelderIUkerHistogram.observe(ChronoUnit.WEEKS.between(fraOgMed, tilOgMed).toDouble())
+    gradHistogram.observe(grad.toDouble())
 }

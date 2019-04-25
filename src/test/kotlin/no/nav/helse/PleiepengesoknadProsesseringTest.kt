@@ -228,7 +228,11 @@ class PleiepengesoknadProsesseringTest {
             medlemskap = Medlemskap(
                 harBoddIUtlandetSiste12Mnd = true,
                 skalBoIUtlandetNeste12Mnd = true
-            )
+            ),
+            erSelvstendigNaeringsdrivendeEllerFrilanser = false,
+            forventesAtBarnetKanVaereIEtablertTilsynsordning = false,
+            harMedsoker = true,
+            grad = 120
         )
         requestAndAssert(
             request = melding,
@@ -285,6 +289,11 @@ class PleiepengesoknadProsesseringTest {
                         "name": "til_og_med",
                         "reason": "Til og med må være etter fra og med.",
                         "invalid_value": "$tilOgMedString"
+                    }, {
+                        "type": "entity",
+                        "name": "grad",
+                        "reason": "Grad må være mellom 20 og 100.",
+                        "invalid_value": 120
                     }]
                 }
             """.trimIndent()
@@ -314,7 +323,7 @@ class PleiepengesoknadProsesseringTest {
                 logger.info("Expected Entity = $expectedResponse")
                 assertEquals(expectedCode, response.status())
                 if (expectedResponse != null) {
-                    JSONAssert.assertEquals(expectedResponse, response.content!!, true)
+                    JSONAssert.assertEquals(expectedResponse, response.content!!, false)
                 } else {
                     assertEquals(expectedResponse, response.content)
                 }
@@ -353,6 +362,10 @@ class PleiepengesoknadProsesseringTest {
         medlemskap = Medlemskap(
             harBoddIUtlandetSiste12Mnd = true,
             skalBoIUtlandetNeste12Mnd = true
-        )
+        ),
+        harMedsoker = true,
+        forventesAtBarnetKanVaereIEtablertTilsynsordning = false,
+        erSelvstendigNaeringsdrivendeEllerFrilanser = false,
+        grad = 70
     )
 }

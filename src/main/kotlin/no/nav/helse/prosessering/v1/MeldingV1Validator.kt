@@ -3,6 +3,9 @@ package no.nav.helse.prosessering.v1
 import no.nav.helse.dusseldorf.ktor.core.*
 import java.time.format.DateTimeFormatter
 
+private const val MIN_GRAD = 20
+private const val MAX_GRAD = 100
+
 internal fun MeldingV1.validate() {
     val violations = mutableSetOf<Violation>()
     if (vedlegg.isEmpty() && vedleggUrls.isEmpty()) {
@@ -70,6 +73,18 @@ internal fun MeldingV1.validate() {
                 )
             )
         }
+    }
+
+    // Grad
+    if (grad < MIN_GRAD || grad > MAX_GRAD) {
+        violations.add(
+            Violation(
+                parameterName = "grad",
+                parameterType = ParameterType.ENTITY,
+                reason = "Grad må være mellom $MIN_GRAD og $MAX_GRAD.",
+                invalidValue = grad
+
+            ))
     }
 
     if (!tilOgMed.isAfter(fraOgMed)) {
