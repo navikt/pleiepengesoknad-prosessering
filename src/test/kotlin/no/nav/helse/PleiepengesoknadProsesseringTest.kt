@@ -229,8 +229,6 @@ class PleiepengesoknadProsesseringTest {
                 harBoddIUtlandetSiste12Mnd = true,
                 skalBoIUtlandetNeste12Mnd = true
             ),
-            erSelvstendigNaeringsdrivendeEllerFrilanser = false,
-            forventesAtBarnetKanVaereIEtablertTilsynsordning = false,
             harMedsoker = true,
             grad = 120
         )
@@ -364,8 +362,6 @@ class PleiepengesoknadProsesseringTest {
             skalBoIUtlandetNeste12Mnd = true
         ),
         harMedsoker = true,
-        forventesAtBarnetKanVaereIEtablertTilsynsordning = false,
-        erSelvstendigNaeringsdrivendeEllerFrilanser = false,
         grad = 70
     )
 }

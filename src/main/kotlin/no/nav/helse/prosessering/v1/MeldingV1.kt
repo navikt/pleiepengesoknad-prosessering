@@ -17,10 +17,7 @@ data class MeldingV1 (
     val vedlegg : List<Vedlegg> = emptyList(),
     val medlemskap: Medlemskap,
     val grad : Int,
-    val harMedsoker : Boolean,
-    val erSelvstendigNaeringsdrivendeEllerFrilanser : Boolean,
-    @JsonProperty("forventes_at_barnet_kan_vaere_i_etablert_tilsynsordning")
-    val forventesAtBarnetKanVaereIEtablertTilsynsordning: Boolean
+    val harMedsoker : Boolean
 )
 
 data class Soker(
