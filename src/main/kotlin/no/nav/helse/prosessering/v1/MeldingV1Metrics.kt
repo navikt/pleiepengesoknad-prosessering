@@ -34,10 +34,21 @@ private val idTypePaaBarnCounter = Counter.build()
     .labelNames("id_type")
     .register()
 
+private val jaNeiCounter = Counter.build()
+    .name("ja_nei_counter")
+    .help("Teller for svar på ja/nei spørsmål i søknaden")
+    .labelNames("spm", "svar")
+    .register()
+
 internal fun MeldingV1.reportMetrics() {
     valgteArbeidsgivereHistogram.observe(arbeidsgivere.organisasjoner.size.toDouble())
     opplastedeVedleggHistogram.observe( (vedlegg.size + vedleggUrls.size).toDouble() )
     idTypePaaBarnCounter.labels(if (barn.fodselsnummer != null) "fodselsnummer" else "alternativ_id").inc()
     periodeSoknadGjelderIUkerHistogram.observe(ChronoUnit.WEEKS.between(fraOgMed, tilOgMed).toDouble())
     gradHistogram.observe(grad.toDouble())
+    jaNeiCounter.labels("har_medsoker", harMedsoker.tilJaEllerNei()).inc()
+    jaNeiCounter.labels("har_bodd_i_utlandet_siste_12_mnd", medlemskap.harBoddIUtlandetSiste12Mnd.tilJaEllerNei()).inc()
+    jaNeiCounter.labels("skal_bo_i_utlandet_neste_12_mnd", medlemskap.skalBoIUtlandetNeste12Mnd.tilJaEllerNei()).inc()
+
 }
+private fun Boolean.tilJaEllerNei(): String = if (this) "Ja" else "Nei"
