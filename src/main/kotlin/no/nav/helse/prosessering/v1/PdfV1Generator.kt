@@ -9,10 +9,12 @@ import java.io.ByteArrayOutputStream
 import java.lang.IllegalStateException
 import java.time.format.DateTimeFormatter
 import com.openhtmltopdf.util.XRLog
+import java.time.ZoneId
 
 private val logger: Logger = LoggerFactory.getLogger("nav.PdfV1Generator")
-private val DATE_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy")
-private val DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
+private val ZONE_ID = ZoneId.of("Europe/Oslo")
+private val DATE_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy").withZone(ZONE_ID)
+private val DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm").withZone(ZONE_ID)
 
 /**
  * TODO: Til når vi vet hvordan PDF skal se ut og hva den skal inneholde;
