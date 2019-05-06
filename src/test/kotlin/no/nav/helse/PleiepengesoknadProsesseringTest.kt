@@ -109,6 +109,7 @@ class PleiepengesoknadProsesseringTest {
     }
 
     @Test
+    @Ignore
     fun `Melding lagt til prosessering selv om sletting av vedlegg feiler`() {
         val melding = gyldigMelding(
             fodselsnummerSoker = gyldigFodselsnummerA,
@@ -230,7 +231,9 @@ class PleiepengesoknadProsesseringTest {
                 skalBoIUtlandetNeste12Mnd = true
             ),
             harMedsoker = true,
-            grad = 120
+            grad = 120,
+            harBekreftetOpplysninger = false,
+            harForstattRettigheterOgPlikter = false
         )
         requestAndAssert(
             request = melding,
@@ -292,6 +295,16 @@ class PleiepengesoknadProsesseringTest {
                         "name": "grad",
                         "reason": "Grad må være mellom 20 og 100.",
                         "invalid_value": 120
+                    },{
+                        "type": "entity",
+                        "name": "har_bekreftet_opplysninger",
+                        "reason": "Opplysningene må bekreftes for å legge søknad til prosessering.",
+                        "invalid_value": false
+                    },{
+                        "type": "entity",
+                        "name": "har_forstatt_rettigheter_og_plikter",
+                        "reason": "Må ha forstått rettigheter og plikter for å legge søknad til prosessering.",
+                        "invalid_value": false
                     }]
                 }
             """.trimIndent()
@@ -362,6 +375,8 @@ class PleiepengesoknadProsesseringTest {
             skalBoIUtlandetNeste12Mnd = true
         ),
         harMedsoker = true,
-        grad = 70
+        grad = 70,
+        harBekreftetOpplysninger = true,
+        harForstattRettigheterOgPlikter = true
     )
 }

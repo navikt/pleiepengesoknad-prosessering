@@ -17,7 +17,9 @@ data class MeldingV1 (
     val vedlegg : List<Vedlegg> = emptyList(),
     val medlemskap: Medlemskap,
     val grad : Int,
-    val harMedsoker : Boolean
+    val harMedsoker : Boolean,
+    val harForstattRettigheterOgPlikter : Boolean,
+    val harBekreftetOpplysninger : Boolean
 )
 
 data class Soker(

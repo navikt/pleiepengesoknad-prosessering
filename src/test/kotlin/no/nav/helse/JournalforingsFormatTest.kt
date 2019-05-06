@@ -43,7 +43,9 @@ class JournalforingsFormatTest {
                 "skal_bo_i_utlandet_neste_12_mnd": true
             },
             "grad": 55,
-            "har_medsoker": true
+            "har_medsoker": true,
+            "har_bekreftet_opplysninger" : true,
+	        "har_forstatt_rettigheter_og_plikter": true
         }
         """.trimIndent(), String(json), true)
 
@@ -86,6 +88,8 @@ class JournalforingsFormatTest {
             skalBoIUtlandetNeste12Mnd = true
         ),
         harMedsoker = true,
-        grad = 55
+        grad = 55,
+        harBekreftetOpplysninger = true,
+        harForstattRettigheterOgPlikter = true
     )
 }

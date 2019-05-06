@@ -47,7 +47,9 @@ class PdfV1GeneratorTest {
             skalBoIUtlandetNeste12Mnd = false
         ),
         grad = 60,
-        harMedsoker = true
+        harMedsoker = true,
+        harForstattRettigheterOgPlikter = true,
+        harBekreftetOpplysninger = true
     )
 
     private fun genererPdf(melding: MeldingV1 = gyldigMelding) : ByteArray {

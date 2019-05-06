@@ -75,6 +75,27 @@ internal fun MeldingV1.validate() {
         }
     }
 
+    if (!harBekreftetOpplysninger) {
+        violations.add(
+            Violation(
+                parameterName = "har_bekreftet_opplysninger",
+                parameterType = ParameterType.ENTITY,
+                reason = "Opplysningene må bekreftes for å legge søknad til prosessering.",
+                invalidValue = false
+
+            ))
+    }
+    if (!harForstattRettigheterOgPlikter) {
+        violations.add(
+            Violation(
+                parameterName = "har_forstatt_rettigheter_og_plikter",
+                parameterType = ParameterType.ENTITY,
+                reason = "Må ha forstått rettigheter og plikter for å legge søknad til prosessering.",
+                invalidValue = false
+
+            ))
+    }
+
     // Grad
     if (grad < MIN_GRAD || grad > MAX_GRAD) {
         violations.add(
