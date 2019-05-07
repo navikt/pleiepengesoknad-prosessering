@@ -24,12 +24,15 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.net.URL
 
-private val logger: Logger = LoggerFactory.getLogger("nav.DokumentGateway")
 
 class DokumentGateway(
     private val systemCredentialsProvider: SystemCredentialsProvider,
     baseUrl : URL
 ){
+
+    private companion object {
+        private val logger: Logger = LoggerFactory.getLogger("nav.DokumentGateway")
+    }
 
     private val completeUrl = Url.buildURL(
         baseUrl = baseUrl,
@@ -116,10 +119,14 @@ class DokumentGateway(
         httpRequest.method = HttpMethod.Delete
         httpRequest.url(urlMedEier)
 
-        monitoredHttpClient.request(
-            httpRequestBuilder = httpRequest,
-            expectedHttpResponseCodes = setOf(HttpStatusCode.NoContent)
-        ).use {}
+        try {
+            monitoredHttpClient.request(
+                httpRequestBuilder = httpRequest,
+                expectedHttpResponseCodes = setOf(HttpStatusCode.NoContent)
+            ).use {}
+        } catch (cause: Throwable) {
+            logger.warn("Feil ved sletting av dokument '$url' for aktør '${aktoerId.id}'", cause)
+        }
     }
 
     private suspend fun requestLagreDokument(

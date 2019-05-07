@@ -109,7 +109,6 @@ class PleiepengesoknadProsesseringTest {
     }
 
     @Test
-    @Ignore
     fun `Melding lagt til prosessering selv om sletting av vedlegg feiler`() {
         val melding = gyldigMelding(
             fodselsnummerSoker = gyldigFodselsnummerA,
