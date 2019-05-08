@@ -108,12 +108,12 @@ internal fun MeldingV1.validate() {
             ))
     }
 
-    if (!tilOgMed.isAfter(fraOgMed)) {
+    if (!tilOgMed.isEqual(fraOgMed) && !tilOgMed.isAfter(fraOgMed)) {
         violations.add(
             Violation(
                 parameterName = "fra_og_med",
                 parameterType = ParameterType.ENTITY,
-                reason = "Fra og med må være før til og med.",
+                reason = "Fra og med må være før eller lik til og med.",
                 invalidValue = DateTimeFormatter.ISO_DATE.format(fraOgMed)
             )
         )
@@ -121,7 +121,7 @@ internal fun MeldingV1.validate() {
             Violation(
                 parameterName = "til_og_med",
                 parameterType = ParameterType.ENTITY,
-                reason = "Til og med må være etter fra og med.",
+                reason = "Til og med må være etter eller lik fra og med.",
                 invalidValue = DateTimeFormatter.ISO_DATE.format(tilOgMed)
             )
         )
