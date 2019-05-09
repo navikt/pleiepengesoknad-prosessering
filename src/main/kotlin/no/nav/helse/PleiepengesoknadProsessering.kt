@@ -36,6 +36,7 @@ import no.nav.helse.gosys.OppgaveGateway
 import no.nav.helse.prosessering.api.prosesseringApis
 import no.nav.helse.prosessering.v1.PdfV1Generator
 import no.nav.helse.prosessering.v1.ProsesseringV1Service
+import no.nav.helse.prosessering.v1.kafka.KafkaProducerV1
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.net.URL
@@ -140,7 +141,8 @@ fun Application.pleiepengesoknadProsessering() {
                                 systemCredentialsProvider = systemCredentialsProvider,
                                 baseUrl = configuration.getPleiepengerDokumentBaseUrl()
                             )
-                        )
+                        ),
+                        kafkaProducerV1 = KafkaProducerV1()
                     )
                 )
             }

@@ -1,11 +1,14 @@
 package no.nav.helse.prosessering.v1
 
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 import no.nav.helse.CorrelationId
 import no.nav.helse.aktoer.AktoerId
 import no.nav.helse.aktoer.AktoerService
 import no.nav.helse.aktoer.Fodselsnummer
 import no.nav.helse.dokument.DokumentService
 import no.nav.helse.gosys.GosysService
+import no.nav.helse.prosessering.v1.kafka.KafkaProducerV1
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -16,7 +19,8 @@ class ProsesseringV1Service(
     private val gosysService: GosysService,
     private val aktoerService: AktoerService,
     private val pdfV1Generator: PdfV1Generator,
-    private val dokumentService: DokumentService
+    private val dokumentService: DokumentService,
+    private val kafkaProducerV1: KafkaProducerV1
 ) {
     suspend fun leggSoknadTilProsessering(
         melding: MeldingV1,
@@ -106,15 +110,25 @@ class ProsesseringV1Service(
 
         logger.trace("Oppgave i Gosys opprettet OK")
 
-        logger.trace("Sletter dokumenter.")
 
-        try { dokumentService.slettDokumeter(
-            urlBolks = komplettDokumentUrlsList,
-            aktoerId = sokerAktoerId,
-            correlationId = correlationId
-        )} catch (cause: Throwable) {
-            logger.warn("Feil ved sletting av dokumenter etter oppgave opprettet i Gosys", cause)
+        coroutineScope {
+            logger.trace("Sletter dokumenter.")
+            launch {
+                try { dokumentService.slettDokumeter(
+                    urlBolks = komplettDokumentUrlsList,
+                    aktoerId = sokerAktoerId,
+                    correlationId = correlationId
+                )} catch (cause: Throwable) {
+                    logger.warn("Feil ved sletting av dokumenter etter oppgave opprettet i Gosys", cause)
+                }
+            }
+            logger.trace("Sender søknaden til kafka.")
+            launch {
+                kafkaProducerV1.produce(melding)
+            }
         }
+        logger.trace("Prosessering ferdigstilt.")
+
     }
 
     private suspend fun hentBarnetsAktoerId(

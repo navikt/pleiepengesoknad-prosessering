@@ -38,6 +38,10 @@ dependencies {
     compile ( "com.openhtmltopdf:openhtmltopdf-pdfbox:$openhtmltopdfVersion")
     compile ( "com.openhtmltopdf:openhtmltopdf-slf4j:$openhtmltopdfVersion")
 
+    // Kafka
+    compile("org.apache.kafka:kafka-clients:2.2.0")
+    testCompile("org.testcontainers:kafka:1.11.2")
+
     // Test
     testCompile ("com.github.tomakehurst:wiremock:$wiremockVersion")
     testCompile("io.ktor:ktor-server-test-host:$ktorVersion") {
