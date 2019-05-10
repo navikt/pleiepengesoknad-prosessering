@@ -42,6 +42,9 @@ class DokumentGateway(
     private val monitoredHttpClient = MonitoredHttpClient(
         source = "pleiepengesoknad-prosessering",
         destination = "pleiepenger-dokument",
+        overridePaths = mapOf(
+            Regex("/v1/dokument/.+") to "/v1/dokument"
+        ),
         httpClient = HttpClient(Apache) {
             install(JsonFeature) {
                 serializer = JacksonSerializer { configureObjectMapper(this) }

@@ -56,12 +56,20 @@ internal fun MeldingV1.reportMetrics() {
     if (barnetsAlder != null) barnetsAlderHistogram.observe(barnetsAlder)
     valgteArbeidsgivereHistogram.observe(arbeidsgivere.organisasjoner.size.toDouble())
     opplastedeVedleggHistogram.observe( (vedlegg.size + vedleggUrls.size).toDouble() )
-    idTypePaaBarnCounter.labels(if (barn.fodselsnummer != null) "fodselsnummer" else "alternativ_id").inc()
+    idTypePaaBarnCounter.labels(barn.idType()).inc()
     periodeSoknadGjelderIUkerHistogram.observe(ChronoUnit.WEEKS.between(fraOgMed, tilOgMed).toDouble())
     gradHistogram.observe(grad.toDouble())
     jaNeiCounter.labels("har_medsoker", harMedsoker.tilJaEllerNei()).inc()
     jaNeiCounter.labels("har_bodd_i_utlandet_siste_12_mnd", medlemskap.harBoddIUtlandetSiste12Mnd.tilJaEllerNei()).inc()
     jaNeiCounter.labels("skal_bo_i_utlandet_neste_12_mnd", medlemskap.skalBoIUtlandetNeste12Mnd.tilJaEllerNei()).inc()
+}
+
+private fun Barn.idType(): String {
+    return when {
+        fodselsnummer != null -> "fodselsnummer"
+        alternativId != null -> "alternativ_id"
+        else -> "ingen_id"
+    }
 }
 
 internal fun Barn.metricAlder() : Double? {
