@@ -13,6 +13,6 @@ class KafkaProducerV1 {
         melding: MeldingV1
 
     ) {
-        logger.info("$melding")
+        logger.trace("$melding")
     }
 }
