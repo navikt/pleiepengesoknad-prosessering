@@ -16,8 +16,8 @@ class PdfV1GeneratorTest {
 
     private val gyldigMelding = MeldingV1(
         mottatt = ZonedDateTime.now(),
-        fraOgMed = LocalDate.now(),
-        tilOgMed = LocalDate.now(),
+        fraOgMed = LocalDate.now().plusDays(6),
+        tilOgMed = LocalDate.now().plusDays(16),
         soker = Soker(
             fornavn = "Ærling",
             mellomnavn = "Øverbø",

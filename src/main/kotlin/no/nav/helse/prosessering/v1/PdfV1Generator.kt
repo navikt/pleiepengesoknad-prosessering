@@ -45,8 +45,8 @@ class PdfV1Generator {
 
             .med("annet.relasjon_til_barnet", melding.relasjonTilBarnet)
             .med("annet.mottatt", DATE_TIME_FORMATTER.format(melding.mottatt))
-            .med("annet.fra_og_med", DATE_FORMATTER.format(melding.mottatt))
-            .med("annet.til_og_med", DATE_FORMATTER.format(melding.mottatt))
+            .med("annet.fra_og_med", DATE_FORMATTER.format(melding.fraOgMed))
+            .med("annet.til_og_med", DATE_FORMATTER.format(melding.tilOgMed))
             .med("annet.grad", melding.grad.toString())
             .med("annet.har_medsoker", melding.harMedsoker.tilJaEllerNei())
             .med("annet.har_forstatt_rettigheter_og_plikter", melding.harForstattRettigheterOgPlikter.tilJaEllerNei())
