@@ -111,22 +111,22 @@ class ProsesseringV1Service(
         logger.trace("Oppgave i Gosys opprettet OK")
 
 
-        coroutineScope {
-            logger.trace("Sletter dokumenter.")
-            launch {
-                try { dokumentService.slettDokumeter(
-                    urlBolks = komplettDokumentUrlsList,
-                    aktoerId = sokerAktoerId,
-                    correlationId = correlationId
-                )} catch (cause: Throwable) {
-                    logger.warn("Feil ved sletting av dokumenter etter oppgave opprettet i Gosys", cause)
-                }
-            }
-            logger.trace("Sender søknaden til kafka.")
-            launch {
-                kafkaProducerV1.produce(melding)
-            }
-        }
+//        coroutineScope {
+//            logger.trace("Sletter dokumenter.")
+//            launch {
+//                try { dokumentService.slettDokumeter(
+//                    urlBolks = komplettDokumentUrlsList,
+//                    aktoerId = sokerAktoerId,
+//                    correlationId = correlationId
+//                )} catch (cause: Throwable) {
+//                    logger.warn("Feil ved sletting av dokumenter etter oppgave opprettet i Gosys", cause)
+//                }
+//            }
+//            logger.trace("Sender søknaden til kafka.")
+//            launch {
+//                kafkaProducerV1.produce(melding)
+//            }
+//        }
         logger.trace("Prosessering ferdigstilt.")
 
     }
