@@ -66,7 +66,9 @@ class PdfV1Generator {
             .toStream(outputStream)
             .run()
 
-        return outputStream.toByteArray()
+        return outputStream.use {
+            it.toByteArray()
+        }
     }
 
     private fun String.fromResources() : String {
