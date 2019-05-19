@@ -73,7 +73,8 @@ class PdfV1Generator {
         PdfRendererBuilder()
             .withHtmlContent(html, BASE_URL)
             .toStream(outputStream)
-            .run()
+            .buildPdfRenderer()
+            .createPDF()
 
         return outputStream.use {
             it.toByteArray()
