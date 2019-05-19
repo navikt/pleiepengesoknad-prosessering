@@ -29,7 +29,7 @@ class PdfV1GeneratorTest {
             fodselsnummer = null,
             alternativId = "29091812345"
         ),
-        relasjonTilBarnet = "Far",
+        relasjonTilBarnet = "Onkel & Nærstående ' <> \" {}",
         arbeidsgivere = Arbeidsgivere(
             organisasjoner = listOf(
                 Organisasjon(

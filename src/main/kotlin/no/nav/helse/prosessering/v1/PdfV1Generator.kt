@@ -16,6 +16,15 @@ private val ZONE_ID = ZoneId.of("Europe/Oslo")
 private val DATE_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy").withZone(ZONE_ID)
 private val DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm").withZone(ZONE_ID)
 
+private val HTML_RESERVED_CHARACTERS_REGEX = """['"<>&]""".toRegex()
+private val HTML_RESERVED_CHARACTERS_MAPPING = linkedMapOf(
+    "&" to "&amp;",
+    "\"" to "&quot;",
+    "'" to "&apos;",
+    "<" to "&lt;",
+    ">" to "&gt;"
+)
+
 /**
  * TODO: Til når vi vet hvordan PDF skal se ut og hva den skal inneholde;
  * - Om vi skal ha "lokal" PDF-genrering bør vi kanskje bruke en template engine som handlebars/freemarker eller lignende?
@@ -76,7 +85,17 @@ class PdfV1Generator {
     }
 
     private fun String.med(key: String, value: String?) : String {
-        return this.replace("{{$key}}", value ?: "n/a")
+        val replaceValue =
+            if (value == null) "n/a"
+            else if (!value.contains(HTML_RESERVED_CHARACTERS_REGEX)) value
+            else {
+            var newValue : String = value
+            HTML_RESERVED_CHARACTERS_MAPPING.forEach{ char, html ->
+                newValue = newValue.replace(char, html)
+            }
+            newValue
+        }
+        return this.replace("{{$key}}", replaceValue)
     }
 
     private fun String.medArbeidsgivere(arbeidsgivere: Arbeidsgivere) : String {
