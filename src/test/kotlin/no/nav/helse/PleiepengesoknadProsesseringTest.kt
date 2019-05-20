@@ -44,6 +44,8 @@ class PleiepengesoknadProsesseringTest {
         private val gyldigFodselsnummerA = "02119970078"
         private val gyldigFodselsnummerB = "19066672169"
         private val gyldigFodselsnummerC = "20037473937"
+        private val dNummerA = "55125314561"
+
 
         fun getConfig() : ApplicationConfig {
             val fileConfig = ConfigFactory.load()
@@ -100,6 +102,23 @@ class PleiepengesoknadProsesseringTest {
 
         WiremockWrapper.stubAktoerRegisterGetAktoerId(gyldigFodselsnummerA, "12121212")
         WiremockWrapper.stubAktoerRegisterGetAktoerId(gyldigFodselsnummerB, "23232323")
+
+        requestAndAssert(
+            request = melding,
+            expectedCode = HttpStatusCode.Accepted,
+            expectedResponse = null
+        )
+    }
+
+    @Test
+    fun `Melding som gjeder søker med D-nummer`() {
+        val melding = gyldigMelding(
+            fodselsnummerSoker = dNummerA,
+            fodselsnummerBarn = gyldigFodselsnummerB
+        )
+
+        WiremockWrapper.stubAktoerRegisterGetAktoerId(dNummerA, "12121255")
+        WiremockWrapper.stubAktoerRegisterGetAktoerId(gyldigFodselsnummerB, "23232356")
 
         requestAndAssert(
             request = melding,
@@ -196,7 +215,7 @@ class PleiepengesoknadProsesseringTest {
         val gyldigOrgnr = "917755736"
         val kortOrgnr = "123456"
         val ugyldigOrgnr = "987654321"
-        val fodselsnummerSoker = "29099012345"
+        val fodselsnummerSoker = "290990123451"
         val fodselsnummerBarn = "29099054321"
         val alternativIdBarn = "123F"
 

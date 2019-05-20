@@ -29,7 +29,7 @@ internal fun MeldingV1.validate() {
 
     // TODO: Validere innhold av listen "vedlegg"
 
-    if (!soker.fodselsnummer.erGyldigFodselsnummer()) {
+    if (soker.fodselsnummer.length != 11 || !soker.fodselsnummer.erKunSiffer()) { // TODO: Teste mot D-nummer og andre ID'er som kan oppstå.
         violations.add(
             Violation(
                 parameterName = "soker.fodselsnummer",
