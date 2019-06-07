@@ -171,8 +171,16 @@ class PleiepengesoknadProsesseringTest {
 
         requestAndAssert(
             request = melding,
-            expectedCode = HttpStatusCode.Unauthorized,
-            expectedResponse = null,
+            expectedCode = HttpStatusCode.Forbidden,
+            expectedResponse = """
+            {
+                "type": "/problem-details/unauthorized",
+                "title": "unauthorized",
+                "status": 403,
+                "detail": "Requesten inneholder ikke tilstrekkelige tilganger.",
+                "instance": "about:blank"
+            }
+            """.trimIndent(),
             accessToken = unAauthorizedAccessToken
         )
     }
@@ -298,21 +306,6 @@ class PleiepengesoknadProsesseringTest {
                         "name": "arbeidsgivere.organisasjoner[2].organisasjonsnummer",
                         "reason": "Ikke gyldig organisasjonsnummer.",
                         "invalid_value": "$ugyldigOrgnr"
-                    }, {
-                        "type": "entity",
-                        "name": "fra_og_med",
-                        "reason": "Fra og med må være før eller lik til og med.",
-                        "invalid_value": "$fraOgMedString"
-                    }, {
-                        "type": "entity",
-                        "name": "til_og_med",
-                        "reason": "Til og med må være etter eller lik fra og med.",
-                        "invalid_value": "$tilOgMedString"
-                    }, {
-                        "type": "entity",
-                        "name": "grad",
-                        "reason": "Grad må være mellom 20 og 100.",
-                        "invalid_value": 120
                     },{
                         "type": "entity",
                         "name": "har_bekreftet_opplysninger",
@@ -323,6 +316,21 @@ class PleiepengesoknadProsesseringTest {
                         "name": "har_forstatt_rettigheter_og_plikter",
                         "reason": "Må ha forstått rettigheter og plikter for å legge søknad til prosessering.",
                         "invalid_value": false
+                    },{
+                        "type": "entity",
+                        "name": "grad",
+                        "reason": "Grad må være mellom 20 og 100.",
+                        "invalid_value": 120
+                    },{
+                        "type": "entity",
+                        "name": "fra_og_med",
+                        "reason": "Fra og med må være før eller lik til og med.",
+                        "invalid_value": "$fraOgMedString"
+                    }, {
+                        "type": "entity",
+                        "name": "til_og_med",
+                        "reason": "Til og med må være etter eller lik fra og med.",
+                        "invalid_value": "$tilOgMedString"
                     }]
                 }
             """.trimIndent()
@@ -352,7 +360,7 @@ class PleiepengesoknadProsesseringTest {
                 logger.info("Expected Entity = $expectedResponse")
                 assertEquals(expectedCode, response.status())
                 if (expectedResponse != null) {
-                    JSONAssert.assertEquals(expectedResponse, response.content!!, false)
+                    JSONAssert.assertEquals(expectedResponse, response.content!!, true)
                 } else {
                     assertEquals(expectedResponse, response.content)
                 }

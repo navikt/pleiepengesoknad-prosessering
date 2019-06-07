@@ -1,11 +1,8 @@
 package no.nav.helse
 
-import com.auth0.jwk.JwkProviderBuilder
 import io.ktor.application.*
 import io.ktor.auth.Authentication
 import io.ktor.auth.authenticate
-import io.ktor.auth.jwt.JWTPrincipal
-import io.ktor.auth.jwt.jwt
 import io.ktor.features.*
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.Url
@@ -19,8 +16,7 @@ import no.nav.helse.aktoer.AktoerService
 import no.nav.helse.auth.AccessTokenClientResolver
 import no.nav.helse.dokument.DokumentGateway
 import no.nav.helse.dokument.DokumentService
-import no.nav.helse.dusseldorf.ktor.auth.AuthStatusPages
-import no.nav.helse.dusseldorf.ktor.auth.clients
+import no.nav.helse.dusseldorf.ktor.auth.*
 import no.nav.helse.dusseldorf.ktor.client.*
 import no.nav.helse.dusseldorf.ktor.core.*
 import no.nav.helse.dusseldorf.ktor.health.HealthRoute
@@ -38,7 +34,6 @@ import no.nav.helse.prosessering.v1.ProsesseringV1Service
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.net.URI
-import java.util.concurrent.TimeUnit
 
 private val logger: Logger = LoggerFactory.getLogger("nav.PleiepengesoknadProsessering")
 
@@ -51,28 +46,10 @@ fun Application.pleiepengesoknadProsessering() {
     DefaultExports.initialize()
 
     val configuration = Configuration(environment.config)
-
-    val authorizedSystems = configuration.getAuthorizedSystemsForRestApi()
-
-    val jwkProvider = JwkProviderBuilder(configuration.getJwksUrl().toURL())
-        .cached(10, 24, TimeUnit.HOURS)
-        .rateLimited(10, 1, TimeUnit.MINUTES)
-        .build()
+    val issuers = configuration.issuers()
 
     install(Authentication) {
-        jwt {
-            verifier(jwkProvider, configuration.getIssuer())
-            realm = appId
-            validate { credentials ->
-                log.info("authorization attempt for ${credentials.payload.subject}")
-                if (credentials.payload.subject in authorizedSystems) {
-                    log.info("authorization ok")
-                    return@validate JWTPrincipal(credentials.payload)
-                }
-                log.warn("authorization failed")
-                return@validate null
-            }
-        }
+        multipleJwtIssuers(issuers)
     }
 
     install(ContentNegotiation) {
@@ -92,7 +69,7 @@ fun Application.pleiepengesoknadProsessering() {
     val accessTokenClientResolver = AccessTokenClientResolver(environment.config.clients())
 
     install(Routing) {
-        authenticate {
+        authenticate(*issuers.allIssuers()) {
             requiresCallId {
                 prosesseringApis(
                     prosesseringV1Service = ProsesseringV1Service(
@@ -129,12 +106,11 @@ fun Application.pleiepengesoknadProsessering() {
             healthService = HealthService(
                 healthChecks = setOf(
                     accessTokenClientResolver,
-                    HttpRequestHealthCheck(mapOf(
-                        configuration.getJwksUrl() to HttpRequestHealthConfig(expectedStatus = HttpStatusCode.OK, includeExpectedStatusEntity = false),
+                    HttpRequestHealthCheck(issuers.healthCheckMap(mutableMapOf(
                         Url.healthURL(configuration.getPleiepengerDokumentBaseUrl()) to HttpRequestHealthConfig(expectedStatus = HttpStatusCode.OK),
                         Url.healthURL(configuration.getPleiepengerJoarkBaseUrl()) to HttpRequestHealthConfig(expectedStatus = HttpStatusCode.OK),
                         Url.healthURL(configuration.getPleiepengerOppgaveBaseUrl()) to HttpRequestHealthConfig(expectedStatus = HttpStatusCode.OK)
-                    ))
+                    )))
                 )
             )
         )
@@ -158,3 +134,12 @@ fun Application.pleiepengesoknadProsessering() {
     }
 }
 private fun Url.Companion.healthURL(baseUrl: URI) = Url.buildURL(baseUrl = baseUrl, pathParts = listOf("health"))
+
+private fun Map<Issuer, Set<ClaimRule>>.healthCheckMap(
+    initial : MutableMap<URI, HttpRequestHealthConfig>
+) : Map<URI, HttpRequestHealthConfig> {
+    forEach { issuer, _ ->
+        initial[issuer.jwksUri()] = HttpRequestHealthConfig(expectedStatus = HttpStatusCode.OK, includeExpectedStatusEntity = false)
+    }
+    return initial.toMap()
+}

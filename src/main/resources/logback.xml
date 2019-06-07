@@ -8,6 +8,7 @@
     <logger name="io.netty" level="INFO"/>
     <logger name="nav" level="INFO"/>
     <logger name="no.nav" level="INFO"/>
+    <logger name="io.ktor.auth.jwt" level="TRACE" />
 
     <root level="INFO">
         <appender-ref ref="STDOUT_JSON"/>
