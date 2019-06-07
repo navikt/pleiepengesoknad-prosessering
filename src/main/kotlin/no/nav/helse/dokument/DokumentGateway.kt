@@ -15,6 +15,7 @@ import kotlinx.coroutines.coroutineScope
 import no.nav.helse.CorrelationId
 import no.nav.helse.aktoer.AktoerId
 import no.nav.helse.dusseldorf.ktor.client.*
+import no.nav.helse.dusseldorf.ktor.core.Retry
 import no.nav.helse.dusseldorf.ktor.metrics.Operation
 import no.nav.helse.dusseldorf.oauth2.client.CachedAccessTokenClient
 import no.nav.helse.prosessering.v1.Vedlegg
@@ -29,6 +30,8 @@ class DokumentGateway(
 ){
 
     private companion object {
+        private const val LAGRE_DOKUMENT_OPERATION = "lagre-dokument"
+        private const val SLETTE_DOKUMENT_OPERATION = "slette-dokument"
         private val logger: Logger = LoggerFactory.getLogger("nav.DokumentGateway")
     }
 
@@ -104,9 +107,9 @@ class DokumentGateway(
                 HttpHeaders.XCorrelationId to correlationId.value
             )
 
-        val (request, response, result) = Operation.monitored(
+        val (request, _, result) = Operation.monitored(
             app = "pleiepengesoknad-prosessering",
-            operation = "slette-dokument",
+            operation = SLETTE_DOKUMENT_OPERATION,
             resultResolver = { 204 == it.second.statusCode }
         ) {
             httpRequest.awaitStringResponseResult()
@@ -145,21 +148,23 @@ class DokumentGateway(
                 HttpHeaders.ContentType to "application/json"
             )
 
-        val (request, response, result) = Operation.monitored(
-            app = "pleiepengesoknad-prosessering",
-            operation = "lagre-dokument",
-            resultResolver = { 201 == it.second.statusCode }
+        return Retry.retry(
+            operation = LAGRE_DOKUMENT_OPERATION,
+            factor = 3.0
         ) {
-            httpRequest.awaitStringResponseResult()
+            val (request, response, result) = Operation.monitored(
+                app = "pleiepengesoknad-prosessering",
+                operation = LAGRE_DOKUMENT_OPERATION,
+                resultResolver = { 201 == it.second.statusCode }
+            ) { httpRequest.awaitStringResponseResult() }
+            result.fold(
+                { URI(response.header(HttpHeaders.Location).first()) },
+                { error ->
+                    logger.error(error.toString())
+                    throw IllegalStateException("Feil ved lagring av dokument mot '${request.url}'")
+                }
+            )
         }
-
-        return result.fold(
-            { URI(response.header(HttpHeaders.Location).first()) },
-            { error ->
-                logger.error(error.toString())
-                throw IllegalStateException("Feil ved lagring av dokument mot '${request.url}'")
-            }
-        )
     }
 
     private fun configuredObjectMapper() : ObjectMapper {

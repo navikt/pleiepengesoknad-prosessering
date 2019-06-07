@@ -11,6 +11,7 @@ import io.ktor.http.*
 import no.nav.helse.CorrelationId
 import no.nav.helse.aktoer.AktoerId
 import no.nav.helse.dusseldorf.ktor.client.*
+import no.nav.helse.dusseldorf.ktor.core.Retry
 import no.nav.helse.dusseldorf.ktor.metrics.Operation
 import no.nav.helse.dusseldorf.oauth2.client.CachedAccessTokenClient
 import org.slf4j.Logger
@@ -23,6 +24,7 @@ class OppgaveGateway(
     private val accessTokenClient : CachedAccessTokenClient
 ) {
     private companion object {
+        private const val OPPRETTE_OPPGAVE_OPERATION = "opprette-oppgave"
         private val logger: Logger = LoggerFactory.getLogger("nav.OppgaveGateway")
     }
 
@@ -61,21 +63,24 @@ class OppgaveGateway(
                 HttpHeaders.Accept to "application/json"
             )
 
-        val (request,_, result) = Operation.monitored(
-            app = "pleiepengesoknad-prosessering",
-            operation = "opprette-oppgave",
-            resultResolver = { 201 == it.second.statusCode }
+        return Retry.retry(
+            operation = OPPRETTE_OPPGAVE_OPERATION,
+            factor = 3.0
         ) {
-            httpRequest.awaitStringResponseResult()
-        }
+            val (request,_, result) = Operation.monitored(
+                app = "pleiepengesoknad-prosessering",
+                operation = OPPRETTE_OPPGAVE_OPERATION,
+                resultResolver = { 201 == it.second.statusCode }
+            ) { httpRequest.awaitStringResponseResult() }
 
-        return result.fold(
-            { success -> objectMapper.readValue(success)},
-            { error ->
-                logger.error(error.toString())
-                throw IllegalStateException("Feil ved opprettelse av oppgave mot '${request.url}'")
-            }
-        )
+            result.fold(
+                { success -> objectMapper.readValue<OppgaveId>(success)},
+                { error ->
+                    logger.error(error.toString())
+                    throw IllegalStateException("Feil ved opprettelse av oppgave mot '${request.url}'")
+                }
+            )
+        }
     }
 
     private fun configuredObjectMapper() : ObjectMapper {

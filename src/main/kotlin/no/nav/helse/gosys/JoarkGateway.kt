@@ -12,6 +12,7 @@ import io.ktor.http.*
 import no.nav.helse.CorrelationId
 import no.nav.helse.aktoer.AktoerId
 import no.nav.helse.dusseldorf.ktor.client.*
+import no.nav.helse.dusseldorf.ktor.core.Retry
 import no.nav.helse.dusseldorf.ktor.metrics.Operation
 import no.nav.helse.dusseldorf.oauth2.client.CachedAccessTokenClient
 import org.slf4j.Logger
@@ -26,6 +27,7 @@ class JoarkGateway(
 ) {
 
     private companion object {
+        private const val JOURNALFORING_OPERATION = "journalforing"
         private val logger: Logger = LoggerFactory.getLogger("nav.JoarkGateway")
     }
 
@@ -64,21 +66,23 @@ class JoarkGateway(
                 HttpHeaders.Accept to "application/json"
             )
 
-        val (request,_, result) = Operation.monitored(
-            app = "pleiepengesoknad-prosessering",
-            operation = "journalforing",
-            resultResolver = { 201 == it.second.statusCode }
+        return Retry.retry(
+            operation = JOURNALFORING_OPERATION,
+            factor = 3.0
         ) {
-            httpRequest.awaitStringResponseResult()
+            val (request,_, result) = Operation.monitored(
+                app = "pleiepengesoknad-prosessering",
+                operation = JOURNALFORING_OPERATION,
+                resultResolver = { 201 == it.second.statusCode }
+            ) { httpRequest.awaitStringResponseResult() }
+            result.fold(
+                { success -> objectMapper.readValue<JournalPostId>(success)},
+                { error ->
+                    logger.error(error.toString())
+                    throw IllegalStateException("Feil ved jorunalføring mot '${request.url}'")
+                }
+            )
         }
-
-        return result.fold(
-            { success -> objectMapper.readValue(success)},
-            { error ->
-                logger.error(error.toString())
-                throw IllegalStateException("Feil ved jorunalføring mot '${request.url}'")
-            }
-        )
     }
 
     private fun configuredObjectMapper() : ObjectMapper {

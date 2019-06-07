@@ -10,6 +10,7 @@ import io.ktor.http.HttpHeaders
 import io.ktor.http.Url
 import no.nav.helse.CorrelationId
 import no.nav.helse.dusseldorf.ktor.client.*
+import no.nav.helse.dusseldorf.ktor.core.Retry
 import no.nav.helse.dusseldorf.ktor.metrics.Operation
 import no.nav.helse.dusseldorf.oauth2.client.CachedAccessTokenClient
 import org.slf4j.Logger
@@ -25,6 +26,7 @@ class AktoerGateway(
     private val accessTokenClient: CachedAccessTokenClient
 ) {
     private companion object {
+        private const val HENTE_AKTOER_ID_OPERATION = "hente-aktoer-id"
         private val logger: Logger = LoggerFactory.getLogger("nav.AktoerGateway")
     }
 
@@ -56,22 +58,24 @@ class AktoerGateway(
                 "Nav-Call-Id" to correlationId.value
             )
 
-
-        val (request,_, result) = Operation.monitored(
-            app = "pleiepengesoknad-prosessering",
-            operation = "hente-aktoer-id",
-            resultResolver = { 200 == it.second.statusCode }
+        val httpResponse = Retry.retry(
+            operation = HENTE_AKTOER_ID_OPERATION,
+            factor = 3.0
         ) {
-            httpRequest.awaitStringResponseResult()
+            val (request,_, result) = Operation.monitored(
+                app = "pleiepengesoknad-prosessering",
+                operation = HENTE_AKTOER_ID_OPERATION,
+                resultResolver = { 200 == it.second.statusCode }
+            ) { httpRequest.awaitStringResponseResult() }
+            result.fold(
+                { success -> objectMapper.readValue<Map<String,IdentResponse>>(success)},
+                { error ->
+                    logger.error(error.toString())
+                    throw IllegalStateException("Feil ved henting av Aktør ID mot '${request.url}'")
+                }
+            )
         }
 
-        val httpResponse = result.fold(
-            { success -> objectMapper.readValue<Map<String,IdentResponse>>(success)},
-            { error ->
-                logger.error(error.toString())
-                throw IllegalStateException("Feil ved henting av Aktør ID mot '${request.url}'")
-            }
-        )
 
         if (!httpResponse.containsKey(fnr.value)) {
             throw IllegalStateException("Svar fra '$completeUrl' inneholdt ikke data om det forsespurte fødselsnummeret.")
