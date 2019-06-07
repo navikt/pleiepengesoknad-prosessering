@@ -2,77 +2,75 @@ package no.nav.helse.aktoer
 
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
-import io.ktor.client.HttpClient
-import io.ktor.client.engine.apache.Apache
-import io.ktor.client.features.json.JacksonSerializer
-import io.ktor.client.features.json.JsonFeature
-import io.ktor.client.features.logging.Logging
-import io.ktor.client.request.HttpRequestBuilder
-import io.ktor.client.request.accept
-import io.ktor.client.request.header
-import io.ktor.client.request.url
-import io.ktor.http.ContentType
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
+import com.github.kittinunf.fuel.coroutines.awaitStringResponseResult
+import com.github.kittinunf.fuel.httpGet
 import io.ktor.http.HttpHeaders
-import io.ktor.http.HttpMethod
 import io.ktor.http.Url
 import no.nav.helse.CorrelationId
 import no.nav.helse.dusseldorf.ktor.client.*
+import no.nav.helse.dusseldorf.ktor.metrics.Operation
+import no.nav.helse.dusseldorf.oauth2.client.CachedAccessTokenClient
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import java.net.URL
+import java.net.URI
 
 /**
  * https://app-q1.adeo.no/aktoerregister/swagger-ui.html
  */
 
-private val logger: Logger = LoggerFactory.getLogger("nav.AktoerGateway")
-
 class AktoerGateway(
-    baseUrl: URL,
-    private val systemCredentialsProvider: SystemCredentialsProvider
+    baseUrl: URI,
+    private val accessTokenClient: CachedAccessTokenClient
 ) {
-    private val completeUrl : URL = Url.buildURL(
+    private companion object {
+        private val logger: Logger = LoggerFactory.getLogger("nav.AktoerGateway")
+    }
+
+    private val completeUrl = Url.buildURL(
         baseUrl = baseUrl,
         pathParts = listOf("api","v1","identer"),
         queryParameters = mapOf(
             "gjeldende" to listOf("true"),
             "identgruppe" to listOf("AktoerId")
         )
-    )
+    ).toString()
 
-    private val monitoredHttpClient = MonitoredHttpClient(
-        source = "pleiepengesoknad-prosessering",
-        destination = "aktoer-register",
-        httpClient = HttpClient(Apache) {
-            install(JsonFeature) {
-                serializer = JacksonSerializer { configureObjectMapper(this) }
-            }
-            engine {
-                customizeClient { setProxyRoutePlanner() }
-            }
-            install (Logging) {
-                sl4jLogger("aktoer-register")
-            }
-        }
-    )
+    private val objectMapper = configuredObjectMapper()
 
     suspend fun getAktoerId(
         fnr: Fodselsnummer,
         correlationId: CorrelationId
     ) : AktoerId {
 
-        val httpRequest = HttpRequestBuilder()
-        httpRequest.header(HttpHeaders.Authorization, systemCredentialsProvider.getAuthorizationHeader())
-        httpRequest.header("Nav-Consumer-Id", "pleiepengesoknad-prosessering")
-        httpRequest.header("Nav-Personidenter", fnr.value)
-        httpRequest.header("Nav-Call-Id", correlationId.value)
-        httpRequest.method = HttpMethod.Get
-        httpRequest.accept(ContentType.Application.Json)
-        httpRequest.url(completeUrl)
+        val authorizationHeader = accessTokenClient.getAccessToken(setOf("openid")).asAuthoriationHeader()
+
+        val httpRequest = completeUrl
+            .httpGet()
+            .header(
+                HttpHeaders.Authorization to authorizationHeader,
+                HttpHeaders.Accept to "application/json",
+                "Nav-Consumer-Id" to "pleiepengesoknad-prosessering",
+                "Nav-Personidenter" to fnr.value,
+                "Nav-Call-Id" to correlationId.value
+            )
 
 
-        val httpResponse : Map<String, IdentResponse> = monitoredHttpClient.requestAndReceive(
-            httpRequestBuilder = httpRequest
+        val (request,_, result) = Operation.monitored(
+            app = "pleiepengesoknad-prosessering",
+            operation = "hente-aktoer-id",
+            resultResolver = { 200 == it.second.statusCode }
+        ) {
+            httpRequest.awaitStringResponseResult()
+        }
+
+        val httpResponse = result.fold(
+            { success -> objectMapper.readValue<Map<String,IdentResponse>>(success)},
+            { error ->
+                logger.error(error.toString())
+                throw IllegalStateException("Feil ved henting av Aktør ID mot '${request.url}'")
+            }
         )
 
         if (!httpResponse.containsKey(fnr.value)) {
@@ -97,7 +95,9 @@ class AktoerGateway(
         logger.trace("Resolved AktørID $aktoerId")
         return aktoerId
     }
-    private fun configureObjectMapper(objectMapper: ObjectMapper) : ObjectMapper {
+
+    private fun configuredObjectMapper() : ObjectMapper {
+        val objectMapper = jacksonObjectMapper()
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
         return objectMapper
     }

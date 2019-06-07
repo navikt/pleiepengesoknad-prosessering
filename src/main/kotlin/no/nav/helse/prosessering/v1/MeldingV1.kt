@@ -1,7 +1,7 @@
 package no.nav.helse.prosessering.v1
 
 import com.fasterxml.jackson.annotation.JsonProperty
-import java.net.URL
+import java.net.URI
 import java.time.LocalDate
 import java.time.ZonedDateTime
 
@@ -13,7 +13,7 @@ data class MeldingV1 (
     val barn : Barn,
     val relasjonTilBarnet : String,
     val arbeidsgivere: Arbeidsgivere,
-    val vedleggUrls : List<URL> = emptyList(),
+    val vedleggUrls : List<URI> = emptyList(),
     val vedlegg : List<Vedlegg> = emptyList(),
     val medlemskap: Medlemskap,
     val grad : Int,

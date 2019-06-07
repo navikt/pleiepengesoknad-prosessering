@@ -6,7 +6,7 @@ import no.nav.helse.prosessering.v1.MeldingV1
 import no.nav.helse.prosessering.v1.Vedlegg
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import java.net.URL
+import java.net.URI
 
 private val logger: Logger = LoggerFactory.getLogger("nav.DokumentService")
 
@@ -17,7 +17,7 @@ class DokumentService(
         dokument: DokumentGateway.Dokument,
         aktoerId: AktoerId,
         correlationId: CorrelationId
-    ) : URL {
+    ) : URI {
         return dokumentGateway.lagreDokmenter(
             dokumenter = setOf(dokument),
             correlationId = correlationId,
@@ -29,7 +29,7 @@ class DokumentService(
         pdf : ByteArray,
         aktoerId: AktoerId,
         correlationId: CorrelationId
-    ) : URL {
+    ) : URI {
         return lagreDokument(
             dokument = DokumentGateway.Dokument(
                 content = pdf,
@@ -45,7 +45,7 @@ class DokumentService(
         melding: MeldingV1,
         aktoerId: AktoerId,
         correlationId: CorrelationId
-    ) : URL {
+    ) : URI {
         return lagreDokument(
             dokument = DokumentGateway.Dokument(
                 content = JournalforingsFormat.somJson(melding),
@@ -61,7 +61,7 @@ class DokumentService(
         vedlegg : List<Vedlegg>,
         aktoerId: AktoerId,
         correlationId : CorrelationId
-    ) : List<URL> {
+    ) : List<URI> {
         val dokumenter = vedlegg.map { DokumentGateway.Dokument(it) }.toSet()
 
         logger.trace("Lagrer ${vedlegg.size} vedlegg")
@@ -74,11 +74,11 @@ class DokumentService(
     }
 
     internal suspend fun slettDokumeter(
-        urlBolks: List<List<URL>>,
+        urlBolks: List<List<URI>>,
         aktoerId: AktoerId,
         correlationId : CorrelationId
     ) {
-        val urls = mutableListOf<URL>()
+        val urls = mutableListOf<URI>()
         urlBolks.forEach { urls.addAll(it) }
 
         logger.trace("Sletter ${urls.size} dokumenter")

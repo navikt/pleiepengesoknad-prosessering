@@ -19,7 +19,9 @@ object TestConfiguration {
     ) : Map<String, String>{
         val map = mutableMapOf(
             Pair("ktor.deployment.port","$port"),
-            Pair("nav.authorization.token_url","$tokenUrl"),
+            Pair("nav.auth.clients.0.alias", "nais-sts"),
+            Pair("nav.auth.clients.0.client_id", "srvpps-prosessering"),
+            Pair("nav.auth.clients.0.token_endpoint", "$tokenUrl"),
             Pair("nav.authorization.jwks_url","$jwkSetUrl"),
             Pair("nav.authorization.issuer","$issuer"),
             Pair("nav.rest_api.authorized_systems","$authorizedSystems"),
@@ -30,7 +32,7 @@ object TestConfiguration {
         )
 
         if (clientSecret != null) {
-            map["nav.authorization.service_account.client_secret"] = clientSecret
+            map["nav.auth.clients.0.client_secret"] = clientSecret
         }
         return map.toMap()
     }

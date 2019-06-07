@@ -1,45 +1,43 @@
 package no.nav.helse
 
 import com.auth0.jwk.JwkProviderBuilder
-import com.fasterxml.jackson.databind.DeserializationFeature
 import io.ktor.application.*
 import io.ktor.auth.Authentication
 import io.ktor.auth.authenticate
 import io.ktor.auth.jwt.JWTPrincipal
 import io.ktor.auth.jwt.jwt
-import io.ktor.client.HttpClient
-import io.ktor.client.engine.apache.Apache
-import io.ktor.client.features.json.JacksonSerializer
-import io.ktor.client.features.json.JsonFeature
-import io.ktor.client.features.logging.Logging
 import io.ktor.features.*
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.Url
 import io.ktor.jackson.jackson
+import io.ktor.metrics.micrometer.MicrometerMetrics
 import io.ktor.routing.Routing
 import io.ktor.util.KtorExperimentalAPI
 import io.prometheus.client.hotspot.DefaultExports
 import no.nav.helse.aktoer.AktoerGateway
 import no.nav.helse.aktoer.AktoerService
+import no.nav.helse.auth.AccessTokenClientResolver
 import no.nav.helse.dokument.DokumentGateway
 import no.nav.helse.dokument.DokumentService
+import no.nav.helse.dusseldorf.ktor.auth.AuthStatusPages
+import no.nav.helse.dusseldorf.ktor.auth.clients
 import no.nav.helse.dusseldorf.ktor.client.*
 import no.nav.helse.dusseldorf.ktor.core.*
 import no.nav.helse.dusseldorf.ktor.health.HealthRoute
+import no.nav.helse.dusseldorf.ktor.health.HealthService
 import no.nav.helse.dusseldorf.ktor.jackson.JacksonStatusPages
 import no.nav.helse.dusseldorf.ktor.jackson.dusseldorfConfigured
-import no.nav.helse.dusseldorf.ktor.metrics.CallMonitoring
 import no.nav.helse.dusseldorf.ktor.metrics.MetricsRoute
+import no.nav.helse.dusseldorf.ktor.metrics.init
 import no.nav.helse.gosys.GosysService
 import no.nav.helse.gosys.JoarkGateway
 import no.nav.helse.gosys.OppgaveGateway
 import no.nav.helse.prosessering.api.prosesseringApis
 import no.nav.helse.prosessering.v1.PdfV1Generator
 import no.nav.helse.prosessering.v1.ProsesseringV1Service
-import no.nav.helse.prosessering.v1.kafka.KafkaProducerV1
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import java.net.URL
+import java.net.URI
 import java.util.concurrent.TimeUnit
 
 private val logger: Logger = LoggerFactory.getLogger("nav.PleiepengesoknadProsessering")
@@ -56,7 +54,7 @@ fun Application.pleiepengesoknadProsessering() {
 
     val authorizedSystems = configuration.getAuthorizedSystemsForRestApi()
 
-    val jwkProvider = JwkProviderBuilder(configuration.getJwksUrl())
+    val jwkProvider = JwkProviderBuilder(configuration.getJwksUrl().toURL())
         .cached(10, 24, TimeUnit.HOURS)
         .rateLimited(10, 1, TimeUnit.MINUTES)
         .build()
@@ -86,33 +84,12 @@ fun Application.pleiepengesoknadProsessering() {
     install(StatusPages) {
         DefaultStatusPages()
         JacksonStatusPages()
+        AuthStatusPages()
     }
 
-    val systemCredentialsProvider = Oauth2ClientCredentialsProvider(
-        monitoredHttpClient = MonitoredHttpClient(
-            source = appId,
-            destination = "nais-sts",
-            httpClient = HttpClient(Apache) {
-                install(JsonFeature) {
-                    serializer = JacksonSerializer {
-                        configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-                    }
-                }
-                install (Logging) {
-                    sl4jLogger("nais-sts")
-                }
-                engine {
-                    customizeClient { setProxyRoutePlanner() }
-                }
-            }
-        ),
-        tokenUrl = configuration.getTokenUrl(),
-        clientId = configuration.getServiceAccountClientId(),
-        clientSecret = configuration.getServiceAccountClientSecret(),
-        scopes = configuration.getServiceAccountScopes()
-    )
-
     install(CallIdRequired)
+
+    val accessTokenClientResolver = AccessTokenClientResolver(environment.config.clients())
 
     install(Routing) {
         authenticate {
@@ -122,27 +99,26 @@ fun Application.pleiepengesoknadProsessering() {
                         gosysService = GosysService(
                             joarkGateway = JoarkGateway(
                                 baseUrl = configuration.getPleiepengerJoarkBaseUrl(),
-                                systemCredentialsProvider = systemCredentialsProvider
+                                accessTokenClient = accessTokenClientResolver.joarkAccessTokenClient()
                             ),
                             oppgaveGateway = OppgaveGateway(
                                 baseUrl = configuration.getPleiepengerOppgaveBaseUrl(),
-                                systemCredentialsProvider = systemCredentialsProvider
+                                accessTokenClient = accessTokenClientResolver.oppgaveAccessTokenClient()
                             )
                         ),
                         aktoerService = AktoerService(
                             aktoerGateway = AktoerGateway(
-                                systemCredentialsProvider = systemCredentialsProvider,
-                                baseUrl = configuration.getAktoerRegisterBaseUrl()
+                                baseUrl = configuration.getAktoerRegisterBaseUrl(),
+                                accessTokenClient = accessTokenClientResolver.aktoerRegisterAccessTokenClient()
                             )
                         ),
                         pdfV1Generator = PdfV1Generator(),
                         dokumentService = DokumentService(
                             dokumentGateway = DokumentGateway(
-                                systemCredentialsProvider = systemCredentialsProvider,
-                                baseUrl = configuration.getPleiepengerDokumentBaseUrl()
+                                baseUrl = configuration.getPleiepengerDokumentBaseUrl(),
+                                accessTokenClient = accessTokenClientResolver.dokumentAccessTokenClient()
                             )
-                        ),
-                        kafkaProducerV1 = KafkaProducerV1()
+                        )
                     )
                 )
             }
@@ -150,25 +126,26 @@ fun Application.pleiepengesoknadProsessering() {
         DefaultProbeRoutes()
         MetricsRoute()
         HealthRoute(
-            healthChecks = setOf(
-                SystemCredentialsProviderHealthCheck(
-                    systemCredentialsProvider = systemCredentialsProvider
-                ),
-                HttpRequestHealthCheck(
-                    app = appId,
-                    urlExpectedHttpStatusCodeMap = mapOf(
-                        configuration.getJwksUrl() to HttpStatusCode.OK,
-                        Url.healthURL(configuration.getPleiepengerDokumentBaseUrl(), id = 1) to HttpStatusCode.OK,
-                        Url.healthURL(configuration.getPleiepengerJoarkBaseUrl(), id = 2) to HttpStatusCode.OK,
-                        Url.healthURL(configuration.getPleiepengerOppgaveBaseUrl(), id = 3) to HttpStatusCode.OK
-                    )
+            healthService = HealthService(
+                healthChecks = setOf(
+                    accessTokenClientResolver,
+                    HttpRequestHealthCheck(mapOf(
+                        configuration.getJwksUrl() to HttpRequestHealthConfig(expectedStatus = HttpStatusCode.OK, includeExpectedStatusEntity = false),
+                        Url.healthURL(configuration.getPleiepengerDokumentBaseUrl()) to HttpRequestHealthConfig(expectedStatus = HttpStatusCode.OK),
+                        Url.healthURL(configuration.getPleiepengerJoarkBaseUrl()) to HttpRequestHealthConfig(expectedStatus = HttpStatusCode.OK),
+                        Url.healthURL(configuration.getPleiepengerOppgaveBaseUrl()) to HttpRequestHealthConfig(expectedStatus = HttpStatusCode.OK)
+                    ))
                 )
             )
         )
     }
 
-    install(CallMonitoring) {
-        app = appId
+    install(MicrometerMetrics) {
+        init(appId)
+    }
+
+    intercept(ApplicationCallPipeline.Monitoring) {
+        call.request.log()
     }
 
     install(CallId) {
@@ -180,7 +157,4 @@ fun Application.pleiepengesoknadProsessering() {
         logRequests()
     }
 }
-// TODO: Hvorfor blir URL med forskjelige subdomains oppfattet som samme URL ...? (Derfor det legges til "id" query)
-private fun Url.Companion.healthURL(baseUrl: URL, id : Int) : URL = Url.buildURL(baseUrl = baseUrl, pathParts = listOf("health"), queryParameters = mapOf("id" to listOf("$id")))
-
-
+private fun Url.Companion.healthURL(baseUrl: URI) = Url.buildURL(baseUrl = baseUrl, pathParts = listOf("health"))

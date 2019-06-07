@@ -4,7 +4,7 @@ import no.nav.helse.dokument.JournalforingsFormat
 import no.nav.helse.dusseldorf.ktor.core.fromResources
 import no.nav.helse.prosessering.v1.*
 import org.skyscreamer.jsonassert.JSONAssert
-import java.net.URL
+import java.net.URI
 import java.time.LocalDate
 import java.time.ZoneId
 import java.time.ZonedDateTime
@@ -73,8 +73,8 @@ class JournalforingsFormatTest {
             )
         ),
         vedleggUrls = listOf(
-            URL("http://localhost:8080/1234"),
-            URL("http://localhost:8080/12345")
+            URI("http://localhost:8080/1234"),
+            URI("http://localhost:8080/12345")
         ),
         vedlegg = listOf(
             Vedlegg(

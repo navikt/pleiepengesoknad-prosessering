@@ -71,7 +71,13 @@ object WiremockWrapper {
                     WireMock.aResponse()
                         .withStatus(200)
                         .withHeader("Content-Type", "application/json")
-                        .withBody("{\"access_token\":\"i-am-an-access-token\", \"expires_in\": 5000}")
+                        .withBody("""
+                            {
+                                "access_token": "i-am-a-access-token",
+                                "token_type": "Bearer",
+                                "expires_in": 1000
+                            }
+                        """.trimIndent())
                 )
         )
     }

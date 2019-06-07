@@ -2,7 +2,7 @@ import org.gradle.internal.impldep.org.fusesource.jansi.AnsiRenderer.test
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 val ktorVersion = ext.get("ktorVersion").toString()
-val dusseldorfKtorVersion = "1.1.5.df85431"
+val dusseldorfKtorVersion = "1.2.1.65ce328"
 
 val wiremockVersion = "2.19.0"
 val openhtmltopdfVersion = "0.0.1-RC20"
@@ -14,7 +14,7 @@ plugins {
 }
 
 buildscript {
-    apply("https://raw.githubusercontent.com/navikt/dusseldorf-ktor/df854316781b5bb450869fdf4dda3e1bc7adb547/gradle/dusseldorf-ktor.gradle.kts")
+    apply("https://raw.githubusercontent.com/navikt/dusseldorf-ktor/65ce328364975f63e111891794b954b892001c76/gradle/dusseldorf-ktor.gradle.kts")
     dependencies {
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.31")
     }
@@ -26,13 +26,11 @@ dependencies {
     compile ( "no.nav.helse:dusseldorf-ktor-jackson:$dusseldorfKtorVersion")
     compile ( "no.nav.helse:dusseldorf-ktor-metrics:$dusseldorfKtorVersion")
     compile ( "no.nav.helse:dusseldorf-ktor-health:$dusseldorfKtorVersion")
-
-    compile("io.ktor:ktor-auth-jwt:$ktorVersion")
-
+    compile ( "no.nav.helse:dusseldorf-ktor-auth:$dusseldorfKtorVersion")
+    
     // Client
     compile ( "no.nav.helse:dusseldorf-ktor-client:$dusseldorfKtorVersion")
-    compile ("io.ktor:ktor-client-json-jvm:$ktorVersion")
-    compile ("io.ktor:ktor-client-jackson:$ktorVersion")
+    compile ( "no.nav.helse:dusseldorf-oauth2-client:$dusseldorfKtorVersion")
 
     // PDF
     compile ( "com.openhtmltopdf:openhtmltopdf-pdfbox:$openhtmltopdfVersion")

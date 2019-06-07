@@ -21,7 +21,7 @@ import org.junit.BeforeClass
 import org.skyscreamer.jsonassert.JSONAssert
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import java.net.URL
+import java.net.URI
 import java.time.LocalDate
 import java.time.ZonedDateTime
 import java.util.*
@@ -132,7 +132,7 @@ class PleiepengesoknadProsesseringTest {
         val melding = gyldigMelding(
             fodselsnummerSoker = gyldigFodselsnummerA,
             fodselsnummerBarn = gyldigFodselsnummerB,
-            vedleggUrl = URL("http://localhost:8080/jeg-skal-feile/1")
+            vedleggUrl = URI("http://localhost:8080/jeg-skal-feile/1")
         )
 
         WiremockWrapper.stubAktoerRegisterGetAktoerId(gyldigFodselsnummerA, "12121212")
@@ -364,7 +364,7 @@ class PleiepengesoknadProsesseringTest {
     private fun gyldigMelding(
         fodselsnummerSoker : String,
         fodselsnummerBarn: String,
-        vedleggUrl : URL = URL("${wireMockServer.getPleiepengerDokumentBaseUrl()}/v1/dokument/${UUID.randomUUID()}")
+        vedleggUrl : URI = URI("${wireMockServer.getPleiepengerDokumentBaseUrl()}/v1/dokument/${UUID.randomUUID()}")
     ) : MeldingV1 = MeldingV1(
         mottatt = ZonedDateTime.now(),
         fraOgMed = LocalDate.now(),

@@ -4,7 +4,7 @@ import no.nav.helse.CorrelationId
 import no.nav.helse.aktoer.AktoerId
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import java.net.URL
+import java.net.URI
 import java.time.ZonedDateTime
 
 private val logger: Logger = LoggerFactory.getLogger("nav.GosysService")
@@ -17,7 +17,7 @@ class GosysService(
         sokerAktoerId: AktoerId,
         barnAktoerId: AktoerId?,
         mottatt: ZonedDateTime,
-        dokumenter: List<List<URL>>,
+        dokumenter: List<List<URI>>,
         correlationId: CorrelationId
     ) {
         logger.trace("Oppretter JournalPost")

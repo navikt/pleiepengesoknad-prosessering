@@ -3,14 +3,10 @@ package no.nav.helse.dokument
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.PropertyNamingStrategy
-import io.ktor.client.HttpClient
-import io.ktor.client.engine.apache.Apache
-import io.ktor.client.features.json.JacksonSerializer
-import io.ktor.client.features.json.JsonFeature
-import io.ktor.client.features.logging.Logging
-import io.ktor.client.request.HttpRequestBuilder
-import io.ktor.client.request.header
-import io.ktor.client.request.url
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.github.kittinunf.fuel.coroutines.awaitStringResponseResult
+import com.github.kittinunf.fuel.httpDelete
+import com.github.kittinunf.fuel.httpPost
 import io.ktor.http.*
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
@@ -19,15 +15,17 @@ import kotlinx.coroutines.coroutineScope
 import no.nav.helse.CorrelationId
 import no.nav.helse.aktoer.AktoerId
 import no.nav.helse.dusseldorf.ktor.client.*
+import no.nav.helse.dusseldorf.ktor.metrics.Operation
+import no.nav.helse.dusseldorf.oauth2.client.CachedAccessTokenClient
 import no.nav.helse.prosessering.v1.Vedlegg
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import java.net.URL
-
+import java.io.ByteArrayInputStream
+import java.net.URI
 
 class DokumentGateway(
-    private val systemCredentialsProvider: SystemCredentialsProvider,
-    baseUrl : URL
+    private val accessTokenClient: CachedAccessTokenClient,
+    baseUrl : URI
 ){
 
     private companion object {
@@ -39,34 +37,17 @@ class DokumentGateway(
         pathParts = listOf("v1", "dokument")
     )
 
-    private val monitoredHttpClient = MonitoredHttpClient(
-        source = "pleiepengesoknad-prosessering",
-        destination = "pleiepenger-dokument",
-        overridePaths = mapOf(
-            Regex("/v1/dokument/.+") to "/v1/dokument"
-        ),
-        httpClient = HttpClient(Apache) {
-            install(JsonFeature) {
-                serializer = JacksonSerializer { configureObjectMapper(this) }
-            }
-            engine {
-                customizeClient { setProxyRoutePlanner() }
-            }
-            install (Logging) {
-                sl4jLogger("pleiepenger-dokument")
-            }
-        }
-    )
+    private val objectMapper = configuredObjectMapper()
 
     internal suspend fun lagreDokmenter(
         dokumenter: Set<Dokument>,
         aktoerId: AktoerId,
         correlationId: CorrelationId
-    ) : List<URL> {
-        val authorizationHeader = systemCredentialsProvider.getAuthorizationHeader()
+    ) : List<URI> {
+        val authorizationHeader = accessTokenClient.getAccessToken(setOf("openid")).asAuthoriationHeader()
 
         return coroutineScope {
-            val deferred = mutableListOf<Deferred<URL>>()
+            val deferred = mutableListOf<Deferred<URI>>()
             dokumenter.forEach {
                 deferred.add(async {
                     requestLagreDokument(
@@ -82,11 +63,11 @@ class DokumentGateway(
     }
 
     internal suspend fun slettDokmenter(
-        urls: List<URL>,
+        urls: List<URI>,
         aktoerId: AktoerId,
         correlationId: CorrelationId
     ) {
-        val authorizationHeader = systemCredentialsProvider.getAuthorizationHeader()
+        val authorizationHeader = accessTokenClient.getAccessToken(setOf("openid")).asAuthoriationHeader()
 
         coroutineScope {
             val deferred = mutableListOf<Deferred<Unit>>()
@@ -105,7 +86,7 @@ class DokumentGateway(
     }
 
     private suspend fun requestSlettDokument(
-        url: URL,
+        url: URI,
         aktoerId: AktoerId,
         correlationId: CorrelationId,
         authorizationHeader: String
@@ -114,22 +95,30 @@ class DokumentGateway(
         val urlMedEier = Url.buildURL(
             baseUrl = url,
             queryParameters = mapOf("eier" to listOf(aktoerId.id))
-        )
+        ).toString()
 
-        val httpRequest = HttpRequestBuilder()
-        httpRequest.header(HttpHeaders.Authorization, authorizationHeader)
-        httpRequest.header(HttpHeaders.XCorrelationId, correlationId.value)
-        httpRequest.method = HttpMethod.Delete
-        httpRequest.url(urlMedEier)
+        val httpRequest = urlMedEier
+            .httpDelete()
+            .header(
+                HttpHeaders.Authorization to authorizationHeader,
+                HttpHeaders.XCorrelationId to correlationId.value
+            )
 
-        try {
-            monitoredHttpClient.request(
-                httpRequestBuilder = httpRequest,
-                expectedHttpResponseCodes = setOf(HttpStatusCode.NoContent)
-            ).use {}
-        } catch (cause: Throwable) {
-            logger.warn("Feil ved sletting av dokument '$url' for aktør '${aktoerId.id}'", cause)
+        val (request, response, result) = Operation.monitored(
+            app = "pleiepengesoknad-prosessering",
+            operation = "slette-dokument",
+            resultResolver = { 204 == it.second.statusCode }
+        ) {
+            httpRequest.awaitStringResponseResult()
         }
+
+
+        result.fold(
+            {},
+            { error ->
+                logger.warn("Feil ved sletting av dokument på '${request.url}'. $error")
+            }
+        )
     }
 
     private suspend fun requestLagreDokument(
@@ -137,31 +126,44 @@ class DokumentGateway(
         aktoerId: AktoerId,
         correlationId: CorrelationId,
         authorizationHeader: String
-    ) : URL {
+    ) : URI {
 
         val urlMedEier = Url.buildURL(
             baseUrl = completeUrl,
             queryParameters = mapOf("eier" to listOf(aktoerId.id))
-        )
-        val httpRequest = HttpRequestBuilder()
-        httpRequest.header(HttpHeaders.Authorization, authorizationHeader)
-        httpRequest.header(HttpHeaders.XCorrelationId, correlationId.value)
-        httpRequest.header(HttpHeaders.ContentType, ContentType.Application.Json)
-        httpRequest.method = HttpMethod.Post
-        httpRequest.body = dokument
-        httpRequest.url(urlMedEier)
+        ).toString()
 
-        val httpResponse = monitoredHttpClient.request(
-            httpRequestBuilder = httpRequest,
-            expectedHttpResponseCodes = setOf(HttpStatusCode.Created)
-        )
+        val body = objectMapper.writeValueAsBytes(dokument)
+        val contentStream = { ByteArrayInputStream(body) }
 
-        return httpResponse.use {
-            URL(it.headers[HttpHeaders.Location])
+        val httpRequest = urlMedEier
+            .httpPost()
+            .body(contentStream)
+            .header(
+                HttpHeaders.Authorization to authorizationHeader,
+                HttpHeaders.XCorrelationId to correlationId.value,
+                HttpHeaders.ContentType to "application/json"
+            )
+
+        val (request, response, result) = Operation.monitored(
+            app = "pleiepengesoknad-prosessering",
+            operation = "lagre-dokument",
+            resultResolver = { 201 == it.second.statusCode }
+        ) {
+            httpRequest.awaitStringResponseResult()
         }
+
+        return result.fold(
+            { URI(response.header(HttpHeaders.Location).first()) },
+            { error ->
+                logger.error(error.toString())
+                throw IllegalStateException("Feil ved lagring av dokument mot '${request.url}'")
+            }
+        )
     }
 
-    private fun configureObjectMapper(objectMapper: ObjectMapper) : ObjectMapper {
+    private fun configuredObjectMapper() : ObjectMapper {
+        val objectMapper = jacksonObjectMapper()
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
         objectMapper.propertyNamingStrategy = PropertyNamingStrategy.SNAKE_CASE
         return objectMapper
