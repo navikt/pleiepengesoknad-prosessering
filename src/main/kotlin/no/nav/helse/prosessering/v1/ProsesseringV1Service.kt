@@ -26,7 +26,6 @@ class ProsesseringV1Service(
         logger.info(metadata.toString())
 
         melding.validate()
-        melding.reportMetrics()
 
         val correlationId = CorrelationId(metadata.correlationId)
 
@@ -106,6 +105,9 @@ class ProsesseringV1Service(
         )
 
         logger.trace("Oppgave i Gosys opprettet OK")
+
+        // Reporterer metrics først når oppgave er opprettet OK.
+        melding.reportMetrics()
 
         coroutineScope {
             logger.trace("Sletter dokumenter.")
