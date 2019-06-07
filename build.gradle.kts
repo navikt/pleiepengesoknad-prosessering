@@ -1,4 +1,3 @@
-import org.gradle.internal.impldep.org.fusesource.jansi.AnsiRenderer.test
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 val ktorVersion = ext.get("ktorVersion").toString()
@@ -6,6 +5,7 @@ val dusseldorfKtorVersion = "1.2.1.65ce328"
 
 val wiremockVersion = "2.19.0"
 val openhtmltopdfVersion = "0.0.1-RC20"
+val slf4jVersion = ext.get("slf4jVersion").toString()
 
 val mainClass = "no.nav.helse.PleiepengesoknadProsesseringKt"
 
@@ -35,6 +35,7 @@ dependencies {
     // PDF
     compile ( "com.openhtmltopdf:openhtmltopdf-pdfbox:$openhtmltopdfVersion")
     compile ( "com.openhtmltopdf:openhtmltopdf-slf4j:$openhtmltopdfVersion")
+    compile("org.slf4j:jcl-over-slf4j:$slf4jVersion")
 
     // Kafka
     compile("org.apache.kafka:kafka-clients:2.2.0")

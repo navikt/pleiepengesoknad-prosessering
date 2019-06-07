@@ -78,7 +78,7 @@ class ProsesseringV1Service(
 
         if (melding.vedleggUrls.isNotEmpty()) {
             logger.trace("Legger til ${melding.vedleggUrls.size} vedlegg URL's fra meldingen som dokument.")
-            melding.vedleggUrls.forEach { it -> komplettDokumentUrls.add(listOf(it))}
+            melding.vedleggUrls.forEach { komplettDokumentUrls.add(listOf(it))}
         }
         if (melding.vedlegg.isNotEmpty()) {
             logger.trace("Meldingen inneholder ${melding.vedlegg.size} vedlegg som må mellomlagres før søknaden legges til prosessering.")
