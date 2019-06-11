@@ -1,7 +1,5 @@
 package no.nav.helse.prosessering.v1
 
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.launch
 import no.nav.helse.CorrelationId
 import no.nav.helse.aktoer.AktoerId
 import no.nav.helse.aktoer.AktoerService
@@ -109,20 +107,16 @@ class ProsesseringV1Service(
         // Reporterer metrics først når oppgave er opprettet OK.
         melding.reportMetrics()
 
-        coroutineScope {
-            logger.trace("Sletter dokumenter.")
-            launch {
-                try { dokumentService.slettDokumeter(
-                    urlBolks = komplettDokumentUrlsList,
-                    aktoerId = sokerAktoerId,
-                    correlationId = correlationId
-                )} catch (cause: Throwable) {
-                    logger.warn("Feil ved sletting av dokumenter etter oppgave opprettet i Gosys", cause)
-                }
-            }
+        logger.trace("Sletter dokumenter.")
+        try { dokumentService.slettDokumeter(
+            urlBolks = komplettDokumentUrlsList,
+            aktoerId = sokerAktoerId,
+            correlationId = correlationId
+        )} catch (cause: Throwable) {
+            logger.warn("Feil ved sletting av dokumenter etter ferdigstilt prosessering", cause)
         }
-        logger.trace("Prosessering ferdigstilt.")
 
+        logger.trace("Prosessering ferdigstilt.")
     }
 
     private suspend fun hentBarnetsAktoerId(
