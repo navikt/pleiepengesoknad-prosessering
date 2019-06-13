@@ -119,7 +119,8 @@ class DokumentGateway(
         result.fold(
             {},
             { error ->
-                logger.warn("Feil ved sletting av dokument på '${request.url}'. $error")
+                logger.warn("Error response = '${error.response.body().asString("text/plain")}' fra '${request.url}'")
+                logger.warn("Feil ved sletting av dokument. $error")
             }
         )
     }
@@ -160,8 +161,9 @@ class DokumentGateway(
             result.fold(
                 { URI(response.header(HttpHeaders.Location).first()) },
                 { error ->
+                    logger.error("Error response = '${error.response.body().asString("text/plain")}' fra '${request.url}'")
                     logger.error(error.toString())
-                    throw IllegalStateException("Feil ved lagring av dokument mot '${request.url}'")
+                    throw IllegalStateException("Feil ved lagring av dokument.")
                 }
             )
         }

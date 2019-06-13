@@ -27,7 +27,7 @@ internal class NaisStsAccessTokenClient(
     )).toString()
 
     override fun getAccessToken(scopes: Set<String>): AccessTokenResponse {
-        val (_, _, result) = url.httpGet()
+        val (request, _, result) = url.httpGet()
             .header(
                 Headers.AUTHORIZATION to authorizationHeader
             ).responseString()
@@ -42,6 +42,7 @@ internal class NaisStsAccessTokenClient(
                 )
             },
             { error ->
+                logger.error("Error response = '${error.response.body().asString("text/plain")}' fra '${request.url}'")
                 logger.error(error.toString())
                 throw IllegalStateException("Feil ved henting av access token fra Nais STS.")
             }

@@ -70,8 +70,9 @@ class AktoerGateway(
             result.fold(
                 { success -> objectMapper.readValue<Map<String,IdentResponse>>(success)},
                 { error ->
+                    logger.error("Error response = '${error.response.body().asString("text/plain")}' fra '${request.url}'")
                     logger.error(error.toString())
-                    throw IllegalStateException("Feil ved henting av Aktør ID mot '${request.url}'")
+                    throw IllegalStateException("Feil ved henting av Aktør ID.")
                 }
             )
         }

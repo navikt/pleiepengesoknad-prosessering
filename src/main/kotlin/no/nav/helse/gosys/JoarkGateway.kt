@@ -12,7 +12,6 @@ import io.ktor.http.*
 import no.nav.helse.CorrelationId
 import no.nav.helse.aktoer.AktoerId
 import no.nav.helse.dusseldorf.ktor.client.*
-import no.nav.helse.dusseldorf.ktor.core.Retry
 import no.nav.helse.dusseldorf.ktor.metrics.Operation
 import no.nav.helse.dusseldorf.oauth2.client.CachedAccessTokenClient
 import org.slf4j.Logger
@@ -66,23 +65,20 @@ class JoarkGateway(
                 HttpHeaders.Accept to "application/json"
             )
 
-        return Retry.retry(
+        val (request,_, result) = Operation.monitored(
+            app = "pleiepengesoknad-prosessering",
             operation = JOURNALFORING_OPERATION,
-            factor = 3.0
-        ) {
-            val (request,_, result) = Operation.monitored(
-                app = "pleiepengesoknad-prosessering",
-                operation = JOURNALFORING_OPERATION,
-                resultResolver = { 201 == it.second.statusCode }
-            ) { httpRequest.awaitStringResponseResult() }
-            result.fold(
-                { success -> objectMapper.readValue<JournalPostId>(success)},
-                { error ->
-                    logger.error(error.toString())
-                    throw IllegalStateException("Feil ved jorunalføring mot '${request.url}'")
-                }
-            )
-        }
+            resultResolver = { 201 == it.second.statusCode }
+        ) { httpRequest.awaitStringResponseResult() }
+
+        return result.fold(
+            { success -> objectMapper.readValue(success)},
+            { error ->
+                logger.error("Error response = '${error.response.body().asString("text/plain")}' fra '${request.url}'")
+                logger.error(error.toString())
+                throw IllegalStateException("Feil ved jorunalføring.")
+            }
+        )
     }
 
     private fun configuredObjectMapper() : ObjectMapper {
