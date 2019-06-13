@@ -16,6 +16,7 @@ import no.nav.helse.dusseldorf.oauth2.client.CachedAccessTokenClient
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.net.URI
+import java.time.Duration
 
 /**
  * https://app-q1.adeo.no/aktoerregister/swagger-ui.html
@@ -60,7 +61,8 @@ class AktoerGateway(
 
         val httpResponse = Retry.retry(
             operation = HENTE_AKTOER_ID_OPERATION,
-            factor = 3.0
+            initialDelay = Duration.ofMillis(200),
+            factor = 2.0
         ) {
             val (request,_, result) = Operation.monitored(
                 app = "pleiepengesoknad-prosessering",

@@ -23,6 +23,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.ByteArrayInputStream
 import java.net.URI
+import java.time.Duration
 
 class DokumentGateway(
     private val accessTokenClient: CachedAccessTokenClient,
@@ -140,24 +141,26 @@ class DokumentGateway(
         val body = objectMapper.writeValueAsBytes(dokument)
         val contentStream = { ByteArrayInputStream(body) }
 
-        val httpRequest = urlMedEier
-            .httpPost()
-            .body(contentStream)
-            .header(
-                HttpHeaders.Authorization to authorizationHeader,
-                HttpHeaders.XCorrelationId to correlationId.value,
-                HttpHeaders.ContentType to "application/json"
-            )
-
         return Retry.retry(
             operation = LAGRE_DOKUMENT_OPERATION,
-            factor = 3.0
+            initialDelay = Duration.ofMillis(200),
+            factor = 2.0
         ) {
             val (request, response, result) = Operation.monitored(
                 app = "pleiepengesoknad-prosessering",
                 operation = LAGRE_DOKUMENT_OPERATION,
                 resultResolver = { 201 == it.second.statusCode }
-            ) { httpRequest.awaitStringResponseResult() }
+            ) {
+                urlMedEier
+                    .httpPost()
+                    .body(contentStream)
+                    .header(
+                        HttpHeaders.Authorization to authorizationHeader,
+                        HttpHeaders.XCorrelationId to correlationId.value,
+                        HttpHeaders.ContentType to "application/json"
+                    )
+                    .awaitStringResponseResult()
+            }
             result.fold(
                 { URI(response.header(HttpHeaders.Location).first()) },
                 { error ->
