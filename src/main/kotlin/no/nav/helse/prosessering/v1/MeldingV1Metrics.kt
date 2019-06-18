@@ -51,9 +51,21 @@ private val jaNeiCounter = Counter.build()
     .labelNames("spm", "svar")
     .register()
 
+private val barnetsAlderIUkerCounter = Counter.build()
+    .name("barnets_alder_i_uker")
+    .help("Teller for barn under 1 år, hvor mange uker de er.")
+    .labelNames("uker")
+    .register()
+
 internal fun MeldingV1.reportMetrics() {
-    val barnetsAlder = barn.metricAlder()
-    if (barnetsAlder != null) barnetsAlderHistogram.observe(barnetsAlder)
+    val barnetsFodselsdato = barn.fodseldato()
+    if (barnetsFodselsdato != null) {
+        val barnetsAlder = barnetsFodselsdato.aarSiden()
+        barnetsAlderHistogram.observe(barnetsAlder)
+        if (barnetsAlder.erUnderEttAar()) {
+            barnetsAlderIUkerCounter.labels(barnetsFodselsdato.ukerSiden()).inc()
+        }
+    }
     valgteArbeidsgivereHistogram.observe(arbeidsgivere.organisasjoner.size.toDouble())
     opplastedeVedleggHistogram.observe( (vedlegg.size + vedleggUrls.size).toDouble() )
     idTypePaaBarnCounter.labels(barn.idType()).inc()
@@ -64,6 +76,7 @@ internal fun MeldingV1.reportMetrics() {
     jaNeiCounter.labels("skal_bo_i_utlandet_neste_12_mnd", medlemskap.skalBoIUtlandetNeste12Mnd.tilJaEllerNei()).inc()
 }
 
+internal fun Double.erUnderEttAar() = 0.0 == this
 private fun Barn.idType(): String {
     return when {
         fodselsnummer != null -> "fodselsnummer"
@@ -71,20 +84,21 @@ private fun Barn.idType(): String {
         else -> "ingen_id"
     }
 }
-
-internal fun Barn.metricAlder() : Double? {
+internal fun Barn.fodseldato() : LocalDate? {
     if (fodselsnummer == null) return null
     return try {
         val dag = fodselsnummer.substring(0,2).toInt()
         val maned = fodselsnummer.substring(2,4).toInt()
         val ar = "20${fodselsnummer.substring(4,6)}".toInt()
-        val fodselsdato = LocalDate.of(ar, maned, dag)
-        val alder= ChronoUnit.YEARS.between(fodselsdato, LocalDate.now(ZONE_ID))
-        if (alder in -18..-1) return 19.0
-        return alder.absoluteValue.toDouble()
+        LocalDate.of(ar, maned, dag)
     } catch (cause: Throwable) {
         null
     }
 }
-
+internal fun LocalDate.aarSiden() : Double {
+    val alder= ChronoUnit.YEARS.between(this, LocalDate.now(ZONE_ID))
+    if (alder in -18..-1) return 19.0
+    return alder.absoluteValue.toDouble()
+}
+internal fun LocalDate.ukerSiden() = ChronoUnit.WEEKS.between(this, LocalDate.now(ZONE_ID)).absoluteValue.toString()
 private fun Boolean.tilJaEllerNei(): String = if (this) "Ja" else "Nei"

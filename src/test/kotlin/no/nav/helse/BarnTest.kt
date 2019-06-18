@@ -1,11 +1,11 @@
 package no.nav.helse
 
-import no.nav.helse.prosessering.v1.Barn
-import no.nav.helse.prosessering.v1.metricAlder
+import no.nav.helse.prosessering.v1.*
 import java.time.LocalDate
 import java.time.ZoneId
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 class BarnTest {
@@ -14,14 +14,25 @@ class BarnTest {
     }
 
     @Test
-    fun `Test barnets alder`() {
+    fun `Test barnets alder i aar`() {
         for (i in 0..18) {
-            assertEquals(barn(i.toLong()).metricAlder()!!, i.toDouble())
+            assertEquals(barn(i.toLong()).fodseldato()!!.aarSiden(), i.toDouble())
         }
 
         for (i in 19..99) {
-            assertTrue(barn(i.toLong()).metricAlder()!! > 18.00)
+            assertTrue(barn(i.toLong()).fodseldato()!!.aarSiden() > 18.00)
         }
+    }
+
+    @Test
+    fun `Barn under 1 aar i uker`() {
+        for (i in 0..52) {
+            val fodseldato = LocalDate.now().minusWeeks(i.toLong())
+            assertTrue(fodseldato.aarSiden().erUnderEttAar())
+            assertEquals("$i" , fodseldato.ukerSiden())
+        }
+        val fodseldato = LocalDate.now().minusWeeks(53)
+        assertFalse(fodseldato.aarSiden().erUnderEttAar())
     }
 
     private fun barn(forventetAlder : Long) : Barn {
