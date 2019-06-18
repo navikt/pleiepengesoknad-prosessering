@@ -38,7 +38,8 @@ dependencies {
     compile("org.slf4j:jcl-over-slf4j:$slf4jVersion")
 
     // Kafka
-    compile("org.apache.kafka:kafka-clients:2.2.0")
+    compile("org.apache.kafka:kafka-clients:2.2.1")
+    compile("org.apache.kafka:kafka-streams:2.2.1")
     testCompile("org.testcontainers:kafka:1.11.2")
 
     // Test
