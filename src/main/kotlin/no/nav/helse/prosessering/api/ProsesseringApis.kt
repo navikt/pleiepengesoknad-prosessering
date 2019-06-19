@@ -42,8 +42,8 @@ private suspend fun ApplicationCall.handleWith(prosesseringsV1Service: Prosesser
         correlationId = request.getCorrelationId(),
         requestId = response.getRequestId()
     )
-    prosesseringsV1Service.leggSoknadTilProsessering(melding = melding, metadata = metadata)
-    respond(HttpStatusCode.Accepted)
+    val id = prosesseringsV1Service.leggSoknadTilProsessering(melding = melding, metadata = metadata)
+    respond(HttpStatusCode.Accepted, mapOf("id" to id.id))
 }
 
 private fun ApplicationRequest.getCorrelationId(): String {

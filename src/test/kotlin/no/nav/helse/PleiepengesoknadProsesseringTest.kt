@@ -15,6 +15,7 @@ import io.ktor.server.testing.setBody
 import io.ktor.util.KtorExperimentalAPI
 import no.nav.helse.dusseldorf.ktor.jackson.dusseldorfConfigured
 import no.nav.helse.prosessering.v1.*
+import org.json.JSONObject
 
 import org.junit.AfterClass
 import org.junit.BeforeClass
@@ -359,10 +360,14 @@ class PleiepengesoknadProsesseringTest {
                 logger.info("Response Entity = ${response.content}")
                 logger.info("Expected Entity = $expectedResponse")
                 assertEquals(expectedCode, response.status())
-                if (expectedResponse != null) {
-                    JSONAssert.assertEquals(expectedResponse, response.content!!, true)
-                } else {
-                    assertEquals(expectedResponse, response.content)
+                when {
+                    expectedResponse != null -> JSONAssert.assertEquals(expectedResponse, response.content!!, true)
+                    HttpStatusCode.Accepted == response.status() -> {
+                        val json = JSONObject(response.content!!)
+                        assertEquals(1, json.keySet().size)
+                        assertNotNull(json.getString("id"))
+                    }
+                    else -> assertEquals(expectedResponse, response.content)
                 }
 
             }
