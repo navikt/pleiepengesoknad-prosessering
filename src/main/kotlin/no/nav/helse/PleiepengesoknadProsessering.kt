@@ -30,11 +30,13 @@ import no.nav.helse.gosys.JoarkGateway
 import no.nav.helse.gosys.OppgaveGateway
 import no.nav.helse.prosessering.api.prosesseringApis
 import no.nav.helse.prosessering.v1.PdfV1Generator
+import no.nav.helse.prosessering.v1.PreprosseseringV1Service
 import no.nav.helse.prosessering.v1.asynkron.AsynkronProsesseringV1Service
 import no.nav.helse.prosessering.v1.synkron.SynkronProsesseringV1Service
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.net.URI
+import java.util.*
 
 private val logger: Logger = LoggerFactory.getLogger("nav.PleiepengesoknadProsessering")
 
@@ -98,7 +100,10 @@ fun Application.pleiepengesoknadProsessering() {
                             )
                         )
                     ),
-                    asynkronProsesseringV1Service = AsynkronProsesseringV1Service()
+                    asynkronProsesseringV1Service = AsynkronProsesseringV1Service(
+                        kafkaProperties = Properties(),
+                        preprosseseringV1Service = PreprosseseringV1Service()
+                    )
                 )
             }
         }
