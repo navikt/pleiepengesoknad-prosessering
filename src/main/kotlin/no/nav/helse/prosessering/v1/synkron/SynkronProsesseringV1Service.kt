@@ -6,6 +6,7 @@ import no.nav.helse.aktoer.AktoerService
 import no.nav.helse.aktoer.Fodselsnummer
 import no.nav.helse.dokument.DokumentService
 import no.nav.helse.gosys.GosysService
+import no.nav.helse.prosessering.Metadata
 import no.nav.helse.prosessering.v1.*
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -20,7 +21,7 @@ class SynkronProsesseringV1Service(
 ) : ProsesseringV1Service {
     override suspend fun leggSoknadTilProsessering(
         melding: MeldingV1,
-        metadata: MetadataV1
+        metadata: Metadata
     ) {
         logger.info(metadata.toString())
 

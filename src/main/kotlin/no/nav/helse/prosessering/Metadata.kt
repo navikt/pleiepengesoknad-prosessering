@@ -1,6 +1,6 @@
-package no.nav.helse.prosessering.v1
+package no.nav.helse.prosessering
 
-data class MetadataV1(
+data class Metadata(
     val version : Int,
     val correlationId : String,
     val requestId : String?
