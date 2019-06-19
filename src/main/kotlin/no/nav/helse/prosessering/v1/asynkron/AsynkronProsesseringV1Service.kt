@@ -1,0 +1,20 @@
+package no.nav.helse.prosessering.v1.asynkron
+
+import no.nav.helse.prosessering.v1.MeldingV1
+import no.nav.helse.prosessering.v1.MetadataV1
+import no.nav.helse.prosessering.v1.ProsesseringV1Service
+import org.slf4j.LoggerFactory
+
+class AsynkronProsesseringV1Service() : ProsesseringV1Service {
+    private companion object {
+        private val logger = LoggerFactory.getLogger(AsynkronProsesseringV1Service::class.java)
+    }
+
+    override suspend fun leggSoknadTilProsessering(
+        melding: MeldingV1,
+        metadata: MetadataV1
+    ) {
+        logger.info("async")
+    }
+
+}

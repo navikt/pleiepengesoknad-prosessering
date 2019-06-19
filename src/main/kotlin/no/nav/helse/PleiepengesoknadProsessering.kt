@@ -30,7 +30,8 @@ import no.nav.helse.gosys.JoarkGateway
 import no.nav.helse.gosys.OppgaveGateway
 import no.nav.helse.prosessering.api.prosesseringApis
 import no.nav.helse.prosessering.v1.PdfV1Generator
-import no.nav.helse.prosessering.v1.ProsesseringV1Service
+import no.nav.helse.prosessering.v1.asynkron.AsynkronProsesseringV1Service
+import no.nav.helse.prosessering.v1.synkron.SynkronProsesseringV1Service
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.net.URI
@@ -72,7 +73,7 @@ fun Application.pleiepengesoknadProsessering() {
         authenticate(*issuers.allIssuers()) {
             requiresCallId {
                 prosesseringApis(
-                    prosesseringV1Service = ProsesseringV1Service(
+                    synkronProsesseringV1Service = SynkronProsesseringV1Service(
                         gosysService = GosysService(
                             joarkGateway = JoarkGateway(
                                 baseUrl = configuration.getPleiepengerJoarkBaseUrl(),
@@ -96,7 +97,8 @@ fun Application.pleiepengesoknadProsessering() {
                                 accessTokenClient = accessTokenClientResolver.dokumentAccessTokenClient()
                             )
                         )
-                    )
+                    ),
+                    asynkronProsesseringV1Service = AsynkronProsesseringV1Service()
                 )
             }
         }

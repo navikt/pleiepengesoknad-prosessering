@@ -12,7 +12,7 @@ internal class PauseableKafkaStreams(
     private val properties: Properties
 ) {
     private val stateChangeLock = Semaphore(1)
-    private var state = State.STOPPED
+    private var state = State.INITIALIZED
     private var kafkaStreams = newKafkaStreams()
 
     private val log = LoggerFactory.getLogger(name)
@@ -20,12 +20,17 @@ internal class PauseableKafkaStreams(
     internal fun start() {
         changeState {
             when (state) {
+                State.INITIALIZED -> {
+                    log.info("Starter stream for første gang.")
+                    kafkaStreams.start()
+                    log.info("Stream startet for første gang.")
+                }
                 State.STARTED -> log.info("Stream allerede startet.")
                 State.PAUSED -> {
                     log.info("Starter stream igjen etter pause.")
                     kafkaStreams.start()
                     state = State.STARTED
-                    log.info("Streams startet.")
+                    log.info("Streams startet igjen etter pause.")
                 }
                 State.STOPPED -> throw IllegalStateException("Stream kan ikke gjenåpnes når det er stoppet.")
             }
@@ -41,7 +46,7 @@ internal class PauseableKafkaStreams(
                     state = State.STOPPED
                     log.info("Stream stoppet.")
                 }
-                else -> log.info("Trenger ikke stoppe stream som er i state ${state.name}")
+                else -> log.info("Trenger ikke stoppe stream som er i state ${state.name}.")
             }
         }
     }
@@ -57,7 +62,7 @@ internal class PauseableKafkaStreams(
                     state = State.PAUSED
                     log.info("Stream pauset.")
                 }
-                State.STOPPED -> throw IllegalStateException("Stream kan ikke pauses når den er stoppet.")
+                else -> throw IllegalStateException("Stream kan ikke pauses når den er i state ${state.name}.")
             }
         }
     }
@@ -104,5 +109,5 @@ internal class PauseableKafkaStreams(
     }
 }
 
-private enum class State { STARTED, PAUSED, STOPPED }
+private enum class State { INITIALIZED, STARTED, PAUSED, STOPPED }
 class PauseableError(message: String, cause: Throwable?) : Throwable(message, cause)

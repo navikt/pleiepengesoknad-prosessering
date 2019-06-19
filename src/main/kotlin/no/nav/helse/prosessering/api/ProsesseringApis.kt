@@ -1,5 +1,6 @@
 package no.nav.helse.prosessering.api
 
+import io.ktor.application.ApplicationCall
 import io.ktor.application.call
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
@@ -19,15 +20,26 @@ import org.slf4j.LoggerFactory
 private val logger: Logger = LoggerFactory.getLogger("nav.prosesseringApis")
 
 fun Route.prosesseringApis(
-    prosesseringV1Service: ProsesseringV1Service
+    synkronProsesseringV1Service: ProsesseringV1Service,
+    asynkronProsesseringV1Service: ProsesseringV1Service
 ) {
 
     post("v1/soknad") {
-        val melding = call.receive<MeldingV1>()
-        val metadata = MetadataV1(version = 1, correlationId = call.request.getCorrelationId(), requestId = call.response.getRequestId())
-        prosesseringV1Service.leggSoknadTilProsessering(melding = melding, metadata = metadata)
-        call.respond(HttpStatusCode.Accepted)
+        if (call.request.prosesserAsynkront()) call.handleWith(asynkronProsesseringV1Service)
+        else call.handleWith(synkronProsesseringV1Service)
     }
+}
+
+private fun ApplicationRequest.prosesserAsynkront() : Boolean {
+    val queryParameterValue = queryParameters["async"]
+    return queryParameterValue != null && queryParameterValue.equals("true", true)
+}
+
+private suspend fun ApplicationCall.handleWith(prosesseringsV1Service: ProsesseringV1Service) {
+    val melding = receive<MeldingV1>()
+    val metadata = MetadataV1(version = 1, correlationId = request.getCorrelationId(), requestId = response.getRequestId())
+    prosesseringsV1Service.leggSoknadTilProsessering(melding = melding, metadata = metadata)
+    respond(HttpStatusCode.Accepted)
 }
 
 private fun ApplicationRequest.getCorrelationId(): String {
