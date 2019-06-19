@@ -112,6 +112,24 @@ class PleiepengesoknadProsesseringTest {
     }
 
     @Test
+    fun `Gylding melding blir lagt til prosessering asynkront`() {
+        val melding = gyldigMelding(
+            fodselsnummerSoker = gyldigFodselsnummerA,
+            fodselsnummerBarn = gyldigFodselsnummerB
+        )
+
+        WiremockWrapper.stubAktoerRegisterGetAktoerId(gyldigFodselsnummerA, "121212166")
+        WiremockWrapper.stubAktoerRegisterGetAktoerId(gyldigFodselsnummerB, "232323267")
+
+        requestAndAssert(
+            request = melding,
+            expectedCode = HttpStatusCode.Accepted,
+            expectedResponse = null,
+            async = true
+        )
+    }
+
+    @Test
     fun `Melding som gjeder søker med D-nummer`() {
         val melding = gyldigMelding(
             fodselsnummerSoker = dNummerA,
@@ -343,9 +361,10 @@ class PleiepengesoknadProsesseringTest {
                                  expectedCode : HttpStatusCode,
                                  leggTilCorrelationId : Boolean = true,
                                  leggTilAuthorization : Boolean = true,
-                                 accessToken : String = authorizedAccessToken) {
+                                 accessToken : String = authorizedAccessToken,
+                                 async: Boolean = false) {
         with(engine) {
-            handleRequest(HttpMethod.Post, "/v1/soknad") {
+            handleRequest(HttpMethod.Post, "/v1/soknad${if (async) "?async=true" else ""}") {
                 if (leggTilAuthorization) {
                     addHeader(HttpHeaders.Authorization, "Bearer $accessToken")
                 }

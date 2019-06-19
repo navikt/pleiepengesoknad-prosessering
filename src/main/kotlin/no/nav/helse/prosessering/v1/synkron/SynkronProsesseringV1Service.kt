@@ -26,9 +26,6 @@ class SynkronProsesseringV1Service(
     ) : SoknadId {
         val soknadId = SoknadId.generate()
         logger.info(soknadId.toString())
-        logger.info(metadata.toString())
-
-        melding.validate()
 
         val correlationId = CorrelationId(metadata.correlationId)
 

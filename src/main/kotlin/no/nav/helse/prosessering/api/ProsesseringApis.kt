@@ -14,6 +14,7 @@ import io.ktor.routing.post
 import no.nav.helse.prosessering.v1.MeldingV1
 import no.nav.helse.prosessering.Metadata
 import no.nav.helse.prosessering.v1.ProsesseringV1Service
+import no.nav.helse.prosessering.v1.validate
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -36,13 +37,18 @@ private fun ApplicationRequest.prosesserAsynkront() : Boolean {
 }
 
 private suspend fun ApplicationCall.handleWith(prosesseringsV1Service: ProsesseringV1Service) {
-    val melding = receive<MeldingV1>()
     val metadata = Metadata(
         version = 1,
         correlationId = request.getCorrelationId(),
         requestId = response.getRequestId()
     )
-    val id = prosesseringsV1Service.leggSoknadTilProsessering(melding = melding, metadata = metadata)
+    logger.info(metadata.toString())
+    val melding = receive<MeldingV1>()
+    melding.validate()
+    val id = prosesseringsV1Service.leggSoknadTilProsessering(
+        melding = melding,
+        metadata = metadata
+    )
     respond(HttpStatusCode.Accepted, mapOf("id" to id.id))
 }
 
