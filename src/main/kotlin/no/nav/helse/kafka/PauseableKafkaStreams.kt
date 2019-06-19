@@ -14,7 +14,7 @@ internal class PauseableKafkaStreams(
     private val topology: Topology,
     private val properties: Properties,
     private val considerRestartEvery : Duration = Duration.ofMinutes(1),
-    private val considerRestart: (pausedAt: LocalDateTime, reason: Throwable) -> Boolean = { pausedAt, reason -> pausedAt.isBefore(LocalDateTime.now().minusMinutes(5)) }
+    private val considerRestart: (pausedAt: LocalDateTime, reason: Throwable) -> Boolean = { pausedAt, _ -> pausedAt.isBefore(LocalDateTime.now().minusMinutes(5)) }
 ) {
     private val stateChangeLock = Semaphore(1)
     private var state = State.INITIALIZED
