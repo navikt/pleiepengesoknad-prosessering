@@ -1,5 +1,9 @@
 package no.nav.helse.kafka
 
+import no.nav.helse.dusseldorf.ktor.health.HealthCheck
+import no.nav.helse.dusseldorf.ktor.health.Healthy
+import no.nav.helse.dusseldorf.ktor.health.Result
+import no.nav.helse.dusseldorf.ktor.health.UnHealthy
 import org.apache.kafka.streams.KafkaStreams
 import org.apache.kafka.streams.Topology
 import org.slf4j.LoggerFactory
@@ -15,7 +19,15 @@ internal class PauseableKafkaStreams(
     private val properties: Properties,
     private val considerRestartEvery : Duration = Duration.ofMinutes(1),
     private val considerRestart: (pausedAt: LocalDateTime, reason: Throwable) -> Boolean = { pausedAt, _ -> pausedAt.isBefore(LocalDateTime.now().minusMinutes(5)) }
-) {
+) : HealthCheck {
+    override suspend fun check(): Result {
+        return when (state) {
+            State.STOPPED -> UnHealthy(name, "Stream har stoppet")
+            State.PAUSED -> UnHealthy(name, "Stream har pauset")
+            else -> Healthy(name, "Stream er i state ${state.name}")
+        }
+    }
+
     private val stateChangeLock = Semaphore(1)
     private var state = State.INITIALIZED
     private var kafkaStreams = newKafkaStreams()
