@@ -1,7 +1,7 @@
 package no.nav.helse.prosessering.v1.asynkron
 
-import no.nav.helse.CorrelationId
 import no.nav.helse.kafka.PauseableKafkaStreams
+import no.nav.helse.prosessering.SoknadId
 import no.nav.helse.prosessering.v1.MeldingV1
 import no.nav.helse.prosessering.v1.PreprosseseringV1Service
 import org.apache.kafka.streams.StreamsBuilder
@@ -37,12 +37,12 @@ internal class PreprosseseringStream(
                 .filter { _, entry -> 1 == entry.metadata.version }
                 .mapValues { soknadId, entry  ->
                     runBlockingWithMDC(soknadId, entry) {
-                        logger.info("Testing")
                         TopicEntry(
                             metadata = entry.metadata,
                             data = preprosseseringV1Service.preprosseser(
                                 melding = entry.data,
-                                correlationId = CorrelationId(entry.metadata.correlationId)
+                                metadata = entry.metadata,
+                                soknadId = SoknadId(soknadId)
                             )
                         )
                     }

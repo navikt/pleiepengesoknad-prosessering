@@ -8,7 +8,7 @@ import no.nav.helse.dusseldorf.ktor.jackson.dusseldorfConfigured
 import no.nav.helse.gosys.JournalPostId
 import no.nav.helse.prosessering.Metadata
 import no.nav.helse.prosessering.v1.MeldingV1
-import no.nav.helse.prosessering.v1.UtgaendeMeldingV1
+import no.nav.helse.prosessering.v1.PreprossesertMeldingV1
 import org.apache.kafka.common.serialization.Deserializer
 import org.apache.kafka.common.serialization.Serde
 import org.apache.kafka.common.serialization.Serdes
@@ -20,7 +20,7 @@ internal data class TopicEntry<V>(
     val data: V
 )
 
-internal data class Journalfort(val journalPostId: JournalPostId, val melding: UtgaendeMeldingV1)
+internal data class Journalfort(val journalPostId: JournalPostId, val melding: PreprossesertMeldingV1)
 
 internal data class Topic<V>(
     val name: String,
@@ -66,8 +66,8 @@ private class MottattSoknadSerDes: SerDes<TopicEntry<MeldingV1>>() {
     }
 
 }
-private class PreprossesertSerDes: SerDes<TopicEntry<UtgaendeMeldingV1>>() {
-    override fun deserialize(topic: String?, data: ByteArray?): TopicEntry<UtgaendeMeldingV1>? {
+private class PreprossesertSerDes: SerDes<TopicEntry<PreprossesertMeldingV1>>() {
+    override fun deserialize(topic: String?, data: ByteArray?): TopicEntry<PreprossesertMeldingV1>? {
         return data?.let {
             objectMapper.readValue(it)
         }
