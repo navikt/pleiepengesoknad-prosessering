@@ -81,11 +81,14 @@ private class JournalfortSerDes: SerDes<TopicEntry<Journalfort>>() {
         }
     }
 }
-internal fun <BEFORE, AFTER>runBlockingWithMDC(soknadId: String, entry: TopicEntry<BEFORE>, block: suspend() -> AFTER) : AFTER {
+internal fun <BEFORE, AFTER>runBlockingWithMDC(soknadId: String, entry: TopicEntry<BEFORE>, block: suspend() -> AFTER) : TopicEntry<AFTER> {
     return runBlocking(MDCContext()) {
         MDC.put("correlation_id", entry.metadata.correlationId)
         MDC.put("request_id", entry.metadata.requestId)
         MDC.put("soknad_id", soknadId)
-        block()
+        TopicEntry(
+            metadata = entry.metadata,
+            data = block()
+        )
     }
 }

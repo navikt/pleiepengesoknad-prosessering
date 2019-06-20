@@ -37,16 +37,12 @@ internal class PreprosseseringStream(
                 .filter { _, entry -> 1 == entry.metadata.version }
                 .mapValues { soknadId, entry  ->
                     runBlockingWithMDC(soknadId, entry) {
-                        TopicEntry(
+                        preprosseseringV1Service.preprosseser(
+                            melding = entry.data,
                             metadata = entry.metadata,
-                            data = preprosseseringV1Service.preprosseser(
-                                melding = entry.data,
-                                metadata = entry.metadata,
-                                soknadId = SoknadId(soknadId)
-                            )
+                            soknadId = SoknadId(soknadId)
                         )
                     }
-
                 }
                 .to(toTopic.name, Produced.with(toTopic.keySerde, toTopic.valueSerde))
 
