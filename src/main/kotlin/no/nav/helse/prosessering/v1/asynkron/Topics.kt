@@ -2,6 +2,8 @@ package no.nav.helse.prosessering.v1.asynkron
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.slf4j.MDCContext
 import no.nav.helse.dusseldorf.ktor.jackson.dusseldorfConfigured
 import no.nav.helse.gosys.JournalPostId
 import no.nav.helse.prosessering.Metadata
@@ -11,6 +13,7 @@ import org.apache.kafka.common.serialization.Deserializer
 import org.apache.kafka.common.serialization.Serde
 import org.apache.kafka.common.serialization.Serdes
 import org.apache.kafka.common.serialization.Serializer
+import org.slf4j.MDC
 
 internal data class TopicEntry<V>(
     val metadata: Metadata,
@@ -77,5 +80,12 @@ private class JournalfortSerDes: SerDes<TopicEntry<Journalfort>>() {
             objectMapper.readValue(it)
         }
     }
-
+}
+internal fun <BEFORE, AFTER>runBlockingWithMDC(soknadId: String, entry: TopicEntry<BEFORE>, block: suspend() -> AFTER) : AFTER {
+    return runBlocking(MDCContext()) {
+        MDC.put("correlation_id", entry.metadata.correlationId)
+        MDC.put("request_id", entry.metadata.requestId)
+        MDC.put("soknad_id", soknadId)
+        block()
+    }
 }

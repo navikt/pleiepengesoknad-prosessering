@@ -6,6 +6,7 @@ val dusseldorfKtorVersion = "1.2.1.65ce328"
 val wiremockVersion = "2.19.0"
 val openhtmltopdfVersion = "0.0.1-RC20"
 val slf4jVersion = ext.get("slf4jVersion").toString()
+val kotlinxCoroutinesVersion = ext.get("kotlinxCoroutinesVersion").toString()
 
 val mainClass = "no.nav.helse.PleiepengesoknadProsesseringKt"
 
@@ -27,6 +28,7 @@ dependencies {
     compile ( "no.nav.helse:dusseldorf-ktor-metrics:$dusseldorfKtorVersion")
     compile ( "no.nav.helse:dusseldorf-ktor-health:$dusseldorfKtorVersion")
     compile ( "no.nav.helse:dusseldorf-ktor-auth:$dusseldorfKtorVersion")
+    compile("org.jetbrains.kotlinx:kotlinx-coroutines-slf4j:$kotlinxCoroutinesVersion")
     
     // Client
     compile ( "no.nav.helse:dusseldorf-ktor-client:$dusseldorfKtorVersion")
