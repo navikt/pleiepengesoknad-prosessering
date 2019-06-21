@@ -18,6 +18,7 @@ internal class PreprosseseringV1Service {
     ) : PreprossesertMeldingV1 {
         logger.info("Preprosseserer.")
         return PreprossesertMeldingV1(
+            soknadId = soknadId.id,
             relasjonTilBarnet = melding.relasjonTilBarnet
         )
     }

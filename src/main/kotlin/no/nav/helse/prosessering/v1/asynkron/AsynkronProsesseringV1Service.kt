@@ -9,7 +9,8 @@ import org.slf4j.LoggerFactory
 import java.util.*
 
 internal class AsynkronProsesseringV1Service(
-    private val kafkaProperties : Properties,
+    private val kafkaProducerProperties : Properties,
+    private val kafkaStreamsProperties : Properties,
     private val preprosseseringV1Service: PreprosseseringV1Service
 ) : ProsesseringV1Service {
 
@@ -17,18 +18,14 @@ internal class AsynkronProsesseringV1Service(
         private val logger = LoggerFactory.getLogger(AsynkronProsesseringV1Service::class.java)
     }
 
+    private val producer = SoknadProducer(kafkaProducerProperties)
+
+
     init {
-//        PreprosseseringStream(
-//            kafkaProperties = kafkaProperties,
-//            preprosseseringV1Service = preprosseseringV1Service
-//        )
-
-
-        /* TODO: Starte Streams
-            - PreprosseseringStream -> consumerer fra "privat-pleiepengesoknad-mottatt" og legger på "privat-privat-pleiepengesoknad-preprosessert" (Lager PDF'er etc)
-            - JournalforingStream -> consumerer fra "privat-pleiepengesoknad-preprosessert" og legger på "privat-pleiepengesoknad-journalfort"
-            - GosysStream -> consumerer fra "privat-pleiepengesoknad-journalfort" >> END
-        */
+        PreprosseseringStream(
+            kafkaProperties = kafkaStreamsProperties,
+            preprosseseringV1Service = preprosseseringV1Service
+        )
     }
 
     override suspend fun leggSoknadTilProsessering(
@@ -36,10 +33,11 @@ internal class AsynkronProsesseringV1Service(
         metadata: Metadata
     ) : SoknadId {
         val soknadId = SoknadId.generate()
-        logger.info("async")
-        logger.info(soknadId.toString())
-        // TODO: Format for "Utgeånde melding (DTO)"
-        // TODO: Kafka producer som legger utgående melding på topic "privat-pleiepengesoknad-mottatt"
+        producer.produce(
+            soknadId = soknadId,
+            metadata = metadata,
+            melding = melding
+        )
         return soknadId
     }
 
