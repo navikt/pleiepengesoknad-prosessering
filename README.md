@@ -1,14 +1,17 @@
 # pleiepengesoknad-prosessering
 
-Tjeneste som prosesserer søknad om pleiepenger.
-Skal konsumere kafka topic "privat-pleiepengesoknad" og prosessere søknad basert på innhold på denne køen.
-Kan også sende samme request som kommer på kafka-topic som et REST API-kall til tjenesten.
+Tjeneste som prosesserer søknad om pleiepenger sykt barn.
+Mottar søknad som REST API-kall til tjenesten.
+By default prosesseres søknadene synkront. Med andre ord får man ikke en OK response før alt er på plass i bakenforliggende systemer.
 
-Første versjon av tjenesten vil motta og prossesere søknader synkront, men med et mål om å gjøre det asynkront ved hjelp av Kafka.
+Ved å legge til query parameter ```?async=true``` vil søknaden legges på en kø og prosesseres fortløpende. Responsen fra tjenesten er lik som ved en synkron request.
 
 ## Versjon 1
+### Path
+/v1/soknad
+
 ### Meldingsformat
-- Gir 202 response
+- Gir 202 response med SøknadId som entity på formatet ```{"id":"b3106960-0a85-4e02-9221-6ae057c8e93f"}```
 - soker.mellomnavn er ikke påkrevd.
 - ingen av attributtene for "barn" er påkrevd.
 - arbeidsgivere kan være en tom liste
@@ -19,7 +22,7 @@ Første versjon av tjenesten vil motta og prossesere søknader synkront, men med
 
 ```json
 {
-    "mottatt": "2019-02-15T20:43:32Z",
+	"mottatt": "2019-02-15T20:43:32Z",
 	"fra_og_med": "2018-10-10",
 	"til_og_med": "2019-10-10",
 	"soker": {
@@ -33,7 +36,7 @@ Første versjon av tjenesten vil motta og prossesere søknader synkront, men med
 		"alternativ_id": null,
 		"navn": "Santa Heisann Winter"
 	},
-	"relasjon_til_barnet" : "MOR",
+	"relasjon_til_barnet": "MOR",
 	"arbeidsgivere": {
 		"organisasjoner": [{
 			"navn": "Bjeffefirmaet",
@@ -44,18 +47,18 @@ Første versjon av tjenesten vil motta og prossesere søknader synkront, men med
 		"http://localhost:8133/v1/dokument/eyJraWQiOiIxIiwidHlwIjoiSldUIiwiYWxnIjoibm9uZSJ9.eyJqdGkiOiJlZWNlY2NkNS1jNjkyLTQyMDEtYTJhNi04OTFiMWFjZDYwMGMifQ"
 	],
 	"vedlegg": [{
-    	"content": "iVBORw0KGg....ayne82ZEAAAAASUVORK5CYII=",
-    	"content_type": "image/png",
-    	"title": "Legeerklæring"
-    }],
-	"medlemskap" : {
-        "har_bodd_i_utlandet_siste_12_mnd" : false,
-        "skal_bo_i_utlandet_neste_12_mnd" : false
+		"content": "iVBORw0KGg....ayne82ZEAAAAASUVORK5CYII=",
+		"content_type": "image/png",
+		"title": "Legeerklæring"
+	}],
+	"medlemskap": {
+		"har_bodd_i_utlandet_siste_12_mnd": false,
+		"skal_bo_i_utlandet_neste_12_mnd": false
 	},
 	"grad": 100,
-	"har_medsoker" : true,
-    "har_bekreftet_opplysninger" : true,
-    "har_forstatt_rettigheter_og_plikter": true
+	"har_medsoker": true,
+	"har_bekreftet_opplysninger": true,
+	"har_forstatt_rettigheter_og_plikter": true
 }
 ```
 
@@ -69,12 +72,5 @@ Request ID blir ikke propagert videre, og skal ha sitt opphav hos konsumenten.
 - Request ID kan sendes som heder 'X-Request-ID'
 - Versjon på meldingen avledes fra pathen '/v1/soknad' -> 1
 
-
-#### Kafka
-- Correlation ID må sendes som header til meldingen med navn 'X-Correlation-Id'
-- Request ID kan sendes som header til meldingen med navn 'X-Correlation-Id'
-- Versjon på meldingen må sendes som header til meldingen med navn 'X-Nav-Message-Version'
-
 ## For NAV-ansatte
-
 Interne henvendelser kan sendes via Slack i kanalen #område-helse.
