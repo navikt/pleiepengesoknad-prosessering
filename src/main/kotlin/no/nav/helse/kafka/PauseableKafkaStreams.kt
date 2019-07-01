@@ -83,7 +83,7 @@ internal class PauseableKafkaStreams(
         }
     }
 
-    internal fun pause(cause: Throwable) {
+    private fun pause(cause: Throwable) {
         changeState {
             when (state) {
                 State.PAUSED -> log.info("Stream er allerede pauset.")
