@@ -106,9 +106,6 @@ class SynkronProsesseringV1Service(
 
         logger.trace("Oppgave i Gosys opprettet OK")
 
-        // Reporterer metrics først når oppgave er opprettet OK.
-        melding.reportMetrics()
-
         logger.trace("Sletter dokumenter.")
         try { dokumentService.slettDokumeter(
             urlBolks = komplettDokumentUrlsList,

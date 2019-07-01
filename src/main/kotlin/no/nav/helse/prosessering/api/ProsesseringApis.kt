@@ -14,6 +14,7 @@ import io.ktor.routing.post
 import no.nav.helse.prosessering.v1.MeldingV1
 import no.nav.helse.prosessering.Metadata
 import no.nav.helse.prosessering.v1.ProsesseringV1Service
+import no.nav.helse.prosessering.v1.reportMetrics
 import no.nav.helse.prosessering.v1.validate
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -49,6 +50,7 @@ private suspend fun ApplicationCall.handleWith(prosesseringsV1Service: Prosesser
         melding = melding,
         metadata = metadata
     )
+    melding.reportMetrics()
     respond(HttpStatusCode.Accepted, mapOf("id" to id.id))
 }
 
