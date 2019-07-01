@@ -23,9 +23,11 @@ import org.skyscreamer.jsonassert.JSONAssert
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.net.URI
+import java.time.Duration
 import java.time.LocalDate
 import java.time.ZonedDateTime
 import java.util.*
+import java.util.concurrent.TimeUnit
 import kotlin.test.*
 
 private val logger: Logger = LoggerFactory.getLogger("nav.PleiepengesoknadProsesseringTest")
@@ -37,6 +39,7 @@ class PleiepengesoknadProsesseringTest {
     private companion object {
 
         private val wireMockServer: WireMockServer = WiremockWrapper.bootstrap()
+        private val kafkaEnvironment = KafkaWrapper.bootstrap()
         private val objectMapper = jacksonObjectMapper().dusseldorfConfigured()
         private val authorizedAccessToken = Authorization.getAccessToken(wireMockServer.baseUrl(), wireMockServer.getSubject())
         private val unAauthorizedAccessToken = Authorization.getAccessToken(wireMockServer.baseUrl(), "srvikketilgang")
@@ -50,7 +53,7 @@ class PleiepengesoknadProsesseringTest {
 
         fun getConfig() : ApplicationConfig {
             val fileConfig = ConfigFactory.load()
-            val testConfig = ConfigFactory.parseMap(TestConfiguration.asMap(wireMockServer = wireMockServer))
+            val testConfig = ConfigFactory.parseMap(TestConfiguration.asMap(wireMockServer = wireMockServer, kafkaEnvironment = kafkaEnvironment))
             val mergedConfig = testConfig.withFallback(fileConfig)
             return HoconApplicationConfig(mergedConfig)
         }
@@ -72,6 +75,8 @@ class PleiepengesoknadProsesseringTest {
         fun tearDown() {
             logger.info("Tearing down")
             wireMockServer.stop()
+            engine.stop(10, 5, TimeUnit.SECONDS)
+            kafkaEnvironment.tearDown()
             logger.info("Tear down complete")
         }
     }
@@ -127,6 +132,13 @@ class PleiepengesoknadProsesseringTest {
             expectedResponse = null,
             async = true
         )
+
+        ventPaaFerdigProsessert()
+    }
+
+    private fun ventPaaFerdigProsessert() {
+        val end = System.currentTimeMillis() + Duration.ofSeconds(10).toMillis()
+        while (System.currentTimeMillis() < end) { }
     }
 
     @Test

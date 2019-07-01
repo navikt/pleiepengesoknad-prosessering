@@ -62,7 +62,6 @@ private class MottattSoknadSerDes: SerDes<TopicEntry<MeldingV1>>() {
             objectMapper.readValue<TopicEntry<MeldingV1>>(it)
         }
     }
-
 }
 private class PreprossesertSerDes: SerDes<TopicEntry<PreprossesertMeldingV1>>() {
     override fun deserialize(topic: String?, data: ByteArray?): TopicEntry<PreprossesertMeldingV1>? {
@@ -70,7 +69,6 @@ private class PreprossesertSerDes: SerDes<TopicEntry<PreprossesertMeldingV1>>() 
             objectMapper.readValue(it)
         }
     }
-
 }
 private class JournalfortSerDes: SerDes<TopicEntry<Journalfort>>() {
     override fun deserialize(topic: String?, data: ByteArray?): TopicEntry<Journalfort>? {

@@ -9,8 +9,10 @@ import org.apache.kafka.streams.Topology
 import org.slf4j.LoggerFactory
 import java.time.Duration
 import java.time.LocalDateTime
+import java.time.temporal.ChronoUnit
 import java.util.*
 import java.util.concurrent.Semaphore
+import java.util.concurrent.TimeUnit
 import kotlin.concurrent.fixedRateTimer
 
 internal class PauseableKafkaStreams(
@@ -27,6 +29,11 @@ internal class PauseableKafkaStreams(
             else -> Healthy(name, "Stream er i state ${state.name}")
         }
     }
+    private val log = LoggerFactory.getLogger(name)
+
+    private companion object {
+        private const val closeTimeoutInMinutes = 2L
+    }
 
     private val stateChangeLock = Semaphore(1)
     private var state = State.INITIALIZED
@@ -35,7 +42,7 @@ internal class PauseableKafkaStreams(
     private var restartConsiderer : Timer? = null
     private var pausedAt : LocalDateTime? = null
 
-    private val log = LoggerFactory.getLogger(name)
+
 
     init {
         start()
@@ -65,9 +72,9 @@ internal class PauseableKafkaStreams(
     private fun stop() {
         changeState {
             when (state) {
-                State.STARTED -> {
+                State.STARTED, State.INITIALIZED -> {
                     log.info("Stopper stream.")
-                    kafkaStreams.close()
+                    kafkaStreams.close(closeTimeoutInMinutes, TimeUnit.MINUTES)
                     state = State.STOPPED
                     log.info("Stream stoppet.")
                 }
@@ -82,7 +89,7 @@ internal class PauseableKafkaStreams(
                 State.PAUSED -> log.info("Stream er allerede pauset.")
                 State.STARTED -> {
                     log.info("Pause stream.")
-                    kafkaStreams.close()
+                    kafkaStreams.close(closeTimeoutInMinutes, TimeUnit.MINUTES)
                     kafkaStreams = newKafkaStreams()
                     pausedAt = LocalDateTime.now()
                     startRestartConsiderer(cause)
@@ -149,6 +156,7 @@ internal class PauseableKafkaStreams(
         }
 
         Runtime.getRuntime().addShutdownHook(Thread {
+            println("Stopping stream.")
             stop()
         })
 

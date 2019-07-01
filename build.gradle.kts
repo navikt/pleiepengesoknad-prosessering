@@ -7,6 +7,8 @@ val wiremockVersion = "2.19.0"
 val openhtmltopdfVersion = "0.0.1-RC20"
 val slf4jVersion = ext.get("slf4jVersion").toString()
 val kotlinxCoroutinesVersion = ext.get("kotlinxCoroutinesVersion").toString()
+val kafkaEmbeddedEnvVersion = "2.1.1"
+val kafkaVersion = "2.0.1" // Aliigned med version fra kafka-embedded-env
 
 val mainClass = "no.nav.helse.PleiepengesoknadProsesseringKt"
 
@@ -40,16 +42,15 @@ dependencies {
     compile("org.slf4j:jcl-over-slf4j:$slf4jVersion")
 
     // Kafka
-    compile("org.apache.kafka:kafka-clients:2.2.1")
-    compile("org.apache.kafka:kafka-streams:2.2.1")
-    testCompile("org.testcontainers:kafka:1.11.2")
+    compile("org.apache.kafka:kafka-clients:$kafkaVersion")
+    compile("org.apache.kafka:kafka-streams:$kafkaVersion")
 
     // Test
+    testCompile ("no.nav:kafka-embedded-env:$kafkaEmbeddedEnvVersion")
     testCompile ("com.github.tomakehurst:wiremock:$wiremockVersion")
     testCompile("io.ktor:ktor-server-test-host:$ktorVersion") {
         exclude(group = "org.eclipse.jetty")
     }
-    testCompile ("com.nimbusds:oauth2-oidc-sdk:5.56")
     testCompile("org.skyscreamer:jsonassert:1.5.0")
 }
 

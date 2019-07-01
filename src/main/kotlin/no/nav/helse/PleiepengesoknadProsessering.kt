@@ -36,7 +36,6 @@ import no.nav.helse.prosessering.v1.synkron.SynkronProsesseringV1Service
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.net.URI
-import java.util.*
 
 private val logger: Logger = LoggerFactory.getLogger("nav.PleiepengesoknadProsessering")
 
@@ -50,6 +49,7 @@ fun Application.pleiepengesoknadProsessering() {
 
     val configuration = Configuration(environment.config)
     val issuers = configuration.issuers()
+    val kafkaConfig = configuration.getKafkaConfig()
 
     install(Authentication) {
         multipleJwtIssuers(issuers)
@@ -100,10 +100,13 @@ fun Application.pleiepengesoknadProsessering() {
                             )
                         )
                     ),
-                    asynkronProsesseringV1Service = AsynkronProsesseringV1Service(
-                        kafkaProperties = Properties(),
-                        preprosseseringV1Service = PreprosseseringV1Service()
-                    )
+                    asynkronProsesseringV1Service = kafkaConfig?.let { kafkaConfig ->
+                        AsynkronProsesseringV1Service(
+                            kafkaProducerProperties = kafkaConfig.producer,
+                            kafkaStreamsProperties = kafkaConfig.streams,
+                            preprosseseringV1Service = PreprosseseringV1Service()
+                        )
+                    }
                 )
             }
         }

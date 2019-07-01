@@ -22,11 +22,11 @@ private val logger: Logger = LoggerFactory.getLogger("nav.prosesseringApis")
 
 fun Route.prosesseringApis(
     synkronProsesseringV1Service: ProsesseringV1Service,
-    asynkronProsesseringV1Service: ProsesseringV1Service
+    asynkronProsesseringV1Service: ProsesseringV1Service?
 ) {
 
     post("v1/soknad") {
-        if (call.request.prosesserAsynkront()) call.handleWith(asynkronProsesseringV1Service)
+        if (call.request.prosesserAsynkront()) call.handleWith(asynkronProsesseringV1Service?:synkronProsesseringV1Service)
         else call.handleWith(synkronProsesseringV1Service)
     }
 }

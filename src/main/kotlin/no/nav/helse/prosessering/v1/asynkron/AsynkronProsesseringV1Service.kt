@@ -9,9 +9,9 @@ import org.slf4j.LoggerFactory
 import java.util.*
 
 internal class AsynkronProsesseringV1Service(
-    private val kafkaProducerProperties : Properties,
-    private val kafkaStreamsProperties : Properties,
-    private val preprosseseringV1Service: PreprosseseringV1Service
+    kafkaProducerProperties : Properties,
+    kafkaStreamsProperties : Properties,
+    preprosseseringV1Service: PreprosseseringV1Service
 ) : ProsesseringV1Service {
 
     private companion object {

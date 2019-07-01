@@ -37,6 +37,7 @@ internal class PreprosseseringStream(
                 .filter { _, entry -> 1 == entry.metadata.version }
                 .mapValues { soknadId, entry  ->
                     runBlockingWithMDC(soknadId, entry) {
+                        logger.trace("Sender søknad $soknadId til prepprosessering.")
                         preprosseseringV1Service.preprosseser(
                             melding = entry.data,
                             metadata = entry.metadata,

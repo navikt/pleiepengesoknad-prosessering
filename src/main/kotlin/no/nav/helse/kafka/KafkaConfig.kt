@@ -31,7 +31,7 @@ internal class KafkaConfig(
         put(StreamsConfig.APPLICATION_ID_CONFIG, ID)
         put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers)
         put(StreamsConfig.DEFAULT_DESERIALIZATION_EXCEPTION_HANDLER_CLASS_CONFIG, LogAndFailExceptionHandler::class.java)
-        put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest")
+        put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest")
         medCredentials(credentials)
         medTrustStore(trustStore)
     }
