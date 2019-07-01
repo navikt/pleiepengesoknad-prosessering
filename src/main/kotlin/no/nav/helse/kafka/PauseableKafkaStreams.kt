@@ -19,7 +19,8 @@ internal class PauseableKafkaStreams(
     private val topology: Topology,
     private val properties: Properties,
     private val considerRestartEvery : Duration = Duration.ofMinutes(1),
-    private val considerRestart: (pausedAt: LocalDateTime, reason: Throwable) -> Boolean = { pausedAt, _ -> pausedAt.isBefore(LocalDateTime.now().minusMinutes(5)) }
+    private val considerRestart: (pausedAt: LocalDateTime, reason: Throwable) -> Boolean = { pausedAt, _ -> pausedAt.isBefore(LocalDateTime.now().minusMinutes(5)) },
+    private val pauseOn: (throwable: Throwable) -> Boolean
 ) : HealthCheck {
     override suspend fun check(): Result {
         return when (state) {
@@ -130,7 +131,7 @@ internal class PauseableKafkaStreams(
     }
     private fun newKafkaStreams() = addShutdownHook(KafkaStreams(topology, properties))
     private fun handleThrowable(throwable: Throwable) {
-        if (throwable is PauseableError) {
+        if (pauseOn(throwable)) {
             log.warn("Pauser stream: ${throwable.message}", throwable.cause)
             pause(throwable)
         } else {
@@ -163,4 +164,3 @@ internal class PauseableKafkaStreams(
 }
 
 private enum class State { INITIALIZED, STARTED, PAUSED, STOPPED }
-class PauseableError(message: String, cause: Throwable?) : Throwable(message, cause)

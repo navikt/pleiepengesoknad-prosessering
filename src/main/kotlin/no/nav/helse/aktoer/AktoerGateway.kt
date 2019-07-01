@@ -9,6 +9,7 @@ import com.github.kittinunf.fuel.httpGet
 import io.ktor.http.HttpHeaders
 import io.ktor.http.Url
 import no.nav.helse.CorrelationId
+import no.nav.helse.HttpError
 import no.nav.helse.dusseldorf.ktor.client.*
 import no.nav.helse.dusseldorf.ktor.core.Retry
 import no.nav.helse.dusseldorf.ktor.metrics.Operation
@@ -74,7 +75,7 @@ class AktoerGateway(
                 { error ->
                     logger.error("Error response = '${error.response.body().asString("text/plain")}' fra '${request.url}'")
                     logger.error(error.toString())
-                    throw IllegalStateException("Feil ved henting av Aktør ID.")
+                    throw HttpError("Feil ved henting av Aktør ID.")
                 }
             )
         }

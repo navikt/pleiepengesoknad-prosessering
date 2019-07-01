@@ -1,5 +1,6 @@
 package no.nav.helse.prosessering.v1.asynkron
 
+import no.nav.helse.HttpError
 import no.nav.helse.kafka.PauseableKafkaStreams
 import no.nav.helse.prosessering.SoknadId
 import no.nav.helse.prosessering.v1.MeldingV1
@@ -19,7 +20,10 @@ internal class PreprosseseringStream(
     val stream = PauseableKafkaStreams(
         name = "PreprosseseringStreamV1",
         properties = kafkaProperties,
-        topology = topology(preprosseseringV1Service)
+        topology = topology(preprosseseringV1Service),
+        pauseOn = { throwable ->
+            throwable is HttpError
+        }
     )
 
     private companion object {
