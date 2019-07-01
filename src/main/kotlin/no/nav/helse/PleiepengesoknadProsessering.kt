@@ -74,7 +74,21 @@ fun Application.pleiepengesoknadProsessering() {
         AsynkronProsesseringV1Service(
             kafkaProducerProperties = config.producer,
             kafkaStreamsProperties = config.streams,
-            preprosseseringV1Service = PreprosseseringV1Service()
+            preprosseseringV1Service = PreprosseseringV1Service(
+                aktoerService = AktoerService(
+                    aktoerGateway = AktoerGateway(
+                        baseUrl = configuration.getAktoerRegisterBaseUrl(),
+                        accessTokenClient = accessTokenClientResolver.aktoerRegisterAccessTokenClient()
+                    )
+                ),
+                pdfV1Generator = PdfV1Generator(),
+                dokumentService = DokumentService(
+                    dokumentGateway = DokumentGateway(
+                        baseUrl = configuration.getPleiepengerDokumentBaseUrl(),
+                        accessTokenClient = accessTokenClientResolver.dokumentAccessTokenClient()
+                    )
+                )
+            )
         )
     }
 

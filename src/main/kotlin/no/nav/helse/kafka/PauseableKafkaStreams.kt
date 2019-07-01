@@ -9,7 +9,6 @@ import org.apache.kafka.streams.Topology
 import org.slf4j.LoggerFactory
 import java.time.Duration
 import java.time.LocalDateTime
-import java.time.temporal.ChronoUnit
 import java.util.*
 import java.util.concurrent.Semaphore
 import java.util.concurrent.TimeUnit
@@ -156,7 +155,6 @@ internal class PauseableKafkaStreams(
         }
 
         Runtime.getRuntime().addShutdownHook(Thread {
-            println("Stopping stream.")
             stop()
         })
 
