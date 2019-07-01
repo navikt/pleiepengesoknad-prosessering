@@ -16,13 +16,11 @@ internal class PreprosseseringStream(
     kafkaProperties : Properties
 ) {
 
-    init {
-        PauseableKafkaStreams(
-            name = "PreprosseseringStreamV1",
-            properties = kafkaProperties,
-            topology = topology(preprosseseringV1Service)
-        )
-    }
+    val stream = PauseableKafkaStreams(
+        name = "PreprosseseringStreamV1",
+        properties = kafkaProperties,
+        topology = topology(preprosseseringV1Service)
+    )
 
     private companion object {
         private val logger = LoggerFactory.getLogger(PreprosseseringStream::class.java)
@@ -50,5 +48,7 @@ internal class PreprosseseringStream(
             return builder.build()
         }
     }
+
+    internal fun stop() = stream.stop()
 }
 

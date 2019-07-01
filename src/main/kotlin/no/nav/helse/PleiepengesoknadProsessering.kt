@@ -70,6 +70,19 @@ fun Application.pleiepengesoknadProsessering() {
     install(CallIdRequired)
 
     val accessTokenClientResolver = AccessTokenClientResolver(environment.config.clients())
+    val asynkronProsesseringV1Service = kafkaConfig?.let { config ->
+        AsynkronProsesseringV1Service(
+            kafkaProducerProperties = config.producer,
+            kafkaStreamsProperties = config.streams,
+            preprosseseringV1Service = PreprosseseringV1Service()
+        )
+    }
+
+    environment.monitor.subscribe(ApplicationStopping) {
+        logger.trace("Stopper AsynkronProsesseringV1Service.")
+        asynkronProsesseringV1Service?.stop()
+        logger.trace("AsynkronProsesseringV1Service Stoppet.")
+    }
 
     install(Routing) {
         authenticate(*issuers.allIssuers()) {
@@ -100,13 +113,7 @@ fun Application.pleiepengesoknadProsessering() {
                             )
                         )
                     ),
-                    asynkronProsesseringV1Service = kafkaConfig?.let { kafkaConfig ->
-                        AsynkronProsesseringV1Service(
-                            kafkaProducerProperties = kafkaConfig.producer,
-                            kafkaStreamsProperties = kafkaConfig.streams,
-                            preprosseseringV1Service = PreprosseseringV1Service()
-                        )
-                    }
+                    asynkronProsesseringV1Service = asynkronProsesseringV1Service
                 )
             }
         }

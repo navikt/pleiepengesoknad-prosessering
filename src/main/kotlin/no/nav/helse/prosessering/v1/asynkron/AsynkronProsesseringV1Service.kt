@@ -20,13 +20,10 @@ internal class AsynkronProsesseringV1Service(
 
     private val producer = SoknadProducer(kafkaProducerProperties)
 
-
-    init {
-        PreprosseseringStream(
-            kafkaProperties = kafkaStreamsProperties,
-            preprosseseringV1Service = preprosseseringV1Service
-        )
-    }
+    private val preprosseseringStream = PreprosseseringStream(
+        kafkaProperties = kafkaStreamsProperties,
+        preprosseseringV1Service = preprosseseringV1Service
+    )
 
     override suspend fun leggSoknadTilProsessering(
         melding: MeldingV1,
@@ -40,5 +37,7 @@ internal class AsynkronProsesseringV1Service(
         )
         return soknadId
     }
+
+    internal fun stop() = preprosseseringStream.stop()
 
 }
