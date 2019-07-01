@@ -72,8 +72,7 @@ fun Application.pleiepengesoknadProsessering() {
     val accessTokenClientResolver = AccessTokenClientResolver(environment.config.clients())
     val asynkronProsesseringV1Service = kafkaConfig?.let { config ->
         AsynkronProsesseringV1Service(
-            kafkaProducerProperties = config.producer,
-            kafkaStreamsProperties = config.streams,
+            kafkaConfig = config,
             preprosseseringV1Service = PreprosseseringV1Service(
                 aktoerService = AktoerService(
                     aktoerGateway = AktoerGateway(
@@ -88,6 +87,14 @@ fun Application.pleiepengesoknadProsessering() {
                         accessTokenClient = accessTokenClientResolver.dokumentAccessTokenClient()
                     )
                 )
+            ),
+            joarkGateway = JoarkGateway(
+                baseUrl = configuration.getPleiepengerJoarkBaseUrl(),
+                accessTokenClient = accessTokenClientResolver.joarkAccessTokenClient()
+            ),
+            oppgaveGateway = OppgaveGateway(
+                baseUrl = configuration.getPleiepengerOppgaveBaseUrl(),
+                accessTokenClient = accessTokenClientResolver.oppgaveAccessTokenClient()
             )
         )
     }

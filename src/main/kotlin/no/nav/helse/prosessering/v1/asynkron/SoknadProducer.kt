@@ -1,23 +1,23 @@
 package no.nav.helse.prosessering.v1.asynkron
 
+import no.nav.helse.kafka.KafkaConfig
 import no.nav.helse.prosessering.Metadata
 import no.nav.helse.prosessering.SoknadId
 import no.nav.helse.prosessering.v1.MeldingV1
 import org.apache.kafka.clients.producer.KafkaProducer
 import org.apache.kafka.clients.producer.ProducerRecord
 import org.slf4j.LoggerFactory
-import java.util.*
 
 internal class SoknadProducer(
-    kafkaProperties: Properties
+    kafkaConfig: KafkaConfig
 ) {
     private companion object {
+        private val NAME = "SoknadProducerV1"
         private val logger = LoggerFactory.getLogger(SoknadProducer::class.java)
-
     }
 
     private val producer = KafkaProducer<String, TopicEntry<MeldingV1>>(
-        kafkaProperties,
+        kafkaConfig.producer(NAME),
         Topics.MOTTATT.keySerializer,
         Topics.MOTTATT.serDes
     )

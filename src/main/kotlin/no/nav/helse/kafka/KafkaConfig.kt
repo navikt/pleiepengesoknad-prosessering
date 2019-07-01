@@ -13,27 +13,33 @@ import java.io.File
 import java.util.*
 
 private val logger: Logger = LoggerFactory.getLogger(KafkaConfig::class.java)
-private const val ID = "pleiepengesoknad-prosessering"
+private const val ID_PREFIX = "srvpps-prosessering-"
 
 internal class KafkaConfig(
     bootstrapServers: String,
     credentials: Pair<String, String>,
     trustStore: Pair<String, String>?
 ) {
-    internal val producer = Properties().apply {
-        put(ProducerConfig.CLIENT_ID_CONFIG, ID)
+    private val producer = Properties().apply {
         put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers)
         medCredentials(credentials)
         medTrustStore(trustStore)
     }
 
-    internal val streams = Properties().apply {
-        put(StreamsConfig.APPLICATION_ID_CONFIG, ID)
+    private val streams = Properties().apply {
         put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers)
         put(StreamsConfig.DEFAULT_DESERIALIZATION_EXCEPTION_HANDLER_CLASS_CONFIG, LogAndFailExceptionHandler::class.java)
         put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest")
         medCredentials(credentials)
         medTrustStore(trustStore)
+    }
+
+    internal fun producer(name: String) = producer.apply {
+        put(ProducerConfig.CLIENT_ID_CONFIG, "$ID_PREFIX$name")
+    }
+
+    internal fun stream(name: String) = streams.apply {
+        put(StreamsConfig.APPLICATION_ID_CONFIG, "$ID_PREFIX$name")
     }
 }
 

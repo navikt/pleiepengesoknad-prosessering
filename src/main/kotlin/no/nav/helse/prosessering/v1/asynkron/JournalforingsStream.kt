@@ -1,52 +1,58 @@
 package no.nav.helse.prosessering.v1.asynkron
 
+import no.nav.helse.CorrelationId
 import no.nav.helse.HttpError
+import no.nav.helse.aktoer.AktoerId
+import no.nav.helse.gosys.JoarkGateway
 import no.nav.helse.kafka.KafkaConfig
 import no.nav.helse.kafka.PauseableKafkaStreams
-import no.nav.helse.prosessering.SoknadId
-import no.nav.helse.prosessering.v1.MeldingV1
-import no.nav.helse.prosessering.v1.PreprosseseringV1Service
+import no.nav.helse.prosessering.v1.PreprossesertMeldingV1
 import org.apache.kafka.streams.StreamsBuilder
 import org.apache.kafka.streams.Topology
 import org.apache.kafka.streams.kstream.Consumed
 import org.apache.kafka.streams.kstream.Produced
 import org.slf4j.LoggerFactory
 
-internal class PreprosseseringStream(
-    preprosseseringV1Service: PreprosseseringV1Service,
+internal class JournalforingsStream(
+    joarkGateway: JoarkGateway,
     kafkaConfig: KafkaConfig
 ) {
+
     private val stream = PauseableKafkaStreams(
         name = NAME,
         properties = kafkaConfig.stream(NAME),
-        topology = topology(preprosseseringV1Service),
+        topology = topology(joarkGateway),
         pauseOn = { throwable ->
             throwable is HttpError && throwable.pauseStream()
         }
     )
 
     private companion object {
-        private const val NAME = "PreprosesseringV1"
+        private const val NAME = "JournalforingV1"
         private val logger = LoggerFactory.getLogger("no.nav.$NAME.topology")
 
-        private fun topology(preprosseseringV1Service: PreprosseseringV1Service) : Topology {
+        private fun topology(joarkGateway: JoarkGateway) : Topology {
             val builder = StreamsBuilder()
-            val fromTopic = Topics.MOTTATT
-            val toTopic = Topics.PREPROSSESERT
+            val fromTopic = Topics.PREPROSSESERT
+            val toTopic = Topics.JOURNALFORT
 
             builder
-                .stream<String, TopicEntry<MeldingV1>>(fromTopic.name, Consumed.with(fromTopic.keySerde, fromTopic.valueSerde))
+                .stream<String, TopicEntry<PreprossesertMeldingV1>>(fromTopic.name, Consumed.with(fromTopic.keySerde, fromTopic.valueSerde))
                 .filter { _, entry -> 1 == entry.metadata.version }
                 .mapValues { soknadId, entry  ->
                     runBlockingWithMDC(soknadId, entry) {
-                        logger.trace("Sender søknad til prepprosessering.")
-                        val preprossesertMelding = preprosseseringV1Service.preprosseser(
-                            melding = entry.data,
-                            metadata = entry.metadata,
-                            soknadId = SoknadId(soknadId)
+                        logger.trace("Journalfører dokumenter.")
+                        val journaPostId = joarkGateway.journalfoer(
+                            mottatt = entry.data.mottatt,
+                            aktoerId = AktoerId(entry.data.soker.aktoerId),
+                            correlationId = CorrelationId(entry.metadata.correlationId),
+                            dokumenter = entry.data.dokumentUrls
                         )
-                        logger.trace("Søknad preprossesert.")
-                        preprossesertMelding
+                        logger.trace("Dokumenter journalført.")
+                        Journalfort(
+                            journalPostId = journaPostId.journalPostId,
+                            melding = entry.data
+                        )
                     }
                 }
                 .to(toTopic.name, Produced.with(toTopic.keySerde, toTopic.valueSerde))

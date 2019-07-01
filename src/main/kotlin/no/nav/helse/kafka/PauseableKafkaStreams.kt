@@ -29,7 +29,7 @@ internal class PauseableKafkaStreams(
             else -> Healthy(name, "Stream er i state ${state.name}")
         }
     }
-    private val log = LoggerFactory.getLogger(name)
+    private val log = LoggerFactory.getLogger("no.nav.$name.stream")
 
     private companion object {
         private const val closeTimeoutInMinutes = 2L
