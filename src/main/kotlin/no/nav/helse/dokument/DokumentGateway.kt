@@ -13,6 +13,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import no.nav.helse.CorrelationId
+import no.nav.helse.HttpError
 import no.nav.helse.aktoer.AktoerId
 import no.nav.helse.dusseldorf.ktor.client.*
 import no.nav.helse.dusseldorf.ktor.core.Retry
@@ -166,7 +167,7 @@ class DokumentGateway(
                 { error ->
                     logger.error("Error response = '${error.response.body().asString("text/plain")}' fra '${request.url}'")
                     logger.error(error.toString())
-                    throw IllegalStateException("Feil ved lagring av dokument.")
+                    throw HttpError(response.statusCode, "Feil ved lagring av dokument.")
                 }
             )
         }

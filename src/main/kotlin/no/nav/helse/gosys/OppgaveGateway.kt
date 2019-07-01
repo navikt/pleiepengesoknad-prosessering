@@ -9,6 +9,7 @@ import com.github.kittinunf.fuel.coroutines.awaitStringResponseResult
 import com.github.kittinunf.fuel.httpPost
 import io.ktor.http.*
 import no.nav.helse.CorrelationId
+import no.nav.helse.HttpError
 import no.nav.helse.aktoer.AktoerId
 import no.nav.helse.dusseldorf.ktor.client.*
 import no.nav.helse.dusseldorf.ktor.metrics.Operation
@@ -62,7 +63,7 @@ class OppgaveGateway(
                 HttpHeaders.Accept to "application/json"
             )
 
-        val (request,_, result) = Operation.monitored(
+        val (request, response, result) = Operation.monitored(
             app = "pleiepengesoknad-prosessering",
             operation = OPPRETTE_OPPGAVE_OPERATION,
             resultResolver = { 201 == it.second.statusCode }
@@ -73,7 +74,7 @@ class OppgaveGateway(
             { error ->
                 logger.error("Error response = '${error.response.body().asString("text/plain")}' fra '${request.url}'")
                 logger.error(error.toString())
-                throw IllegalStateException("Feil ved opprettelse av oppgave.")
+                throw HttpError(response.statusCode,"Feil ved opprettelse av oppgave.")
             }
         )
     }

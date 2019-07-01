@@ -65,7 +65,7 @@ class AktoerGateway(
             initialDelay = Duration.ofMillis(200),
             factor = 2.0
         ) {
-            val (request,_, result) = Operation.monitored(
+            val (request, response, result) = Operation.monitored(
                 app = "pleiepengesoknad-prosessering",
                 operation = HENTE_AKTOER_ID_OPERATION,
                 resultResolver = { 200 == it.second.statusCode }
@@ -75,7 +75,7 @@ class AktoerGateway(
                 { error ->
                     logger.error("Error response = '${error.response.body().asString("text/plain")}' fra '${request.url}'")
                     logger.error(error.toString())
-                    throw HttpError("Feil ved henting av Aktør ID.")
+                    throw HttpError(response.statusCode, "Feil ved henting av Aktør ID.")
                 }
             )
         }

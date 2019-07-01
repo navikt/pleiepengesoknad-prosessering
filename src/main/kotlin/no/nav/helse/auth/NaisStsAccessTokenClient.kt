@@ -3,6 +3,7 @@ package no.nav.helse.auth
 import com.github.kittinunf.fuel.core.Headers
 import com.github.kittinunf.fuel.httpGet
 import io.ktor.http.Url
+import no.nav.helse.HttpError
 import no.nav.helse.dusseldorf.ktor.client.buildURL
 import no.nav.helse.dusseldorf.oauth2.client.AccessTokenClient
 import no.nav.helse.dusseldorf.oauth2.client.AccessTokenResponse
@@ -27,7 +28,7 @@ internal class NaisStsAccessTokenClient(
     )).toString()
 
     override fun getAccessToken(scopes: Set<String>): AccessTokenResponse {
-        val (request, _, result) = url.httpGet()
+        val (request, response, result) = url.httpGet()
             .header(
                 Headers.AUTHORIZATION to authorizationHeader
             ).responseString()
@@ -44,7 +45,7 @@ internal class NaisStsAccessTokenClient(
             { error ->
                 logger.error("Error response = '${error.response.body().asString("text/plain")}' fra '${request.url}'")
                 logger.error(error.toString())
-                throw IllegalStateException("Feil ved henting av access token fra Nais STS.")
+                throw HttpError(response.statusCode,"Feil ved henting av access token fra Nais STS.")
             }
         )
     }

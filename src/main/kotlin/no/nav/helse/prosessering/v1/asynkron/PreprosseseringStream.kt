@@ -22,7 +22,7 @@ internal class PreprosseseringStream(
         properties = kafkaProperties,
         topology = topology(preprosseseringV1Service),
         pauseOn = { throwable ->
-            throwable is HttpError
+            throwable is HttpError && throwable.pauseStream()
         }
     )
 
@@ -56,3 +56,4 @@ internal class PreprosseseringStream(
     internal fun stop() = stream.stop()
 }
 
+private fun HttpError.pauseStream() = httpStatusCode() == null || httpStatusCode()!!.value >= 500
