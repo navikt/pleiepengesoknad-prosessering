@@ -4,6 +4,7 @@ import no.nav.common.JAASCredential
 import no.nav.common.KafkaEnvironment
 import no.nav.helse.prosessering.v1.asynkron.Topics.JOURNALFORT
 import no.nav.helse.prosessering.v1.asynkron.Topics.MOTTATT
+import no.nav.helse.prosessering.v1.asynkron.Topics.OPPGAVE_OPPRETTET
 import no.nav.helse.prosessering.v1.asynkron.Topics.PREPROSSESERT
 
 private const val username = "srvkafkaclient"
@@ -19,7 +20,8 @@ object KafkaWrapper {
             topicNames= listOf(
                 MOTTATT.name,
                 PREPROSSESERT.name,
-                JOURNALFORT.name
+                JOURNALFORT.name,
+                OPPGAVE_OPPRETTET.name
             )
         )
         return kafkaEnvironment

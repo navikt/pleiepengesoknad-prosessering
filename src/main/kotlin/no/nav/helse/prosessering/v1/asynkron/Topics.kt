@@ -5,7 +5,6 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.slf4j.MDCContext
 import no.nav.helse.dusseldorf.ktor.jackson.dusseldorfConfigured
-import no.nav.helse.gosys.JournalPostId
 import no.nav.helse.prosessering.Metadata
 import no.nav.helse.prosessering.v1.MeldingV1
 import no.nav.helse.prosessering.v1.PreprossesertMeldingV1
@@ -20,7 +19,8 @@ internal data class TopicEntry<V>(
     val data: V
 )
 
-internal data class Journalfort(val journalPostId: JournalPostId, val melding: PreprossesertMeldingV1)
+internal data class Journalfort(val journalPostId: String, val melding: PreprossesertMeldingV1)
+internal data class OppgaveOpprettet(val journalPostId: String, val oppgaveId: String, val melding: PreprossesertMeldingV1)
 
 internal data class Topic<V>(
     val name: String,
@@ -43,6 +43,10 @@ internal object Topics {
     val JOURNALFORT = Topic(
         name = "privat-pleiepengesoknad-journalfort",
         serDes = JournalfortSerDes()
+    )
+    val OPPGAVE_OPPRETTET = Topic(
+        name = "privat-pleiepengesoknad-oppgaveOpprettet",
+        serDes = OppgaveOpprettetSerDes()
     )
 }
 
@@ -77,6 +81,14 @@ private class JournalfortSerDes: SerDes<TopicEntry<Journalfort>>() {
         }
     }
 }
+private class OppgaveOpprettetSerDes: SerDes<TopicEntry<OppgaveOpprettet>>() {
+    override fun deserialize(topic: String?, data: ByteArray?): TopicEntry<OppgaveOpprettet>? {
+        return data?.let {
+            objectMapper.readValue(it)
+        }
+    }
+}
+
 internal fun <BEFORE, AFTER>runBlockingWithMDC(soknadId: String, entry: TopicEntry<BEFORE>, block: suspend() -> AFTER) : TopicEntry<AFTER> {
     return runBlocking(MDCContext()) {
         MDC.put("correlation_id", entry.metadata.correlationId)
