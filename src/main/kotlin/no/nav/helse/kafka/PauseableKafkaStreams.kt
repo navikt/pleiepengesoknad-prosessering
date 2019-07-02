@@ -18,86 +18,63 @@ internal class PauseableKafkaStreams(
     private val name: String,
     private val topology: Topology,
     private val properties: Properties,
-    private val considerRestartEvery : Duration = Duration.ofMinutes(1),
+    private val considerRestartEvery : Duration = Duration.ofMinutes(defaultConsiderRestartEveryInMinutes),
     private val considerRestart: (pausedAt: LocalDateTime, reason: Throwable) -> Boolean = { pausedAt, _ -> pausedAt.isBefore(LocalDateTime.now().minusMinutes(5)) },
     private val pauseOn: (throwable: Throwable) -> Boolean
 ) : HealthCheck {
     override suspend fun check(): Result {
-        return when (state) {
-            State.STOPPED -> UnHealthy(name, "Stream har stoppet")
-            State.PAUSED -> UnHealthy(name, "Stream har pauset")
-            else -> Healthy(name, "Stream er i state ${state.name}")
+        val isPaused = pausedAt != null
+
+        return if (isPaused) {
+            when (kafkaStreams.state()) {
+                KafkaStreams.State.CREATED -> UnHealthy(name, "Stream er pauset.")
+                else -> UnHealthy(name, "Stream er pauset, men befinner seg i uventet state '${kafkaStreams.state().name}'.")
+            }
+        } else {
+            if (kafkaStreams.state().isRunning) {
+                Healthy(name, "Kjører som normalt.")
+            } else UnHealthy(name, "Stream befinner seg i state '${kafkaStreams.state().name}'.")
         }
     }
+
     private val log = LoggerFactory.getLogger("no.nav.$name.stream")
 
     private companion object {
+        private const val defaultConsiderRestartEveryInMinutes = 2L
         private const val closeTimeoutInMinutes = 2L
     }
 
     private val stateChangeLock = Semaphore(1)
-    private var state = State.INITIALIZED
     private var kafkaStreams = newKafkaStreams()
-
     private var restartConsiderer : Timer? = null
     private var pausedAt : LocalDateTime? = null
-
-
 
     init {
         start()
     }
 
     private fun start() {
+        log.info("Starter")
         changeState {
-            when (state) {
-                State.INITIALIZED -> {
-                    log.info("Starter stream for første gang.")
-                    kafkaStreams.start()
-                    log.info("Stream startet for første gang.")
-                }
-                State.STARTED -> log.info("Stream allerede startet.")
-                State.PAUSED -> {
-                    log.info("Starter stream igjen etter pause.")
-                    stopRestartConsiderer()
-                    kafkaStreams.start()
-                    state = State.STARTED
-                    log.info("Streams startet igjen etter pause.")
-                }
-                State.STOPPED -> throw IllegalStateException("Stream kan ikke gjenåpnes når det er stoppet.")
-            }
+            kafkaStreams.start()
+            stopRestartConsiderer()
         }
     }
 
     internal fun stop() {
+        log.info("Stopper")
         changeState {
-            when (state) {
-                State.STARTED, State.INITIALIZED -> {
-                    log.info("Stopper stream.")
-                    kafkaStreams.close(closeTimeoutInMinutes, TimeUnit.MINUTES)
-                    state = State.STOPPED
-                    log.info("Stream stoppet.")
-                }
-                else -> log.info("Trenger ikke stoppe stream som er i state ${state.name}.")
-            }
+            kafkaStreams.close(closeTimeoutInMinutes, TimeUnit.MINUTES)
+            stopRestartConsiderer()
         }
     }
 
-    private fun pause(cause: Throwable) {
+    private fun pause(throwable: Throwable) {
+        log.info("Pauser")
         changeState {
-            when (state) {
-                State.PAUSED -> log.info("Stream er allerede pauset.")
-                State.STARTED -> {
-                    log.info("Pause stream.")
-                    kafkaStreams.close(closeTimeoutInMinutes, TimeUnit.MINUTES)
-                    kafkaStreams = newKafkaStreams()
-                    pausedAt = LocalDateTime.now()
-                    startRestartConsiderer(cause)
-                    state = State.PAUSED
-                    log.info("Stream pauset.")
-                }
-                else -> throw IllegalStateException("Stream kan ikke pauses når den er i state ${state.name}.")
-            }
+            kafkaStreams.close(closeTimeoutInMinutes, TimeUnit.MINUTES)
+            kafkaStreams = newKafkaStreams()
+            startRestartConsiderer(throwable)
         }
     }
 
@@ -107,6 +84,8 @@ internal class PauseableKafkaStreams(
         restartConsiderer = null
     }
     private fun startRestartConsiderer(throwable: Throwable) {
+        pausedAt = LocalDateTime.now()
+        restartConsiderer?.cancel()
         restartConsiderer = fixedRateTimer(
             name = "${name}_restartConsiderer",
             initialDelay = considerRestartEvery.toMillis(),
@@ -162,5 +141,3 @@ internal class PauseableKafkaStreams(
         return streams
     }
 }
-
-private enum class State { INITIALIZED, STARTED, PAUSED, STOPPED }
