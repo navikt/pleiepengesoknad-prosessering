@@ -78,6 +78,7 @@ private suspend fun ApplicationCall.prosesserMed(
     metadata: Metadata,
     prosesseringsV1Service: ProsesseringV1Service
 ) {
+    logger.trace("Prosesserer melding med '${prosesseringsV1Service::class.java.simpleName}'")
     val id = prosesseringsV1Service.leggSoknadTilProsessering(
         melding = melding,
         metadata = metadata

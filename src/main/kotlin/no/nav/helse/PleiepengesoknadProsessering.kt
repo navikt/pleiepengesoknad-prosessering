@@ -130,14 +130,14 @@ fun Application.pleiepengesoknadProsessering() {
         MetricsRoute()
         HealthRoute(
             healthService = HealthService(
-                healthChecks = setOf(
+                healthChecks = mutableSetOf(
                     accessTokenClientResolver,
                     HttpRequestHealthCheck(issuers.healthCheckMap(mutableMapOf(
                         Url.healthURL(configuration.getPleiepengerDokumentBaseUrl()) to HttpRequestHealthConfig(expectedStatus = HttpStatusCode.OK),
                         Url.healthURL(configuration.getPleiepengerJoarkBaseUrl()) to HttpRequestHealthConfig(expectedStatus = HttpStatusCode.OK),
                         Url.healthURL(configuration.getPleiepengerOppgaveBaseUrl()) to HttpRequestHealthConfig(expectedStatus = HttpStatusCode.OK)
                     )))
-                )
+                ).plus(asynkronProsesseringV1Service?.healthChecks()?: emptySet()).toSet()
             )
         )
     }

@@ -13,9 +13,11 @@ class PleiepengesoknadProsesseringWithMocks {
         fun main(args: Array<String>) {
 
             val wireMockServer = WiremockWrapper.bootstrap(port = 8091)
+            val kafkaEnvironment = KafkaWrapper.bootstrap()
 
             val testArgs = TestConfiguration.asArray(TestConfiguration.asMap(
                 wireMockServer = wireMockServer,
+                kafkaEnvironment = kafkaEnvironment,
                 port = 8092
             ))
 
@@ -23,6 +25,7 @@ class PleiepengesoknadProsesseringWithMocks {
                 override fun run() {
                     logger.info("Tearing down")
                     wireMockServer.stop()
+                    kafkaEnvironment.tearDown()
                     logger.info("Tear down complete")
                 }
             })

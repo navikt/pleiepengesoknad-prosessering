@@ -38,6 +38,12 @@ internal class AsynkronProsesseringV1Service(
         oppgaveGateway = oppgaveGateway
     )
 
+    private val healthChecks = setOf(
+        preprosseseringStream.healthCheck(),
+        journalforingsStream.healthCheck(),
+        opprettOppgaveStream.healthCheck()
+    )
+
     override suspend fun leggSoknadTilProsessering(
         melding: MeldingV1,
         metadata: Metadata
@@ -58,4 +64,6 @@ internal class AsynkronProsesseringV1Service(
         opprettOppgaveStream.stop()
         logger.info("Alle streams stoppet.")
     }
+
+    internal fun healthChecks() = healthChecks
 }

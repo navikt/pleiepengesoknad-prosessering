@@ -3,6 +3,7 @@ package no.nav.helse.prosessering.v1.asynkron
 import no.nav.helse.CorrelationId
 import no.nav.helse.HttpError
 import no.nav.helse.aktoer.AktoerId
+import no.nav.helse.dusseldorf.ktor.health.HealthCheck
 import no.nav.helse.joark.JoarkGateway
 import no.nav.helse.kafka.KafkaConfig
 import no.nav.helse.kafka.PauseableKafkaStreams
@@ -62,6 +63,7 @@ internal class JournalforingsStream(
     }
 
     internal fun stop() = stream.stop()
+    internal fun healthCheck() : HealthCheck = stream
 }
 
 private fun HttpError.pauseStream() = httpStatusCode() == null || httpStatusCode()!!.value >= 500

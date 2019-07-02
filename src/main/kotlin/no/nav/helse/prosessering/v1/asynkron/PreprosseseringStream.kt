@@ -1,6 +1,7 @@
 package no.nav.helse.prosessering.v1.asynkron
 
 import no.nav.helse.HttpError
+import no.nav.helse.dusseldorf.ktor.health.HealthCheck
 import no.nav.helse.kafka.KafkaConfig
 import no.nav.helse.kafka.PauseableKafkaStreams
 import no.nav.helse.prosessering.SoknadId
@@ -56,6 +57,7 @@ internal class PreprosseseringStream(
     }
 
     internal fun stop() = stream.stop()
+    internal fun healthCheck() : HealthCheck = stream
 }
 
 private fun HttpError.pauseStream() = httpStatusCode() == null || httpStatusCode()!!.value >= 500
