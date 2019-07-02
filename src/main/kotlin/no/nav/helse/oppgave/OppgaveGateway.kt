@@ -1,4 +1,4 @@
-package no.nav.helse.gosys
+package no.nav.helse.oppgave
 
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -14,6 +14,7 @@ import no.nav.helse.aktoer.AktoerId
 import no.nav.helse.dusseldorf.ktor.client.*
 import no.nav.helse.dusseldorf.ktor.metrics.Operation
 import no.nav.helse.dusseldorf.oauth2.client.CachedAccessTokenClient
+import no.nav.helse.joark.JournalPostId
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.ByteArrayInputStream

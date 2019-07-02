@@ -3,8 +3,8 @@ package no.nav.helse.prosessering.v1.asynkron
 import no.nav.helse.CorrelationId
 import no.nav.helse.HttpError
 import no.nav.helse.aktoer.AktoerId
-import no.nav.helse.gosys.JournalPostId
-import no.nav.helse.gosys.OppgaveGateway
+import no.nav.helse.joark.JournalPostId
+import no.nav.helse.oppgave.OppgaveGateway
 import no.nav.helse.kafka.KafkaConfig
 import no.nav.helse.kafka.PauseableKafkaStreams
 import org.apache.kafka.streams.StreamsBuilder

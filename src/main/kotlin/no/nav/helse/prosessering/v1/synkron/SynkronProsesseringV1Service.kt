@@ -2,10 +2,8 @@ package no.nav.helse.prosessering.v1.synkron
 
 import no.nav.helse.CorrelationId
 import no.nav.helse.aktoer.AktoerId
-import no.nav.helse.aktoer.AktoerService
-import no.nav.helse.aktoer.Fodselsnummer
-import no.nav.helse.dokument.DokumentService
-import no.nav.helse.gosys.GosysService
+import no.nav.helse.joark.JoarkGateway
+import no.nav.helse.oppgave.OppgaveGateway
 import no.nav.helse.prosessering.Metadata
 import no.nav.helse.prosessering.SoknadId
 import no.nav.helse.prosessering.v1.*
@@ -14,125 +12,49 @@ import org.slf4j.LoggerFactory
 
 private val logger: Logger = LoggerFactory.getLogger(SynkronProsesseringV1Service::class.java)
 
-class SynkronProsesseringV1Service(
-    private val gosysService: GosysService,
-    private val aktoerService: AktoerService,
-    private val pdfV1Generator: PdfV1Generator,
-    private val dokumentService: DokumentService
+internal class SynkronProsesseringV1Service(
+    private val preprosseseringV1Service: PreprosseseringV1Service,
+    private val joarkGateway: JoarkGateway,
+    private val oppgaveGateway: OppgaveGateway
 ) : ProsesseringV1Service {
     override suspend fun leggSoknadTilProsessering(
         melding: MeldingV1,
         metadata: Metadata
     ) : SoknadId {
-        val soknadId = SoknadId.generate()
-        logger.info(soknadId.toString())
+        logger.info("Stratert prosessering.")
 
         val correlationId = CorrelationId(metadata.correlationId)
+        val soknadId = SoknadId.generate()
 
-        logger.trace("Henter AktørID for søkeren.")
-        val sokerAktoerId = aktoerService.getAktorId(
-            fnr = Fodselsnummer(melding.soker.fodselsnummer),
-            correlationId = correlationId
-        )
-
-        logger.info("Søkerens AktørID = $sokerAktoerId")
-
-        logger.trace("Henter AktørID for barnet.")
-        val barnAktoerId = hentBarnetsAktoerId(barn = melding.barn, correlationId = correlationId)
-
-        logger.info("Barnets AktørID = $barnAktoerId")
-
-        logger.trace("Genererer Oppsummerings-PDF av søknaden.")
-
-        val soknadOppsummeringPdf = pdfV1Generator.generateSoknadOppsummeringPdf(melding)
-
-        logger.trace("Generering av Oppsummerings-PDF OK.")
-        logger.trace("Mellomlagrer Oppsummerings-PDF.")
-
-        val soknadOppsummeringPdfUrl = dokumentService.lagreSoknadsOppsummeringPdf(
-            pdf = soknadOppsummeringPdf,
-            correlationId = correlationId,
-            aktoerId = sokerAktoerId
-        )
-
-        logger.trace("Mellomlagring av Oppsummerings-PDF OK")
-
-        logger.trace("Mellomlagrer Oppsummerings-JSON")
-
-        val soknadJsonUrl = dokumentService.lagreSoknadsMelding(
+        val preprossesertMelding = preprosseseringV1Service.preprosseser(
             melding = melding,
+            metadata = metadata,
+            soknadId = soknadId
+        )
+
+        val sokerAktoerId = AktoerId(preprossesertMelding.soker.aktoerId)
+        val barnAktoerId = if (preprossesertMelding.barn.aktoerId != null) AktoerId(preprossesertMelding.barn.aktoerId) else null
+
+        logger.trace("Oppretter JournalPost")
+        val journalPostId = joarkGateway.journalfoer(
             aktoerId = sokerAktoerId,
+            mottatt = preprossesertMelding.mottatt,
+            dokumenter = preprossesertMelding.dokumentUrls,
             correlationId = correlationId
         )
+        logger.info("Opprettet JournalPostID = $journalPostId")
 
-        logger.trace("Mellomlagrer Oppsummerings-JSON OK.")
-
-
-        val komplettDokumentUrls = mutableListOf(
-            listOf(
-                soknadOppsummeringPdfUrl,
-                soknadJsonUrl
-            )
-        )
-
-        if (melding.vedleggUrls.isNotEmpty()) {
-            logger.trace("Legger til ${melding.vedleggUrls.size} vedlegg URL's fra meldingen som dokument.")
-            melding.vedleggUrls.forEach { komplettDokumentUrls.add(listOf(it))}
-        }
-        if (melding.vedlegg.isNotEmpty()) {
-            logger.trace("Meldingen inneholder ${melding.vedlegg.size} vedlegg som må mellomlagres før søknaden legges til prosessering.")
-            val lagredeVedleggUrls = dokumentService.lagreVedlegg(
-                vedlegg = melding.vedlegg,
-                correlationId = correlationId,
-                aktoerId = sokerAktoerId
-            )
-            logger.trace("Mellomlagring OK, legger til URL's som dokument.")
-            lagredeVedleggUrls.forEach { it -> komplettDokumentUrls.add(listOf(it))}
-        }
-
-        logger.trace("Totalt ${komplettDokumentUrls.size} dokumentbolker.")
-
-        logger.trace("Oppretter oppgave i Gosys")
-
-        val komplettDokumentUrlsList = komplettDokumentUrls.toList()
-
-        gosysService.opprett(
+        logger.trace("Oppretter Oppgave")
+        val oppgaveId = oppgaveGateway.lagOppgave(
             sokerAktoerId = sokerAktoerId,
             barnAktoerId = barnAktoerId,
-            mottatt = melding.mottatt,
-            dokumenter = komplettDokumentUrlsList,
+            journalPostId = journalPostId,
             correlationId = correlationId
         )
 
-        logger.trace("Oppgave i Gosys opprettet OK")
-
-        logger.trace("Sletter dokumenter.")
-        try { dokumentService.slettDokumeter(
-            urlBolks = komplettDokumentUrlsList,
-            aktoerId = sokerAktoerId,
-            correlationId = correlationId
-        )} catch (cause: Throwable) {
-            logger.warn("Feil ved sletting av dokumenter etter ferdigstilt prosessering", cause)
-        }
+        logger.info("Opprettet OppgaveID = $oppgaveId")
 
         logger.trace("Prosessering ferdigstilt.")
         return soknadId
-    }
-
-    private suspend fun hentBarnetsAktoerId(
-        barn: Barn,
-        correlationId: CorrelationId
-    ): AktoerId? {
-         return if (barn.fodselsnummer != null) {
-            try {
-                aktoerService.getAktorId(
-                    fnr = Fodselsnummer(barn.fodselsnummer),
-                    correlationId = correlationId
-                )
-            } catch (cause: Throwable) {
-                logger.warn("Feil ved oppslag på Aktør ID basert på barnets fødselsnummer. Kan være at det ikke er registrert i Aktørregisteret enda. ${cause.message}")
-                null
-            }
-        } else null
     }
 }

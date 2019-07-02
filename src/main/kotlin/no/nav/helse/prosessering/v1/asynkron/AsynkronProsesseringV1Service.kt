@@ -1,7 +1,7 @@
 package no.nav.helse.prosessering.v1.asynkron
 
-import no.nav.helse.gosys.JoarkGateway
-import no.nav.helse.gosys.OppgaveGateway
+import no.nav.helse.joark.JoarkGateway
+import no.nav.helse.oppgave.OppgaveGateway
 import no.nav.helse.kafka.KafkaConfig
 import no.nav.helse.prosessering.v1.MeldingV1
 import no.nav.helse.prosessering.Metadata

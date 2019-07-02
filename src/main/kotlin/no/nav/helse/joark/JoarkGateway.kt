@@ -1,4 +1,4 @@
-package no.nav.helse.gosys
+package no.nav.helse.joark
 
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper

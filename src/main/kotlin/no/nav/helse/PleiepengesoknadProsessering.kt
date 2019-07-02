@@ -25,9 +25,8 @@ import no.nav.helse.dusseldorf.ktor.jackson.JacksonStatusPages
 import no.nav.helse.dusseldorf.ktor.jackson.dusseldorfConfigured
 import no.nav.helse.dusseldorf.ktor.metrics.MetricsRoute
 import no.nav.helse.dusseldorf.ktor.metrics.init
-import no.nav.helse.gosys.GosysService
-import no.nav.helse.gosys.JoarkGateway
-import no.nav.helse.gosys.OppgaveGateway
+import no.nav.helse.joark.JoarkGateway
+import no.nav.helse.oppgave.OppgaveGateway
 import no.nav.helse.prosessering.api.prosesseringApis
 import no.nav.helse.prosessering.v1.PdfV1Generator
 import no.nav.helse.prosessering.v1.PreprosseseringV1Service
@@ -82,22 +81,27 @@ fun Application.pleiepengesoknadProsessering() {
             accessTokenClient = accessTokenClientResolver.dokumentAccessTokenClient()
         )
     )
+    val preprosseseringV1Service = PreprosseseringV1Service(
+        aktoerService = aktoerService,
+        pdfV1Generator = PdfV1Generator(),
+        dokumentService = dokumentService
+    )
+    val joarkGateway = JoarkGateway(
+        baseUrl = configuration.getPleiepengerJoarkBaseUrl(),
+        accessTokenClient = accessTokenClientResolver.joarkAccessTokenClient()
+    )
+
+    val oppgaveGateway = OppgaveGateway(
+        baseUrl = configuration.getPleiepengerOppgaveBaseUrl(),
+        accessTokenClient = accessTokenClientResolver.oppgaveAccessTokenClient()
+    )
+
     val asynkronProsesseringV1Service = kafkaConfig?.let { config ->
         AsynkronProsesseringV1Service(
             kafkaConfig = config,
-            preprosseseringV1Service = PreprosseseringV1Service(
-                aktoerService = aktoerService,
-                pdfV1Generator = PdfV1Generator(),
-                dokumentService = dokumentService
-            ),
-            joarkGateway = JoarkGateway(
-                baseUrl = configuration.getPleiepengerJoarkBaseUrl(),
-                accessTokenClient = accessTokenClientResolver.joarkAccessTokenClient()
-            ),
-            oppgaveGateway = OppgaveGateway(
-                baseUrl = configuration.getPleiepengerOppgaveBaseUrl(),
-                accessTokenClient = accessTokenClientResolver.oppgaveAccessTokenClient()
-            )
+            preprosseseringV1Service = preprosseseringV1Service,
+            joarkGateway = joarkGateway,
+            oppgaveGateway = oppgaveGateway
         )
     }
 
@@ -112,29 +116,9 @@ fun Application.pleiepengesoknadProsessering() {
             requiresCallId {
                 prosesseringApis(
                     synkronProsesseringV1Service = SynkronProsesseringV1Service(
-                        gosysService = GosysService(
-                            joarkGateway = JoarkGateway(
-                                baseUrl = configuration.getPleiepengerJoarkBaseUrl(),
-                                accessTokenClient = accessTokenClientResolver.joarkAccessTokenClient()
-                            ),
-                            oppgaveGateway = OppgaveGateway(
-                                baseUrl = configuration.getPleiepengerOppgaveBaseUrl(),
-                                accessTokenClient = accessTokenClientResolver.oppgaveAccessTokenClient()
-                            )
-                        ),
-                        aktoerService = AktoerService(
-                            aktoerGateway = AktoerGateway(
-                                baseUrl = configuration.getAktoerRegisterBaseUrl(),
-                                accessTokenClient = accessTokenClientResolver.aktoerRegisterAccessTokenClient()
-                            )
-                        ),
-                        pdfV1Generator = PdfV1Generator(),
-                        dokumentService = DokumentService(
-                            dokumentGateway = DokumentGateway(
-                                baseUrl = configuration.getPleiepengerDokumentBaseUrl(),
-                                accessTokenClient = accessTokenClientResolver.dokumentAccessTokenClient()
-                            )
-                        )
+                        preprosseseringV1Service = preprosseseringV1Service,
+                        joarkGateway = joarkGateway,
+                        oppgaveGateway = oppgaveGateway
                     ),
                     asynkronProsesseringV1Service = asynkronProsesseringV1Service,
                     aktoerService = aktoerService,
