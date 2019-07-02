@@ -70,23 +70,25 @@ fun Application.pleiepengesoknadProsessering() {
     install(CallIdRequired)
 
     val accessTokenClientResolver = AccessTokenClientResolver(environment.config.clients())
+    val aktoerService = AktoerService(
+        aktoerGateway = AktoerGateway(
+            baseUrl = configuration.getAktoerRegisterBaseUrl(),
+            accessTokenClient = accessTokenClientResolver.aktoerRegisterAccessTokenClient()
+        )
+    )
+    val dokumentService = DokumentService(
+        dokumentGateway = DokumentGateway(
+            baseUrl = configuration.getPleiepengerDokumentBaseUrl(),
+            accessTokenClient = accessTokenClientResolver.dokumentAccessTokenClient()
+        )
+    )
     val asynkronProsesseringV1Service = kafkaConfig?.let { config ->
         AsynkronProsesseringV1Service(
             kafkaConfig = config,
             preprosseseringV1Service = PreprosseseringV1Service(
-                aktoerService = AktoerService(
-                    aktoerGateway = AktoerGateway(
-                        baseUrl = configuration.getAktoerRegisterBaseUrl(),
-                        accessTokenClient = accessTokenClientResolver.aktoerRegisterAccessTokenClient()
-                    )
-                ),
+                aktoerService = aktoerService,
                 pdfV1Generator = PdfV1Generator(),
-                dokumentService = DokumentService(
-                    dokumentGateway = DokumentGateway(
-                        baseUrl = configuration.getPleiepengerDokumentBaseUrl(),
-                        accessTokenClient = accessTokenClientResolver.dokumentAccessTokenClient()
-                    )
-                )
+                dokumentService = dokumentService
             ),
             joarkGateway = JoarkGateway(
                 baseUrl = configuration.getPleiepengerJoarkBaseUrl(),
@@ -100,9 +102,9 @@ fun Application.pleiepengesoknadProsessering() {
     }
 
     environment.monitor.subscribe(ApplicationStopping) {
-        logger.trace("Stopper AsynkronProsesseringV1Service.")
+        logger.info("Stopper AsynkronProsesseringV1Service.")
         asynkronProsesseringV1Service?.stop()
-        logger.trace("AsynkronProsesseringV1Service Stoppet.")
+        logger.info("AsynkronProsesseringV1Service Stoppet.")
     }
 
     install(Routing) {
@@ -134,7 +136,9 @@ fun Application.pleiepengesoknadProsessering() {
                             )
                         )
                     ),
-                    asynkronProsesseringV1Service = asynkronProsesseringV1Service
+                    asynkronProsesseringV1Service = asynkronProsesseringV1Service,
+                    aktoerService = aktoerService,
+                    dokumentService = dokumentService
                 )
             }
         }

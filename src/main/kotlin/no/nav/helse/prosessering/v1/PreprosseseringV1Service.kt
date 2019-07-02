@@ -79,14 +79,7 @@ internal class PreprosseseringV1Service(
             melding.vedleggUrls.forEach { komplettDokumentUrls.add(listOf(it))}
         }
         if (melding.vedlegg.isNotEmpty()) {
-            logger.trace("Meldingen inneholder ${melding.vedlegg.size} vedlegg som må mellomlagres før søknaden legges til prosessering.")
-            val lagredeVedleggUrls = dokumentService.lagreVedlegg(
-                vedlegg = melding.vedlegg,
-                correlationId = correlationId,
-                aktoerId = sokerAktoerId
-            )
-            logger.trace("Mellomlagring OK, legger til URL's som dokument.")
-            lagredeVedleggUrls.forEach { komplettDokumentUrls.add(listOf(it))}
+            throw IllegalStateException("Meldingen skal kun inneholde vedleggUrls på dette tidspunktet, inneholder ${melding.vedlegg.size} vedlegg.")
         }
 
         logger.trace("Totalt ${komplettDokumentUrls.size} dokumentbolker.")

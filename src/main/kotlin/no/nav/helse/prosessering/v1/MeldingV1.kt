@@ -13,14 +13,20 @@ data class MeldingV1 (
     val barn : Barn,
     val relasjonTilBarnet : String,
     val arbeidsgivere: Arbeidsgivere,
-    val vedleggUrls : List<URI> = emptyList(),
-    val vedlegg : List<Vedlegg> = emptyList(),
+    var vedleggUrls : List<URI> = listOf(),
+    var vedlegg : List<Vedlegg> = listOf(),
     val medlemskap: Medlemskap,
     val grad : Int,
     val harMedsoker : Boolean,
     val harForstattRettigheterOgPlikter : Boolean,
     val harBekreftetOpplysninger : Boolean
-)
+) {
+    internal fun medKunVedleggUrls(vedleggUrls: List<URI>) : MeldingV1 {
+        this.vedleggUrls = this.vedleggUrls.union(vedleggUrls).toList()
+        this.vedlegg = listOf()
+        return this
+    }
+}
 
 data class Soker(
     val fodselsnummer: String,
