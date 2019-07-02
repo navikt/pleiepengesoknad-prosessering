@@ -18,8 +18,8 @@ internal class PauseableKafkaStreams(
     private val name: String,
     private val topology: Topology,
     private val properties: Properties,
-    private val considerRestartEvery : Duration = Duration.ofMinutes(defaultConsiderRestartEveryInMinutes),
-    private val considerRestart: (pausedAt: LocalDateTime, reason: Throwable) -> Boolean = { pausedAt, _ -> pausedAt.isBefore(LocalDateTime.now().minusMinutes(5)) },
+    private val considerRestartEvery : Duration = Duration.ofMinutes(2),
+    private val considerRestart: (pausedAt: LocalDateTime, reason: Throwable) -> Boolean = { _, _ -> true },
     private val pauseOn: (throwable: Throwable) -> Boolean
 ) : HealthCheck {
     override suspend fun check(): Result {
@@ -40,7 +40,6 @@ internal class PauseableKafkaStreams(
     private val log = LoggerFactory.getLogger("no.nav.$name.stream")
 
     private companion object {
-        private const val defaultConsiderRestartEveryInMinutes = 2L
         private const val closeTimeoutInMinutes = 2L
     }
 
