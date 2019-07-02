@@ -14,13 +14,13 @@ import org.apache.kafka.common.serialization.Serializer
 import org.apache.kafka.common.serialization.StringSerializer
 import org.slf4j.MDC
 
-internal data class TopicEntry<V>(
+data class TopicEntry<V>(
     val metadata: Metadata,
     val data: V
 )
 
 internal data class Journalfort(val journalPostId: String, val melding: PreprossesertMeldingV1)
-internal data class OppgaveOpprettet(val journalPostId: String, val oppgaveId: String, val melding: PreprossesertMeldingV1)
+data class OppgaveOpprettet(val journalPostId: String, val oppgaveId: String, val melding: PreprossesertMeldingV1)
 
 internal data class Topic<V>(
     val name: String,

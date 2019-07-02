@@ -15,6 +15,12 @@ import io.ktor.server.testing.setBody
 import io.ktor.util.KtorExperimentalAPI
 import no.nav.helse.dusseldorf.ktor.jackson.dusseldorfConfigured
 import no.nav.helse.prosessering.v1.*
+import no.nav.helse.prosessering.v1.asynkron.OppgaveOpprettet
+import no.nav.helse.prosessering.v1.asynkron.TopicEntry
+import no.nav.helse.prosessering.v1.asynkron.Topics
+import no.nav.helse.prosessering.v1.asynkron.Topics.OPPGAVE_OPPRETTET
+import org.apache.kafka.clients.consumer.KafkaConsumer
+import org.apache.kafka.common.serialization.StringDeserializer
 import org.json.JSONObject
 
 import org.junit.AfterClass
@@ -133,12 +139,7 @@ class PleiepengesoknadProsesseringTest {
             async = true
         )
 
-        ventPaaFerdigProsessert()
-    }
-
-    private fun ventPaaFerdigProsessert() {
-        val end = System.currentTimeMillis() + Duration.ofSeconds(10).toMillis()
-        while (System.currentTimeMillis() < end) { }
+        ventPaaOppgaveOpprettet()
     }
 
     @Test
@@ -441,4 +442,27 @@ class PleiepengesoknadProsesseringTest {
         harBekreftetOpplysninger = true,
         harForstattRettigheterOgPlikter = true
     )
+
+    private fun ventPaaOppgaveOpprettet() : TopicEntry<OppgaveOpprettet> {
+        val consumer = KafkaConsumer<String, TopicEntry<OppgaveOpprettet>>(
+            kafkaEnvironment.testConsumerProperties(),
+            StringDeserializer(),
+            Topics.OPPGAVE_OPPRETTET.serDes
+        )
+        consumer.subscribe(listOf(OPPGAVE_OPPRETTET.name))
+
+        val end = System.currentTimeMillis() + Duration.ofSeconds(20).toMillis()
+        while (System.currentTimeMillis() < end) {
+            consumer.seekToBeginning(consumer.assignment())
+            val records = consumer.poll(Duration.ofSeconds(1))
+            if (!records.isEmpty) {
+                assertEquals(1, records.count())
+
+                return records.records(OPPGAVE_OPPRETTET.name).map {
+                    it.value()
+                }.first()
+            }
+        }
+        throw IllegalStateException("Fant ikke opprettet oppgae etter 20 sekunder.")
+    }
 }
