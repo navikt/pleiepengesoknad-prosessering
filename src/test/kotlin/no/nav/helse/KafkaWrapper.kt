@@ -37,7 +37,7 @@ fun KafkaEnvironment.testConsumerProperties() : MutableMap<String, Any>?  {
         put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, "SASL_PLAINTEXT")
         put(SaslConfigs.SASL_MECHANISM, "PLAIN")
         put(SaslConfigs.SASL_JAAS_CONFIG, "org.apache.kafka.common.security.plain.PlainLoginModule required username=\"$username\" password=\"$password\";")
-        put(ConsumerConfig.GROUP_ID_CONFIG, "spa-e2e-verification")
+        put(ConsumerConfig.GROUP_ID_CONFIG, "PleiepengesoknadProsesseringTest")
     }
 }
 fun KafkaEnvironment.username() = username
