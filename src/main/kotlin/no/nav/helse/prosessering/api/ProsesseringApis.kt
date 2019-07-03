@@ -96,6 +96,6 @@ private fun ApplicationRequest.getCorrelationId(): String {
     return header(HttpHeaders.XCorrelationId) ?: throw IllegalStateException("Correlation Id ikke satt")
 }
 
-private fun ApplicationResponse.getRequestId(): String? {
-    return headers[HttpHeaders.XRequestId]
+private fun ApplicationResponse.getRequestId(): String {
+    return headers[HttpHeaders.XRequestId] ?: throw IllegalStateException("Request Id ikke satt")
 }

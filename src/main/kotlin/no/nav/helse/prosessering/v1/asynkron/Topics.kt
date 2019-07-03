@@ -2,8 +2,6 @@ package no.nav.helse.prosessering.v1.asynkron
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.slf4j.MDCContext
 import no.nav.helse.dusseldorf.ktor.jackson.dusseldorfConfigured
 import no.nav.helse.prosessering.Metadata
 import no.nav.helse.prosessering.v1.MeldingV1
@@ -12,13 +10,8 @@ import org.apache.kafka.common.serialization.Deserializer
 import org.apache.kafka.common.serialization.Serdes
 import org.apache.kafka.common.serialization.Serializer
 import org.apache.kafka.common.serialization.StringSerializer
-import org.slf4j.MDC
 
-data class TopicEntry<V>(
-    val metadata: Metadata,
-    val data: V
-)
-
+data class TopicEntry<V>(val metadata: Metadata, val data: V)
 internal data class Journalfort(val journalPostId: String, val melding: PreprossesertMeldingV1)
 data class OppgaveOpprettet(val journalPostId: String, val oppgaveId: String, val melding: PreprossesertMeldingV1)
 
@@ -49,6 +42,8 @@ internal object Topics {
         serDes = OppgaveOpprettetSerDes()
     )
 }
+
+// TODO: Cleanup-topic?
 
 internal abstract class SerDes<V> : Serializer<V>, Deserializer<V> {
     protected val objectMapper = jacksonObjectMapper().dusseldorfConfigured()
@@ -89,14 +84,9 @@ private class OppgaveOpprettetSerDes: SerDes<TopicEntry<OppgaveOpprettet>>() {
     }
 }
 
-internal fun <BEFORE, AFTER>runBlockingWithMDC(soknadId: String, entry: TopicEntry<BEFORE>, block: suspend() -> AFTER) : TopicEntry<AFTER> {
-    return runBlocking(MDCContext()) {
-        MDC.put("correlation_id", entry.metadata.correlationId)
-        MDC.put("request_id", entry.metadata.requestId)
-        MDC.put("soknad_id", soknadId)
-        TopicEntry(
-            metadata = entry.metadata,
-            data = block()
-        )
-    }
+private val objectMapper = jacksonObjectMapper().dusseldorfConfigured()
+internal fun rawTopicEntry(topicEntry: Any) = try {
+    objectMapper.writeValueAsString(topicEntry)
+} catch (cause: Throwable) {
+    topicEntry.toString()
 }

@@ -1,16 +1,16 @@
 package no.nav.helse.prosessering.v1.asynkron
 
 import no.nav.helse.CorrelationId
-import no.nav.helse.HttpError
 import no.nav.helse.aktoer.AktoerId
 import no.nav.helse.dusseldorf.ktor.health.HealthCheck
 import no.nav.helse.joark.JournalPostId
 import no.nav.helse.oppgave.OppgaveGateway
 import no.nav.helse.kafka.KafkaConfig
-import no.nav.helse.kafka.PauseableKafkaStreams
+import no.nav.helse.kafka.ManagedKafkaStreams
 import org.apache.kafka.streams.StreamsBuilder
 import org.apache.kafka.streams.Topology
 import org.apache.kafka.streams.kstream.Consumed
+import org.apache.kafka.streams.kstream.Predicate
 import org.apache.kafka.streams.kstream.Produced
 import org.slf4j.LoggerFactory
 
@@ -19,13 +19,10 @@ internal class OpprettOppgaveStream(
     kafkaConfig: KafkaConfig
 ) {
 
-    private val stream = PauseableKafkaStreams(
+    private val stream = ManagedKafkaStreams(
         name = NAME,
         properties = kafkaConfig.stream(NAME),
-        topology = topology(oppgaveGateway),
-        pauseOn = { throwable ->
-            throwable is HttpError && throwable.pauseStream()
-        }
+        topology = topology(oppgaveGateway)
     )
 
     private companion object {
@@ -37,11 +34,12 @@ internal class OpprettOppgaveStream(
             val fromTopic = Topics.JOURNALFORT
             val toTopic = Topics.OPPGAVE_OPPRETTET
 
-            builder
+            val (ok, tryAgain, exhausted) = builder
                 .stream<String, TopicEntry<Journalfort>>(fromTopic.name, Consumed.with(fromTopic.keySerde, fromTopic.valueSerde))
                 .filter { _, entry -> 1 == entry.metadata.version }
+                .peek { soknadId, entry -> peekAttempts(soknadId, entry, logger) }
                 .mapValues { soknadId, entry  ->
-                    runBlockingWithMDC(soknadId, entry) {
+                    process(soknadId, entry, logger) {
                         logger.trace("Oppretter oppgave.")
                         val oppgaveId = oppgaveGateway.lagOppgave(
                             sokerAktoerId = AktoerId(entry.data.melding.soker.aktoerId),
@@ -57,8 +55,26 @@ internal class OpprettOppgaveStream(
                         )
                     }
                 }
-                .to(toTopic.name, Produced.with(toTopic.keySerde, toTopic.valueSerde))
+                .branch(
+                    Predicate { _, result -> result.ok() },
+                    Predicate { _, result -> result.tryAgain() },
+                    Predicate { _, result -> result.exhausted() }
+                )
 
+            ok
+                .mapValues { _, value ->
+                    value.after()
+                }.to(toTopic.name, Produced.with(toTopic.keySerde, toTopic.valueSerde))
+
+            tryAgain
+                .mapValues { _, value ->
+                    value.before()
+                }.to(fromTopic.name, Produced.with(fromTopic.keySerde, fromTopic.valueSerde))
+
+            exhausted
+                .mapValues { _, value ->
+                    logger.error("Exhausted TopicEntry='${rawTopicEntry(value.before())}'")
+                }
             return builder.build()
         }
     }
@@ -66,5 +82,3 @@ internal class OpprettOppgaveStream(
     internal fun stop() = stream.stop()
     internal fun healthCheck() : HealthCheck = stream
 }
-
-private fun HttpError.pauseStream() = httpStatusCode() == null || httpStatusCode()!!.value >= 500
