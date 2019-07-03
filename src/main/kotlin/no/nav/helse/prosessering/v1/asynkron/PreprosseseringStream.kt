@@ -26,6 +26,7 @@ internal class PreprosseseringStream(
     private companion object {
 
         private const val NAME = "PreprosesseringV1"
+        private val counter = StreamProcessingStatusCounter(NAME)
         private val logger = LoggerFactory.getLogger("no.nav.$NAME.topology")
 
         private fun topology(preprosseseringV1Service: PreprosseseringV1Service) : Topology {
@@ -57,16 +58,19 @@ internal class PreprosseseringStream(
 
             ok
                 .mapValues { _, value ->
+                    counter.ok()
                     value.after()
                 }.to(toTopic.name, Produced.with(toTopic.keySerde, toTopic.valueSerde))
 
             tryAgain
                 .mapValues { _, value ->
+                    counter.tryAgain()
                     value.before()
                 }.to(fromTopic.name, Produced.with(fromTopic.keySerde, fromTopic.valueSerde))
 
             exhausted
                 .mapValues { _, value ->
+                    counter.exhausted()
                     logger.error("Exhausted TopicEntry='${rawTopicEntry(value.before())}'")
                 }
             return builder.build()

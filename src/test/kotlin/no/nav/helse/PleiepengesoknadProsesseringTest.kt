@@ -453,7 +453,6 @@ class PleiepengesoknadProsesseringTest {
 
         val end = System.currentTimeMillis() + Duration.ofSeconds(20).toMillis()
         while (System.currentTimeMillis() < end) {
-            consumer.seekToBeginning(consumer.assignment())
             val records = consumer.poll(Duration.ofSeconds(1))
             if (!records.isEmpty) {
                 assertEquals(1, records.count())
@@ -461,6 +460,8 @@ class PleiepengesoknadProsesseringTest {
                 return records.records(OPPGAVE_OPPRETTET.name).map {
                     it.value()
                 }.first()
+
+                consumer.commitSync()
             }
         }
         throw IllegalStateException("Fant ikke opprettet oppgae etter 20 sekunder.")

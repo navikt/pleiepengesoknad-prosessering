@@ -42,7 +42,7 @@ internal fun <BEFORE>peekAttempts(
 ) = process(soknadId, entry, logger, 1) {
     val currentAttempt = entry.metadata.attempt
     if (currentAttempt > 1) {
-        logger.info("Venter $currentAttempt før prosessering.")
+        logger.info("Venter $currentAttempt sekunder før prosessering.")
         delay(Duration.ofSeconds(currentAttempt.toLong()))
     }
 }
@@ -72,3 +72,4 @@ internal class Result<BEFORE, AFTER>{
     )
     internal fun after() = after!!
 }
+
