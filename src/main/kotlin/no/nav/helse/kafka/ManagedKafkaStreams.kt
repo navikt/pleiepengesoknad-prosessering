@@ -7,6 +7,8 @@ import no.nav.helse.dusseldorf.ktor.health.UnHealthy
 import org.apache.kafka.streams.KafkaStreams
 import org.apache.kafka.streams.Topology
 import org.slf4j.LoggerFactory
+import java.time.Duration
+import java.time.LocalDateTime
 import java.util.*
 
 internal class ManagedKafkaStreams(
@@ -15,14 +17,28 @@ internal class ManagedKafkaStreams(
     properties: Properties
 ) : HealthCheck {
 
+    private companion object {
+        private const val unhealthyEtterStoppetIMinutter = 15L
+    }
+
     override suspend fun check(): Result {
-        return if (kafkaStreams.state().isRunning) {
-            Healthy(name, "Kjører som normalt.")
-        } else UnHealthy(name, "Stream befinner seg i state '${kafkaStreams.state().name}'.")
+        return when(kafkaStreams.state()) {
+            KafkaStreams.State.PENDING_SHUTDOWN, KafkaStreams.State.NOT_RUNNING -> {
+                val stoppedAt = stopped?: LocalDateTime.now().minusMinutes(unhealthyEtterStoppetIMinutter + 1)
+                val stoppedInMinutes = Duration.between(stoppedAt, LocalDateTime.now()).toMinutes()
+                if (stoppedInMinutes >= unhealthyEtterStoppetIMinutter) UnHealthy(name, "Stream har vært stoppet i $stoppedInMinutes minutter.")
+                else Healthy(name, "Stream har vært stoppet i $stoppedInMinutes minutter. Meldes ut først etter $unhealthyEtterStoppetIMinutter minutter.")
+            }
+            KafkaStreams.State.RUNNING, KafkaStreams.State.REBALANCING, KafkaStreams.State.CREATED -> {
+                Healthy(name, "Kjører som normalt i state ${kafkaStreams.state().name}.")
+            }
+            else -> UnHealthy(name, "Stream befinner seg i state '${kafkaStreams.state().name}'.")
+        }
     }
 
     private val log = LoggerFactory.getLogger("no.nav.$name.stream")
     private var kafkaStreams = managed(KafkaStreams(topology, properties))
+    private var stopped : LocalDateTime? = null
 
     init {
         start()
@@ -37,6 +53,7 @@ internal class ManagedKafkaStreams(
         when (kafkaStreams.state()) {
             KafkaStreams.State.PENDING_SHUTDOWN, KafkaStreams.State.NOT_RUNNING -> log.info("Stoppes allerede. er i state ${kafkaStreams.state().name}")
             else -> {
+                stopped = LocalDateTime.now()
                 log.info("Stopper fra state ${kafkaStreams.state().name}")
                 kafkaStreams.close()
             }

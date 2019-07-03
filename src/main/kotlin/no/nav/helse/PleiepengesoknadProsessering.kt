@@ -8,7 +8,9 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.http.Url
 import io.ktor.jackson.jackson
 import io.ktor.metrics.micrometer.MicrometerMetrics
+import io.ktor.response.respondText
 import io.ktor.routing.Routing
+import io.ktor.routing.get
 import io.ktor.util.KtorExperimentalAPI
 import io.prometheus.client.hotspot.DefaultExports
 import no.nav.helse.aktoer.AktoerGateway
@@ -126,8 +128,16 @@ fun Application.pleiepengesoknadProsessering() {
                 )
             }
         }
-        DefaultProbeRoutes()
         MetricsRoute()
+        HealthRoute(
+            path = Paths.DEFAULT_ALIVE_PATH,
+            healthService = HealthService(
+                healthChecks = asynkronProsesseringV1Service?.healthChecks()?: emptySet()
+            )
+        )
+        get(Paths.DEFAULT_READY_PATH) {
+            call.respondText("READY")
+        }
         HealthRoute(
             healthService = HealthService(
                 healthChecks = mutableSetOf(
