@@ -38,14 +38,14 @@ internal class JournalforingsStream(
                 .filter { _, entry -> 1 == entry.metadata.version }
                 .mapValues { soknadId, entry  ->
                     process(NAME, soknadId, entry) {
-                        logger.trace("Journalfører dokumenter.")
+                        logger.info("Journalfører dokumenter.")
                         val journaPostId = joarkGateway.journalfoer(
                             mottatt = entry.data.mottatt,
                             aktoerId = AktoerId(entry.data.soker.aktoerId),
                             correlationId = CorrelationId(entry.metadata.correlationId),
                             dokumenter = entry.data.dokumentUrls
                         )
-                        logger.trace("Dokumenter journalført.")
+                        logger.info("Dokumenter journalført med ID = ${journaPostId.journalPostId}.")
                         Journalfort(
                             journalPostId = journaPostId.journalPostId,
                             melding = entry.data

@@ -38,14 +38,14 @@ internal class OpprettOppgaveStream(
                 .filter { _, entry -> 1 == entry.metadata.version }
                 .mapValues { soknadId, entry  ->
                     process(NAME, soknadId, entry) {
-                        logger.trace("Oppretter oppgave.")
+                        logger.info("Oppretter oppgave.")
                         val oppgaveId = oppgaveGateway.lagOppgave(
                             sokerAktoerId = AktoerId(entry.data.melding.soker.aktoerId),
                             barnAktoerId = if (entry.data.melding.barn.aktoerId != null) AktoerId(entry.data.melding.barn.aktoerId) else null,
                             journalPostId = JournalPostId(entry.data.journalPostId),
                             correlationId = CorrelationId(entry.metadata.correlationId)
                         )
-                        logger.trace("Oppgave opprettet.")
+                        logger.info("Opprettet oppgave med ID = ${oppgaveId.oppgaveId}")
                         OppgaveOpprettet(
                             oppgaveId = oppgaveId.oppgaveId,
                             journalPostId = entry.data.journalPostId,
