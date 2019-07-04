@@ -124,7 +124,8 @@ fun Application.pleiepengesoknadProsessering() {
                     ),
                     asynkronProsesseringV1Service = asynkronProsesseringV1Service,
                     aktoerService = aktoerService,
-                    dokumentService = dokumentService
+                    dokumentService = dokumentService,
+                    defaultProsesserAsynkront = configuration.defaultProsesserAsynkront()
                 )
             }
         }

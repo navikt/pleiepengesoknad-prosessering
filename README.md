@@ -5,6 +5,8 @@ Mottar søknad som REST API-kall til tjenesten.
 By default prosesseres søknadene synkront. Med andre ord får man ikke en OK response før alt er på plass i bakenforliggende systemer.
 
 Ved å legge til query parameter ```?async=true``` vil søknaden legges på en kø og prosesseres fortløpende. Responsen fra tjenesten er lik som ved en synkron request.
+Om  config ```nav.default_prosesser_asynkront=true``` vil søknaden prosesseres asynkront så fremt ikke query parameter ```?async=false``` er satt.
+Om det ikke er konfigurert opp Kafka vil alle søknader prosesseres asynkront uavhengig av disse config / query parameterne.
 
 ## Versjon 1
 ### Path

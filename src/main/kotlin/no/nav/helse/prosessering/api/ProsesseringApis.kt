@@ -29,7 +29,8 @@ fun Route.prosesseringApis(
     synkronProsesseringV1Service: ProsesseringV1Service,
     asynkronProsesseringV1Service: ProsesseringV1Service?,
     dokumentService: DokumentService,
-    aktoerService: AktoerService
+    aktoerService: AktoerService,
+    defaultProsesserAsynkront: Boolean
 ) {
 
     suspend fun medLagredeVedlegg(
@@ -47,6 +48,12 @@ fun Route.prosesseringApis(
             )
             melding.medKunVedleggUrls(vedleggUrls)
         } else melding
+    }
+
+    fun ApplicationRequest.prosesserAsynkront() : Boolean {
+        val queryParameterValue = queryParameters["async"]
+        return if ("false".equals(queryParameterValue, true)) false
+        else defaultProsesserAsynkront || "true".equals(queryParameterValue, true)
     }
 
     post("v1/soknad") {
@@ -85,11 +92,6 @@ private suspend fun ApplicationCall.prosesserMed(
     )
     melding.reportMetrics()
     respond(HttpStatusCode.Accepted, mapOf("id" to id.id))
-}
-
-private fun ApplicationRequest.prosesserAsynkront() : Boolean {
-    val queryParameterValue = queryParameters["async"]
-    return queryParameterValue != null && queryParameterValue.equals("true", true)
 }
 
 private fun ApplicationRequest.getCorrelationId(): String {
