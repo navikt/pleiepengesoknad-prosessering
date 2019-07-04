@@ -43,7 +43,7 @@ internal object Topics {
     )
 }
 
-// TODO: Cleanup-topic?
+// TODO: Cleanup-topic for sletting av vedlegg..
 
 internal abstract class SerDes<V> : Serializer<V>, Deserializer<V> {
     protected val objectMapper = jacksonObjectMapper().dusseldorfConfigured()
@@ -82,11 +82,4 @@ private class OppgaveOpprettetSerDes: SerDes<TopicEntry<OppgaveOpprettet>>() {
             objectMapper.readValue(it)
         }
     }
-}
-
-private val objectMapper = jacksonObjectMapper().dusseldorfConfigured()
-internal fun rawTopicEntry(topicEntry: Any) = try {
-    objectMapper.writeValueAsString(topicEntry)
-} catch (cause: Throwable) {
-    topicEntry.toString()
 }
