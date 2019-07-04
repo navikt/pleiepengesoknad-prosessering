@@ -13,14 +13,10 @@ import io.ktor.server.testing.createTestEnvironment
 import io.ktor.server.testing.handleRequest
 import io.ktor.server.testing.setBody
 import io.ktor.util.KtorExperimentalAPI
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.time.delay
 import no.nav.helse.dusseldorf.ktor.jackson.dusseldorfConfigured
 import no.nav.helse.prosessering.v1.*
-import no.nav.helse.prosessering.v1.asynkron.OppgaveOpprettet
-import no.nav.helse.prosessering.v1.asynkron.TopicEntry
-import no.nav.helse.prosessering.v1.asynkron.Topics
-import no.nav.helse.prosessering.v1.asynkron.Topics.OPPGAVE_OPPRETTET
-import org.apache.kafka.clients.consumer.KafkaConsumer
-import org.apache.kafka.common.serialization.StringDeserializer
 import org.json.JSONObject
 
 import org.junit.AfterClass
@@ -46,6 +42,7 @@ class PleiepengesoknadProsesseringTest {
 
         private val wireMockServer: WireMockServer = WiremockWrapper.bootstrap()
         private val kafkaEnvironment = KafkaWrapper.bootstrap()
+        private val kafkaTestConsumer = kafkaEnvironment.testConsumer()
         private val objectMapper = jacksonObjectMapper().dusseldorfConfigured()
         private val authorizedAccessToken = Authorization.getAccessToken(wireMockServer.baseUrl(), wireMockServer.getSubject())
         private val unAauthorizedAccessToken = Authorization.getAccessToken(wireMockServer.baseUrl(), "srvikketilgang")
@@ -57,22 +54,31 @@ class PleiepengesoknadProsesseringTest {
         private val dNummerA = "55125314561"
 
 
-        fun getConfig() : ApplicationConfig {
+
+
+        private fun getConfig() : ApplicationConfig {
             val fileConfig = ConfigFactory.load()
             val testConfig = ConfigFactory.parseMap(TestConfiguration.asMap(wireMockServer = wireMockServer, kafkaEnvironment = kafkaEnvironment))
             val mergedConfig = testConfig.withFallback(fileConfig)
             return HoconApplicationConfig(mergedConfig)
         }
 
+        var engine = newEngine()
 
-        val engine = TestApplicationEngine(createTestEnvironment {
+        private fun newEngine() = TestApplicationEngine(createTestEnvironment {
             config = getConfig()
         })
-
+        internal fun restartEngine() {
+            engine.stop(5, 60, TimeUnit.SECONDS)
+            engine = newEngine()
+            engine.start(wait = true)
+        }
 
         @BeforeClass
         @JvmStatic
         fun buildUp() {
+            WiremockWrapper.stubAktoerRegisterGetAktoerId(gyldigFodselsnummerA, "666666666")
+            WiremockWrapper.stubAktoerRegisterGetAktoerId(gyldigFodselsnummerB, "777777777")
             engine.start(wait = true)
         }
 
@@ -81,7 +87,7 @@ class PleiepengesoknadProsesseringTest {
         fun tearDown() {
             logger.info("Tearing down")
             wireMockServer.stop()
-            engine.stop(10, 5, TimeUnit.SECONDS)
+            engine.stop(5, 60, TimeUnit.SECONDS)
             kafkaEnvironment.tearDown()
             logger.info("Tear down complete")
         }
@@ -129,17 +135,39 @@ class PleiepengesoknadProsesseringTest {
             fodselsnummerBarn = gyldigFodselsnummerB
         )
 
-        WiremockWrapper.stubAktoerRegisterGetAktoerId(gyldigFodselsnummerA, "121212166")
-        WiremockWrapper.stubAktoerRegisterGetAktoerId(gyldigFodselsnummerB, "232323267")
-
-        requestAndAssert(
+        val soknadId = requestAndAssert(
             request = melding,
             expectedCode = HttpStatusCode.Accepted,
             expectedResponse = null,
             async = true
         )
+        assertNotNull(soknadId)
 
-        ventPaaOppgaveOpprettet()
+        kafkaTestConsumer.hentOpprettetOppgave(soknadId)
+    }
+
+    @Test
+    fun `En feilprosessert melding vil bli prosessert etter at tjenesten restartes`() {
+        val melding = gyldigMelding(
+            fodselsnummerSoker = gyldigFodselsnummerA,
+            fodselsnummerBarn = gyldigFodselsnummerB
+        )
+
+        WiremockWrapper.stubJournalfor(500) // Simulerer feil ved journalføring
+
+        val soknadId = requestAndAssert(
+            request = melding,
+            expectedCode = HttpStatusCode.Accepted,
+            expectedResponse = null,
+            async = true
+        )
+        assertNotNull(soknadId)
+
+        ventPaaAtRetryMekanismeIStreamProsessering()
+        WiremockWrapper.stubJournalfor(201) // Simulerer journalføring fungerer igjen
+        restartEngine()
+
+        kafkaTestConsumer.hentOpprettetOppgave(soknadId)
     }
 
     @Test
@@ -375,7 +403,7 @@ class PleiepengesoknadProsesseringTest {
                                  leggTilCorrelationId : Boolean = true,
                                  leggTilAuthorization : Boolean = true,
                                  accessToken : String = authorizedAccessToken,
-                                 async: Boolean = false) {
+                                 async: Boolean = false) : String? {
         with(engine) {
             handleRequest(HttpMethod.Post, "/v1/soknad${if (async) "?async=true" else ""}") {
                 if (leggTilAuthorization) {
@@ -397,13 +425,16 @@ class PleiepengesoknadProsesseringTest {
                     HttpStatusCode.Accepted == response.status() -> {
                         val json = JSONObject(response.content!!)
                         assertEquals(1, json.keySet().size)
-                        assertNotNull(json.getString("id"))
+                        val soknadId = json.getString("id")
+                        assertNotNull(soknadId)
+                        return soknadId
                     }
                     else -> assertEquals(expectedResponse, response.content)
                 }
 
             }
         }
+        return null
     }
 
     private fun gyldigMelding(
@@ -443,27 +474,7 @@ class PleiepengesoknadProsesseringTest {
         harForstattRettigheterOgPlikter = true
     )
 
-    private fun ventPaaOppgaveOpprettet() : TopicEntry<OppgaveOpprettet> {
-        val consumer = KafkaConsumer<String, TopicEntry<OppgaveOpprettet>>(
-            kafkaEnvironment.testConsumerProperties(),
-            StringDeserializer(),
-            Topics.OPPGAVE_OPPRETTET.serDes
-        )
-        consumer.subscribe(listOf(OPPGAVE_OPPRETTET.name))
-
-        val end = System.currentTimeMillis() + Duration.ofSeconds(20).toMillis()
-        while (System.currentTimeMillis() < end) {
-            val records = consumer.poll(Duration.ofSeconds(1))
-            if (!records.isEmpty) {
-                assertEquals(1, records.count())
-
-                return records.records(OPPGAVE_OPPRETTET.name).map {
-                    it.value()
-                }.first()
-
-                consumer.commitSync()
-            }
-        }
-        throw IllegalStateException("Fant ikke opprettet oppgae etter 20 sekunder.")
+    private fun ventPaaAtRetryMekanismeIStreamProsessering() {
+        runBlocking{ delay(Duration.ofSeconds(30)) }
     }
 }

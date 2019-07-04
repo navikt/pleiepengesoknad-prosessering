@@ -1,5 +1,6 @@
 package no.nav.helse.kafka
 
+import io.prometheus.client.Gauge
 import no.nav.helse.dusseldorf.ktor.health.HealthCheck
 import no.nav.helse.dusseldorf.ktor.health.Healthy
 import no.nav.helse.dusseldorf.ktor.health.Result
@@ -19,6 +20,11 @@ internal class ManagedKafkaStreams(
 
     private companion object {
         private const val unhealthyEtterStoppetIMinutter = 15L
+        private val streamStatus = Gauge
+            .build("stream_status",
+                "Indikerer streamens status. 0 er Running, 1 er stopped.")
+            .labelNames("stream")
+            .register()
     }
 
     override suspend fun check(): Result {
@@ -46,6 +52,7 @@ internal class ManagedKafkaStreams(
 
     private fun start() {
         log.info("Starter")
+        streamStatus.running()
         kafkaStreams.start()
     }
 
@@ -54,6 +61,7 @@ internal class ManagedKafkaStreams(
             KafkaStreams.State.PENDING_SHUTDOWN, KafkaStreams.State.NOT_RUNNING -> log.info("Stoppes allerede. er i state ${kafkaStreams.state().name}")
             else -> {
                 stopped = LocalDateTime.now()
+                streamStatus.stopped()
                 log.info("Stopper fra state ${kafkaStreams.state().name}")
                 kafkaStreams.close()
             }
@@ -74,4 +82,9 @@ internal class ManagedKafkaStreams(
 
         return streams
     }
+
+    private fun Gauge.running() = labels(name).set(0.0)
+    private fun Gauge.stopped() = labels(name).set(1.0)
 }
+
+

@@ -9,7 +9,6 @@ import no.nav.helse.prosessering.v1.PreprosseseringV1Service
 import org.apache.kafka.streams.StreamsBuilder
 import org.apache.kafka.streams.Topology
 import org.apache.kafka.streams.kstream.Consumed
-import org.apache.kafka.streams.kstream.Predicate
 import org.apache.kafka.streams.kstream.Produced
 import org.slf4j.LoggerFactory
 
@@ -26,7 +25,6 @@ internal class PreprosseseringStream(
     private companion object {
 
         private const val NAME = "PreprosesseringV1"
-        private val counter = StreamProcessingStatusCounter(NAME)
         private val logger = LoggerFactory.getLogger("no.nav.$NAME.topology")
 
         private fun topology(preprosseseringV1Service: PreprosseseringV1Service) : Topology {
@@ -34,12 +32,11 @@ internal class PreprosseseringStream(
             val fromTopic = Topics.MOTTATT
             val toTopic = Topics.PREPROSSESERT
 
-            val (ok, tryAgain, exhausted) = builder
+            builder
                 .stream<String, TopicEntry<MeldingV1>>(fromTopic.name, Consumed.with(fromTopic.keySerde, fromTopic.valueSerde))
                 .filter { _, entry -> 1 == entry.metadata.version }
-                .peek { soknadId, entry -> peekAttempts(soknadId, entry, logger) }
                 .mapValues { soknadId, entry  ->
-                    process(soknadId, entry, logger) {
+                    process(NAME, soknadId, entry) {
                         logger.trace("Sender søknad til prepprosessering.")
                         val preprossesertMelding = preprosseseringV1Service.preprosseser(
                             melding = entry.data,
@@ -50,29 +47,7 @@ internal class PreprosseseringStream(
                         preprossesertMelding
                     }
                 }
-                .branch(
-                    Predicate { _, result -> result.ok() },
-                    Predicate { _, result -> result.tryAgain() },
-                    Predicate { _, result -> result.exhausted() }
-                )
-
-            ok
-                .mapValues { _, value ->
-                    counter.ok()
-                    value.after()
-                }.to(toTopic.name, Produced.with(toTopic.keySerde, toTopic.valueSerde))
-
-            tryAgain
-                .mapValues { _, value ->
-                    counter.tryAgain()
-                    value.before()
-                }.to(fromTopic.name, Produced.with(fromTopic.keySerde, fromTopic.valueSerde))
-
-            exhausted
-                .mapValues { _, value ->
-                    counter.exhausted()
-                    logger.error("Exhausted TopicEntry='${rawTopicEntry(value.before())}'")
-                }
+                .to(toTopic.name, Produced.with(toTopic.keySerde, toTopic.valueSerde))
             return builder.build()
         }
     }
