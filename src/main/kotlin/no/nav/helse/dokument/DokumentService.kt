@@ -2,6 +2,7 @@ package no.nav.helse.dokument
 
 import no.nav.helse.CorrelationId
 import no.nav.helse.aktoer.AktoerId
+import no.nav.helse.prosessering.SoknadId
 import no.nav.helse.prosessering.v1.MeldingV1
 import no.nav.helse.prosessering.v1.Vedlegg
 import org.slf4j.Logger
@@ -44,11 +45,12 @@ class DokumentService(
     internal suspend fun lagreSoknadsMelding(
         melding: MeldingV1,
         aktoerId: AktoerId,
-        correlationId: CorrelationId
+        correlationId: CorrelationId,
+        soknadId: SoknadId
     ) : URI {
         return lagreDokument(
             dokument = DokumentGateway.Dokument(
-                content = JournalforingsFormat.somJson(melding),
+                content = JournalforingsFormat.somJson(melding, soknadId),
                 contentType = "application/json",
                 title = "Søknad om pleiepenger som JSON"
             ),

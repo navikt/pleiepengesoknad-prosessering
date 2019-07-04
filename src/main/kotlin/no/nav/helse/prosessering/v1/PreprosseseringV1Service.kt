@@ -61,7 +61,8 @@ internal class PreprosseseringV1Service(
         val soknadJsonUrl = dokumentService.lagreSoknadsMelding(
             melding = melding,
             aktoerId = sokerAktoerId,
-            correlationId = correlationId
+            correlationId = correlationId,
+            soknadId = soknadId
         )
 
         logger.trace("Mellomlagrer Oppsummerings-JSON OK.")

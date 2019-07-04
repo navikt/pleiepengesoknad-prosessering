@@ -2,21 +2,25 @@ package no.nav.helse
 
 import no.nav.helse.dokument.JournalforingsFormat
 import no.nav.helse.dusseldorf.ktor.core.fromResources
+import no.nav.helse.prosessering.SoknadId
 import no.nav.helse.prosessering.v1.*
 import org.skyscreamer.jsonassert.JSONAssert
 import java.net.URI
 import java.time.LocalDate
 import java.time.ZoneId
 import java.time.ZonedDateTime
+import java.util.*
 import kotlin.test.Test
 
 class JournalforingsFormatTest {
 
     @Test
     fun `Soknaden journalfoeres som JSON uten vedlegg`() {
-        val json = JournalforingsFormat.somJson(melding())
+        val soknadId = UUID.randomUUID().toString()
+        val json = JournalforingsFormat.somJson(melding(), SoknadId(soknadId))
         JSONAssert.assertEquals("""
         {
+            "soknad_id": "$soknadId",
             "mottatt": "2018-01-02T03:04:05.000000006Z",
             "fra_og_med": "2018-01-01",
             "til_og_med": "2018-02-02",

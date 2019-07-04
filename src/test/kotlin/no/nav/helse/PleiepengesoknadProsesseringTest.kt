@@ -53,9 +53,6 @@ class PleiepengesoknadProsesseringTest {
         private val gyldigFodselsnummerC = "20037473937"
         private val dNummerA = "55125314561"
 
-
-
-
         private fun getConfig() : ApplicationConfig {
             val fileConfig = ConfigFactory.load()
             val testConfig = ConfigFactory.parseMap(TestConfiguration.asMap(wireMockServer = wireMockServer, kafkaEnvironment = kafkaEnvironment))
@@ -118,9 +115,6 @@ class PleiepengesoknadProsesseringTest {
             fodselsnummerBarn = gyldigFodselsnummerB
         )
 
-        WiremockWrapper.stubAktoerRegisterGetAktoerId(gyldigFodselsnummerA, "12121212")
-        WiremockWrapper.stubAktoerRegisterGetAktoerId(gyldigFodselsnummerB, "23232323")
-
         requestAndAssert(
             request = melding,
             expectedCode = HttpStatusCode.Accepted,
@@ -178,7 +172,6 @@ class PleiepengesoknadProsesseringTest {
         )
 
         WiremockWrapper.stubAktoerRegisterGetAktoerId(dNummerA, "12121255")
-        WiremockWrapper.stubAktoerRegisterGetAktoerId(gyldigFodselsnummerB, "23232356")
 
         requestAndAssert(
             request = melding,
@@ -195,9 +188,6 @@ class PleiepengesoknadProsesseringTest {
             vedleggUrl = URI("http://localhost:8080/jeg-skal-feile/1")
         )
 
-        WiremockWrapper.stubAktoerRegisterGetAktoerId(gyldigFodselsnummerA, "12121212")
-        WiremockWrapper.stubAktoerRegisterGetAktoerId(gyldigFodselsnummerB, "23232323")
-
         requestAndAssert(
             request = melding,
             expectedCode = HttpStatusCode.Accepted,
@@ -212,7 +202,6 @@ class PleiepengesoknadProsesseringTest {
             fodselsnummerBarn = gyldigFodselsnummerC
         )
 
-        WiremockWrapper.stubAktoerRegisterGetAktoerId(gyldigFodselsnummerA, "12121212")
         WiremockWrapper.stubAktoerRegisterGetAktoerIdNotFound(gyldigFodselsnummerC)
 
         requestAndAssert(
