@@ -1,5 +1,6 @@
 package no.nav.helse
 
+import no.nav.helse.prosessering.SoknadId
 import no.nav.helse.prosessering.v1.*
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -52,8 +53,8 @@ class PdfV1GeneratorTest {
         harBekreftetOpplysninger = true
     )
 
-    private fun genererPdf(melding: MeldingV1 = gyldigMelding) : ByteArray {
-        return PdfV1Generator().generateSoknadOppsummeringPdf(melding)
+    private fun genererPdf(melding: MeldingV1 = gyldigMelding, soknadId: String = UUID.randomUUID().toString()) : ByteArray {
+        return PdfV1Generator().generateSoknadOppsummeringPdf(melding, SoknadId(soknadId))
     }
 
     @Test
@@ -64,9 +65,10 @@ class PdfV1GeneratorTest {
     @Test
     @Ignore
     fun `opprett lesbar oppsummerings-PDF`() {
-        val path = "${System.getProperty("user.dir")}/generated-pdf-${UUID.randomUUID()}.pdf"
+        val soknadId = UUID.randomUUID().toString()
+        val path = "${System.getProperty("user.dir")}/generated-pdf-$soknadId.pdf"
         logger.info("Legger generert fil på $path")
         val file = File(path)
-        file.writeBytes(genererPdf())
+        file.writeBytes(genererPdf(soknadId = soknadId))
     }
 }
