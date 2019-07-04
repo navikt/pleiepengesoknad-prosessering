@@ -42,7 +42,7 @@ data class Configuration(private val config : ApplicationConfig) {
 
     internal fun getKafkaConfig() = config.getOptionalString("nav.kafka.bootstrap_servers", secret = false)?.let { bootstrapServers ->
         val trustStore = config.getOptionalString("nav.trust_store.path", secret = false)?.let { trustStorePath ->
-            config.getOptionalString("nav.trust_store.path", secret = true)?.let { trustStorePassword ->
+            config.getOptionalString("nav.trust_store.password", secret = true)?.let { trustStorePassword ->
                 Pair(trustStorePath, trustStorePassword)
             }
         }
