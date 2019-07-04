@@ -1,11 +1,13 @@
 package no.nav.helse
 
 import com.github.tomakehurst.wiremock.WireMockServer
+import no.nav.common.KafkaEnvironment
 
 object TestConfiguration {
 
     fun asMap(
         wireMockServer: WireMockServer? = null,
+        kafkaEnvironment: KafkaEnvironment? = null,
         port : Int = 8080,
         jwkSetUrl : String? = wireMockServer?.getJwksUrl(),
         tokenUrl : String? = wireMockServer?.getTokenUrl(),
@@ -32,9 +34,16 @@ object TestConfiguration {
             Pair("nav.pleiepenger_dokument_base_url","$pleiepeingerDokumentBaseUrl")
         )
 
-        if (clientSecret != null) {
-            map["nav.auth.clients.0.client_secret"] = clientSecret
+        clientSecret?.let {
+            map["nav.auth.clients.0.client_secret"] = it
         }
+
+        kafkaEnvironment?.let {
+            map["nav.kafka.bootstrap_servers"] = it.brokersURL
+            map["nav.kafka.username"] = it.username()
+            map["nav.kafka.password"] = it.password()
+        }
+
         return map.toMap()
     }
 

@@ -13,8 +13,11 @@ import io.ktor.server.testing.createTestEnvironment
 import io.ktor.server.testing.handleRequest
 import io.ktor.server.testing.setBody
 import io.ktor.util.KtorExperimentalAPI
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.time.delay
 import no.nav.helse.dusseldorf.ktor.jackson.dusseldorfConfigured
 import no.nav.helse.prosessering.v1.*
+import org.json.JSONObject
 
 import org.junit.AfterClass
 import org.junit.BeforeClass
@@ -22,9 +25,11 @@ import org.skyscreamer.jsonassert.JSONAssert
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.net.URI
+import java.time.Duration
 import java.time.LocalDate
 import java.time.ZonedDateTime
 import java.util.*
+import java.util.concurrent.TimeUnit
 import kotlin.test.*
 
 private val logger: Logger = LoggerFactory.getLogger("nav.PleiepengesoknadProsesseringTest")
@@ -36,6 +41,8 @@ class PleiepengesoknadProsesseringTest {
     private companion object {
 
         private val wireMockServer: WireMockServer = WiremockWrapper.bootstrap()
+        private val kafkaEnvironment = KafkaWrapper.bootstrap()
+        private val kafkaTestConsumer = kafkaEnvironment.testConsumer()
         private val objectMapper = jacksonObjectMapper().dusseldorfConfigured()
         private val authorizedAccessToken = Authorization.getAccessToken(wireMockServer.baseUrl(), wireMockServer.getSubject())
         private val unAauthorizedAccessToken = Authorization.getAccessToken(wireMockServer.baseUrl(), "srvikketilgang")
@@ -46,23 +53,29 @@ class PleiepengesoknadProsesseringTest {
         private val gyldigFodselsnummerC = "20037473937"
         private val dNummerA = "55125314561"
 
-
-        fun getConfig() : ApplicationConfig {
+        private fun getConfig() : ApplicationConfig {
             val fileConfig = ConfigFactory.load()
-            val testConfig = ConfigFactory.parseMap(TestConfiguration.asMap(wireMockServer = wireMockServer))
+            val testConfig = ConfigFactory.parseMap(TestConfiguration.asMap(wireMockServer = wireMockServer, kafkaEnvironment = kafkaEnvironment))
             val mergedConfig = testConfig.withFallback(fileConfig)
             return HoconApplicationConfig(mergedConfig)
         }
 
+        var engine = newEngine()
 
-        val engine = TestApplicationEngine(createTestEnvironment {
+        private fun newEngine() = TestApplicationEngine(createTestEnvironment {
             config = getConfig()
         })
-
+        internal fun restartEngine() {
+            engine.stop(5, 60, TimeUnit.SECONDS)
+            engine = newEngine()
+            engine.start(wait = true)
+        }
 
         @BeforeClass
         @JvmStatic
         fun buildUp() {
+            WiremockWrapper.stubAktoerRegisterGetAktoerId(gyldigFodselsnummerA, "666666666")
+            WiremockWrapper.stubAktoerRegisterGetAktoerId(gyldigFodselsnummerB, "777777777")
             engine.start(wait = true)
         }
 
@@ -71,6 +84,8 @@ class PleiepengesoknadProsesseringTest {
         fun tearDown() {
             logger.info("Tearing down")
             wireMockServer.stop()
+            engine.stop(5, 60, TimeUnit.SECONDS)
+            kafkaEnvironment.tearDown()
             logger.info("Tear down complete")
         }
     }
@@ -100,14 +115,53 @@ class PleiepengesoknadProsesseringTest {
             fodselsnummerBarn = gyldigFodselsnummerB
         )
 
-        WiremockWrapper.stubAktoerRegisterGetAktoerId(gyldigFodselsnummerA, "12121212")
-        WiremockWrapper.stubAktoerRegisterGetAktoerId(gyldigFodselsnummerB, "23232323")
-
         requestAndAssert(
             request = melding,
             expectedCode = HttpStatusCode.Accepted,
             expectedResponse = null
         )
+    }
+
+    @Test
+    fun `Gylding melding blir lagt til prosessering asynkront`() {
+        val melding = gyldigMelding(
+            fodselsnummerSoker = gyldigFodselsnummerA,
+            fodselsnummerBarn = gyldigFodselsnummerB
+        )
+
+        val soknadId = requestAndAssert(
+            request = melding,
+            expectedCode = HttpStatusCode.Accepted,
+            expectedResponse = null,
+            async = true
+        )
+        assertNotNull(soknadId)
+
+        kafkaTestConsumer.hentOpprettetOppgave(soknadId)
+    }
+
+    @Test
+    fun `En feilprosessert melding vil bli prosessert etter at tjenesten restartes`() {
+        val melding = gyldigMelding(
+            fodselsnummerSoker = gyldigFodselsnummerA,
+            fodselsnummerBarn = gyldigFodselsnummerB
+        )
+
+        WiremockWrapper.stubJournalfor(500) // Simulerer feil ved journalføring
+
+        val soknadId = requestAndAssert(
+            request = melding,
+            expectedCode = HttpStatusCode.Accepted,
+            expectedResponse = null,
+            async = true
+        )
+        assertNotNull(soknadId)
+
+        ventPaaAtRetryMekanismeIStreamProsessering()
+        WiremockWrapper.stubJournalfor(201) // Simulerer journalføring fungerer igjen
+        restartEngine()
+
+        kafkaTestConsumer.hentOpprettetOppgave(soknadId)
     }
 
     @Test
@@ -118,7 +172,6 @@ class PleiepengesoknadProsesseringTest {
         )
 
         WiremockWrapper.stubAktoerRegisterGetAktoerId(dNummerA, "12121255")
-        WiremockWrapper.stubAktoerRegisterGetAktoerId(gyldigFodselsnummerB, "23232356")
 
         requestAndAssert(
             request = melding,
@@ -135,9 +188,6 @@ class PleiepengesoknadProsesseringTest {
             vedleggUrl = URI("http://localhost:8080/jeg-skal-feile/1")
         )
 
-        WiremockWrapper.stubAktoerRegisterGetAktoerId(gyldigFodselsnummerA, "12121212")
-        WiremockWrapper.stubAktoerRegisterGetAktoerId(gyldigFodselsnummerB, "23232323")
-
         requestAndAssert(
             request = melding,
             expectedCode = HttpStatusCode.Accepted,
@@ -152,7 +202,6 @@ class PleiepengesoknadProsesseringTest {
             fodselsnummerBarn = gyldigFodselsnummerC
         )
 
-        WiremockWrapper.stubAktoerRegisterGetAktoerId(gyldigFodselsnummerA, "12121212")
         WiremockWrapper.stubAktoerRegisterGetAktoerIdNotFound(gyldigFodselsnummerC)
 
         requestAndAssert(
@@ -342,9 +391,10 @@ class PleiepengesoknadProsesseringTest {
                                  expectedCode : HttpStatusCode,
                                  leggTilCorrelationId : Boolean = true,
                                  leggTilAuthorization : Boolean = true,
-                                 accessToken : String = authorizedAccessToken) {
+                                 accessToken : String = authorizedAccessToken,
+                                 async: Boolean = false) : String? {
         with(engine) {
-            handleRequest(HttpMethod.Post, "/v1/soknad") {
+            handleRequest(HttpMethod.Post, "/v1/soknad${if (async) "?async=true" else ""}") {
                 if (leggTilAuthorization) {
                     addHeader(HttpHeaders.Authorization, "Bearer $accessToken")
                 }
@@ -359,14 +409,21 @@ class PleiepengesoknadProsesseringTest {
                 logger.info("Response Entity = ${response.content}")
                 logger.info("Expected Entity = $expectedResponse")
                 assertEquals(expectedCode, response.status())
-                if (expectedResponse != null) {
-                    JSONAssert.assertEquals(expectedResponse, response.content!!, true)
-                } else {
-                    assertEquals(expectedResponse, response.content)
+                when {
+                    expectedResponse != null -> JSONAssert.assertEquals(expectedResponse, response.content!!, true)
+                    HttpStatusCode.Accepted == response.status() -> {
+                        val json = JSONObject(response.content!!)
+                        assertEquals(1, json.keySet().size)
+                        val soknadId = json.getString("id")
+                        assertNotNull(soknadId)
+                        return soknadId
+                    }
+                    else -> assertEquals(expectedResponse, response.content)
                 }
 
             }
         }
+        return null
     }
 
     private fun gyldigMelding(
@@ -405,4 +462,8 @@ class PleiepengesoknadProsesseringTest {
         harBekreftetOpplysninger = true,
         harForstattRettigheterOgPlikter = true
     )
+
+    private fun ventPaaAtRetryMekanismeIStreamProsessering() {
+        runBlocking{ delay(Duration.ofSeconds(30)) }
+    }
 }

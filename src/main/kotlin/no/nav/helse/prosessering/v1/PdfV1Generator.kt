@@ -9,6 +9,7 @@ import java.io.ByteArrayOutputStream
 import java.lang.IllegalStateException
 import java.time.format.DateTimeFormatter
 import com.openhtmltopdf.util.XRLog
+import no.nav.helse.prosessering.SoknadId
 import java.time.ZoneId
 
 private val logger: Logger = LoggerFactory.getLogger("nav.PdfV1Generator")
@@ -41,10 +42,12 @@ class PdfV1Generator {
     }
 
     fun generateSoknadOppsummeringPdf(
-        melding: MeldingV1
+        melding: MeldingV1,
+        soknadId: SoknadId
     ) : ByteArray {
 
         val html = SOKNAD_TEMPLATE
+            .med("soknadId", soknadId.id)
             .med("soker.navn", melding.soker.navn())
             .med("soker.fodselsnummer", melding.soker.fodselsnummer)
 

@@ -188,7 +188,7 @@ object WiremockWrapper {
         )
     }
 
-    private fun stubJournalfor() {
+    fun stubJournalfor(responseCode: Int = 201) {
         WireMock.stubFor(
             WireMock.post(WireMock.urlPathMatching(".*$pleiepengerJoarkBaseUrl.*")).willReturn(
                 WireMock.aResponse()
@@ -198,7 +198,7 @@ object WiremockWrapper {
                         "journal_post_id" : "9101112"
                     }
                     """.trimIndent())
-                    .withStatus(201)
+                    .withStatus(responseCode)
             )
         )
     }
