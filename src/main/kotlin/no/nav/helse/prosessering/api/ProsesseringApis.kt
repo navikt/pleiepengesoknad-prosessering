@@ -26,11 +26,9 @@ import org.slf4j.LoggerFactory
 private val logger: Logger = LoggerFactory.getLogger("nav.prosesseringApis")
 
 fun Route.prosesseringApis(
-    synkronProsesseringV1Service: ProsesseringV1Service,
-    asynkronProsesseringV1Service: ProsesseringV1Service?,
+    prosesseringV1Service: ProsesseringV1Service,
     dokumentService: DokumentService,
-    aktoerService: AktoerService,
-    defaultProsesserAsynkront: Boolean
+    aktoerService: AktoerService
 ) {
 
     suspend fun medLagredeVedlegg(
@@ -50,21 +48,22 @@ fun Route.prosesseringApis(
         } else melding
     }
 
-    fun ApplicationRequest.prosesserAsynkront() : Boolean {
-        val queryParameterValue = queryParameters["async"]
-        return if ("false".equals(queryParameterValue, true)) false
-        else defaultProsesserAsynkront || "true".equals(queryParameterValue, true)
+    suspend fun ApplicationCall.prosesser(
+        melding: MeldingV1,
+        metadata: Metadata) {
+        val id = prosesseringV1Service.leggSoknadTilProsessering(
+            melding = melding,
+            metadata = metadata
+        )
+        melding.reportMetrics()
+        respond(HttpStatusCode.Accepted, mapOf("id" to id.id))
     }
 
     post("v1/soknad") {
         val metadata = call.metadata()
         logger.info(metadata.toString())
         val melding = medLagredeVedlegg(call.melding(), CorrelationId(metadata.correlationId))
-        if (call.request.prosesserAsynkront()) {
-            call.prosesserMed(melding, metadata, asynkronProsesseringV1Service?:synkronProsesseringV1Service)
-        } else  {
-            call.prosesserMed(melding, metadata, synkronProsesseringV1Service)
-        }
+        call.prosesser(melding, metadata)
     }
 }
 
@@ -78,20 +77,6 @@ private suspend fun ApplicationCall.melding() : MeldingV1 {
     val melding = receive<MeldingV1>()
     melding.validate()
     return melding
-}
-
-private suspend fun ApplicationCall.prosesserMed(
-    melding: MeldingV1,
-    metadata: Metadata,
-    prosesseringsV1Service: ProsesseringV1Service
-) {
-    logger.trace("Prosesserer melding med '${prosesseringsV1Service::class.java.simpleName}'")
-    val id = prosesseringsV1Service.leggSoknadTilProsessering(
-        melding = melding,
-        metadata = metadata
-    )
-    melding.reportMetrics()
-    respond(HttpStatusCode.Accepted, mapOf("id" to id.id))
 }
 
 private fun ApplicationRequest.getCorrelationId(): String {

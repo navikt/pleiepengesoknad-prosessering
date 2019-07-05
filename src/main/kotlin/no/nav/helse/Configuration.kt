@@ -52,5 +52,4 @@ data class Configuration(private val config : ApplicationConfig) {
             trustStore = trustStore
         )
     }
-    internal fun defaultProsesserAsynkront() = config.getRequiredString("nav.default_prosesser_asynkront", secret = false).equals("true", true)
 }

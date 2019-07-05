@@ -107,6 +107,17 @@ fun Application.pleiepengesoknadProsessering() {
         )
     }
 
+    if (asynkronProsesseringV1Service != null) logger.info("Prosesserer søknader asynkront.")
+    else logger.info("Prosesserer søknader synkront.")
+
+    val prosesseringV1Service = asynkronProsesseringV1Service ?: SynkronProsesseringV1Service(
+        preprosseseringV1Service = preprosseseringV1Service,
+        joarkGateway = joarkGateway,
+        oppgaveGateway = oppgaveGateway
+    )
+
+
+
     environment.monitor.subscribe(ApplicationStopping) {
         logger.info("Stopper AsynkronProsesseringV1Service.")
         asynkronProsesseringV1Service?.stop()
@@ -117,15 +128,9 @@ fun Application.pleiepengesoknadProsessering() {
         authenticate(*issuers.allIssuers()) {
             requiresCallId {
                 prosesseringApis(
-                    synkronProsesseringV1Service = SynkronProsesseringV1Service(
-                        preprosseseringV1Service = preprosseseringV1Service,
-                        joarkGateway = joarkGateway,
-                        oppgaveGateway = oppgaveGateway
-                    ),
-                    asynkronProsesseringV1Service = asynkronProsesseringV1Service,
+                    prosesseringV1Service = prosesseringV1Service,
                     aktoerService = aktoerService,
-                    dokumentService = dokumentService,
-                    defaultProsesserAsynkront = configuration.defaultProsesserAsynkront()
+                    dokumentService = dokumentService
                 )
             }
         }

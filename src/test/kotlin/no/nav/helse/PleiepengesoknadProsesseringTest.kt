@@ -15,12 +15,16 @@ import io.ktor.server.testing.setBody
 import io.ktor.util.KtorExperimentalAPI
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.time.delay
+import no.nav.common.KafkaEnvironment
 import no.nav.helse.dusseldorf.ktor.jackson.dusseldorfConfigured
 import no.nav.helse.prosessering.v1.*
 import org.json.JSONObject
 
 import org.junit.AfterClass
+import org.junit.Assume
 import org.junit.BeforeClass
+import org.junit.runner.RunWith
+import org.junit.runners.Parameterized
 import org.skyscreamer.jsonassert.JSONAssert
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -34,11 +38,20 @@ import kotlin.test.*
 
 private val logger: Logger = LoggerFactory.getLogger("nav.PleiepengesoknadProsesseringTest")
 
+@RunWith(Parameterized::class)
 @KtorExperimentalAPI
-class PleiepengesoknadProsesseringTest {
+class PleiepengesoknadProsesseringTest(async: Boolean) {
+
+    init {
+        ensureEngineState(async)
+    }
 
     @KtorExperimentalAPI
     private companion object {
+
+        @JvmStatic
+        @Parameterized.Parameters
+        fun arguments() = listOf(true, false)
 
         private val wireMockServer: WireMockServer = WiremockWrapper.bootstrap()
         private val kafkaEnvironment = KafkaWrapper.bootstrap()
@@ -53,21 +66,39 @@ class PleiepengesoknadProsesseringTest {
         private val gyldigFodselsnummerC = "20037473937"
         private val dNummerA = "55125314561"
 
-        private fun getConfig() : ApplicationConfig {
+
+        private var engineRunningAsync = true
+        private var engine = newEngine(kafkaEnvironment).apply {
+            start(wait = true)
+        }
+
+        fun ensureEngineState(async: Boolean) {
+            if (engineRunningAsync == async) return
+            stopEngine()
+            engine = when (async) {
+                 true -> newEngine(kafkaEnvironment)
+                 false -> newEngine(null)
+            }
+            engineRunningAsync = async
+            engine.start(wait = true)
+        }
+
+        private fun getConfig(kafkaEnvironment: KafkaEnvironment?) : ApplicationConfig {
             val fileConfig = ConfigFactory.load()
             val testConfig = ConfigFactory.parseMap(TestConfiguration.asMap(wireMockServer = wireMockServer, kafkaEnvironment = kafkaEnvironment))
             val mergedConfig = testConfig.withFallback(fileConfig)
             return HoconApplicationConfig(mergedConfig)
         }
 
-        var engine = newEngine()
-
-        private fun newEngine() = TestApplicationEngine(createTestEnvironment {
-            config = getConfig()
+        private fun newEngine(kafkaEnvironment: KafkaEnvironment?) = TestApplicationEngine(createTestEnvironment {
+            config = getConfig(kafkaEnvironment)
         })
+
+        private fun stopEngine() = engine.stop(5, 60, TimeUnit.SECONDS)
+
         internal fun restartEngine() {
-            engine.stop(5, 60, TimeUnit.SECONDS)
-            engine = newEngine()
+            stopEngine()
+            engine = newEngine(kafkaEnvironment)
             engine.start(wait = true)
         }
 
@@ -76,7 +107,6 @@ class PleiepengesoknadProsesseringTest {
         fun buildUp() {
             WiremockWrapper.stubAktoerRegisterGetAktoerId(gyldigFodselsnummerA, "666666666")
             WiremockWrapper.stubAktoerRegisterGetAktoerId(gyldigFodselsnummerB, "777777777")
-            engine.start(wait = true)
         }
 
         @AfterClass
@@ -84,7 +114,7 @@ class PleiepengesoknadProsesseringTest {
         fun tearDown() {
             logger.info("Tearing down")
             wireMockServer.stop()
-            engine.stop(5, 60, TimeUnit.SECONDS)
+            stopEngine()
             kafkaEnvironment.tearDown()
             logger.info("Tear down complete")
         }
@@ -109,21 +139,7 @@ class PleiepengesoknadProsesseringTest {
     }
 
     @Test
-    fun `Gylding melding blir lagt til prosessering`() {
-        val melding = gyldigMelding(
-            fodselsnummerSoker = gyldigFodselsnummerA,
-            fodselsnummerBarn = gyldigFodselsnummerB
-        )
-
-        requestAndAssert(
-            request = melding,
-            expectedCode = HttpStatusCode.Accepted,
-            expectedResponse = null
-        )
-    }
-
-    @Test
-    fun `Gylding melding blir lagt til prosessering asynkront`() {
+    fun `Gylding melding blir prosessert`() {
         val melding = gyldigMelding(
             fodselsnummerSoker = gyldigFodselsnummerA,
             fodselsnummerBarn = gyldigFodselsnummerB
@@ -132,16 +148,16 @@ class PleiepengesoknadProsesseringTest {
         val soknadId = requestAndAssert(
             request = melding,
             expectedCode = HttpStatusCode.Accepted,
-            expectedResponse = null,
-            async = true
+            expectedResponse = null
         )
-        assertNotNull(soknadId)
 
-        kafkaTestConsumer.hentOpprettetOppgave(soknadId)
+        assertSoknadProsessert(soknadId)
     }
 
     @Test
     fun `En feilprosessert melding vil bli prosessert etter at tjenesten restartes`() {
+        Assume.assumeTrue("Engine kjører med asynkron prosessering", engineRunningAsync)
+
         val melding = gyldigMelding(
             fodselsnummerSoker = gyldigFodselsnummerA,
             fodselsnummerBarn = gyldigFodselsnummerB
@@ -152,15 +168,13 @@ class PleiepengesoknadProsesseringTest {
         val soknadId = requestAndAssert(
             request = melding,
             expectedCode = HttpStatusCode.Accepted,
-            expectedResponse = null,
-            async = true
+            expectedResponse = null
         )
         assertNotNull(soknadId)
 
         ventPaaAtRetryMekanismeIStreamProsessering()
         WiremockWrapper.stubJournalfor(201) // Simulerer journalføring fungerer igjen
         restartEngine()
-
         kafkaTestConsumer.hentOpprettetOppgave(soknadId)
     }
 
@@ -173,11 +187,12 @@ class PleiepengesoknadProsesseringTest {
 
         WiremockWrapper.stubAktoerRegisterGetAktoerId(dNummerA, "12121255")
 
-        requestAndAssert(
+        val soknadId = requestAndAssert(
             request = melding,
             expectedCode = HttpStatusCode.Accepted,
             expectedResponse = null
         )
+        assertSoknadProsessert(soknadId)
     }
 
     @Test
@@ -188,11 +203,12 @@ class PleiepengesoknadProsesseringTest {
             vedleggUrl = URI("http://localhost:8080/jeg-skal-feile/1")
         )
 
-        requestAndAssert(
+        val soknadId = requestAndAssert(
             request = melding,
             expectedCode = HttpStatusCode.Accepted,
             expectedResponse = null
         )
+        assertSoknadProsessert(soknadId)
     }
 
     @Test
@@ -204,11 +220,12 @@ class PleiepengesoknadProsesseringTest {
 
         WiremockWrapper.stubAktoerRegisterGetAktoerIdNotFound(gyldigFodselsnummerC)
 
-        requestAndAssert(
+        val soknadId = requestAndAssert(
             request = melding,
             expectedCode = HttpStatusCode.Accepted,
             expectedResponse = null
         )
+        assertSoknadProsessert(soknadId)
     }
 
     @Test
@@ -391,10 +408,9 @@ class PleiepengesoknadProsesseringTest {
                                  expectedCode : HttpStatusCode,
                                  leggTilCorrelationId : Boolean = true,
                                  leggTilAuthorization : Boolean = true,
-                                 accessToken : String = authorizedAccessToken,
-                                 async: Boolean = false) : String? {
+                                 accessToken : String = authorizedAccessToken) : String? {
         with(engine) {
-            handleRequest(HttpMethod.Post, "/v1/soknad${if (async) "?async=true" else ""}") {
+            handleRequest(HttpMethod.Post, "/v1/soknad") {
                 if (leggTilAuthorization) {
                     addHeader(HttpHeaders.Authorization, "Bearer $accessToken")
                 }
@@ -462,6 +478,11 @@ class PleiepengesoknadProsesseringTest {
         harBekreftetOpplysninger = true,
         harForstattRettigheterOgPlikter = true
     )
+
+    private fun assertSoknadProsessert(soknadId: String?) {
+        assertNotNull(soknadId)
+        if (engineRunningAsync) kafkaTestConsumer.hentOpprettetOppgave(soknadId)
+    }
 
     private fun ventPaaAtRetryMekanismeIStreamProsessering() {
         runBlocking{ delay(Duration.ofSeconds(30)) }
