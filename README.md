@@ -2,11 +2,8 @@
 
 Tjeneste som prosesserer søknad om pleiepenger sykt barn.
 Mottar søknad som REST API-kall til tjenesten.
-By default prosesseres søknadene synkront. Med andre ord får man ikke en OK response før alt er på plass i bakenforliggende systemer.
 
-Ved å legge til query parameter ```?async=true``` vil søknaden legges på en kø og prosesseres fortløpende. Responsen fra tjenesten er lik som ved en synkron request.
-Om  config ```nav.default_prosesser_asynkront=true``` vil søknaden prosesseres asynkront så fremt ikke query parameter ```?async=false``` er satt.
-Om det ikke er konfigurert opp Kafka vil alle søknader prosesseres asynkront uavhengig av disse config / query parameterne.
+Om tjenesten startes med Kafka config satt ( ````nav.kafka.*``` ) vil søknadene prosesseres asynkront. Om den startes uten dette prosesseres søknadene synkront.
 
 ## Versjon 1
 ### Path
@@ -67,7 +64,7 @@ Om det ikke er konfigurert opp Kafka vil alle søknader prosesseres asynkront ua
 ### Metadata
 #### Correlation ID vs Request ID
 Correlation ID blir propagert videre, og har ikke nødvendigvis sitt opphav hos konsumenten.
-Request ID blir ikke propagert videre, og skal ha sitt opphav hos konsumenten.
+Request ID blir ikke propagert videre, og skal ha sitt opphav hos konsumenten om den settes.
 
 #### REST API
 - Correlation ID må sendes som header 'X-Correlation-ID'
