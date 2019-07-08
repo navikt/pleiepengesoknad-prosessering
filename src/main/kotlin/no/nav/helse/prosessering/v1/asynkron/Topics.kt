@@ -43,8 +43,6 @@ internal object Topics {
     )
 }
 
-// TODO: Cleanup-topic for sletting av vedlegg..
-
 internal abstract class SerDes<V> : Serializer<V>, Deserializer<V> {
     protected val objectMapper = jacksonObjectMapper().dusseldorfConfigured()
     override fun serialize(topic: String?, data: V): ByteArray? {

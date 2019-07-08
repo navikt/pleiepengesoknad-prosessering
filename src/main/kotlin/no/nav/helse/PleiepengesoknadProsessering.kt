@@ -103,7 +103,8 @@ fun Application.pleiepengesoknadProsessering() {
             kafkaConfig = config,
             preprosseseringV1Service = preprosseseringV1Service,
             joarkGateway = joarkGateway,
-            oppgaveGateway = oppgaveGateway
+            oppgaveGateway = oppgaveGateway,
+            dokumentService = dokumentService
         )
     }
 

@@ -1,5 +1,6 @@
 package no.nav.helse.prosessering.v1.asynkron
 
+import no.nav.helse.dokument.DokumentService
 import no.nav.helse.joark.JoarkGateway
 import no.nav.helse.oppgave.OppgaveGateway
 import no.nav.helse.kafka.KafkaConfig
@@ -14,7 +15,8 @@ internal class AsynkronProsesseringV1Service(
     kafkaConfig: KafkaConfig,
     preprosseseringV1Service: PreprosseseringV1Service,
     joarkGateway: JoarkGateway,
-    oppgaveGateway: OppgaveGateway
+    oppgaveGateway: OppgaveGateway,
+    dokumentService: DokumentService
 ) : ProsesseringV1Service {
 
     private companion object {
@@ -38,16 +40,23 @@ internal class AsynkronProsesseringV1Service(
         oppgaveGateway = oppgaveGateway
     )
 
+    private val cleanupStream = CleanupStream(
+        kafkaConfig = kafkaConfig,
+        dokumentService = dokumentService
+    )
+
     private val healthChecks = setOf(
         preprosseseringStream.healthy,
         journalforingsStream.healthy,
-        opprettOppgaveStream.healthy
+        opprettOppgaveStream.healthy,
+        cleanupStream.healthy
     )
 
     private val isReadyChecks = setOf(
         preprosseseringStream.ready,
         journalforingsStream.ready,
-        opprettOppgaveStream.ready
+        opprettOppgaveStream.ready,
+        cleanupStream.ready
     )
 
     override suspend fun leggSoknadTilProsessering(
@@ -68,6 +77,7 @@ internal class AsynkronProsesseringV1Service(
         preprosseseringStream.stop()
         journalforingsStream.stop()
         opprettOppgaveStream.stop()
+        cleanupStream.stop()
         logger.info("Alle streams stoppet.")
     }
 
