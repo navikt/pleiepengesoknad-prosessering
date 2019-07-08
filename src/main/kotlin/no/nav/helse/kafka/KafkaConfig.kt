@@ -10,6 +10,7 @@ import org.apache.kafka.streams.errors.LogAndFailExceptionHandler
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.File
+import java.time.Duration
 import java.util.*
 
 private val logger: Logger = LoggerFactory.getLogger(KafkaConfig::class.java)
@@ -18,7 +19,8 @@ private const val ID_PREFIX = "srvpps-prosessering-"
 internal class KafkaConfig(
     bootstrapServers: String,
     credentials: Pair<String, String>,
-    trustStore: Pair<String, String>?
+    trustStore: Pair<String, String>?,
+    internal val unreadyAfterStreamStoppedIn: Duration
 ) {
     private val producer = Properties().apply {
         put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers)

@@ -21,7 +21,8 @@ internal class JournalforingsStream(
     private val stream = ManagedKafkaStreams(
         name = NAME,
         properties = kafkaConfig.stream(NAME),
-        topology = topology(joarkGateway)
+        topology = topology(joarkGateway),
+        unreadyAfterStreamStoppedIn = kafkaConfig.unreadyAfterStreamStoppedIn
     )
 
     private companion object {

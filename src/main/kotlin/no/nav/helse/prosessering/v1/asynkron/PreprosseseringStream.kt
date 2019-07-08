@@ -19,7 +19,8 @@ internal class PreprosseseringStream(
     private val stream = ManagedKafkaStreams(
         name = NAME,
         properties = kafkaConfig.stream(NAME),
-        topology = topology(preprosseseringV1Service)
+        topology = topology(preprosseseringV1Service),
+        unreadyAfterStreamStoppedIn = kafkaConfig.unreadyAfterStreamStoppedIn
     )
 
     private companion object {

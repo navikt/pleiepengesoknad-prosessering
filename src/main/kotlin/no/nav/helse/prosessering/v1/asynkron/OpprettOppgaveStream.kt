@@ -21,7 +21,8 @@ internal class OpprettOppgaveStream(
     private val stream = ManagedKafkaStreams(
         name = NAME,
         properties = kafkaConfig.stream(NAME),
-        topology = topology(oppgaveGateway)
+        topology = topology(oppgaveGateway),
+        unreadyAfterStreamStoppedIn = kafkaConfig.unreadyAfterStreamStoppedIn
     )
 
     private companion object {
