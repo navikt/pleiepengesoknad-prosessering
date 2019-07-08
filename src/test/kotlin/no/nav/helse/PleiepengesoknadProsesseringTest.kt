@@ -173,9 +173,22 @@ class PleiepengesoknadProsesseringTest(async: Boolean) {
         assertNotNull(soknadId)
 
         ventPaaAtRetryMekanismeIStreamProsessering()
+        readyGir200HealthGir503()
+
         WiremockWrapper.stubJournalfor(201) // Simulerer journalføring fungerer igjen
         restartEngine()
         kafkaTestConsumer.hentOpprettetOppgave(soknadId)
+    }
+
+    private fun readyGir200HealthGir503() {
+        with(engine) {
+            handleRequest(HttpMethod.Get, "/isready") {}.apply {
+                assertEquals(HttpStatusCode.OK, response.status())
+                handleRequest(HttpMethod.Get, "/health") {}.apply {
+                    assertEquals(HttpStatusCode.ServiceUnavailable, response.status())
+                }
+            }
+        }
     }
 
     @Test

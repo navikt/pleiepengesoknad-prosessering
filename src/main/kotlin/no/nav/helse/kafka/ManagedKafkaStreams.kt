@@ -18,7 +18,7 @@ internal class ManagedKafkaStreams(
     topology: Topology,
     properties: Properties,
     private val unreadyAfterStreamStoppedIn: Duration
-) : HealthCheck {
+) {
 
     private companion object {
         private val streamStatus = Gauge
@@ -48,13 +48,12 @@ internal class ManagedKafkaStreams(
             else -> UnHealthy(name, "Stream befinner seg i state '${kafkaStreams.state().name}'.")
         }
     }
-
     internal fun ready() = result { stoppedIn ->
         if (stoppedIn.hasReachedUnready()) {
             UnHealthy(name, "Stream har vært stoppet i ${stoppedIn.toMinutes()} minutter.")
         } else Healthy(name, "Stream har vært stoppet i ${stoppedIn.toMinutes()} minutter. Unready først etter ${unreadyAfterStreamStoppedIn.toMinutes()} minutter.")
     }
-    override suspend fun check() = result { stoppedIn ->
+    internal fun healthy() = result { stoppedIn ->
         UnHealthy(name, "Stream har vært stoppet i ${stoppedIn.toMinutes()} minutter.")
     }
 
@@ -106,10 +105,10 @@ internal class ManagedKafkaStreams(
     private fun Gauge.stopped() = labels(name).set(1.0)
 }
 
-fun main() {
-    val unreadyAfter = Duration.ofMinutes(15)
-    val stoppedIn = Duration.ofMinutes(16)
-    println(stoppedIn.compareTo(unreadyAfter))
+internal class ManagedStreamHealthy(private val managedKafkaStreams: ManagedKafkaStreams) : HealthCheck {
+    override suspend fun check(): Result = managedKafkaStreams.healthy()
 }
 
-
+internal class ManagedStreamReady(private val managedKafkaStreams: ManagedKafkaStreams) : HealthCheck {
+    override suspend fun check(): Result = managedKafkaStreams.ready()
+}

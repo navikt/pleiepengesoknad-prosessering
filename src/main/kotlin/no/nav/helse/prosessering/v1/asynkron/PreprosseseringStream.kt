@@ -1,8 +1,9 @@
 package no.nav.helse.prosessering.v1.asynkron
 
-import no.nav.helse.dusseldorf.ktor.health.HealthCheck
 import no.nav.helse.kafka.KafkaConfig
 import no.nav.helse.kafka.ManagedKafkaStreams
+import no.nav.helse.kafka.ManagedStreamHealthy
+import no.nav.helse.kafka.ManagedStreamReady
 import no.nav.helse.prosessering.SoknadId
 import no.nav.helse.prosessering.v1.MeldingV1
 import no.nav.helse.prosessering.v1.PreprosseseringV1Service
@@ -22,6 +23,9 @@ internal class PreprosseseringStream(
         topology = topology(preprosseseringV1Service),
         unreadyAfterStreamStoppedIn = kafkaConfig.unreadyAfterStreamStoppedIn
     )
+
+    internal val ready = ManagedStreamReady(stream)
+    internal val healthy = ManagedStreamHealthy(stream)
 
     private companion object {
 
@@ -54,5 +58,4 @@ internal class PreprosseseringStream(
     }
 
     internal fun stop() = stream.stop()
-    internal fun healthCheck() : HealthCheck = stream
 }

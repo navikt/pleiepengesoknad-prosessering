@@ -2,11 +2,12 @@ package no.nav.helse.prosessering.v1.asynkron
 
 import no.nav.helse.CorrelationId
 import no.nav.helse.aktoer.AktoerId
-import no.nav.helse.dusseldorf.ktor.health.HealthCheck
 import no.nav.helse.joark.JournalPostId
 import no.nav.helse.oppgave.OppgaveGateway
 import no.nav.helse.kafka.KafkaConfig
 import no.nav.helse.kafka.ManagedKafkaStreams
+import no.nav.helse.kafka.ManagedStreamHealthy
+import no.nav.helse.kafka.ManagedStreamReady
 import org.apache.kafka.streams.StreamsBuilder
 import org.apache.kafka.streams.Topology
 import org.apache.kafka.streams.kstream.Consumed
@@ -24,6 +25,9 @@ internal class OpprettOppgaveStream(
         topology = topology(oppgaveGateway),
         unreadyAfterStreamStoppedIn = kafkaConfig.unreadyAfterStreamStoppedIn
     )
+
+    internal val ready = ManagedStreamReady(stream)
+    internal val healthy = ManagedStreamHealthy(stream)
 
     private companion object {
         private const val NAME = "OpprettOppgaveV1"
@@ -60,5 +64,4 @@ internal class OpprettOppgaveStream(
     }
 
     internal fun stop() = stream.stop()
-    internal fun healthCheck() : HealthCheck = stream
 }

@@ -39,9 +39,15 @@ internal class AsynkronProsesseringV1Service(
     )
 
     private val healthChecks = setOf(
-        preprosseseringStream.healthCheck(),
-        journalforingsStream.healthCheck(),
-        opprettOppgaveStream.healthCheck()
+        preprosseseringStream.healthy,
+        journalforingsStream.healthy,
+        opprettOppgaveStream.healthy
+    )
+
+    private val isReadyChecks = setOf(
+        preprosseseringStream.ready,
+        journalforingsStream.ready,
+        opprettOppgaveStream.ready
     )
 
     override suspend fun leggSoknadTilProsessering(
@@ -66,4 +72,5 @@ internal class AsynkronProsesseringV1Service(
     }
 
     internal fun healthChecks() = healthChecks
+    internal fun isReadyChecks() = isReadyChecks
 }

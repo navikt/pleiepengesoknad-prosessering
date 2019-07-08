@@ -136,13 +136,13 @@ fun Application.pleiepengesoknadProsessering() {
         }
         MetricsRoute()
         HealthRoute(
-            path = Paths.DEFAULT_ALIVE_PATH,
+            path = Paths.DEFAULT_READY_PATH,
             healthService = HealthService(
-                healthChecks = asynkronProsesseringV1Service?.healthChecks()?: emptySet()
+                healthChecks = asynkronProsesseringV1Service?.isReadyChecks() ?: emptySet()
             )
         )
-        get(Paths.DEFAULT_READY_PATH) {
-            call.respondText("READY")
+        get(Paths.DEFAULT_ALIVE_PATH) {
+            call.respondText("ALIVE")
         }
         HealthRoute(
             healthService = HealthService(

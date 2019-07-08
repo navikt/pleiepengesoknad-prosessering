@@ -2,10 +2,11 @@ package no.nav.helse.prosessering.v1.asynkron
 
 import no.nav.helse.CorrelationId
 import no.nav.helse.aktoer.AktoerId
-import no.nav.helse.dusseldorf.ktor.health.HealthCheck
 import no.nav.helse.joark.JoarkGateway
 import no.nav.helse.kafka.KafkaConfig
 import no.nav.helse.kafka.ManagedKafkaStreams
+import no.nav.helse.kafka.ManagedStreamHealthy
+import no.nav.helse.kafka.ManagedStreamReady
 import no.nav.helse.prosessering.v1.PreprossesertMeldingV1
 import org.apache.kafka.streams.StreamsBuilder
 import org.apache.kafka.streams.Topology
@@ -24,6 +25,9 @@ internal class JournalforingsStream(
         topology = topology(joarkGateway),
         unreadyAfterStreamStoppedIn = kafkaConfig.unreadyAfterStreamStoppedIn
     )
+
+    internal val ready = ManagedStreamReady(stream)
+    internal val healthy = ManagedStreamHealthy(stream)
 
     private companion object {
         private const val NAME = "JournalforingV1"
@@ -59,5 +63,4 @@ internal class JournalforingsStream(
     }
 
     internal fun stop() = stream.stop()
-    internal fun healthCheck() : HealthCheck = stream
 }
