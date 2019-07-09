@@ -67,7 +67,7 @@ internal fun MeldingV1.reportMetrics() {
         }
     }
     valgteArbeidsgivereHistogram.observe(arbeidsgivere.organisasjoner.size.toDouble())
-    opplastedeVedleggHistogram.observe( (vedlegg.size + vedleggUrls.size).toDouble() )
+    opplastedeVedleggHistogram.observe(vedleggUrls.size.toDouble())
     idTypePaaBarnCounter.labels(barn.idType()).inc()
     periodeSoknadGjelderIUkerHistogram.observe(ChronoUnit.WEEKS.between(fraOgMed, tilOgMed).toDouble())
     gradHistogram.observe(grad.toDouble())

@@ -6,6 +6,7 @@ import java.time.LocalDate
 import java.time.ZonedDateTime
 
 data class MeldingV1 (
+    val soknadId: String,
     val mottatt: ZonedDateTime,
     val fraOgMed : LocalDate,
     val tilOgMed : LocalDate,
@@ -14,21 +15,15 @@ data class MeldingV1 (
     val relasjonTilBarnet : String,
     val arbeidsgivere: Arbeidsgivere,
     var vedleggUrls : List<URI> = listOf(),
-    var vedlegg : List<Vedlegg> = listOf(),
     val medlemskap: Medlemskap,
     val grad : Int,
     val harMedsoker : Boolean,
     val harForstattRettigheterOgPlikter : Boolean,
     val harBekreftetOpplysninger : Boolean
-) {
-    internal fun medKunVedleggUrls(vedleggUrls: List<URI>) : MeldingV1 {
-        this.vedleggUrls = this.vedleggUrls.union(vedleggUrls).toList()
-        this.vedlegg = listOf()
-        return this
-    }
-}
+)
 
 data class Soker(
+    val aktoerId: String,
     val fodselsnummer: String,
     val fornavn: String,
     val mellomnavn: String?,

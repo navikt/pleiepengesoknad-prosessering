@@ -2,9 +2,7 @@ package no.nav.helse.dokument
 
 import no.nav.helse.CorrelationId
 import no.nav.helse.aktoer.AktoerId
-import no.nav.helse.prosessering.SoknadId
 import no.nav.helse.prosessering.v1.MeldingV1
-import no.nav.helse.prosessering.v1.Vedlegg
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.net.URI
@@ -45,33 +43,16 @@ class DokumentService(
     internal suspend fun lagreSoknadsMelding(
         melding: MeldingV1,
         aktoerId: AktoerId,
-        correlationId: CorrelationId,
-        soknadId: SoknadId
+        correlationId: CorrelationId
     ) : URI {
         return lagreDokument(
             dokument = DokumentGateway.Dokument(
-                content = JournalforingsFormat.somJson(melding, soknadId),
+                content = JournalforingsFormat.somJson(melding),
                 contentType = "application/json",
                 title = "Søknad om pleiepenger som JSON"
             ),
             aktoerId = aktoerId,
             correlationId = correlationId
-        )
-    }
-
-    internal suspend fun lagreVedlegg(
-        vedlegg : List<Vedlegg>,
-        aktoerId: AktoerId,
-        correlationId : CorrelationId
-    ) : List<URI> {
-        val dokumenter = vedlegg.map { DokumentGateway.Dokument(it) }.toSet()
-
-        logger.trace("Lagrer ${vedlegg.size} vedlegg")
-        return dokumentGateway.lagreDokmenter(
-            dokumenter = dokumenter,
-            aktoerId = aktoerId,
-            correlationId = correlationId
-
         )
     }
 

@@ -19,7 +19,6 @@ import no.nav.helse.dusseldorf.ktor.client.*
 import no.nav.helse.dusseldorf.ktor.core.Retry
 import no.nav.helse.dusseldorf.ktor.metrics.Operation
 import no.nav.helse.dusseldorf.oauth2.client.CachedAccessTokenClient
-import no.nav.helse.prosessering.v1.Vedlegg
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.ByteArrayInputStream
@@ -184,7 +183,5 @@ class DokumentGateway(
         val content: ByteArray,
         val contentType: String,
         val title: String
-    ) {
-        constructor(vedlegg: Vedlegg) : this(content = vedlegg.content, contentType = vedlegg.contentType, title = vedlegg.title)
-    }
+    )
 }

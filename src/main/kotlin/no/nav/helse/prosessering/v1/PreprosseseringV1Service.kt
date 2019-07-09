@@ -21,18 +21,14 @@ internal class PreprosseseringV1Service(
 
     internal suspend fun preprosseser(
         melding: MeldingV1,
-        metadata: Metadata,
-        soknadId: SoknadId
+        metadata: Metadata
     ) : PreprossesertMeldingV1 {
+        val soknadId = SoknadId(melding.soknadId)
         logger.info("Preprosseserer $soknadId")
 
         val correlationId = CorrelationId(metadata.correlationId)
 
-        logger.trace("Henter AktørID for søkeren.")
-        val sokerAktoerId = aktoerService.getAktorId(
-            fnr = Fodselsnummer(melding.soker.fodselsnummer),
-            correlationId = correlationId
-        )
+        val sokerAktoerId = AktoerId(melding.soker.aktoerId)
 
         logger.info("Søkerens AktørID = $sokerAktoerId")
 
@@ -43,7 +39,7 @@ internal class PreprosseseringV1Service(
 
         logger.trace("Genererer Oppsummerings-PDF av søknaden.")
 
-        val soknadOppsummeringPdf = pdfV1Generator.generateSoknadOppsummeringPdf(melding, soknadId)
+        val soknadOppsummeringPdf = pdfV1Generator.generateSoknadOppsummeringPdf(melding)
 
         logger.trace("Generering av Oppsummerings-PDF OK.")
         logger.trace("Mellomlagrer Oppsummerings-PDF.")
@@ -61,8 +57,7 @@ internal class PreprosseseringV1Service(
         val soknadJsonUrl = dokumentService.lagreSoknadsMelding(
             melding = melding,
             aktoerId = sokerAktoerId,
-            correlationId = correlationId,
-            soknadId = soknadId
+            correlationId = correlationId
         )
 
         logger.trace("Mellomlagrer Oppsummerings-JSON OK.")
@@ -78,9 +73,6 @@ internal class PreprosseseringV1Service(
         if (melding.vedleggUrls.isNotEmpty()) {
             logger.trace("Legger til ${melding.vedleggUrls.size} vedlegg URL's fra meldingen som dokument.")
             melding.vedleggUrls.forEach { komplettDokumentUrls.add(listOf(it))}
-        }
-        if (melding.vedlegg.isNotEmpty()) {
-            throw IllegalStateException("Meldingen skal kun inneholde vedleggUrls på dette tidspunktet, inneholder ${melding.vedlegg.size} vedlegg.")
         }
 
         logger.trace("Totalt ${komplettDokumentUrls.size} dokumentbolker.")

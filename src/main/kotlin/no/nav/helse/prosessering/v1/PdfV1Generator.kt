@@ -42,12 +42,11 @@ class PdfV1Generator {
     }
 
     fun generateSoknadOppsummeringPdf(
-        melding: MeldingV1,
-        soknadId: SoknadId
+        melding: MeldingV1
     ) : ByteArray {
 
         val html = SOKNAD_TEMPLATE
-            .med("soknadId", soknadId.id)
+            .med("soknadId", melding.soknadId)
             .med("soker.navn", melding.soker.navn())
             .med("soker.fodselsnummer", melding.soker.fodselsnummer)
 
