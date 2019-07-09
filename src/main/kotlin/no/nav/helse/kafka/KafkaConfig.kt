@@ -2,7 +2,6 @@ package no.nav.helse.kafka
 
 import org.apache.kafka.clients.CommonClientConfigs
 import org.apache.kafka.clients.consumer.ConsumerConfig
-import org.apache.kafka.clients.producer.ProducerConfig
 import org.apache.kafka.common.config.SaslConfigs
 import org.apache.kafka.common.config.SslConfigs
 import org.apache.kafka.streams.StreamsConfig
@@ -22,22 +21,12 @@ internal class KafkaConfig(
     trustStore: Pair<String, String>?,
     internal val unreadyAfterStreamStoppedIn: Duration
 ) {
-    private val producer = Properties().apply {
-        put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers)
-        medCredentials(credentials)
-        medTrustStore(trustStore)
-    }
-
     private val streams = Properties().apply {
         put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers)
         put(StreamsConfig.DEFAULT_DESERIALIZATION_EXCEPTION_HANDLER_CLASS_CONFIG, LogAndFailExceptionHandler::class.java)
         put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest")
         medCredentials(credentials)
         medTrustStore(trustStore)
-    }
-
-    internal fun producer(name: String) = producer.apply {
-        put(ProducerConfig.CLIENT_ID_CONFIG, "$ID_PREFIX$name")
     }
 
     internal fun stream(name: String) = streams.apply {

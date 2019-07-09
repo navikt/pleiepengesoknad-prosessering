@@ -4,11 +4,7 @@ import no.nav.helse.dokument.DokumentService
 import no.nav.helse.joark.JoarkGateway
 import no.nav.helse.oppgave.OppgaveGateway
 import no.nav.helse.kafka.KafkaConfig
-import no.nav.helse.prosessering.v1.MeldingV1
-import no.nav.helse.prosessering.Metadata
-import no.nav.helse.prosessering.SoknadId
 import no.nav.helse.prosessering.v1.PreprosseseringV1Service
-import no.nav.helse.prosessering.v1.ProsesseringV1Service
 import org.slf4j.LoggerFactory
 
 internal class AsynkronProsesseringV1Service(
@@ -17,13 +13,11 @@ internal class AsynkronProsesseringV1Service(
     joarkGateway: JoarkGateway,
     oppgaveGateway: OppgaveGateway,
     dokumentService: DokumentService
-) : ProsesseringV1Service {
+) {
 
     private companion object {
         private val logger = LoggerFactory.getLogger(AsynkronProsesseringV1Service::class.java)
     }
-
-    private val producer = SoknadProducer(kafkaConfig)
 
     private val preprosseseringStream = PreprosseseringStream(
         kafkaConfig = kafkaConfig,
@@ -58,19 +52,6 @@ internal class AsynkronProsesseringV1Service(
         opprettOppgaveStream.ready,
         cleanupStream.ready
     )
-
-    override suspend fun leggSoknadTilProsessering(
-        melding: MeldingV1,
-        metadata: Metadata
-    ) : SoknadId {
-        val soknadId = SoknadId.generate()
-        producer.produce(
-            soknadId = soknadId,
-            metadata = metadata,
-            melding = melding
-        )
-        return soknadId
-    }
 
     internal fun stop() {
         logger.info("Stopper streams.")

@@ -42,10 +42,10 @@ dependencies {
     compile("org.slf4j:jcl-over-slf4j:$slf4jVersion")
 
     // Kafka
-    compile("org.apache.kafka:kafka-clients:$kafkaVersion")
     compile("org.apache.kafka:kafka-streams:$kafkaVersion")
 
     // Test
+    testCompile("org.apache.kafka:kafka-clients:$kafkaVersion")
     testCompile ("no.nav:kafka-embedded-env:$kafkaEmbeddedEnvVersion")
     testCompile ("com.github.tomakehurst:wiremock:$wiremockVersion")
     testCompile("io.ktor:ktor-server-test-host:$ktorVersion") {
