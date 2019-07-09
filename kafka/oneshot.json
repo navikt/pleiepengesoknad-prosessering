@@ -6,7 +6,7 @@
       },
       "members": [
         {
-          "member": "srvpps-prosessering",
+          "member": "srvpps-mottak",
           "role": "PRODUCER"
         },
         {

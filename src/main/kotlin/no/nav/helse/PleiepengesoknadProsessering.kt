@@ -1,8 +1,10 @@
 package no.nav.helse
 
 import io.ktor.application.*
+import io.ktor.features.ContentNegotiation
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.Url
+import io.ktor.jackson.jackson
 import io.ktor.response.respondText
 import io.ktor.routing.Routing
 import io.ktor.routing.get
@@ -18,6 +20,7 @@ import no.nav.helse.dusseldorf.ktor.client.*
 import no.nav.helse.dusseldorf.ktor.core.*
 import no.nav.helse.dusseldorf.ktor.health.HealthRoute
 import no.nav.helse.dusseldorf.ktor.health.HealthService
+import no.nav.helse.dusseldorf.ktor.jackson.dusseldorfConfigured
 import no.nav.helse.dusseldorf.ktor.metrics.MetricsRoute
 import no.nav.helse.joark.JoarkGateway
 import no.nav.helse.oppgave.OppgaveGateway
@@ -34,12 +37,16 @@ fun main(args: Array<String>): Unit  = io.ktor.server.netty.EngineMain.main(args
 
 @KtorExperimentalAPI
 fun Application.pleiepengesoknadProsessering() {
-    val appId = environment.config.id()
     logProxyProperties()
     DefaultExports.initialize()
 
+    install(ContentNegotiation) {
+        jackson {
+            dusseldorfConfigured()
+        }
+    }
+
     val configuration = Configuration(environment.config)
-    val kafkaConfig = configuration.getKafkaConfig()
 
     val accessTokenClientResolver = AccessTokenClientResolver(environment.config.clients())
 

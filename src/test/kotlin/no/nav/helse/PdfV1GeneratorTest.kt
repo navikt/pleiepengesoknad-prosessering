@@ -1,6 +1,5 @@
 package no.nav.helse
 
-import no.nav.helse.prosessering.SoknadId
 import no.nav.helse.prosessering.v1.*
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -15,11 +14,13 @@ private val logger: Logger = LoggerFactory.getLogger("nav.PdfV1GeneratorTest")
 
 class PdfV1GeneratorTest {
 
-    private val gyldigMelding = MeldingV1(
+    private fun gyldigMelding(soknadId: String) = MeldingV1(
+        soknadId = soknadId,
         mottatt = ZonedDateTime.now(),
         fraOgMed = LocalDate.now().plusDays(6),
         tilOgMed = LocalDate.now().plusDays(16),
         soker = Soker(
+            aktoerId = "123456",
             fornavn = "Ærling",
             mellomnavn = "Øverbø",
             etternavn = "Ånsnes",
@@ -53,8 +54,8 @@ class PdfV1GeneratorTest {
         harBekreftetOpplysninger = true
     )
 
-    private fun genererPdf(melding: MeldingV1 = gyldigMelding, soknadId: String = UUID.randomUUID().toString()) : ByteArray {
-        return PdfV1Generator().generateSoknadOppsummeringPdf(melding, SoknadId(soknadId))
+    private fun genererPdf(soknadId: String = UUID.randomUUID().toString(), melding: MeldingV1 = gyldigMelding(soknadId)) : ByteArray {
+        return PdfV1Generator().generateSoknadOppsummeringPdf(melding)
     }
 
     @Test

@@ -13,7 +13,6 @@ import java.util.*
 private val logger: Logger = LoggerFactory.getLogger("nav.WiremockWrapper")
 private const val jwkSetPath = "/auth-mock/jwk-set"
 private const val tokenPath = "/auth-mock/token"
-private const val getAccessTokenPath = "/auth-mock/get-test-access-token"
 private const val subject = "srvpleiepengesokna"
 
 private const val aktoerRegisterBasePath = "/aktoerregister-mock"
@@ -46,8 +45,6 @@ object WiremockWrapper {
 
         stubGetSystembrukerToken()
         stubJwkSet()
-
-        provideGetAccessTokenEndPoint(wireMockServer.baseUrl())
 
         stubHealthEndpoint("$pleiepengerOppgaveBaseUrl/health")
         stubHealthEndpoint("$pleiepengerDokumentBasePath/health")
@@ -90,19 +87,6 @@ object WiremockWrapper {
                         .withHeader("Content-Type", "application/json")
                         .withStatus(200)
                         .withBody(WiremockWrapper::class.java.getResource(JwkGenerator.DEFAULT_JWKSET_FILE).readText())
-                )
-        )
-    }
-
-    private fun provideGetAccessTokenEndPoint(issuer: String) {
-        val jwt = Authorization.getAccessToken(issuer, subject)
-        WireMock.stubFor(
-            WireMock.get(WireMock.urlPathMatching(".*$getAccessTokenPath.*"))
-                .willReturn(
-                    WireMock.aResponse()
-                        .withStatus(200)
-                        .withHeader("Content-Type", "application/json")
-                        .withBody("{\"access_token\":\"$jwt\", \"expires_in\": 5000}")
                 )
         )
     }

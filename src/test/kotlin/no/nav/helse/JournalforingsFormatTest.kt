@@ -17,7 +17,7 @@ class JournalforingsFormatTest {
     @Test
     fun `Soknaden journalfoeres som JSON uten vedlegg`() {
         val soknadId = UUID.randomUUID().toString()
-        val json = JournalforingsFormat.somJson(melding(), SoknadId(soknadId))
+        val json = JournalforingsFormat.somJson(melding(soknadId))
         JSONAssert.assertEquals("""
         {
             "soknad_id": "$soknadId",
@@ -25,6 +25,7 @@ class JournalforingsFormatTest {
             "fra_og_med": "2018-01-01",
             "til_og_med": "2018-02-02",
             "soker": {
+                "aktoer_id": "123456",
                 "fodselsnummer": "1212",
                 "fornavn": "Ola",
                 "mellomnavn": "Mellomnavn",
@@ -55,11 +56,13 @@ class JournalforingsFormatTest {
 
     }
 
-    private fun melding() : MeldingV1 = MeldingV1(
+    private fun melding(soknadId: String) : MeldingV1 = MeldingV1(
+        soknadId = soknadId,
         mottatt = ZonedDateTime.of(2018,1,2,3,4,5,6, ZoneId.of("UTC")),
         fraOgMed = LocalDate.parse("2018-01-01"),
         tilOgMed = LocalDate.parse("2018-02-02"),
         soker = Soker(
+            aktoerId = "123456",
             fodselsnummer = "1212",
             etternavn = "Nordmann",
             mellomnavn = "Mellomnavn",
@@ -79,13 +82,6 @@ class JournalforingsFormatTest {
         vedleggUrls = listOf(
             URI("http://localhost:8080/1234"),
             URI("http://localhost:8080/12345")
-        ),
-        vedlegg = listOf(
-            Vedlegg(
-                content = "test.pdf".fromResources().readBytes(),
-                contentType = "application/pdf",
-                title = "PDF"
-            )
         ),
         medlemskap = Medlemskap(
             harBoddIUtlandetSiste12Mnd = true,
