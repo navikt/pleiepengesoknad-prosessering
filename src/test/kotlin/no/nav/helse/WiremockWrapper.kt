@@ -5,13 +5,11 @@ import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration
 import com.github.tomakehurst.wiremock.extension.Extension
 import com.github.tomakehurst.wiremock.matching.EqualToPattern
-import no.nav.security.oidc.test.support.JwkGenerator
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.util.*
 
 private val logger: Logger = LoggerFactory.getLogger("nav.WiremockWrapper")
-private const val jwkSetPath = "/auth-mock/jwk-set"
 private const val tokenPath = "/auth-mock/token"
 private const val subject = "srvpleiepengesokna"
 
@@ -44,7 +42,6 @@ object WiremockWrapper {
         WireMock.configureFor(wireMockServer.port())
 
         stubGetSystembrukerToken()
-        stubJwkSet()
 
         stubHealthEndpoint("$pleiepengerOppgaveBaseUrl/health")
         stubHealthEndpoint("$pleiepengerDokumentBasePath/health")
@@ -75,18 +72,6 @@ object WiremockWrapper {
                                 "expires_in": 1000
                             }
                         """.trimIndent())
-                )
-        )
-    }
-
-    private fun stubJwkSet() {
-        WireMock.stubFor(
-            WireMock.get(WireMock.urlPathMatching(".*$jwkSetPath.*"))
-                .willReturn(
-                    WireMock.aResponse()
-                        .withHeader("Content-Type", "application/json")
-                        .withStatus(200)
-                        .withBody(WiremockWrapper::class.java.getResource(JwkGenerator.DEFAULT_JWKSET_FILE).readText())
                 )
         )
     }
@@ -197,10 +182,6 @@ object WiremockWrapper {
             )
         )
     }
-}
-
-fun WireMockServer.getJwksUrl() : String {
-    return baseUrl() + jwkSetPath
 }
 
 fun WireMockServer.getTokenUrl() : String {

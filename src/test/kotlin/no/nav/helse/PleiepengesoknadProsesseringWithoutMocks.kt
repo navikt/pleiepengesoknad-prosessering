@@ -28,8 +28,6 @@ class PleiepengesoknadProsesseringWithoutMocks {
             val q1Args = TestConfiguration.asArray(TestConfiguration.asMap(
                 port = 8093,
                 tokenUrl = "https://security-token-service.nais.preprod.local/rest/v1/sts/token",
-                jwkSetUrl = "https://security-token-service.nais.preprod.local/rest/v1/sts/jwks",
-                issuer = "https://security-token-service.nais.preprod.local",
                 aktoerRegisterBaseUrl = "https://app-q1.adeo.no/aktoerregister",
                 pleiepengerJoarkBaseUrl = if (pleiepengerJoarkLocalhost) "http://localhost:8113" else "https://pleiepenger-joark.nais.preprod.local",
                 pleiepengerOppgaveBaseUrl = if (pleiepengerOppgaveLocalhost) "http://localhost:8123" else "https://pleiepenger-oppgave.nais.preprod.local",
