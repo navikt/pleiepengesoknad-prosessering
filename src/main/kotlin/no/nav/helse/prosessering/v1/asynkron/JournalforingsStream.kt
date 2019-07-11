@@ -62,5 +62,5 @@ internal class JournalforingsStream(
         }
     }
 
-    internal fun stop() = stream.stop()
+    internal fun stop() = stream.stop(becauseOfError = false)
 }

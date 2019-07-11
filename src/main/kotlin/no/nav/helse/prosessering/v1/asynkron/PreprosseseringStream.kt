@@ -55,5 +55,5 @@ internal class PreprosseseringStream(
         }
     }
 
-    internal fun stop() = stream.stop()
+    internal fun stop() = stream.stop(becauseOfError = false)
 }

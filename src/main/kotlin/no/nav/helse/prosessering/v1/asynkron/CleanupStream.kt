@@ -52,5 +52,5 @@ internal class CleanupStream(
         }
     }
 
-    internal fun stop() = stream.stop()
+    internal fun stop() = stream.stop(becauseOfError = false)
 }

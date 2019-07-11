@@ -72,12 +72,14 @@ internal class ManagedKafkaStreams(
         kafkaStreams.start()
     }
 
-    internal fun stop() {
+    internal fun stop(becauseOfError: Boolean) {
         when (kafkaStreams.state()) {
             KafkaStreams.State.PENDING_SHUTDOWN, KafkaStreams.State.NOT_RUNNING -> log.info("Stoppes allerede. er i state ${kafkaStreams.state().name}")
             else -> {
                 stopped = LocalDateTime.now()
-                streamStatus.stopped()
+                if (becauseOfError) {
+                    streamStatus.stopped()
+                }
                 log.info("Stopper fra state ${kafkaStreams.state().name}")
                 kafkaStreams.close()
             }
@@ -88,14 +90,14 @@ internal class ManagedKafkaStreams(
         streams.setStateListener { newState, oldState ->
             log.info("Stream endret state fra $oldState til $newState")
             if (newState == KafkaStreams.State.ERROR) {
-                stop()
+                stop(becauseOfError = true)
             }
         }
 
-        streams.setUncaughtExceptionHandler { _, _ -> stop() }
+        streams.setUncaughtExceptionHandler { _, _ -> stop(becauseOfError = true) }
 
         Runtime.getRuntime().addShutdownHook(Thread {
-            stop()
+            stop(becauseOfError = false)
         })
 
         return streams
