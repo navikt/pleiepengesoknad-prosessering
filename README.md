@@ -14,4 +14,4 @@ Ved feil i en av streamene som håndterer prosesseringen vil streamen stoppe, og
 Når tjenenesten restarter vil den forsøke å prosessere søknaden på ny og fortsette slik frem til den lykkes.
 
 ## For NAV-ansatte
-Interne henvendelser kan sendes via Slack i kanalen #område-helse.
+Interne henvendelser kan sendes via Slack i kanalen #team-düsseldorf
