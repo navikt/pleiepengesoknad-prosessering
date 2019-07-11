@@ -50,9 +50,3 @@ data class Medlemskap(
     @JsonProperty("skal_bo_i_utlandet_neste_12_mnd")
     val skalBoIUtlandetNeste12Mnd : Boolean
 )
-
-data class Vedlegg (
-    val content : ByteArray,
-    val contentType : String,
-    val title : String
-)

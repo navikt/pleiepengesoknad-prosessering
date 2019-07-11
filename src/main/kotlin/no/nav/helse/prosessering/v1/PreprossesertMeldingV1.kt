@@ -1,16 +1,13 @@
 package no.nav.helse.prosessering.v1
 
 import no.nav.helse.aktoer.AktoerId
-import no.nav.helse.prosessering.SoknadId
 import java.net.URI
 import java.time.LocalDate
 import java.time.ZonedDateTime
 
 data class PreprossesertMeldingV1(
-    val id: String, // Unik ID for å teknisk kunne merge topics med informasjon som gjelder samme søknad
-    val dokumentUrls: List<List<URI>>, // Alle dokumenter i søknaden, genererte og vedlegg.
-
-    // Tilsvarende MeldingV1
+    val soknadId: String,
+    val dokumentUrls: List<List<URI>>,
     val mottatt: ZonedDateTime,
     val fraOgMed : LocalDate,
     val tilOgMed : LocalDate,
@@ -25,13 +22,12 @@ data class PreprossesertMeldingV1(
     val harBekreftetOpplysninger : Boolean
 ) {
     internal constructor(
-        soknadId: SoknadId,
         melding: MeldingV1,
         dokumentUrls: List<List<URI>>,
         sokerAktoerId: AktoerId,
         barnAktoerId: AktoerId?
     ) : this(
-        id = soknadId.id,
+        soknadId = melding.soknadId,
         dokumentUrls = dokumentUrls,
         mottatt = melding.mottatt,
         fraOgMed = melding.fraOgMed,
