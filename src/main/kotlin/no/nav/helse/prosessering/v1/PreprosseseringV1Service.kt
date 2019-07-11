@@ -77,6 +77,8 @@ internal class PreprosseseringV1Service(
 
         logger.trace("Totalt ${komplettDokumentUrls.size} dokumentbolker.")
 
+        melding.reportMetrics()
+
         return PreprossesertMeldingV1(
             dokumentUrls = komplettDokumentUrls.toList(),
             melding = melding,
