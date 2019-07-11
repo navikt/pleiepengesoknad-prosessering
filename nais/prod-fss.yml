@@ -1,0 +1,51 @@
+apiVersion: "nais.io/v1alpha1"
+kind: "Application"
+metadata:
+  name: pleiepengesoknad-prosessering
+  namespace: default
+  labels:
+    team: {{team}}
+spec:
+  image: {{version}}
+  port: 8080
+  liveness:
+    path: isalive
+    initialDelay: 20
+    timeout: 1
+    periodSeconds: 5
+    failureThreshold: 10
+  readiness:
+    path: isready
+    initialDelay: 20
+    timeout: 1
+  resources:
+    limits:
+      cpu: 2000m
+      memory: 2048Mi
+    requests:
+      cpu: 200m
+      memory: 1024Mi
+  ingresses:
+    - https://pleiepengesoknad-prosessering.nais.adeo.no
+  replicas:
+    min: 1
+    max: 2
+    cpuThresholdPercentage: 90
+  prometheus:
+    enabled: true
+    path: /metrics
+  vault:
+    enabled: true
+  env:
+    - name: PLEIEPENGER_OPPGAVE_BASE_URL
+      value: http://pleiepenger-oppgave
+    - name: PLEIEPENGER_JOARK_BASE_URL
+      value: http://pleiepenger-joark
+    - name: PLEIEPENGER_DOKUMENT_BASE_URL
+      value: http://pleiepenger-dokument
+    - name: AKTOER_REGISTER_BASE_URL
+      value: https://app.adeo.no/aktoerregister
+    - name: TOKEN_URL
+      value: http://security-token-service/rest/v1/sts/token
+    - name: KAFKA_BOOTSTRAP_SERVERS
+      value: a01apvl00145.adeo.no:8443,a01apvl00146.adeo.no:8443,a01apvl00147.adeo.no:8443,a01apvl00148.adeo.no:8443,a01apvl00149.adeo.no:8443,a01apvl00150.adeo.no:8443al:8443
