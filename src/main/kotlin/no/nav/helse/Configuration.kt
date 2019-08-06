@@ -3,6 +3,7 @@ package no.nav.helse
 import io.ktor.config.ApplicationConfig
 import io.ktor.util.KtorExperimentalAPI
 import no.nav.helse.dusseldorf.ktor.core.getOptionalString
+import no.nav.helse.dusseldorf.ktor.core.getRequiredList
 import no.nav.helse.dusseldorf.ktor.core.getRequiredString
 import no.nav.helse.kafka.KafkaConfig
 import java.net.URI
@@ -37,4 +38,10 @@ data class Configuration(private val config : ApplicationConfig) {
             unreadyAfterStreamStoppedIn = unreadyAfterStreamStoppedIn()
         )
     }
+
+    private fun getScopesFor(operation: String) = config.getRequiredList("nav.auth.scopes.$operation", secret = false, builder = { it }).toSet()
+    internal fun getOppretteOppgaveScopes() = getScopesFor("opprette-oppgave")
+    internal fun getJournalforeScopes() = getScopesFor("journalfore")
+    internal fun getLagreDokumentScopes() = getScopesFor("lagre-dokument")
+    internal fun getSletteDokumentScopes() = getScopesFor("slette-dokument")
 }

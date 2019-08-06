@@ -50,18 +50,20 @@ fun Application.pleiepengesoknadProsessering() {
 
     val accessTokenClientResolver = AccessTokenClientResolver(environment.config.clients())
 
-    val aktoerService = AktoerService(
-        aktoerGateway = AktoerGateway(
-            baseUrl = configuration.getAktoerRegisterBaseUrl(),
-            accessTokenClient = accessTokenClientResolver.aktoerRegisterAccessTokenClient()
-        )
+    val aktoerGateway = AktoerGateway(
+        baseUrl = configuration.getAktoerRegisterBaseUrl(),
+        accessTokenClient = accessTokenClientResolver.aktoerRegisterAccessTokenClient()
     )
-    val dokumentService = DokumentService(
-        dokumentGateway = DokumentGateway(
-            baseUrl = configuration.getPleiepengerDokumentBaseUrl(),
-            accessTokenClient = accessTokenClientResolver.dokumentAccessTokenClient()
-        )
+    val aktoerService = AktoerService(aktoerGateway)
+
+    val dokumentGateway = DokumentGateway(
+        baseUrl = configuration.getPleiepengerDokumentBaseUrl(),
+        accessTokenClient = accessTokenClientResolver.dokumentAccessTokenClient(),
+        lagreDokumentScopes = configuration.getLagreDokumentScopes(),
+        sletteDokumentScopes = configuration.getSletteDokumentScopes()
     )
+    val dokumentService = DokumentService(dokumentGateway)
+
     val preprosseseringV1Service = PreprosseseringV1Service(
         aktoerService = aktoerService,
         pdfV1Generator = PdfV1Generator(),
@@ -69,12 +71,14 @@ fun Application.pleiepengesoknadProsessering() {
     )
     val joarkGateway = JoarkGateway(
         baseUrl = configuration.getPleiepengerJoarkBaseUrl(),
-        accessTokenClient = accessTokenClientResolver.joarkAccessTokenClient()
+        accessTokenClient = accessTokenClientResolver.joarkAccessTokenClient(),
+        journalforeScopes = configuration.getJournalforeScopes()
     )
 
     val oppgaveGateway = OppgaveGateway(
         baseUrl = configuration.getPleiepengerOppgaveBaseUrl(),
-        accessTokenClient = accessTokenClientResolver.oppgaveAccessTokenClient()
+        accessTokenClient = accessTokenClientResolver.oppgaveAccessTokenClient(),
+        oppretteOppgaveScopes = configuration.getOppretteOppgaveScopes()
     )
 
     val asynkronProsesseringV1Service = AsynkronProsesseringV1Service(
@@ -105,7 +109,10 @@ fun Application.pleiepengesoknadProsessering() {
         HealthRoute(
             healthService = HealthService(
                 healthChecks = mutableSetOf(
-                    accessTokenClientResolver,
+                    dokumentGateway,
+                    joarkGateway,
+                    oppgaveGateway,
+                    aktoerGateway,
                     HttpRequestHealthCheck(
                         mapOf(
                             Url.healthURL(configuration.getPleiepengerDokumentBaseUrl()) to HttpRequestHealthConfig(expectedStatus = HttpStatusCode.OK),

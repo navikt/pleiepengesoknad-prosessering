@@ -29,7 +29,7 @@ import java.time.ZonedDateTime
 class JoarkGateway(
     baseUrl : URI,
     private val accessTokenClient: AccessTokenClient,
-    private val journalforingScopes: Set<String>
+    private val journalforeScopes: Set<String>
 ) : HealthCheck {
     private companion object {
         private const val JOURNALFORING_OPERATION = "journalforing"
@@ -47,7 +47,7 @@ class JoarkGateway(
 
     override suspend fun check(): Result {
         return try {
-            accessTokenClient.getAccessToken(journalforingScopes)
+            accessTokenClient.getAccessToken(journalforeScopes)
             Healthy("JoarkGateway", "Henting av access token for journalføring OK.")
         } catch (cause: Throwable) {
             logger.error("Feil ved henting av access token for journalføring", cause)
@@ -62,7 +62,7 @@ class JoarkGateway(
         correlationId: CorrelationId
     ) : JournalPostId {
 
-        val authorizationHeader = cachedAccessTokenClient.getAccessToken(journalforingScopes).asAuthoriationHeader()
+        val authorizationHeader = cachedAccessTokenClient.getAccessToken(journalforeScopes).asAuthoriationHeader()
 
         val joarkRequest = JoarkRequest(
             aktoerId = aktoerId.id,
