@@ -36,16 +36,21 @@ spec:
     path: /metrics
   vault:
     enabled: true
+  webproxy: true
   env:
     - name: PLEIEPENGER_OPPGAVE_BASE_URL
-      value: http://pleiepenger-oppgave
+      value: https://pleiepenger-oppgave.nais.adeo.no
     - name: PLEIEPENGER_JOARK_BASE_URL
-      value: http://pleiepenger-joark
+      value: https://pleiepenger-joark.nais.adeo.no
     - name: PLEIEPENGER_DOKUMENT_BASE_URL
-      value: http://pleiepenger-dokument
+      value: https://pleiepenger-dokument.nais.adeo.no
     - name: AKTOER_REGISTER_BASE_URL
       value: https://app.adeo.no/aktoerregister
-    - name: TOKEN_URL
-      value: http://security-token-service/rest/v1/sts/token
+    - name: NAIS_STS_DISCOVERY_ENDPOINT
+      value: https://security-token-service.nais.adeo.no/rest/v1/sts/.well-known/openid-configuration
+    - name: AZURE_CLIENT_ID
+      value: 84ef0905-64b3-440b-8f6a-0d88ef81a0f0
+    - name: AZURE_V2_DISCOVERY_ENDPOINT
+      value: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b/v2.0/.well-known/openid-configuration
     - name: KAFKA_BOOTSTRAP_SERVERS
       value: a01apvl00145.adeo.no:8443,a01apvl00146.adeo.no:8443,a01apvl00147.adeo.no:8443,a01apvl00148.adeo.no:8443,a01apvl00149.adeo.no:8443,a01apvl00150.adeo.no:8443al:8443

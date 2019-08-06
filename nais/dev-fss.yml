@@ -36,16 +36,21 @@ spec:
     path: /metrics
   vault:
     enabled: true
+  webproxy: true
   env:
     - name: PLEIEPENGER_OPPGAVE_BASE_URL
-      value: http://pleiepenger-oppgave
+      value: https://pleiepenger-oppgave.nais.preprod.local
     - name: PLEIEPENGER_JOARK_BASE_URL
-      value: http://pleiepenger-joark
+      value: https://pleiepenger-joark.nais.preprod.local
     - name: PLEIEPENGER_DOKUMENT_BASE_URL
-      value: http://pleiepenger-dokument
+      value: https://pleiepenger-dokument.nais.preprod.local
     - name: AKTOER_REGISTER_BASE_URL
       value: https://app-q1.adeo.no/aktoerregister
-    - name: TOKEN_URL
-      value: http://security-token-service/rest/v1/sts/token
+    - name: NAIS_STS_DISCOVERY_ENDPOINT
+      value: https://security-token-service.nais.preprod.local/rest/v1/sts/.well-known/openid-configuration
+    - name: AZURE_CLIENT_ID
+      value: a6aef297-b9c9-4cac-82be-060d4fa68bb8
+    - name: AZURE_V2_DISCOVERY_ENDPOINT
+      value: https://login.microsoftonline.com/966ac572-f5b7-4bbe-aa88-c76419c0f851/v2.0/.well-known/openid-configuration
     - name: KAFKA_BOOTSTRAP_SERVERS
       value: b27apvl00045.preprod.local:8443,b27apvl00046.preprod.local:8443,b27apvl00047.preprod.local:8443
