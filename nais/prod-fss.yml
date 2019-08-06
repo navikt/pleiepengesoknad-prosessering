@@ -52,5 +52,13 @@ spec:
       value: 84ef0905-64b3-440b-8f6a-0d88ef81a0f0
     - name: AZURE_V2_DISCOVERY_ENDPOINT
       value: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b/v2.0/.well-known/openid-configuration
+    - name: LAGRE_DOKUMENT_SCOPES
+      value: 0c5a6709-ba2a-42b7-bbfc-9b9f844e2ee2/.default
+    - name: SLETTE_DOKUMENT_SCOPES
+      value: 0c5a6709-ba2a-42b7-bbfc-9b9f844e2ee2/.default
+    - name: JOURNALFORE_SCOPES
+      value: cb751642-883c-48d3-9f82-06cc72c3e4b9/.default
+    - name: OPPRETTE_OPPGAVE_SCOPES
+      value: b0e812c2-9fbb-4f3d-b004-ad364402014a/.default
     - name: KAFKA_BOOTSTRAP_SERVERS
       value: a01apvl00145.adeo.no:8443,a01apvl00146.adeo.no:8443,a01apvl00147.adeo.no:8443,a01apvl00148.adeo.no:8443,a01apvl00149.adeo.no:8443,a01apvl00150.adeo.no:8443al:8443
