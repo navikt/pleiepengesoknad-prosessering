@@ -13,7 +13,12 @@ import no.nav.helse.CorrelationId
 import no.nav.helse.HttpError
 import no.nav.helse.aktoer.AktoerId
 import no.nav.helse.dusseldorf.ktor.client.*
+import no.nav.helse.dusseldorf.ktor.health.HealthCheck
+import no.nav.helse.dusseldorf.ktor.health.Healthy
+import no.nav.helse.dusseldorf.ktor.health.Result
+import no.nav.helse.dusseldorf.ktor.health.UnHealthy
 import no.nav.helse.dusseldorf.ktor.metrics.Operation
+import no.nav.helse.dusseldorf.oauth2.client.AccessTokenClient
 import no.nav.helse.dusseldorf.oauth2.client.CachedAccessTokenClient
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -23,12 +28,12 @@ import java.time.ZonedDateTime
 
 class JoarkGateway(
     baseUrl : URI,
-    private val accessTokenClient : CachedAccessTokenClient
-) {
-
+    private val accessTokenClient: AccessTokenClient,
+    private val journalforingScopes: Set<String>
+) : HealthCheck {
     private companion object {
         private const val JOURNALFORING_OPERATION = "journalforing"
-        private val logger: Logger = LoggerFactory.getLogger("nav.JoarkGateway")
+        private val logger: Logger = LoggerFactory.getLogger(JoarkGateway::class.java)
     }
 
     private val completeUrl = Url.buildURL(
@@ -37,6 +42,18 @@ class JoarkGateway(
     ).toString()
 
     private val objectMapper = configuredObjectMapper()
+    private val cachedAccessTokenClient = CachedAccessTokenClient(accessTokenClient)
+
+
+    override suspend fun check(): Result {
+        return try {
+            accessTokenClient.getAccessToken(journalforingScopes)
+            Healthy("JoarkGateway", "Henting av access token for journalføring OK.")
+        } catch (cause: Throwable) {
+            logger.error("Feil ved henting av access token for journalføring", cause)
+            UnHealthy("JoarkGateway", "Henting av access token for journalføring feilet.")
+        }
+    }
 
     suspend fun journalfoer(
         aktoerId: AktoerId,
@@ -45,7 +62,7 @@ class JoarkGateway(
         correlationId: CorrelationId
     ) : JournalPostId {
 
-        val authorizationHeader = accessTokenClient.getAccessToken(setOf("openid")).asAuthoriationHeader()
+        val authorizationHeader = cachedAccessTokenClient.getAccessToken(journalforingScopes).asAuthoriationHeader()
 
         val joarkRequest = JoarkRequest(
             aktoerId = aktoerId.id,
