@@ -13,6 +13,7 @@ import io.ktor.util.KtorExperimentalAPI
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.time.delay
 import no.nav.common.KafkaEnvironment
+import no.nav.helse.dusseldorf.ktor.testsupport.wiremock.WireMockBuilder
 import no.nav.helse.prosessering.v1.*
 
 import org.junit.AfterClass
@@ -36,8 +37,19 @@ class PleiepengesoknadProsesseringTest {
 
         private val logger: Logger = LoggerFactory.getLogger(PleiepengesoknadProsesseringTest::class.java)
 
+        private val wireMockServer: WireMockServer = WireMockBuilder()
+            .withNaisStsSupport()
+            .withAzureSupport()
+            .build()
+            .stubPleiepengerDokumentHealth()
+            .stubPleiepengerJoarkHealth()
+            .stubPleiepengerOppgaveHealth()
+            .stubJournalfor()
+            .stubOpprettOppgave()
+            .stubLagreDokument()
+            .stubSlettDokument()
+            .stubAktoerRegisterGetAktoerId("29099012345", "123456")
 
-        private val wireMockServer: WireMockServer = WiremockWrapper.bootstrap()
         private val kafkaEnvironment = KafkaWrapper.bootstrap()
         private val kafkaTestConsumer = kafkaEnvironment.testConsumer()
         private val kafkaTestProducer = kafkaEnvironment.testProducer()
@@ -74,8 +86,8 @@ class PleiepengesoknadProsesseringTest {
         @BeforeClass
         @JvmStatic
         fun buildUp() {
-            WiremockWrapper.stubAktoerRegisterGetAktoerId(gyldigFodselsnummerA, "666666666")
-            WiremockWrapper.stubAktoerRegisterGetAktoerId(gyldigFodselsnummerB, "777777777")
+            wireMockServer.stubAktoerRegisterGetAktoerId(gyldigFodselsnummerA, "666666666")
+            wireMockServer.stubAktoerRegisterGetAktoerId(gyldigFodselsnummerB, "777777777")
         }
 
         @AfterClass
@@ -127,13 +139,13 @@ class PleiepengesoknadProsesseringTest {
             fodselsnummerBarn = gyldigFodselsnummerB
         )
 
-        WiremockWrapper.stubJournalfor(500) // Simulerer feil ved journalføring
+        wireMockServer.stubJournalfor(500) // Simulerer feil ved journalføring
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
         ventPaaAtRetryMekanismeIStreamProsessering()
         readyGir200HealthGir503()
 
-        WiremockWrapper.stubJournalfor(201) // Simulerer journalføring fungerer igjen
+        wireMockServer.stubJournalfor(201) // Simulerer journalføring fungerer igjen
         restartEngine()
         kafkaTestConsumer.hentOpprettetOppgave(melding.soknadId)
     }
@@ -179,7 +191,7 @@ class PleiepengesoknadProsesseringTest {
             fodselsnummerBarn = gyldigFodselsnummerC
         )
 
-        WiremockWrapper.stubAktoerRegisterGetAktoerIdNotFound(gyldigFodselsnummerC)
+        wireMockServer.stubAktoerRegisterGetAktoerIdNotFound(gyldigFodselsnummerC)
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
         kafkaTestConsumer.hentOpprettetOppgave(melding.soknadId)
