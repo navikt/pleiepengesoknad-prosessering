@@ -17,7 +17,12 @@ import no.nav.helse.HttpError
 import no.nav.helse.aktoer.AktoerId
 import no.nav.helse.dusseldorf.ktor.client.*
 import no.nav.helse.dusseldorf.ktor.core.Retry
+import no.nav.helse.dusseldorf.ktor.health.HealthCheck
+import no.nav.helse.dusseldorf.ktor.health.Healthy
+import no.nav.helse.dusseldorf.ktor.health.Result
+import no.nav.helse.dusseldorf.ktor.health.UnHealthy
 import no.nav.helse.dusseldorf.ktor.metrics.Operation
+import no.nav.helse.dusseldorf.oauth2.client.AccessTokenClient
 import no.nav.helse.dusseldorf.oauth2.client.CachedAccessTokenClient
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -26,14 +31,16 @@ import java.net.URI
 import java.time.Duration
 
 class DokumentGateway(
-    private val accessTokenClient: CachedAccessTokenClient,
+    private val accessTokenClient: AccessTokenClient,
+    private val lagreDokumentScopes: Set<String>,
+    private val sletteDokumentScopes: Set<String>,
     baseUrl : URI
-){
+) : HealthCheck {
 
     private companion object {
         private const val LAGRE_DOKUMENT_OPERATION = "lagre-dokument"
         private const val SLETTE_DOKUMENT_OPERATION = "slette-dokument"
-        private val logger: Logger = LoggerFactory.getLogger("nav.DokumentGateway")
+        private val logger: Logger = LoggerFactory.getLogger(DokumentGateway::class.java)
     }
 
     private val completeUrl = Url.buildURL(
@@ -42,13 +49,38 @@ class DokumentGateway(
     )
 
     private val objectMapper = configuredObjectMapper()
+    private val cachedAccessTokenClient = CachedAccessTokenClient(accessTokenClient)
+
+    override suspend fun check(): Result {
+        val checkGetLagreDokumentAccessToken = checkGetAccessToken(LAGRE_DOKUMENT_OPERATION, lagreDokumentScopes)
+        val checkGetSletteDokumentAccessToken = checkGetAccessToken(SLETTE_DOKUMENT_OPERATION, sletteDokumentScopes)
+        val combined = checkGetLagreDokumentAccessToken.result().toMutableMap()
+        combined.putAll(checkGetSletteDokumentAccessToken.result())
+        combined["name"] = "DokumentGateway"
+        return if (checkGetLagreDokumentAccessToken is UnHealthy || checkGetSletteDokumentAccessToken is UnHealthy) UnHealthy(combined)
+        else Healthy(combined)
+    }
+
+    private fun checkGetAccessToken(
+        operation: String,
+        scopes: Set<String>
+    ) : Result {
+        return try {
+            accessTokenClient.getAccessToken(scopes)
+            Healthy(mapOf(operation to "Henting av access token OK"))
+        } catch (cause: Throwable) {
+            logger.error("Feil ved henting av access token for henting av dokument", cause)
+            UnHealthy(mapOf(operation to "Henting av access token feilet"))
+        }
+    }
+
 
     internal suspend fun lagreDokmenter(
         dokumenter: Set<Dokument>,
         aktoerId: AktoerId,
         correlationId: CorrelationId
     ) : List<URI> {
-        val authorizationHeader = accessTokenClient.getAccessToken(setOf("openid")).asAuthoriationHeader()
+        val authorizationHeader = cachedAccessTokenClient.getAccessToken(lagreDokumentScopes).asAuthoriationHeader()
 
         return coroutineScope {
             val deferred = mutableListOf<Deferred<URI>>()
@@ -71,7 +103,7 @@ class DokumentGateway(
         aktoerId: AktoerId,
         correlationId: CorrelationId
     ) {
-        val authorizationHeader = accessTokenClient.getAccessToken(setOf("openid")).asAuthoriationHeader()
+        val authorizationHeader = cachedAccessTokenClient.getAccessToken(sletteDokumentScopes).asAuthoriationHeader()
 
         coroutineScope {
             val deferred = mutableListOf<Deferred<Unit>>()
