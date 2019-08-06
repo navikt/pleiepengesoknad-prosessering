@@ -12,7 +12,12 @@ import no.nav.helse.CorrelationId
 import no.nav.helse.HttpError
 import no.nav.helse.aktoer.AktoerId
 import no.nav.helse.dusseldorf.ktor.client.*
+import no.nav.helse.dusseldorf.ktor.health.HealthCheck
+import no.nav.helse.dusseldorf.ktor.health.Healthy
+import no.nav.helse.dusseldorf.ktor.health.Result
+import no.nav.helse.dusseldorf.ktor.health.UnHealthy
 import no.nav.helse.dusseldorf.ktor.metrics.Operation
+import no.nav.helse.dusseldorf.oauth2.client.AccessTokenClient
 import no.nav.helse.dusseldorf.oauth2.client.CachedAccessTokenClient
 import no.nav.helse.joark.JournalPostId
 import org.slf4j.Logger
@@ -22,11 +27,12 @@ import java.net.URI
 
 class OppgaveGateway(
     baseUrl : URI,
-    private val accessTokenClient : CachedAccessTokenClient
-) {
+    private val accessTokenClient: AccessTokenClient,
+    private val oppretteOppgaveScopes: Set<String>
+) : HealthCheck {
     private companion object {
         private const val OPPRETTE_OPPGAVE_OPERATION = "opprette-oppgave"
-        private val logger: Logger = LoggerFactory.getLogger("nav.OppgaveGateway")
+        private val logger: Logger = LoggerFactory.getLogger(OppgaveGateway::class.java)
     }
 
     private val completeUrl = Url.buildURL(
@@ -35,6 +41,17 @@ class OppgaveGateway(
     ).toString()
 
     private val objectMapper = configuredObjectMapper()
+    private val cachedAccessTokenClient = CachedAccessTokenClient(accessTokenClient)
+
+    override suspend fun check(): Result {
+        return try {
+            accessTokenClient.getAccessToken(oppretteOppgaveScopes)
+            Healthy("OppgaveGateway", "Henting av access token for å opprette oppgave OK.")
+        } catch (cause: Throwable) {
+            logger.error("Feil ved henting av access token for å opprette oppgave", cause)
+            UnHealthy("OppgaveGateway", "Henting av access token for å opprette oppgave feilet.")
+        }
+    }
 
     suspend fun lagOppgave(
         sokerAktoerId: AktoerId,
@@ -43,7 +60,7 @@ class OppgaveGateway(
         correlationId: CorrelationId
     ) : OppgaveId {
 
-        val authorizationHeader = accessTokenClient.getAccessToken(setOf("openid")).asAuthoriationHeader()
+        val authorizationHeader = cachedAccessTokenClient.getAccessToken(oppretteOppgaveScopes).asAuthoriationHeader()
 
         val oppgaveRequest = OppgaveRequest(
             soker = Person(sokerAktoerId.id),
