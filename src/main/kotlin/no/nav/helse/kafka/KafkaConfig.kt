@@ -40,10 +40,10 @@ private fun Properties.medTrustStore(trustStore: Pair<String, String>?) {
             put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, "SASL_SSL")
             put(SslConfigs.SSL_TRUSTSTORE_LOCATION_CONFIG, File(it.first).absolutePath)
             put(SslConfigs.SSL_TRUSTSTORE_PASSWORD_CONFIG, it.second)
-            logger.info("Truststore på '${SslConfigs.SSL_TRUSTSTORE_LOCATION_CONFIG}' konfigurert.")
+            logger.info("Truststore på '${it.first}' konfigurert.")
         } catch (cause: Throwable) {
             logger.error(
-                "Feilet for konfigurering av truststore på '${SslConfigs.SSL_TRUSTSTORE_LOCATION_CONFIG}'",
+                "Feilet for konfigurering av truststore på '${it.first}'",
                 cause
             )
         }
