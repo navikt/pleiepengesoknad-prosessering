@@ -2,6 +2,7 @@ package no.nav.helse.prosessering.v1
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import java.net.URI
+import java.time.Duration
 import java.time.LocalDate
 import java.time.ZonedDateTime
 
@@ -41,7 +42,9 @@ data class Arbeidsgivere(
 
 data class Organisasjon(
     val organisasjonsnummer: String,
-    val navn: String?
+    val navn: String?,
+    val normalArbeidsuke: Duration? = null,
+    val redusertArbeidsuke: Duration? = null
 )
 
 data class Medlemskap(

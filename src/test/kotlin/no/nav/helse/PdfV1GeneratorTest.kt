@@ -4,6 +4,7 @@ import no.nav.helse.prosessering.v1.*
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.File
+import java.time.Duration
 import java.time.LocalDate
 import java.time.ZonedDateTime
 import java.util.*
@@ -40,7 +41,9 @@ class PdfV1GeneratorTest {
                 ),
                 Organisasjon(
                     organisasjonsnummer = "1231457",
-                    navn = "KIWI"
+                    navn = "KIWI",
+                    normalArbeidsuke = Duration.ofHours(37).plusMinutes(1),
+                    redusertArbeidsuke = Duration.ofHours(10).plusMinutes(45)
                 )
             )
         ),

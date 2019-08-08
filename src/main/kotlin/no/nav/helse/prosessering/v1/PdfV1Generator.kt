@@ -9,7 +9,6 @@ import java.io.ByteArrayOutputStream
 import java.lang.IllegalStateException
 import java.time.format.DateTimeFormatter
 import com.openhtmltopdf.util.XRLog
-import no.nav.helse.prosessering.SoknadId
 import java.time.ZoneId
 
 private val logger: Logger = LoggerFactory.getLogger("nav.PdfV1Generator")
@@ -33,9 +32,15 @@ private val HTML_RESERVED_CHARACTERS_MAPPING = linkedMapOf(
  */
 class PdfV1Generator {
 
-    private val SOKNAD_TEMPLATE = "soknad-oppsummering-template.html".fromResources()
-    private val ORGANISASJON_ARBEIDSFORHOLD_TEMPLATE = "organisasjon-arbeidsforhold-template.html".fromResources()
-    private val BASE_URL = Thread.currentThread().contextClassLoader.getResource("img").toString()
+    private companion object {
+        private val SOKNAD_TEMPLATE = "soknad-oppsummering-template.html".fromResources()
+        private val ORGANISASJON_ARBEIDSFORHOLD_TEMPLATE = "organisasjon-arbeidsforhold-template.html".fromResources()
+        private val BASE_URL = Thread.currentThread().contextClassLoader.getResource("img")!!.toString()
+
+        private fun String.fromResources() : String {
+            return Thread.currentThread().contextClassLoader.getResource(this)!!.readText(Charsets.UTF_8)
+        }
+    }
 
     init {
         XRLog.setLoggerImpl(Slf4jLogger())
@@ -83,10 +88,6 @@ class PdfV1Generator {
         }
     }
 
-    private fun String.fromResources() : String {
-        return Thread.currentThread().contextClassLoader.getResource(this).readText(Charsets.UTF_8)
-    }
-
     private fun String.med(key: String, value: String?) : String {
         val replaceValue =
             if (value == null) "n/a"
@@ -107,6 +108,7 @@ class PdfV1Generator {
             html = html.plus(ORGANISASJON_ARBEIDSFORHOLD_TEMPLATE
                 .med("organisasjonsnummer", it.organisasjonsnummer)
                 .med("navn", it.navn)
+                .med("arbeidsuker", ArbeidsgiverUtils.formaterArbeidsuker(it.normalArbeidsuke, it.redusertArbeidsuke)?: "Ingen detaljer om arbeidsuker oppgitt for denne arbeidsgiveren.")
             )
         }
         return this.replace("{{arbeidsgivere}}", html)
