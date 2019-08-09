@@ -108,7 +108,7 @@ class PdfV1Generator {
             html = html.plus(ORGANISASJON_ARBEIDSFORHOLD_TEMPLATE
                 .med("organisasjonsnummer", it.organisasjonsnummer)
                 .med("navn", it.navn)
-                .med("arbeidsuker", ArbeidsgiverUtils.formaterArbeidsuker(it.normalArbeidsuke, it.redusertArbeidsuke)?: "Ingen detaljer om arbeidsuker oppgitt for denne arbeidsgiveren.")
+                .med("arbeidsuker", ArbeidsgiverUtils.formaterArbeidsuker(it.normalArbeidsuke, it.redusertArbeidsuke)?: "Ingen detaljer angitt for denne arbeidsgiveren.")
             )
         }
         return this.replace("{{arbeidsgivere}}", html)
