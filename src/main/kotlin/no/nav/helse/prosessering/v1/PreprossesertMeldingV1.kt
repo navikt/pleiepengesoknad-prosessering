@@ -6,6 +6,7 @@ import java.time.LocalDate
 import java.time.ZonedDateTime
 
 data class PreprossesertMeldingV1(
+    val sprak: String?,
     val soknadId: String,
     val dokumentUrls: List<List<URI>>,
     val mottatt: ZonedDateTime,
@@ -27,6 +28,7 @@ data class PreprossesertMeldingV1(
         sokerAktoerId: AktoerId,
         barnAktoerId: AktoerId?
     ) : this(
+        sprak = melding.sprak,
         soknadId = melding.soknadId,
         dokumentUrls = dokumentUrls,
         mottatt = melding.mottatt,

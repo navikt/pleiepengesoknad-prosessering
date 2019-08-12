@@ -90,7 +90,7 @@ fun KafkaConsumer<String, TopicEntry<OppgaveOpprettet>>.hentOpprettetOppgave(
         seekToBeginning(assignment())
         val entries = poll(Duration.ofSeconds(1))
             .records(OPPGAVE_OPPRETTET.name)
-            .filter { it.key().equals(soknadId) }
+            .filter { it.key() == soknadId }
 
         if (entries.isNotEmpty()) {
             assertEquals(1, entries.size)

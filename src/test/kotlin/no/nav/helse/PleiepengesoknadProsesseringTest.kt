@@ -133,6 +133,39 @@ class PleiepengesoknadProsesseringTest {
     }
 
     @Test
+    fun `Melding med språk og arbeidsuker satt blir prosessert`() {
+
+        val sprak = "nn"
+        val jobb1NormalArbeidsuke = Duration.ofHours(37).plusMinutes(30)
+        val jobb1RedusertArbeidsuke = Duration.ZERO
+        val jobb2NormalArbeidsuke = Duration.ofHours(25)
+        val jobb2RedusertArbeidsuke = Duration.ofHours(12).plusMinutes(30)
+
+        val melding = gyldigMelding(
+            fodselsnummerSoker = gyldigFodselsnummerA,
+            fodselsnummerBarn = gyldigFodselsnummerB,
+            sprak = sprak,
+            organisasjoner = listOf(
+                Organisasjon("917755736", "Jobb1", normalArbeidsuke = jobb1NormalArbeidsuke, redusertArbeidsuke = jobb1RedusertArbeidsuke),
+                Organisasjon("917755737", "Jobb2", normalArbeidsuke = jobb2NormalArbeidsuke, redusertArbeidsuke = jobb2RedusertArbeidsuke)
+            )
+        )
+
+        kafkaTestProducer.leggSoknadTilProsessering(melding)
+        val oppgaveOpprettet = kafkaTestConsumer.hentOpprettetOppgave(melding.soknadId).data
+        assertEquals(sprak, oppgaveOpprettet.melding.sprak)
+        assertEquals(2, oppgaveOpprettet.melding.arbeidsgivere.organisasjoner.size)
+        val jobb1 = oppgaveOpprettet.melding.arbeidsgivere.organisasjoner.firstOrNull { it.navn == "Jobb1" }
+        val jobb2 = oppgaveOpprettet.melding.arbeidsgivere.organisasjoner.firstOrNull { it.navn == "Jobb2" }
+        assertNotNull(jobb1)
+        assertNotNull(jobb2)
+        assertEquals(jobb1NormalArbeidsuke, jobb1.normalArbeidsuke)
+        assertEquals(jobb1RedusertArbeidsuke, jobb1.redusertArbeidsuke)
+        assertEquals(jobb2NormalArbeidsuke, jobb2.normalArbeidsuke)
+        assertEquals(jobb2RedusertArbeidsuke, jobb2.redusertArbeidsuke)
+    }
+
+    @Test
     fun `En feilprosessert melding vil bli prosessert etter at tjenesten restartes`() {
         val melding = gyldigMelding(
             fodselsnummerSoker = gyldigFodselsnummerA,
@@ -200,8 +233,13 @@ class PleiepengesoknadProsesseringTest {
     private fun gyldigMelding(
         fodselsnummerSoker : String,
         fodselsnummerBarn: String,
-        vedleggUrl : URI = URI("${wireMockServer.getPleiepengerDokumentBaseUrl()}/v1/dokument/${UUID.randomUUID()}")
+        vedleggUrl : URI = URI("${wireMockServer.getPleiepengerDokumentBaseUrl()}/v1/dokument/${UUID.randomUUID()}"),
+        sprak: String? = null,
+        organisasjoner: List<Organisasjon> = listOf(
+            Organisasjon("917755736", "Gyldig")
+        )
     ) : MeldingV1 = MeldingV1(
+        sprak = sprak,
         soknadId = UUID.randomUUID().toString(),
         mottatt = ZonedDateTime.now(),
         fraOgMed = LocalDate.now(),
@@ -220,9 +258,7 @@ class PleiepengesoknadProsesseringTest {
         ),
         relasjonTilBarnet = "Mor",
         arbeidsgivere = Arbeidsgivere(
-            organisasjoner = listOf(
-                Organisasjon("917755736", "Gyldig")
-            )
+            organisasjoner = organisasjoner
         ),
         vedleggUrls = listOf(vedleggUrl),
         medlemskap = Medlemskap(

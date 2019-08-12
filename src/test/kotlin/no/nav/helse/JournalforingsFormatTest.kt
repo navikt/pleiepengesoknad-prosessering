@@ -20,6 +20,7 @@ class JournalforingsFormatTest {
         val json = JournalforingsFormat.somJson(melding(soknadId))
         JSONAssert.assertEquals("""
         {
+            "sprak": null,
             "soknad_id": "$soknadId",
             "mottatt": "2018-01-02T03:04:05.000000006Z",
             "fra_og_med": "2018-01-01",
@@ -40,7 +41,9 @@ class JournalforingsFormatTest {
             "arbeidsgivere": {
                 "organisasjoner": [{
                     "organisasjonsnummer": "1212",
-                    "navn": "Nei"
+                    "navn": "Nei",
+                    "normal_arbeidsuke": null,
+                    "redusert_arbeidsuke": null
                 }]
             },
             "medlemskap": {
