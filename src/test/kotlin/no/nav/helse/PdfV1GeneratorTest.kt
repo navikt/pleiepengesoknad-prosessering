@@ -16,6 +16,7 @@ private val logger: Logger = LoggerFactory.getLogger("nav.PdfV1GeneratorTest")
 class PdfV1GeneratorTest {
 
     private fun gyldigMelding(soknadId: String) = MeldingV1(
+        sprak = "nb",
         soknadId = soknadId,
         mottatt = ZonedDateTime.now(),
         fraOgMed = LocalDate.now().plusDays(6),

@@ -59,6 +59,7 @@ class PdfV1Generator {
             .med("barn.fodselsnummer", melding.barn.fodselsnummer)
             .med("barn.alternativ_id", melding.barn.alternativId)
 
+            .med("annet.sprak", melding.sprak?.somTekst())
             .med("annet.relasjon_til_barnet", melding.relasjonTilBarnet)
             .med("annet.mottatt", DATE_TIME_FORMATTER.format(melding.mottatt))
             .med("annet.fra_og_med", DATE_FORMATTER.format(melding.fraOgMed))
@@ -121,6 +122,12 @@ class PdfV1Generator {
         }
         return this
     }
+}
+
+private fun String.somTekst() = when (this.toLowerCase()) {
+    "nb" -> "Bokmål"
+    "nn" -> "Nynorsk"
+    else -> this
 }
 
 private fun Boolean.tilJaEllerNei(): String {

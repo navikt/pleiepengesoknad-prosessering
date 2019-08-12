@@ -7,6 +7,7 @@ import java.time.LocalDate
 import java.time.ZonedDateTime
 
 data class MeldingV1 (
+    val sprak: String? = null,
     val soknadId: String,
     val mottatt: ZonedDateTime,
     val fraOgMed : LocalDate,
