@@ -55,7 +55,6 @@ internal class PdfV1Generator  {
     internal fun generateSoknadOppsummeringPdf(
         melding: MeldingV1
     ) : ByteArray {
-
         soknadTemplate.apply(Context
             .newBuilder(mapOf(
                 "sprak" to melding.sprak?.sprakTilTekst(),
@@ -89,6 +88,9 @@ internal class PdfV1Generator  {
                 "samtykke" to mapOf(
                     "har_forstatt_rettigheter_og_plikter" to melding.harForstattRettigheterOgPlikter,
                     "har_bekreftet_opplysninger" to melding.harBekreftetOpplysninger
+                ),
+                "hjelp" to mapOf(
+                    "total_arbeidsuke" to ArbeidsgiverUtils.totalArbeidsuke(melding.arbeidsgivere)
                 )
             ))
             .resolver(MapValueResolver.INSTANCE)
@@ -118,7 +120,7 @@ internal class PdfV1Generator  {
 private fun List<Organisasjon>.somMap() = map {mapOf<String,Any?>(
         "navn" to it.navn,
         "organisasjonsnummer" to it.organisasjonsnummer,
-        "gradering" to GraderingUtils.omArbeidsgiversGradering(ArbeidsgiverUtils.prosentAvNormalArbeidsuke(it.normalArbeidsuke, it.redusertArbeidsuke))
+        "inntektstap" to InntektstapUtils.innktektstap(ArbeidsgiverUtils.prosentAvNormalArbeidsuke(it.normalArbeidsuke, it.redusertArbeidsuke))?.formatertMedToDesimaler()
     )
 }
 

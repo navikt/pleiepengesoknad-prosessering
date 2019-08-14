@@ -17,7 +17,7 @@ data class PreprossesertMeldingV1(
     val relasjonTilBarnet : String,
     val arbeidsgivere: Arbeidsgivere,
     val medlemskap: Medlemskap,
-    val grad : Int,
+    val grad : Int?,
     val harMedsoker : Boolean,
     val harForstattRettigheterOgPlikter : Boolean,
     val harBekreftetOpplysninger : Boolean

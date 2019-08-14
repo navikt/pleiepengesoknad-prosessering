@@ -73,13 +73,11 @@
                         <li>Det er angitt at flere personer vil søke om pleiepenger i samme tidsrom.</li>
                     {{/if}}
                     {{# if arbeidsgivere.har_arbeidsgivere }}
+                        {{# if hjelp.total_arbeidsuke }}
+                            <li>{{hjelp.total_arbeidsuke}}</li>
+                        {{/if}}
                     {{else}}
-                        <li>Det er ikke valgt noen arbeidsgivere.</li>
-                    {{/if}}
-                    {{# if sprak}}
-                        <li>Søkeren har valgt {{sprak}} i søknaden.</li>
-                    {{else}}
-                        <li class="ikke_satt">Språk ikke angitt i søknaden.</li>
+                        <li class="ikke_satt">Det er ikke valgt noen arbeidsgivere.</li>
                     {{/if}}
                 </ul>
             </div>
@@ -95,10 +93,10 @@
                 <ul>
                     <li>Organisasjonsnummer {{org.organisasjonsnummer}}</li>
                     <li>
-                        {{# if org.gradering }}
-                            {{org.gradering}}
+                        {{# if org.inntektstap }}
+                            Har et inntektstap på {{org.inntektstap}}%
                         {{else}}
-                            <span class="ikke_satt">Ingen detaljer om arbeidsgiveren angitt.</span>
+                            <span class="ikke_satt">Ingen detaljer angitt for å utlede inntektstapet</span>
                         {{/if}}
                     </li>
                 </ul>
@@ -126,6 +124,21 @@
             {{else}}
                 <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Ja
                 <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Nei
+            {{/if}}
+
+            <!-- ANNET -->
+            <h2><span>Annet</span></h2>
+            <p><span class="sporsmalstekst">Valgt språk i søknaden: </span>
+                {{# if sprak }}
+                    <span>{{ sprak }}</span>
+                {{else}}
+                    <span class="ikke_satt">Ikke angitt</span>
+                {{/if}}
+            </p>
+
+            {{# if grad }}
+            <hr/>
+            <p><span class="sporsmalstekst">Søker om grad: </span><span>{{ grad }}%</span></p>
             {{/if}}
 
             <!-- SAMTYKKE -->

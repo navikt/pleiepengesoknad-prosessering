@@ -51,7 +51,8 @@ class PdfV1GeneratorTest {
             navn = "Børge Øverbø Ånsnes",
             fodselsnummer = null,
             alternativId = "29091884321"
-        )
+        ),
+        grad: Int? = 60
     ) = MeldingV1(
         sprak = sprak,
         soknadId = soknadId,
@@ -74,7 +75,7 @@ class PdfV1GeneratorTest {
             harBoddIUtlandetSiste12Mnd = true,
             skalBoIUtlandetNeste12Mnd = false
         ),
-        grad = 60,
+        grad = grad,
         harMedsoker = true,
         harForstattRettigheterOgPlikter = true,
         harBekreftetOpplysninger = true
@@ -95,6 +96,10 @@ class PdfV1GeneratorTest {
 
         id = "4-utenInfoPaaBarn"
         pdf = generator.generateSoknadOppsummeringPdf(melding = gyldigMelding(soknadId = id, sprak = null, organisasjoner = listOf(), barn = Barn(fodselsnummer = null, alternativId = null, navn = null)))
+        if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
+
+        id = "5-utenGrad"
+        pdf = generator.generateSoknadOppsummeringPdf(melding = gyldigMelding(soknadId = id, sprak = null, organisasjoner = listOf(), barn = Barn(fodselsnummer = null, alternativId = null, navn = null), grad = null))
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
     }
 
