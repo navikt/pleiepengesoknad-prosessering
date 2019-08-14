@@ -8,7 +8,7 @@ import java.time.temporal.ChronoUnit
 object DateUtils {
 
     internal fun antallVirkedager(fraOgMed: LocalDate, tilOgMed: LocalDate) : Long {
-        val dager = ChronoUnit.DAYS.between(fraOgMed, tilOgMed)
+        val dager = ChronoUnit.DAYS.between(fraOgMed, tilOgMed) + 1
         val lordagerOgSondager = antallLordagerOgSondagerIPerioden(fraOgMed, tilOgMed)
         return dager - lordagerOgSondager
     }
