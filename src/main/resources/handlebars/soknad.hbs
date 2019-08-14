@@ -76,6 +76,11 @@
                     {{else}}
                         <li>Det er ikke valgt noen arbeidsgivere.</li>
                     {{/if}}
+                    {{# if sprak}}
+                        <li>Søkeren har valgt {{sprak}} i søknaden.</li>
+                    {{else}}
+                        <li class="ikke_satt">Språk ikke angitt i søknaden.</li>
+                    {{/if}}
                 </ul>
             </div>
 
@@ -110,30 +115,18 @@
                 <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Nei
             {{else}}
                 <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Ja
-                <img class="checkbox" src="{{ image "Checkbox_ja.png" }}"/> Nei
+                <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Nei
             {{/if}}
             <hr/>
             <p class="sporsmalstekst">Skal bo i utlandet de neste 12 månedene?</p>
             {{# if medlemskap.skal_bo_i_utlandet_neste_12_mnd }}
             asd
-                <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/><span class="svar">Ja</span>
-                <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/><span class="svar">Nei</span>
+                <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Ja
+                <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Nei
             {{else}}
                 <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Ja
                 <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Nei
             {{/if}}
-
-            <!-- ANNET -->
-            <h2><span>Annet</span></h2>
-            <p><span class="sporsmalstekst">Valgt språk i søknaden: </span>
-                {{# if sprak }}
-                <span>{{ sprak }}</span>
-                {{else}}
-                <span class="ikke_satt">Ikke angitt</span>
-                {{/if}}
-            </p>
-            <hr/>
-            <p><span class="sporsmalstekst">Søker om grad: </span><span>{{ grad }}%</span></p>
 
             <!-- SAMTYKKE -->
             <h2><span>Samtykke</span></h2>
@@ -144,13 +137,13 @@
                 <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Nei
             {{else}}
                 <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Ja
-                <img class="checkbox" src="{{ image "Checkbox_ja.png" }}"/> Nei
+                <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Nei
             {{/if}}
             <hr/>
             <p class="sporsmalstekst">Har bekreftet opplysninger?</p>
             {{# if samtykke.har_bekreftet_opplysninger }}
-                <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/><span class="svar">Ja</span>
-                <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/><span class="svar">Nei</span>
+                <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Ja
+                <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Nei
             {{else}}
                 <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Ja
                 <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Nei
