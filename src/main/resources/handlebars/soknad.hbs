@@ -73,8 +73,8 @@
                         <li>Det er angitt at flere personer vil søke om pleiepenger i samme tidsrom.</li>
                     {{/if}}
                     {{# if arbeidsgivere.har_arbeidsgivere }}
-                        {{# if hjelp.total_arbeidsuke }}
-                            <li>{{hjelp.total_arbeidsuke}}</li>
+                        {{# if hjelp.total_normal_arbeidsuke }}
+                            <li>{{hjelp.total_normal_arbeidsuke}}</li>
                         {{/if}}
                     {{else}}
                         <li class="ikke_satt">Det er ikke valgt noen arbeidsgivere.</li>

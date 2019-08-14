@@ -90,7 +90,7 @@ internal class PdfV1Generator  {
                     "har_bekreftet_opplysninger" to melding.harBekreftetOpplysninger
                 ),
                 "hjelp" to mapOf(
-                    "total_arbeidsuke" to ArbeidsgiverUtils.totalArbeidsuke(melding.arbeidsgivere)
+                    "total_normal_arbeidsuke" to ArbeidsgiverUtils.totalNormalArbeidsuke(melding.arbeidsgivere)
                 )
             ))
             .resolver(MapValueResolver.INSTANCE)

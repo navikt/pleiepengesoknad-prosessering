@@ -33,20 +33,15 @@ internal object ArbeidsgiverUtils {
         else kalkulerProsentAndelAvNormalArbeidsuke(normalArbeidsuke, redusertArbeidsuke)
     }
 
-    internal fun totalArbeidsuke(arbeidsgivere: Arbeidsgivere) : String? {
+    internal fun totalNormalArbeidsuke(arbeidsgivere: Arbeidsgivere) : String? {
         var normalArbeidsuke = Duration.ZERO
-        var redusertArbeidsuke = Duration.ZERO
 
         arbeidsgivere.organisasjoner
-            .filter { it.normalArbeidsuke != null && it.redusertArbeidsuke != null }
-            .forEach {
-                normalArbeidsuke = normalArbeidsuke.plus(it.normalArbeidsuke)
-                redusertArbeidsuke = redusertArbeidsuke.plus(it.redusertArbeidsuke)
-            }
+            .filter { it.normalArbeidsuke != null }
+            .forEach { normalArbeidsuke = normalArbeidsuke.plus(it.normalArbeidsuke) }
 
         return when {
-            redusertArbeidsuke.erSatt() -> "Kan totalt jobbe ${redusertArbeidsuke.formaterTilTimerOgMinutter()} av normalt ${normalArbeidsuke.formaterTilTimerOgMinutter()} per uke i denne perioden."
-            normalArbeidsuke.erSatt() -> "Kan ikke jobbe noe av normalt ${normalArbeidsuke.formaterTilTimerOgMinutter()} per uke."
+            normalArbeidsuke.erSatt() -> "Jobber normalt ${normalArbeidsuke.formaterTilTimerOgMinutter()} per uke."
             else -> null
         }
     }
