@@ -10,7 +10,6 @@ internal object ArbeidsgiverUtils {
     private fun kalkulerProsentAndelAvNormalArbeidsuke(
         normalArbeidsuke: Duration,
         redusertArbeidsuke: Duration) = BigDecimal(HUNDRE.div(normalArbeidsuke.seconds).times(redusertArbeidsuke.seconds)).setScale(2, RoundingMode.HALF_UP).toDouble()
-    private fun Double.formatertMedToDesimaler() = String.format("%.2f", this)
 
     private fun Long.formaterMinutter() = "$this minutt${ if(this > 1) "er" else ""}"
     private fun Long.formaterTimer() = "$this time${ if(this > 1) "r" else ""}"
@@ -23,11 +22,28 @@ internal object ArbeidsgiverUtils {
         else minutter.formaterMinutter()
     }
 
-    internal fun formaterArbeidsuker(
+    internal fun prosentAvNormalArbeidsuke(
         normalArbeidsuke: Duration?,
         redusertArbeidsuke: Duration?
-    ) : String? {
+    ) : Double? {
         return if (normalArbeidsuke == null || redusertArbeidsuke == null) null
-        else "Kan jobbe ${kalkulerProsentAndelAvNormalArbeidsuke(normalArbeidsuke, redusertArbeidsuke).formatertMedToDesimaler()}% av en normal arbeidsuke på ${normalArbeidsuke.formaterTilTimerOgMinutter()}."
+        else if (redusertArbeidsuke.isZero) 0.0
+        else kalkulerProsentAndelAvNormalArbeidsuke(normalArbeidsuke, redusertArbeidsuke)
+    }
+
+    internal fun prosentAvNormalArbeidsuke(arbeidsgivere: Arbeidsgivere) : Double {
+        var normalArbeidsuke = Duration.ZERO
+        var redusertArbeidsuke = Duration.ZERO
+
+        arbeidsgivere.organisasjoner
+            .filter { it.normalArbeidsuke != null && it.redusertArbeidsuke != null }
+            .forEach {
+            normalArbeidsuke = normalArbeidsuke.plus(it.normalArbeidsuke)
+            redusertArbeidsuke = redusertArbeidsuke.plus(it.redusertArbeidsuke)
+        }
+
+        return if (normalArbeidsuke.isZero) 0.0
+        else kalkulerProsentAndelAvNormalArbeidsuke(normalArbeidsuke, redusertArbeidsuke)
     }
 }
+internal fun Double.formatertMedToDesimaler() = String.format("%.2f", this)

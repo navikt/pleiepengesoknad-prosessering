@@ -1,139 +1,146 @@
 package no.nav.helse.prosessering.v1
 
+import com.github.jknack.handlebars.Context
+import com.github.jknack.handlebars.Handlebars
+import com.github.jknack.handlebars.Helper
+import com.github.jknack.handlebars.context.MapValueResolver
+import com.github.jknack.handlebars.io.ClassPathTemplateLoader
+import com.openhtmltopdf.outputdevice.helper.BaseRendererBuilder
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder
-import com.openhtmltopdf.slf4j.Slf4jLogger
-
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
+import io.ktor.util.extension
+import no.nav.helse.dusseldorf.ktor.core.fromResources
+import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
-import java.lang.IllegalStateException
-import java.time.format.DateTimeFormatter
-import com.openhtmltopdf.util.XRLog
+import java.nio.file.Files
+import java.nio.file.Paths
 import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.util.*
+import kotlin.streams.toList
 
-private val logger: Logger = LoggerFactory.getLogger("nav.PdfV1Generator")
-private val ZONE_ID = ZoneId.of("Europe/Oslo")
-private val DATE_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy").withZone(ZONE_ID)
-private val DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm").withZone(ZONE_ID)
-
-private val HTML_RESERVED_CHARACTERS_REGEX = """['"<>&]""".toRegex()
-private val HTML_RESERVED_CHARACTERS_MAPPING = linkedMapOf(
-    "&" to "&amp;",
-    "\"" to "&quot;",
-    "'" to "&apos;",
-    "<" to "&lt;",
-    ">" to "&gt;"
-)
-
-/**
- * TODO: Til når vi vet hvordan PDF skal se ut og hva den skal inneholde;
- * - Om vi skal ha "lokal" PDF-genrering bør vi kanskje bruke en template engine som handlebars/freemarker eller lignende?
- * - Ev. kan vi se på å bruke prosjektet "pdfgen" om vi kan deploye vår egen instans av tjenesten
- */
-class PdfV1Generator {
-
+internal class PdfV1Generator  {
     private companion object {
-        private val SOKNAD_TEMPLATE = "soknad-oppsummering-template.html".fromResources()
-        private val ORGANISASJON_ARBEIDSFORHOLD_TEMPLATE = "organisasjon-arbeidsforhold-template.html".fromResources()
-        private val BASE_URL = Thread.currentThread().contextClassLoader.getResource("img")!!.toString()
+        private const val ROOT = "handlebars"
+        private const val SOKNAD = "soknad"
 
-        private fun String.fromResources() : String {
-            return Thread.currentThread().contextClassLoader.getResource(this)!!.readText(Charsets.UTF_8)
+        private val REGULAR_FONT = "$ROOT/fonts/SourceSansPro-Regular.ttf".fromResources().readBytes()
+        private val BOLD_FONT = "$ROOT/fonts/SourceSansPro-Bold.ttf".fromResources().readBytes()
+        private val ITALIC_FONT = "$ROOT/fonts/SourceSansPro-Italic.ttf".fromResources().readBytes()
+
+        private val imagesRoot = Paths.get("$ROOT/images".fromResources().toURI())
+
+        private val images = loadImages()
+        private val handlebars = Handlebars(ClassPathTemplateLoader("/$ROOT")).apply {
+            registerHelper("image", Helper<String> { context, _ ->
+                if (context == null) "" else images[context]
+            })
+            infiniteLoops(true)
         }
+
+        private val soknadTemplate = handlebars.compile(SOKNAD)
+
+        private val ZONE_ID = ZoneId.of("Europe/Oslo")
+        private val DATE_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy").withZone(ZONE_ID)
+        private val DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm").withZone(ZONE_ID)
+
+        private fun loadImages() = Files.list(imagesRoot)
+            .filter {
+                val validExtensions = setOf("jpg", "jpeg", "png")
+                !Files.isHidden(it) && it.fileName.extension in validExtensions
+            }
+            .map {
+                val fileName = it.fileName.toString()
+                val extension = when (it.fileName.extension) {
+                    "jpg" -> "jpeg" // jpg is not a valid mime-type
+                    else -> it.fileName.extension
+                }
+                val base64string = Base64.getEncoder().encodeToString(Files.readAllBytes(it))
+                val base64 = "data:image/$extension;base64,$base64string"
+                fileName to base64
+            }
+            .toList()
+            .toMap()
     }
 
-    init {
-        XRLog.setLoggerImpl(Slf4jLogger())
-    }
-
-    fun generateSoknadOppsummeringPdf(
+    internal fun generateSoknadOppsummeringPdf(
         melding: MeldingV1
     ) : ByteArray {
 
-        val html = SOKNAD_TEMPLATE
-            .med("soknadId", melding.soknadId)
-            .med("soker.navn", melding.soker.navn())
-            .med("soker.fodselsnummer", melding.soker.fodselsnummer)
+        soknadTemplate.apply(Context
+            .newBuilder(mapOf(
+                "sprak" to melding.sprak?.sprakTilTekst(),
+                "soknad_id" to melding.soknadId,
+                "soknad_mottatt_dag" to melding.mottatt.withZoneSameInstant(ZONE_ID).norskDag(),
+                "soknad_mottatt" to DATE_TIME_FORMATTER.format(melding.mottatt),
+                "har_medsoker" to melding.harMedsoker,
+                "grad" to melding.grad,
+                "soker" to mapOf(
+                    "navn" to melding.soker.formatertNavn(),
+                    "fodselsnummer" to melding.soker.formatertFodselsnummer(),
+                    "relasjon_til_barnet" to melding.relasjonTilBarnet
+                ),
+                "barn" to mapOf(
+                    "navn" to melding.barn.navn,
+                    "id" to melding.barn.formatertId()
+                ),
+                "periode" to mapOf(
+                    "fra_og_med" to DATE_FORMATTER.format(melding.fraOgMed),
+                    "til_og_med" to DATE_FORMATTER.format(melding.tilOgMed),
+                    "virkedager" to DateUtils.antallVirkedager(melding.fraOgMed, melding.tilOgMed)
+                ),
+                "arbeidsgivere" to mapOf(
+                    "har_arbeidsgivere" to melding.arbeidsgivere.organisasjoner.isNotEmpty(),
+                    "organisasjoner" to melding.arbeidsgivere.organisasjoner.somMap()
+                ),
+                "medlemskap" to mapOf(
+                    "har_bodd_i_utlandet_siste_12_mnd" to melding.medlemskap.harBoddIUtlandetSiste12Mnd,
+                    "skal_bo_i_utlandet_neste_12_mnd" to melding.medlemskap.skalBoIUtlandetNeste12Mnd
+                ),
+                "samtykke" to mapOf(
+                    "har_forstatt_rettigheter_og_plikter" to melding.harForstattRettigheterOgPlikter,
+                    "har_bekreftet_opplysninger" to melding.harBekreftetOpplysninger
+                )
+            ))
+            .resolver(MapValueResolver.INSTANCE)
+            .build()).let { html ->
+            val outputStream = ByteArrayOutputStream()
 
-            .med("barn.navn", melding.barn.navn)
-            .med("barn.fodselsnummer", melding.barn.fodselsnummer)
-            .med("barn.alternativ_id", melding.barn.alternativId)
+            PdfRendererBuilder()
+                .useFastMode()
+                .withHtmlContent(html, "")
+                .medFonter()
+                .toStream(outputStream)
+                .buildPdfRenderer()
+                .createPDF()
 
-            .med("annet.sprak", melding.sprak?.somTekst())
-            .med("annet.relasjon_til_barnet", melding.relasjonTilBarnet)
-            .med("annet.mottatt", DATE_TIME_FORMATTER.format(melding.mottatt))
-            .med("annet.fra_og_med", DATE_FORMATTER.format(melding.fraOgMed))
-            .med("annet.til_og_med", DATE_FORMATTER.format(melding.tilOgMed))
-            .med("annet.grad", melding.grad.toString())
-            .med("annet.har_medsoker", melding.harMedsoker.tilJaEllerNei())
-            .med("annet.har_forstatt_rettigheter_og_plikter", melding.harForstattRettigheterOgPlikter.tilJaEllerNei())
-            .med("annet.har_bekreftet_opplysninger", melding.harBekreftetOpplysninger.tilJaEllerNei())
-
-            .med("medlemskap.har_bodd", melding.medlemskap.harBoddIUtlandetSiste12Mnd.tilJaEllerNei())
-            .med("medlemskap.skal_bo", melding.medlemskap.skalBoIUtlandetNeste12Mnd.tilJaEllerNei())
-
-            .medArbeidsgivere(melding.arbeidsgivere)
-
-            .valider()
-
-        val outputStream = ByteArrayOutputStream()
-
-        PdfRendererBuilder()
-            .withHtmlContent(html, BASE_URL)
-            .toStream(outputStream)
-            .buildPdfRenderer()
-            .createPDF()
-
-        return outputStream.use {
-            it.toByteArray()
-        }
-    }
-
-    private fun String.med(key: String, value: String?) : String {
-        val replaceValue =
-            if (value == null) "n/a"
-            else if (!value.contains(HTML_RESERVED_CHARACTERS_REGEX)) value
-            else {
-            var newValue : String = value
-            HTML_RESERVED_CHARACTERS_MAPPING.forEach{ char, html ->
-                newValue = newValue.replace(char, html)
+            return outputStream.use {
+                it.toByteArray()
             }
-            newValue
         }
-        return this.replace("{{$key}}", replaceValue)
     }
 
-    private fun String.medArbeidsgivere(arbeidsgivere: Arbeidsgivere) : String {
-        var html = ""
-        arbeidsgivere.organisasjoner.forEach {
-            html = html.plus(ORGANISASJON_ARBEIDSFORHOLD_TEMPLATE
-                .med("organisasjonsnummer", it.organisasjonsnummer)
-                .med("navn", it.navn)
-                .med("arbeidsuker", ArbeidsgiverUtils.formaterArbeidsuker(it.normalArbeidsuke, it.redusertArbeidsuke)?: "Ingen detaljer angitt for denne arbeidsgiveren.")
-            )
-        }
-        return this.replace("{{arbeidsgivere}}", html)
-    }
-
-    private fun String.valider() : String {
-        if (this.contains("{{") || this.contains("}}")) {
-            logger.info("Ugyldig HTML = $this")
-            throw IllegalStateException("Ugyldig HTML")
-        }
-        return this
-    }
+    private fun PdfRendererBuilder.medFonter() =
+        useFont({ ByteArrayInputStream(REGULAR_FONT) }, "Source Sans Pro", 400, BaseRendererBuilder.FontStyle.NORMAL, false)
+        .useFont({ ByteArrayInputStream(BOLD_FONT) }, "Source Sans Pro", 700, BaseRendererBuilder.FontStyle.NORMAL, false)
+        .useFont({ ByteArrayInputStream(ITALIC_FONT) }, "Source Sans Pro", 400, BaseRendererBuilder.FontStyle.ITALIC, false)
 }
 
-private fun String.somTekst() = when (this.toLowerCase()) {
+private fun List<Organisasjon>.somMap() = map {mapOf<String,Any?>(
+        "navn" to it.navn,
+        "organisasjonsnummer" to it.organisasjonsnummer,
+        "gradering" to GraderingUtils.omArbeidsgiversGradering(ArbeidsgiverUtils.prosentAvNormalArbeidsuke(it.normalArbeidsuke, it.redusertArbeidsuke))
+    )
+}
+
+private fun String.formaterId() = "${this.substring(0,6)} ${this.substring(6)}"
+private fun Soker.formatertFodselsnummer() = this.fodselsnummer.formaterId()
+private fun Barn.formatertId() : String? {
+    return if (fodselsnummer != null || alternativId != null) (fodselsnummer?:alternativId)!!.formaterId()
+    else null
+}
+private fun Soker.formatertNavn() = if (mellomnavn != null) "$fornavn $mellomnavn $etternavn" else "$fornavn $etternavn"
+private fun String.sprakTilTekst() = when (this.toLowerCase()) {
     "nb" -> "Bokmål"
     "nn" -> "Nynorsk"
     else -> this
-}
-
-private fun Boolean.tilJaEllerNei(): String {
-    return if (this) "Ja" else "Nei"
-}
-
-private fun Soker.navn(): String? {
-    return if (mellomnavn != null) "$fornavn $mellomnavn $etternavn" else "$fornavn $etternavn"
 }

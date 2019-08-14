@@ -9,6 +9,7 @@ val kotlinxCoroutinesVersion = ext.get("kotlinxCoroutinesVersion").toString()
 val openhtmltopdfVersion = "1.0.0"
 val kafkaEmbeddedEnvVersion = "2.2.0"
 val kafkaVersion = "2.3.0" // Alligned med version fra kafka-embedded-env
+val handlebarsVersion = "4.1.2"
 
 val mainClass = "no.nav.helse.PleiepengesoknadProsesseringKt"
 
@@ -38,6 +39,7 @@ dependencies {
     compile ( "com.openhtmltopdf:openhtmltopdf-pdfbox:$openhtmltopdfVersion")
     compile ( "com.openhtmltopdf:openhtmltopdf-slf4j:$openhtmltopdfVersion")
     compile("org.slf4j:jcl-over-slf4j:$slf4jVersion")
+    compile("com.github.jknack:handlebars:$handlebarsVersion")
 
     // Kafka
     compile("org.apache.kafka:kafka-streams:$kafkaVersion")
