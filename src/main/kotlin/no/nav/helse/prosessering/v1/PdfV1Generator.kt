@@ -7,16 +7,12 @@ import com.github.jknack.handlebars.context.MapValueResolver
 import com.github.jknack.handlebars.io.ClassPathTemplateLoader
 import com.openhtmltopdf.outputdevice.helper.BaseRendererBuilder
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder
-import io.ktor.util.extension
 import no.nav.helse.dusseldorf.ktor.core.fromResources
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
-import java.nio.file.Files
-import java.nio.file.Paths
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.*
-import kotlin.streams.toList
 
 internal class PdfV1Generator  {
     private companion object {
@@ -27,7 +23,6 @@ internal class PdfV1Generator  {
         private val BOLD_FONT = "$ROOT/fonts/SourceSansPro-Bold.ttf".fromResources().readBytes()
         private val ITALIC_FONT = "$ROOT/fonts/SourceSansPro-Italic.ttf".fromResources().readBytes()
 
-        private val imagesRoot = Paths.get("$ROOT/images".fromResources().toURI())
 
         private val images = loadImages()
         private val handlebars = Handlebars(ClassPathTemplateLoader("/$ROOT")).apply {
@@ -43,23 +38,18 @@ internal class PdfV1Generator  {
         private val DATE_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy").withZone(ZONE_ID)
         private val DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm").withZone(ZONE_ID)
 
-        private fun loadImages() = Files.list(imagesRoot)
-            .filter {
-                val validExtensions = setOf("jpg", "jpeg", "png")
-                !Files.isHidden(it) && it.fileName.extension in validExtensions
-            }
-            .map {
-                val fileName = it.fileName.toString()
-                val extension = when (it.fileName.extension) {
-                    "jpg" -> "jpeg" // jpg is not a valid mime-type
-                    else -> it.fileName.extension
-                }
-                val base64string = Base64.getEncoder().encodeToString(Files.readAllBytes(it))
-                val base64 = "data:image/$extension;base64,$base64string"
-                fileName to base64
-            }
-            .toList()
-            .toMap()
+        private fun loadPng(name: String): String {
+            val bytes = "$ROOT/images/$name.png".fromResources().readBytes()
+            val base64string = Base64.getEncoder().encodeToString(bytes)
+            return "data:image/png;base64,$base64string"
+        }
+        private fun loadImages() = mapOf(
+            "Checkbox_off.png" to loadPng("Checkbox_off"),
+            "Checkbox_on.png" to loadPng("Checkbox_on"),
+            "Hjelp.png" to loadPng("Hjelp"),
+            "Navlogo.png" to loadPng("Navlogo"),
+            "Personikon.png" to loadPng("Personikon")
+        )
     }
 
     internal fun generateSoknadOppsummeringPdf(
