@@ -41,7 +41,7 @@ class PdfV1GeneratorTest {
                 redusertArbeidsuke = Duration.ofHours(81)
             ),
             Organisasjon(
-                organisasjonsnummer = "95235244",
+                organisasjonsnummer = "952352644",
                 navn = "Farris bad",
                 normalArbeidsuke = Duration.ofHours(100),
                 redusertArbeidsuke = Duration.ofHours(10)

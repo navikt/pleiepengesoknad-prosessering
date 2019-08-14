@@ -47,3 +47,4 @@ internal object ArbeidsgiverUtils {
     }
 }
 internal fun Double.formatertMedToDesimaler() = String.format("%.2f", this)
+internal fun Organisasjon.formaterOrganisasjonsnummer() = if (organisasjonsnummer.length == 9) "${organisasjonsnummer.substring(0,3)} ${organisasjonsnummer.substring(3,6)} ${organisasjonsnummer.substring(6)}" else organisasjonsnummer
