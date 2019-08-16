@@ -60,7 +60,6 @@ internal class PdfV1Generator  {
     ) : ByteArray {
         soknadTemplate.apply(Context
             .newBuilder(mapOf(
-                "sprak" to melding.sprak?.sprakTilTekst(),
                 "soknad_id" to melding.soknadId,
                 "soknad_mottatt_dag" to melding.mottatt.withZoneSameInstant(ZONE_ID).norskDag(),
                 "soknad_mottatt" to DATE_TIME_FORMATTER.format(melding.mottatt),
@@ -93,7 +92,9 @@ internal class PdfV1Generator  {
                     "har_bekreftet_opplysninger" to melding.harBekreftetOpplysninger
                 ),
                 "hjelp" to mapOf(
-                    "total_normal_arbeidsuke" to ArbeidsgiverUtils.totalNormalArbeidsuke(melding.arbeidsgivere)
+                    "har_medsoker" to melding.harMedsoker,
+                    "ingen_arbeidsgivere" to melding.arbeidsgivere.organisasjoner.isEmpty(),
+                    "sprak" to melding.sprak?.sprakTilTekst()
                 )
             ))
             .resolver(MapValueResolver.INSTANCE)
@@ -135,7 +136,7 @@ private fun Barn.formatertId() : String? {
 }
 private fun Soker.formatertNavn() = if (mellomnavn != null) "$fornavn $mellomnavn $etternavn" else "$fornavn $etternavn"
 private fun String.sprakTilTekst() = when (this.toLowerCase()) {
-    "nb" -> "Bokmål"
-    "nn" -> "Nynorsk"
+    "nb" -> "bokmål"
+    "nn" -> "nynorsk"
     else -> this
 }

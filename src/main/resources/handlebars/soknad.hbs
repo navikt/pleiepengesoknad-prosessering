@@ -69,8 +69,16 @@
             <div class="hjelp">
                 <img class="ikon" src="{{ image "Hjelp.png" }}"/>
                 <ul>
-                    {{# if har_medsoker }}
-                        <li>Det er angitt at flere personer vil søke om pleiepenger i samme tidsrom.</li>
+                    {{# if hjelp.har_medsoker }}
+                        <li>Det er angitt at flere personer vil søke om pleiepenger i samme periode.</li>
+                    {{else}}
+                        <li>Det er angitt at det <span class="highlight">ikke</span> er andre som søker pleiepenger i samme periode.</li>
+                    {{/if}}
+                    {{# if hjelp.ingen_arbeidsgivere }}
+                        <li class="ikke_satt">Det er ikke angitt noen arbeidsgivere i søknaden.</li>
+                    {{/if}}
+                    {{# if hjelp.sprak }}
+                        <li>Det er valgt {{hjelp.sprak}} som språk i søknaden.</li>
                     {{/if}}
                     {{!--
                     {{# if arbeidsgivere.har_arbeidsgivere }}
@@ -168,18 +176,9 @@
             {{/if}}
 
             <!-- ANNET -->
-            <h2><span>Annet</span></h2>
-            <p><span class="sporsmalstekst">Valgt språk i søknaden: </span>
-                {{# if sprak }}
-                    <span>{{ sprak }}</span>
-                {{else}}
-                    <span class="ikke_satt">Ikke angitt</span>
-                {{/if}}
-            </p>
-
             {{# if grad }}
-            <hr/>
-            <p><span class="sporsmalstekst">Søker om grad: </span><span>{{ grad }}%</span></p>
+                <h2><span>Annet</span></h2>
+                <p><span class="sporsmalstekst">Søker om grad: </span><span>{{ grad }}%</span></p>
             {{/if}}
 
             <!-- SAMTYKKE -->
