@@ -29,6 +29,9 @@ internal class PdfV1Generator  {
             registerHelper("image", Helper<String> { context, _ ->
                 if (context == null) "" else images[context]
             })
+            registerHelper("eq", Helper<String> { context, options ->
+                if (context == options.param(0)) options.fn() else options.inverse()
+            })
             infiniteLoops(true)
         }
 

@@ -104,6 +104,43 @@
             </ul>
             {{/if}}
 
+            <!-- ETABLERT TILSYNSORDNING -->
+
+            {{# if etablert_tilsynsordning }}
+                <h2><span>Etablert tilsynsordning</span></h2>
+
+                <!-- Sjekkbokser -->
+                {{#eq etablert_tilsynsordning.svar "ja" }}
+                    <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Ja
+                    <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Nei
+                    <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Vet ikke
+                {{/eq}}
+                {{#eq etablert_tilsynsordning.svar "nei" }}
+                    <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Ja
+                    <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Nei
+                    <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Vet ikke
+                {{/eq}}
+                {{#eq etablert_tilsynsordning.svar "vet_ikke" }}
+                    <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Ja
+                    <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Nei
+                    <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Vet ikke
+                {{/eq}}
+
+                <!-- Ja -->
+                {{#eq etablert_tilsynsordning.svar "ja" }}
+                    <hr/>
+                    {{# each etablert_tilsynsordning.dager as |dag|~}}
+                        <p><span class="sporsmalstekst">{{dag.navn}}: </span><span>{{ dag.varighet}}
+                            {{# if dag.avkortet_til}}
+                                (Avkortet til {{dag.avkortet_til}})
+                            {{/if}}
+                        </span></p>
+                    {{/each}}
+                    <hr/>
+                    <p>Barnet er i etablert tilsynsordning {{etablert_tilsynsordning.prosent}}% av en normal arbeidsuke på 37 timer og 30 minutter.</p>
+                {{/eq}}
+            {{/if}}
+
             <!-- MEDLEMSKAP -->
             <h2><span>Medlemskap</span></h2>
 
