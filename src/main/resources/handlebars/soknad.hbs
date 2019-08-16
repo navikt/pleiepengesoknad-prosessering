@@ -93,7 +93,9 @@
             {{# each arbeidsgivere.organisasjoner as |org|~}}
                 <li class="sporsmalstekst">{{org.navn}}</li>
                 <ul>
+
                     <li>Organisasjonsnummer {{org.organisasjonsnummer}}</li>
+                    {{!--
                     <li>
                         {{# if org.inntektstap }}
                             Har et inntektstap på {{org.inntektstap}}%
@@ -101,6 +103,7 @@
                             <span class="ikke_satt">Ingen detaljer angitt for å utlede inntektstapet</span>
                         {{/if}}
                     </li>
+                    --}}
                 </ul>
             {{/each}}
             </ul>
