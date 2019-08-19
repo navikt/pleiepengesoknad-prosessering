@@ -18,7 +18,7 @@ data class MeldingV1 (
     val arbeidsgivere: Arbeidsgivere,
     var vedleggUrls : List<URI> = listOf(),
     val medlemskap: Medlemskap,
-    val grad : Int,
+    val grad : Int?,
     val harMedsoker : Boolean,
     val harForstattRettigheterOgPlikter : Boolean,
     val harBekreftetOpplysninger : Boolean

@@ -1,7 +1,7 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
-val dusseldorfKtorVersion = "1.2.3.ec226d3"
+val dusseldorfKtorVersion = "1.2.3.b45ba92"
 val ktorVersion = ext.get("ktorVersion").toString()
 val slf4jVersion = ext.get("slf4jVersion").toString()
 val kotlinxCoroutinesVersion = ext.get("kotlinxCoroutinesVersion").toString()
@@ -9,6 +9,7 @@ val kotlinxCoroutinesVersion = ext.get("kotlinxCoroutinesVersion").toString()
 val openhtmltopdfVersion = "1.0.0"
 val kafkaEmbeddedEnvVersion = "2.2.0"
 val kafkaVersion = "2.3.0" // Alligned med version fra kafka-embedded-env
+val handlebarsVersion = "4.1.2"
 
 val mainClass = "no.nav.helse.PleiepengesoknadProsesseringKt"
 
@@ -18,7 +19,7 @@ plugins {
 }
 
 buildscript {
-    apply("https://raw.githubusercontent.com/navikt/dusseldorf-ktor/ec226d3ba5b4d5fbc8782d3d934dc5ed0690f85d/gradle/dusseldorf-ktor.gradle.kts")
+    apply("https://raw.githubusercontent.com/navikt/dusseldorf-ktor/b45ba92fbe655e1818374daf6465af5174a72183/gradle/dusseldorf-ktor.gradle.kts")
 }
 
 dependencies {
@@ -38,6 +39,7 @@ dependencies {
     compile ( "com.openhtmltopdf:openhtmltopdf-pdfbox:$openhtmltopdfVersion")
     compile ( "com.openhtmltopdf:openhtmltopdf-slf4j:$openhtmltopdfVersion")
     compile("org.slf4j:jcl-over-slf4j:$slf4jVersion")
+    compile("com.github.jknack:handlebars:$handlebarsVersion")
 
     // Kafka
     compile("org.apache.kafka:kafka-streams:$kafkaVersion")
@@ -86,5 +88,5 @@ tasks.withType<ShadowJar> {
 }
 
 tasks.withType<Wrapper> {
-    gradleVersion = "5.5.1"
+    gradleVersion = "5.6"
 }

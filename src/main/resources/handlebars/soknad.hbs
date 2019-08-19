@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8"/>
+        <title>Søknad om pleiepenger for pleie av sykt barn</title>
+        {{#block 'style' }}
+        {{/block}}
+    </head>
+    <body>
+        <div id="header">
+            <img class="navlogo" src="{{ image "Navlogo.png" }}"/>
+            <h1 class="title">Søknad om pleiepenger for pleie av sykt barn</h1>
+        </div>
+        <div class="container">
+            <div id="container_top">
+                <div class="nokkeldata">
+                   <br/><br/>
+                   <p>
+                       <span class="nokkeldata__overskrift">Sendt til NAV</span><br/>
+                       {{soknad_mottatt_dag}} {{ soknad_mottatt }}
+                   </p>
+                   <br/>
+                   <p>
+                       <span class="nokkeldata__overskrift">Gjelder perioden</span><br/>
+                       {{ periode.fra_og_med }} - {{ periode.til_og_med }}<br/>
+                       Totalt {{ periode.virkedager }} virkedager
+                   </p>
+                </div>
+                <div class="personinfo">
+                    <div class="persontekst">
+                        <div class="persontekst__sidetopp">
+                            <img class="ikon" src="{{ image "Personikon.png" }}"/>
+                            <div class="persontekst__personalia">
+                                <p>
+                                    {{ soker.relasjon_til_barnet }}
+                                </p>
+                                <p class="navn">
+                                    {{ soker.navn }}
+                                </p>
+                                <p class="id">
+                                    {{ soker.fodselsnummer }}<br/>
+                                </p>
+                            </div>
+                            <br/>
+                            <img class="ikon" src="{{ image "Personikon.png" }}"/>
+                            <div class="persontekst__personalia">
+                                <p>Barn</p>
+                                <p class="navn">
+                                {{# if barn.navn }}
+                                    {{ barn.navn }}
+                                {{else}}
+                                    <span class="ikke_satt">Navn ikke angitt</span>
+                                {{/if}}
+                                </p>
+                                <p class="id">
+                                {{# if barn.id }}
+                                    {{ barn.id }}
+                                {{else}}
+                                    <span class="ikke_satt">ID ikke angitt</span>
+                                {{/if}}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- HJELP -->
+            <div class="hjelp">
+                <img class="ikon" src="{{ image "Hjelp.png" }}"/>
+                <ul>
+                    {{# if hjelp.har_medsoker }}
+                        <li>Det er angitt at flere personer vil søke om pleiepenger i samme periode.</li>
+                    {{else}}
+                        <li>Det er angitt at det <span class="highlight">ikke</span> er andre som søker pleiepenger i samme periode.</li>
+                    {{/if}}
+                    {{# if hjelp.ingen_arbeidsgivere }}
+                        <li class="ikke_satt">Det er ikke angitt noen arbeidsgivere i søknaden.</li>
+                    {{/if}}
+                    {{# if hjelp.sprak }}
+                        <li>Det er valgt {{hjelp.sprak}} som språk i søknaden.</li>
+                    {{/if}}
+                    {{!--
+                    {{# if arbeidsgivere.har_arbeidsgivere }}
+                        {{# if hjelp.total_normal_arbeidsuke }}
+                            <li>{{hjelp.total_normal_arbeidsuke}}</li>
+                        {{/if}}
+                    {{else}}
+                        <li class="ikke_satt">Det er ikke valgt noen arbeidsgivere.</li>
+                    {{/if}}
+                    --}}
+                </ul>
+            </div>
+
+            <!-- ARBEIDSGIVERE -->
+
+            {{# if arbeidsgivere.har_arbeidsgivere }}
+            <h2><span>Arbeidsgivere</span></h2>
+
+            <ul>
+            {{# each arbeidsgivere.organisasjoner as |org|~}}
+                <li class="sporsmalstekst">{{org.navn}}</li>
+                <ul>
+
+                    <li>Organisasjonsnummer {{org.organisasjonsnummer}}</li>
+                    {{!--
+                    <li>
+                        {{# if org.inntektstap }}
+                            Har et inntektstap på {{org.inntektstap}}%
+                        {{else}}
+                            <span class="ikke_satt">Ingen detaljer angitt for å utlede inntektstapet</span>
+                        {{/if}}
+                    </li>
+                    --}}
+                </ul>
+            {{/each}}
+            </ul>
+            {{/if}}
+
+            <!-- ETABLERT TILSYNSORDNING -->
+
+            {{# if etablert_tilsynsordning }}
+                <h2><span>Etablert tilsynsordning</span></h2>
+
+                <!-- Sjekkbokser -->
+                {{#eq etablert_tilsynsordning.svar "ja" }}
+                    <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Ja
+                    <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Nei
+                    <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Vet ikke
+                {{/eq}}
+                {{#eq etablert_tilsynsordning.svar "nei" }}
+                    <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Ja
+                    <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Nei
+                    <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Vet ikke
+                {{/eq}}
+                {{#eq etablert_tilsynsordning.svar "vet_ikke" }}
+                    <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Ja
+                    <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Nei
+                    <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Vet ikke
+                {{/eq}}
+
+                <!-- Ja -->
+                {{#eq etablert_tilsynsordning.svar "ja" }}
+                    <hr/>
+                    {{# each etablert_tilsynsordning.dager as |dag|~}}
+                        <p><span class="sporsmalstekst">{{dag.navn}}: </span><span>{{ dag.varighet}}
+                            {{# if dag.avkortet_til}}
+                                (Avkortet til {{dag.avkortet_til}})
+                            {{/if}}
+                        </span></p>
+                    {{/each}}
+                    <hr/>
+                    <p>Barnet er i etablert tilsynsordning {{etablert_tilsynsordning.prosent}}% av en normal arbeidsuke på 37 timer og 30 minutter.</p>
+                {{/eq}}
+            {{/if}}
+
+            <!-- MEDLEMSKAP -->
+            <h2><span>Medlemskap</span></h2>
+
+            <p class="sporsmalstekst">Har bodd i utlandet siste 12 månedene?</p>
+            {{# if medlemskap.har_bodd_i_utlandet_siste_12_mnd }}
+                <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Ja
+                <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Nei
+            {{else}}
+                <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Ja
+                <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Nei
+            {{/if}}
+            <hr/>
+            <p class="sporsmalstekst">Skal bo i utlandet de neste 12 månedene?</p>
+            {{# if medlemskap.skal_bo_i_utlandet_neste_12_mnd }}
+                <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Ja
+                <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Nei
+            {{else}}
+                <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Ja
+                <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Nei
+            {{/if}}
+
+            <!-- ANNET -->
+            {{# if grad }}
+                <h2><span>Annet</span></h2>
+                <p><span class="sporsmalstekst">Søker om grad: </span><span>{{ grad }}%</span></p>
+            {{/if}}
+
+            <!-- SAMTYKKE -->
+            <h2><span>Samtykke</span></h2>
+
+            <p class="sporsmalstekst">Har forstått rettigheter og plikter?</p>
+            {{# if samtykke.har_forstatt_rettigheter_og_plikter }}
+                <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Ja
+                <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Nei
+            {{else}}
+                <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Ja
+                <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Nei
+            {{/if}}
+            <hr/>
+            <p class="sporsmalstekst">Har bekreftet opplysninger?</p>
+            {{# if samtykke.har_bekreftet_opplysninger }}
+                <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Ja
+                <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Nei
+            {{else}}
+                <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Ja
+                <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Nei
+            {{/if}}
+        </div>
+
+        <!-- FOOTER -->
+        <div id="footer">
+            <span class="soknadsid">{{ soknad_id }}</span>
+            <span class="sidetall">side <span id="pagenumber"></span> av <span id="pagecount"></span></span>
+        </div>
+    </body>
+</html>

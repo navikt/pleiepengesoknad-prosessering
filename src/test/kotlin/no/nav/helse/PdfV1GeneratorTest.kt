@@ -1,26 +1,59 @@
 package no.nav.helse
 
 import no.nav.helse.prosessering.v1.*
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import java.io.File
 import java.time.Duration
 import java.time.LocalDate
 import java.time.ZonedDateTime
-import java.util.*
 import kotlin.test.Ignore
 import kotlin.test.Test
 
-private val logger: Logger = LoggerFactory.getLogger("nav.PdfV1GeneratorTest")
-
 class PdfV1GeneratorTest {
 
-    private fun gyldigMelding(soknadId: String) = MeldingV1(
-        sprak = "nb",
+    private companion object {
+        private val generator = PdfV1Generator()
+    }
+
+    private fun gyldigMelding(
+        soknadId: String,
+        sprak: String? = "nb",
+        organisasjoner: List<Organisasjon> = listOf(
+            Organisasjon(
+                organisasjonsnummer = "987564785",
+                navn = "NAV"
+            ),
+            Organisasjon(
+                organisasjonsnummer = "975124568",
+                navn = "Kiwi",
+                normalArbeidsuke = Duration.ofHours(37).plusMinutes(1),
+                redusertArbeidsuke = Duration.ofHours(10).plusMinutes(45)
+            ),
+            Organisasjon(
+                organisasjonsnummer = "952352687",
+                navn = "Bjerkheim gård",
+                normalArbeidsuke = Duration.ofHours(15).plusMinutes(50),
+                redusertArbeidsuke = Duration.ZERO
+            ),
+            Organisasjon(
+                organisasjonsnummer = "952352655",
+                navn = "Hopp i havet",
+                normalArbeidsuke = Duration.ofHours(100),
+                redusertArbeidsuke = Duration.ofHours(81)
+            )
+        ),
+        barn: Barn = Barn(
+            navn = "Børge Øverbø Ånsnes",
+            fodselsnummer = null,
+            alternativId = "29091884321"
+        ),
+        grad: Int? = 60,
+        harMedsoker: Boolean = true
+    ) = MeldingV1(
+        sprak = sprak,
         soknadId = soknadId,
         mottatt = ZonedDateTime.now(),
         fraOgMed = LocalDate.now().plusDays(6),
-        tilOgMed = LocalDate.now().plusDays(16),
+        tilOgMed = LocalDate.now().plusDays(35),
         soker = Soker(
             aktoerId = "123456",
             fornavn = "Ærling",
@@ -28,52 +61,57 @@ class PdfV1GeneratorTest {
             etternavn = "Ånsnes",
             fodselsnummer = "29099012345"
         ),
-        barn = Barn(
-            navn = "Børge Øverbø Ånsnes",
-            fodselsnummer = null,
-            alternativId = "29091812345"
-        ),
+        barn = barn,
         relasjonTilBarnet = "Onkel & Nærstående ' <> \" {}",
         arbeidsgivere = Arbeidsgivere(
-            organisasjoner = listOf(
-                Organisasjon(
-                    organisasjonsnummer = "1231456",
-                    navn = "NAV"
-                ),
-                Organisasjon(
-                    organisasjonsnummer = "1231457",
-                    navn = "KIWI",
-                    normalArbeidsuke = Duration.ofHours(37).plusMinutes(1),
-                    redusertArbeidsuke = Duration.ofHours(10).plusMinutes(45)
-                )
-            )
+            organisasjoner = organisasjoner
         ),
         medlemskap = Medlemskap(
             harBoddIUtlandetSiste12Mnd = true,
             skalBoIUtlandetNeste12Mnd = false
         ),
-        grad = 60,
-        harMedsoker = true,
+        grad = grad,
+        harMedsoker = harMedsoker,
         harForstattRettigheterOgPlikter = true,
         harBekreftetOpplysninger = true
     )
 
-    private fun genererPdf(soknadId: String = UUID.randomUUID().toString(), melding: MeldingV1 = gyldigMelding(soknadId)) : ByteArray {
-        return PdfV1Generator().generateSoknadOppsummeringPdf(melding)
+    private fun genererOppsummeringsPdfer(writeBytes: Boolean) {
+        var id = "1-full"
+        var pdf = generator.generateSoknadOppsummeringPdf(melding = gyldigMelding(soknadId = id))
+        if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
+
+        id = "2-utenMedsoker"
+        pdf = generator.generateSoknadOppsummeringPdf(melding = gyldigMelding(soknadId = id, harMedsoker = false))
+        if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
+
+        id = "3-utenSprak"
+        pdf = generator.generateSoknadOppsummeringPdf(melding = gyldigMelding(soknadId = id, harMedsoker = false, sprak = null))
+        if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
+
+        id = "4-utenArbeidsgivere"
+        pdf = generator.generateSoknadOppsummeringPdf(melding = gyldigMelding(soknadId = id, harMedsoker = false, organisasjoner = listOf()))
+        if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
+
+        id = "5-utenInfoPaaBarn"
+        pdf = generator.generateSoknadOppsummeringPdf(melding = gyldigMelding(soknadId = id, harMedsoker = false, organisasjoner = listOf(), barn = Barn(fodselsnummer = null, alternativId = null, navn = null)))
+        if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
+
+        id = "6-utenGrad"
+        pdf = generator.generateSoknadOppsummeringPdf(melding = gyldigMelding(soknadId = id, harMedsoker = false, organisasjoner = listOf(), barn = Barn(fodselsnummer = null, alternativId = null, navn = null), grad = null))
+        if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
     }
+
+    private fun pdfPath(soknadId: String) = "${System.getProperty("user.dir")}/generated-pdf-$soknadId.pdf"
 
     @Test
     fun `generering av oppsummerings-PDF fungerer`() {
-        genererPdf()
+        genererOppsummeringsPdfer(false)
     }
 
     @Test
     @Ignore
     fun `opprett lesbar oppsummerings-PDF`() {
-        val soknadId = UUID.randomUUID().toString()
-        val path = "${System.getProperty("user.dir")}/generated-pdf-$soknadId.pdf"
-        logger.info("Legger generert fil på $path")
-        val file = File(path)
-        file.writeBytes(genererPdf(soknadId = soknadId))
+        genererOppsummeringsPdfer(true)
     }
 }
