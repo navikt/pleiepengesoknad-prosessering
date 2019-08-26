@@ -2,7 +2,6 @@ package no.nav.helse
 
 import no.nav.helse.prosessering.v1.*
 import java.io.File
-import java.time.Duration
 import java.time.LocalDate
 import java.time.ZonedDateTime
 import kotlin.test.Ignore
@@ -25,20 +24,16 @@ class PdfV1GeneratorTest {
             Organisasjon(
                 organisasjonsnummer = "975124568",
                 navn = "Kiwi",
-                normalArbeidsuke = Duration.ofHours(37).plusMinutes(1),
-                redusertArbeidsuke = Duration.ofHours(10).plusMinutes(45)
+                redusertArbeidsprosent = 22.00
             ),
             Organisasjon(
                 organisasjonsnummer = "952352687",
                 navn = "Bjerkheim gård",
-                normalArbeidsuke = Duration.ofHours(15).plusMinutes(50),
-                redusertArbeidsuke = Duration.ZERO
+                redusertArbeidsprosent = 50.665
             ),
             Organisasjon(
                 organisasjonsnummer = "952352655",
-                navn = "Hopp i havet",
-                normalArbeidsuke = Duration.ofHours(100),
-                redusertArbeidsuke = Duration.ofHours(81)
+                navn = "Hopp i havet"
             )
         ),
         barn: Barn = Barn(
@@ -47,7 +42,8 @@ class PdfV1GeneratorTest {
             alternativId = "29091884321"
         ),
         grad: Int? = 60,
-        harMedsoker: Boolean = true
+        harMedsoker: Boolean = true,
+        dagerPerUkeBorteFraJobb: Double? = 4.5
     ) = MeldingV1(
         sprak = sprak,
         soknadId = soknadId,
@@ -73,7 +69,8 @@ class PdfV1GeneratorTest {
         grad = grad,
         harMedsoker = harMedsoker,
         harForstattRettigheterOgPlikter = true,
-        harBekreftetOpplysninger = true
+        harBekreftetOpplysninger = true,
+        dagerPerUkeBorteFraJobb = dagerPerUkeBorteFraJobb
     )
 
     private fun genererOppsummeringsPdfer(writeBytes: Boolean) {
@@ -99,6 +96,10 @@ class PdfV1GeneratorTest {
 
         id = "6-utenGrad"
         pdf = generator.generateSoknadOppsummeringPdf(melding = gyldigMelding(soknadId = id, harMedsoker = false, organisasjoner = listOf(), barn = Barn(fodselsnummer = null, alternativId = null, navn = null), grad = null))
+        if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
+
+        id = "7-utenDagerBorteFraJobb"
+        pdf = generator.generateSoknadOppsummeringPdf(melding = gyldigMelding(soknadId = id, harMedsoker = false, organisasjoner = listOf(), barn = Barn(fodselsnummer = null, alternativId = null, navn = null), grad = null, dagerPerUkeBorteFraJobb = null))
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
     }
 

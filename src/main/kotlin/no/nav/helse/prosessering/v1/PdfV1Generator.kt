@@ -65,6 +65,7 @@ internal class PdfV1Generator  {
                 "soknad_mottatt" to DATE_TIME_FORMATTER.format(melding.mottatt),
                 "har_medsoker" to melding.harMedsoker,
                 "grad" to melding.grad,
+                "dager_per_uke_borte_fra_jobb" to melding.dagerPerUkeBorteFraJobb?.avrundetMedEnDesimal()?.formatertMedEnDesimal(),
                 "soker" to mapOf(
                     "navn" to melding.soker.formatertNavn(),
                     "fodselsnummer" to melding.soker.formatertFodselsnummer(),
@@ -121,10 +122,15 @@ internal class PdfV1Generator  {
         .useFont({ ByteArrayInputStream(ITALIC_FONT) }, "Source Sans Pro", 400, BaseRendererBuilder.FontStyle.ITALIC, false)
 }
 
-private fun List<Organisasjon>.somMap() = map {mapOf<String,Any?>(
+private fun List<Organisasjon>.somMap() = map {
+    val redusertArbeidsprosent = it.redusertArbeidsprosent?.avrundetMedEnDesimal()
+    val inntektstap = redusertArbeidsprosent?.redusertArbeidsprosentTilInntektstap()
+
+    mapOf<String,Any?>(
         "navn" to it.navn,
         "organisasjonsnummer" to it.formaterOrganisasjonsnummer(),
-        "inntektstap" to InntektstapUtils.innktektstap(ArbeidsgiverUtils.prosentAvNormalArbeidsuke(it.normalArbeidsuke, it.redusertArbeidsuke))?.formatertMedToDesimaler()
+        "redusert_arbeidsprosent" to redusertArbeidsprosent?.formatertMedEnDesimal(),
+        "inntektstap" to inntektstap?.formatertMedEnDesimal()
     )
 }
 
