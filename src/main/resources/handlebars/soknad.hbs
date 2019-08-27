@@ -80,6 +80,9 @@
                     {{# if hjelp.sprak }}
                         <li>Det er valgt {{hjelp.sprak}} som språk i søknaden.</li>
                     {{/if}}
+                    {{# if dager_per_uke_borte_fra_jobb }}
+                        <li>Skal være {{dager_per_uke_borte_fra_jobb}} dager per uke borte fra jobb for å ta hånd om barnet.</li>
+                    {{/if}}
                 </ul>
             </div>
 
@@ -162,12 +165,9 @@
             {{/if}}
 
             <!-- ANNET -->
-            <h2><span>Annet</span></h2>
             {{# if grad }}
+                <h2><span>Annet</span></h2>
                 <p><span class="sporsmalstekst">Søker om grad: </span><span>{{ grad }}%</span></p>
-            {{/if}}
-            {{# if dager_per_uke_borte_fra_jobb }}
-                <p><span class="sporsmalstekst">Dager per uke borte fra jobb: </span><span>{{ dager_per_uke_borte_fra_jobb }}</span></p>
             {{/if}}
 
             <!-- SAMTYKKE -->
