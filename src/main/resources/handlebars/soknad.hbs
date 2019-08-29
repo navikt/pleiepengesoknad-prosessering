@@ -80,20 +80,13 @@
                     {{# if hjelp.sprak }}
                         <li>Det er valgt {{hjelp.sprak}} som språk i søknaden.</li>
                     {{/if}}
-                    {{!--
-                    {{# if arbeidsgivere.har_arbeidsgivere }}
-                        {{# if hjelp.total_normal_arbeidsuke }}
-                            <li>{{hjelp.total_normal_arbeidsuke}}</li>
-                        {{/if}}
-                    {{else}}
-                        <li class="ikke_satt">Det er ikke valgt noen arbeidsgivere.</li>
+                    {{# if dager_per_uke_borte_fra_jobb }}
+                        <li>Skal være borte fra jobb {{dager_per_uke_borte_fra_jobb}} dager per uke for å ta hånd om barnet.</li>
                     {{/if}}
-                    --}}
                 </ul>
             </div>
 
             <!-- ARBEIDSGIVERE -->
-
             {{# if arbeidsgivere.har_arbeidsgivere }}
             <h2><span>Arbeidsgivere</span></h2>
 
@@ -103,15 +96,11 @@
                 <ul>
 
                     <li>Organisasjonsnummer {{org.organisasjonsnummer}}</li>
-                    {{!--
                     <li>
-                        {{# if org.inntektstap }}
-                            Har et inntektstap på {{org.inntektstap}}%
-                        {{else}}
-                            <span class="ikke_satt">Ingen detaljer angitt for å utlede inntektstapet</span>
+                        {{# if org.redusert_arbeidsprosent }}
+                            Skal jobbe {{org.redusert_arbeidsprosent}}% av normal tid, har et inntektstap i denne stillingen på {{org.inntektstap}}%
                         {{/if}}
                     </li>
-                    --}}
                 </ul>
             {{/each}}
             </ul>

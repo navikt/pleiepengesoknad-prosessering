@@ -21,7 +21,8 @@ data class MeldingV1 (
     val grad : Int?,
     val harMedsoker : Boolean,
     val harForstattRettigheterOgPlikter : Boolean,
-    val harBekreftetOpplysninger : Boolean
+    val harBekreftetOpplysninger : Boolean,
+    val dagerPerUkeBorteFraJobb: Double? = null
 )
 
 data class Soker(
@@ -44,8 +45,7 @@ data class Arbeidsgivere(
 data class Organisasjon(
     val organisasjonsnummer: String,
     val navn: String?,
-    val normalArbeidsuke: Duration? = null,
-    val redusertArbeidsuke: Duration? = null
+    val redusertArbeidsprosent: Double? = null
 )
 
 data class Medlemskap(

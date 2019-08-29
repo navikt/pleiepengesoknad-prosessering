@@ -133,21 +133,19 @@ class PleiepengesoknadProsesseringTest {
     }
 
     @Test
-    fun `Melding med språk og arbeidsuker satt blir prosessert`() {
+    fun `Melding med språk og redusert arbeidsprosent blir prosessert`() {
 
         val sprak = "nn"
-        val jobb1NormalArbeidsuke = Duration.ofHours(37).plusMinutes(30)
-        val jobb1RedusertArbeidsuke = Duration.ZERO
-        val jobb2NormalArbeidsuke = Duration.ofHours(25)
-        val jobb2RedusertArbeidsuke = Duration.ofHours(12).plusMinutes(30)
+        val jobb1RedusertArbeidsprosent = 50.422
+        val jobb2RedusertArbeidsprosent = 12.111
 
         val melding = gyldigMelding(
             fodselsnummerSoker = gyldigFodselsnummerA,
             fodselsnummerBarn = gyldigFodselsnummerB,
             sprak = sprak,
             organisasjoner = listOf(
-                Organisasjon("917755736", "Jobb1", normalArbeidsuke = jobb1NormalArbeidsuke, redusertArbeidsuke = jobb1RedusertArbeidsuke),
-                Organisasjon("917755737", "Jobb2", normalArbeidsuke = jobb2NormalArbeidsuke, redusertArbeidsuke = jobb2RedusertArbeidsuke)
+                Organisasjon("917755736", "Jobb1", jobb1RedusertArbeidsprosent),
+                Organisasjon("917755737", "Jobb2", jobb2RedusertArbeidsprosent)
             )
         )
 
@@ -159,10 +157,8 @@ class PleiepengesoknadProsesseringTest {
         val jobb2 = oppgaveOpprettet.melding.arbeidsgivere.organisasjoner.firstOrNull { it.navn == "Jobb2" }
         assertNotNull(jobb1)
         assertNotNull(jobb2)
-        assertEquals(jobb1NormalArbeidsuke, jobb1.normalArbeidsuke)
-        assertEquals(jobb1RedusertArbeidsuke, jobb1.redusertArbeidsuke)
-        assertEquals(jobb2NormalArbeidsuke, jobb2.normalArbeidsuke)
-        assertEquals(jobb2RedusertArbeidsuke, jobb2.redusertArbeidsuke)
+        assertEquals(jobb1RedusertArbeidsprosent, jobb1.redusertArbeidsprosent)
+        assertEquals(jobb2RedusertArbeidsprosent, jobb2.redusertArbeidsprosent)
     }
 
     @Test

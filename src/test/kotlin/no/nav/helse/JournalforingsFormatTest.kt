@@ -1,8 +1,6 @@
 package no.nav.helse
 
 import no.nav.helse.dokument.JournalforingsFormat
-import no.nav.helse.dusseldorf.ktor.core.fromResources
-import no.nav.helse.prosessering.SoknadId
 import no.nav.helse.prosessering.v1.*
 import org.skyscreamer.jsonassert.JSONAssert
 import java.net.URI
@@ -42,8 +40,11 @@ class JournalforingsFormatTest {
                 "organisasjoner": [{
                     "organisasjonsnummer": "1212",
                     "navn": "Nei",
-                    "normal_arbeidsuke": null,
-                    "redusert_arbeidsuke": null
+                    "redusert_arbeidsprosent": null
+                },{
+                    "organisasjonsnummer": "54321",
+                    "navn": "Navn",
+                    "redusert_arbeidsprosent": 22.512
                 }]
             },
             "medlemskap": {
@@ -53,7 +54,8 @@ class JournalforingsFormatTest {
             "grad": 55,
             "har_medsoker": true,
             "har_bekreftet_opplysninger" : true,
-	        "har_forstatt_rettigheter_og_plikter": true
+	        "har_forstatt_rettigheter_og_plikter": true,
+            "dager_per_uke_borte_fra_jobb": 3.5
         }
         """.trimIndent(), String(json), true)
 
@@ -79,7 +81,8 @@ class JournalforingsFormatTest {
         relasjonTilBarnet = "Mor",
         arbeidsgivere = Arbeidsgivere(
             organisasjoner = listOf(
-                Organisasjon("1212", "Nei")
+                Organisasjon("1212", "Nei"),
+                Organisasjon("54321", "Navn", 22.512)
             )
         ),
         vedleggUrls = listOf(
@@ -93,6 +96,7 @@ class JournalforingsFormatTest {
         harMedsoker = true,
         grad = 55,
         harBekreftetOpplysninger = true,
-        harForstattRettigheterOgPlikter = true
+        harForstattRettigheterOgPlikter = true,
+        dagerPerUkeBorteFraJobb = 3.5
     )
 }
