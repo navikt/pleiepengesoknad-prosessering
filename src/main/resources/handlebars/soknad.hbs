@@ -107,7 +107,6 @@
             {{/if}}
 
             <!-- TILSYNSORDNING -->
-
             {{# if tilsynsordning }}
                 <h2><span>Tilsynsordning</span></h2>
 
@@ -171,8 +170,8 @@
                     <br/>
                     {{#if tilsynsordning.tilleggsinformasjon}}
                         <div class="fritekst">
-                            <img class="ikon" src="{{ image "Fritekst.png" }}"/>
-                            <p>{{tilsynsordning.tilleggsinformasjon}}</p>
+                            <img class="lite_ikon" src="{{ image "Fritekst.png" }}"/>
+                            <p class="fritekst_textarea">{{tilsynsordning.tilleggsinformasjon}}</p>
                         </div>
                     {{/if}}
                 {{/eq}}
@@ -200,8 +199,8 @@
                     <br/>
                     {{#if tilsynsordning.annet}}
                         <div class="fritekst">
-                            <img class="ikon" src="{{ image "Fritekst.png" }}"/>
-                            <p>{{tilsynsordning.annet}}</p>
+                            <img class="lite_ikon" src="{{ image "Fritekst.png" }}"/>
+                            <p class="fritekst_textarea">{{tilsynsordning.annet}}</p>
                         </div>
                     {{/if}}
                 {{/eq}}
@@ -221,8 +220,8 @@
                     <br/>
                     <br/>
                     <div class="fritekst">
-                        <img class="ikon" src="{{ image "Fritekst.png" }}"/>
-                        <p>{{nattevaak.tilleggsinformasjon}}</p>
+                        <img class="lite_ikon" src="{{ image "Fritekst.png" }}"/>
+                        <p class="fritekst_textarea">{{nattevaak.tilleggsinformasjon}}</p>
                     </div>
                 {{/if}}
             {{/if}}
@@ -241,8 +240,8 @@
                     <br/>
                     <br/>
                     <div class="fritekst">
-                        <img class="ikon" src="{{ image "Fritekst.png" }}"/>
-                        <p>{{beredskap.tilleggsinformasjon}}</p>
+                        <img class="lite_ikon" src="{{ image "Fritekst.png" }}"/>
+                        <p class="fritekst_textarea">{{beredskap.tilleggsinformasjon}}</p>
                     </div>
                 {{/if}}
             {{/if}}
