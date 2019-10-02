@@ -2,6 +2,7 @@ package no.nav.helse
 
 import no.nav.helse.prosessering.v1.*
 import java.io.File
+import java.time.Duration
 import java.time.LocalDate
 import java.time.ZonedDateTime
 import kotlin.test.Ignore
@@ -43,7 +44,10 @@ class PdfV1GeneratorTest {
         ),
         grad: Int? = 60,
         harMedsoker: Boolean = true,
-        dagerPerUkeBorteFraJobb: Double? = 4.5
+        dagerPerUkeBorteFraJobb: Double? = 4.5,
+        tilsynsordning: Tilsynsordning? = null,
+        beredskap: Beredskap? = null,
+        nattevaak: Nattevaak? = null
     ) = MeldingV1(
         sprak = sprak,
         soknadId = soknadId,
@@ -70,7 +74,10 @@ class PdfV1GeneratorTest {
         harMedsoker = harMedsoker,
         harForstattRettigheterOgPlikter = true,
         harBekreftetOpplysninger = true,
-        dagerPerUkeBorteFraJobb = dagerPerUkeBorteFraJobb
+        dagerPerUkeBorteFraJobb = dagerPerUkeBorteFraJobb,
+        tilsynsordning = tilsynsordning,
+        nattevaak = nattevaak,
+        beredskap = beredskap
     )
 
     private fun genererOppsummeringsPdfer(writeBytes: Boolean) {
@@ -100,6 +107,41 @@ class PdfV1GeneratorTest {
 
         id = "7-utenDagerBorteFraJobb"
         pdf = generator.generateSoknadOppsummeringPdf(melding = gyldigMelding(soknadId = id, harMedsoker = false, organisasjoner = listOf(), barn = Barn(fodselsnummer = null, alternativId = null, navn = null), grad = null, dagerPerUkeBorteFraJobb = null))
+        if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
+
+        id = "8-medTilsynsOrdningJa"
+        pdf = generator.generateSoknadOppsummeringPdf(melding = gyldigMelding(soknadId = id, harMedsoker = false, organisasjoner = listOf(), barn = Barn(fodselsnummer = null, alternativId = null, navn = null), grad = null, dagerPerUkeBorteFraJobb = null, tilsynsordning = Tilsynsordning(
+            svar = "ja",
+            ja = TilsynsordningJa(
+                mandag = Duration.ofHours(0).plusMinutes(0),
+                tirsdag = Duration.ofHours(7).plusMinutes(55),
+                onsdag = null,
+                torsdag = Duration.ofHours(1).plusMinutes(1),
+                fredag = Duration.ofMinutes(43),
+                tilleggsinformasjon = "Unntatt uke 43, da skal han være hos pappaen sin."
+            ),
+            vetIkke = null
+        )))
+        if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
+
+        id = "9-medTilsynsordningVetIkke"
+        pdf = generator.generateSoknadOppsummeringPdf(melding = gyldigMelding(soknadId = id, harMedsoker = false, organisasjoner = listOf(), barn = Barn(fodselsnummer = null, alternativId = null, navn = null), grad = null, dagerPerUkeBorteFraJobb = null, tilsynsordning = Tilsynsordning(
+            svar = "vet_ikke",
+            ja = null,
+            vetIkke = TilsynsordningVetIkke(
+                svar = "annet",
+                annet = "Jeg har ingen anelse om dette."
+            )
+        )))
+        if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
+
+
+        id = "10-medTilsynsordningNei"
+        pdf = generator.generateSoknadOppsummeringPdf(melding = gyldigMelding(soknadId = id, harMedsoker = false, organisasjoner = listOf(), barn = Barn(fodselsnummer = null, alternativId = null, navn = null), grad = null, dagerPerUkeBorteFraJobb = null, tilsynsordning = Tilsynsordning(
+            svar = "nei",
+            ja = null,
+            vetIkke = null
+        )))
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
     }
 

@@ -4,6 +4,7 @@ import no.nav.helse.dokument.JournalforingsFormat
 import no.nav.helse.prosessering.v1.*
 import org.skyscreamer.jsonassert.JSONAssert
 import java.net.URI
+import java.time.Duration
 import java.time.LocalDate
 import java.time.ZoneId
 import java.time.ZonedDateTime
@@ -55,7 +56,27 @@ class JournalforingsFormatTest {
             "har_medsoker": true,
             "har_bekreftet_opplysninger" : true,
 	        "har_forstatt_rettigheter_og_plikter": true,
-            "dager_per_uke_borte_fra_jobb": 3.5
+            "dager_per_uke_borte_fra_jobb": 3.5,
+            "tilsynsordning": {
+                "svar": "ja",
+                "ja": {
+                    "mandag": "PT5H",
+                    "tirsdag": "PT4H",
+                    "onsdag": "PT3H45M",
+                    "torsdag": "PT2H",
+                    "fredag": "PT1H30M",
+                    "tilleggsinformasjon": "Litt tilleggsinformasjon."
+                },
+                "vet_ikke": null
+            },
+            "beredskap": {
+                "i_beredskap": true,
+                "tilleggsinformasjon": "I Beredskap",
+            },
+            "nattevaak": {
+                "har_nattevaak": true,
+                "tilleggsinformasjon": "Har Nattevåk"
+            }
         }
         """.trimIndent(), String(json), true)
 
@@ -97,6 +118,26 @@ class JournalforingsFormatTest {
         grad = 55,
         harBekreftetOpplysninger = true,
         harForstattRettigheterOgPlikter = true,
-        dagerPerUkeBorteFraJobb = 3.5
+        dagerPerUkeBorteFraJobb = 3.5,
+        tilsynsordning = Tilsynsordning(
+            svar = "ja",
+            ja = TilsynsordningJa(
+                mandag = Duration.ofHours(5),
+                tirsdag = Duration.ofHours(4),
+                onsdag = Duration.ofHours(3).plusMinutes(45),
+                torsdag = Duration.ofHours(2),
+                fredag = Duration.ofHours(1).plusMinutes(30),
+                tilleggsinformasjon = "Litt tilleggsinformasjon."
+            ),
+            vetIkke = null
+        ),
+        beredskap = Beredskap(
+            beredskap = true,
+            tilleggsinformasjon = "I Beredskap"
+        ),
+        nattevaak = Nattevaak(
+            harNattevaak = true,
+            tilleggsinformasjon = "Har Nattevåk"
+        )
     )
 }

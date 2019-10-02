@@ -106,40 +106,104 @@
             </ul>
             {{/if}}
 
-            <!-- ETABLERT TILSYNSORDNING -->
+            <!-- TILSYNSORDNING -->
 
-            {{# if etablert_tilsynsordning }}
-                <h2><span>Etablert tilsynsordning</span></h2>
+            {{# if tilsynsordning }}
+                <h2><span>Tilsynsordning</span></h2>
 
                 <!-- Sjekkbokser -->
-                {{#eq etablert_tilsynsordning.svar "ja" }}
+                {{#eq tilsynsordning.tilsynsordning_svar "ja" }}
                     <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Ja
                     <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Nei
                     <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Vet ikke
                 {{/eq}}
-                {{#eq etablert_tilsynsordning.svar "nei" }}
+                {{#eq tilsynsordning.tilsynsordning_svar "nei" }}
                     <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Ja
                     <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Nei
                     <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Vet ikke
                 {{/eq}}
-                {{#eq etablert_tilsynsordning.svar "vet_ikke" }}
+                {{#eq tilsynsordning.tilsynsordning_svar "vet_ikke" }}
                     <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Ja
                     <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Nei
                     <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Vet ikke
                 {{/eq}}
 
                 <!-- Ja -->
-                {{#eq etablert_tilsynsordning.svar "ja" }}
+                {{#eq tilsynsordning.tilsynsordning_svar "ja" }}
                     <hr/>
-                    {{# each etablert_tilsynsordning.dager as |dag|~}}
-                        <p><span class="sporsmalstekst">{{dag.navn}}: </span><span>{{ dag.varighet}}
-                            {{# if dag.avkortet_til}}
-                                (Avkortet til {{dag.avkortet_til}})
-                            {{/if}}
-                        </span></p>
-                    {{/each}}
+                    <p><span class="sporsmalstekst">Mandag: </span>
+                        {{# if tilsynsordning.mandag }}
+                            {{tilsynsordning.mandag}}
+                        {{ else }}
+                            <span class="ikke_satt">Ikke angitt</span>
+                        {{/if}}
+                    </p>
+                    <p><span class="sporsmalstekst">Tirsdag: </span>
+                        {{# if tilsynsordning.tirsdag }}
+                            {{tilsynsordning.tirsdag}}
+                        {{ else }}
+                            <span class="ikke_satt">Ikke angitt</span>
+                        {{/if}}
+                    </p>
+                    <p><span class="sporsmalstekst">Onsdag: </span>
+                        {{# if tilsynsordning.onsdag }}
+                            {{tilsynsordning.onsdag}}
+                        {{ else }}
+                            <span class="ikke_satt">Ikke angitt</span>
+                        {{/if}}
+                    </p>
+                    <p><span class="sporsmalstekst">Torsdag: </span>
+                        {{# if tilsynsordning.torsdag }}
+                            {{tilsynsordning.torsdag}}
+                        {{ else }}
+                            <span class="ikke_satt">Ikke angitt</span>
+                        {{/if}}
+                    </p>
+                    <p><span class="sporsmalstekst">Fredag: </span>
+                        {{# if tilsynsordning.fredag }}
+                            {{tilsynsordning.fredag}}
+                        {{ else }}
+                            <span class="ikke_satt">Ikke angitt</span>
+                        {{/if}}
+                    </p>
+                    <br/>
+                    <p>Dette tilsvarer <span class="sporsmalstekst">{{tilsynsordning.prosent_av_normal_arbeidsuke}}%</span> av en normal arbeidsuke på <span class="sporsmalstekst">37 timer og 30 minutter.</span></p>
+                    <br/>
+                    {{#if tilsynsordning.tilleggsinformasjon}}
+                        <div class="fritekst">
+                            <img class="ikon" src="{{ image "Fritekst.png" }}"/>
+                            <p>{{tilsynsordning.tilleggsinformasjon}}</p>
+                        </div>
+                    {{/if}}
+                {{/eq}}
+
+                <!-- Vet ikke -->
+                {{#eq tilsynsordning.tilsynsordning_svar "vet_ikke" }}
                     <hr/>
-                    <p>Barnet er i etablert tilsynsordning {{etablert_tilsynsordning.prosent}}% av en normal arbeidsuke på 37 timer og 30 minutter.</p>
+                    <!-- Sjekkbokser -->
+                    {{#eq tilsynsordning.svar "er_sporadisk" }}
+                        <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Er sporadisk
+                        <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Er ikke laget en plan
+                        <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Annet
+                    {{/eq}}
+                    {{#eq tilsynsordning.svar "er_ikke_laget_en_plan" }}
+                        <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Er sporadisk
+                        <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Er ikke laget en plan
+                        <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Annet
+                    {{/eq}}
+                    {{#eq tilsynsordning.svar "annet" }}
+                        <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Er sporadisk
+                        <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Er ikke laget en plan
+                        <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Annet
+                    {{/eq}}
+                    <br/>
+                    <br/>
+                    {{#if tilsynsordning.annet}}
+                        <div class="fritekst">
+                            <img class="ikon" src="{{ image "Fritekst.png" }}"/>
+                            <p>{{tilsynsordning.annet}}</p>
+                        </div>
+                    {{/if}}
                 {{/eq}}
             {{/if}}
 

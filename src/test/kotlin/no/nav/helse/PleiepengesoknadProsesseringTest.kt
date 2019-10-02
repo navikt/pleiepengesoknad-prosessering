@@ -264,7 +264,27 @@ class PleiepengesoknadProsesseringTest {
         harMedsoker = true,
         grad = 70,
         harBekreftetOpplysninger = true,
-        harForstattRettigheterOgPlikter = true
+        harForstattRettigheterOgPlikter = true,
+        tilsynsordning = Tilsynsordning(
+            svar = "ja",
+            ja = TilsynsordningJa(
+                mandag = Duration.ofHours(5),
+                tirsdag = Duration.ofHours(4),
+                onsdag = Duration.ofHours(3).plusMinutes(45),
+                torsdag = Duration.ofHours(2),
+                fredag = Duration.ofHours(1).plusMinutes(30),
+                tilleggsinformasjon = "Litt tilleggsinformasjon."
+            ),
+            vetIkke = null
+        ),
+        beredskap = Beredskap(
+            beredskap = true,
+            tilleggsinformasjon = "I Beredskap"
+        ),
+        nattevaak = Nattevaak(
+            harNattevaak = true,
+            tilleggsinformasjon = "Har Nattevåk"
+        )
     )
 
     private fun ventPaaAtRetryMekanismeIStreamProsessering() = runBlocking{ delay(Duration.ofSeconds(30)) }

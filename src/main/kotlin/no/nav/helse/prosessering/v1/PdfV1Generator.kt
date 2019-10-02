@@ -51,7 +51,8 @@ internal class PdfV1Generator  {
             "Checkbox_on.png" to loadPng("Checkbox_on"),
             "Hjelp.png" to loadPng("Hjelp"),
             "Navlogo.png" to loadPng("Navlogo"),
-            "Personikon.png" to loadPng("Personikon")
+            "Personikon.png" to loadPng("Personikon"),
+            "Fritekst.png" to loadPng("Fritekst")
         )
     }
 
@@ -96,7 +97,8 @@ internal class PdfV1Generator  {
                     "har_medsoker" to melding.harMedsoker,
                     "ingen_arbeidsgivere" to melding.arbeidsgivere.organisasjoner.isEmpty(),
                     "sprak" to melding.sprak?.sprakTilTekst()
-                )
+                ),
+                "tilsynsordning" to tilsynsordning(melding.tilsynsordning)
             ))
             .resolver(MapValueResolver.INSTANCE)
             .build()).let { html ->
@@ -114,6 +116,29 @@ internal class PdfV1Generator  {
                 it.toByteArray()
             }
         }
+    }
+
+    private fun tilsynsordning(tilsynsordning: Tilsynsordning?) = when {
+        tilsynsordning == null -> null
+        "ja" == tilsynsordning.svar -> mapOf(
+            "tilsynsordning_svar" to "ja",
+            "mandag" to tilsynsordning.ja?.mandag?.somTekst(),
+            "tirsdag" to tilsynsordning.ja?.tirsdag?.somTekst(),
+            "onsdag" to tilsynsordning.ja?.onsdag?.somTekst(),
+            "torsdag" to tilsynsordning.ja?.torsdag?.somTekst(),
+            "fredag" to tilsynsordning.ja?.fredag?.somTekst(),
+            "tilleggsinformasjon" to tilsynsordning.ja?.tilleggsinformasjon,
+            "prosent_av_normal_arbeidsuke" to tilsynsordning.ja?.prosentAvNormalArbeidsuke()?.formatertMedEnDesimal()
+        )
+        "vet_ikke" == tilsynsordning.svar -> mapOf(
+            "tilsynsordning_svar" to "vet_ikke",
+            "svar" to tilsynsordning.vetIkke?.svar,
+            "annet" to tilsynsordning.vetIkke?.annet
+        )
+        "nei" == tilsynsordning.svar -> mapOf(
+            "tilsynsordning_svar" to "nei"
+        )
+        else -> null
     }
 
     private fun PdfRendererBuilder.medFonter() =
