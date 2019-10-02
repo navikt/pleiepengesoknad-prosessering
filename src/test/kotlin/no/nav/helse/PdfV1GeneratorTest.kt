@@ -110,18 +110,28 @@ class PdfV1GeneratorTest {
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
         id = "8-medTilsynsOrdningJa"
-        pdf = generator.generateSoknadOppsummeringPdf(melding = gyldigMelding(soknadId = id, harMedsoker = false, organisasjoner = listOf(), barn = Barn(fodselsnummer = null, alternativId = null, navn = null), grad = null, dagerPerUkeBorteFraJobb = null, tilsynsordning = Tilsynsordning(
-            svar = "ja",
-            ja = TilsynsordningJa(
-                mandag = Duration.ofHours(0).plusMinutes(0),
-                tirsdag = Duration.ofHours(7).plusMinutes(55),
-                onsdag = null,
-                torsdag = Duration.ofHours(1).plusMinutes(1),
-                fredag = Duration.ofMinutes(43),
-                tilleggsinformasjon = "Unntatt uke 43, da skal han være hos pappaen sin."
+        pdf = generator.generateSoknadOppsummeringPdf(melding = gyldigMelding(soknadId = id, harMedsoker = false, organisasjoner = listOf(), barn = Barn(fodselsnummer = null, alternativId = null, navn = null), grad = null, dagerPerUkeBorteFraJobb = null,
+            tilsynsordning = Tilsynsordning(
+                svar = "ja",
+                ja = TilsynsordningJa(
+                    mandag = Duration.ofHours(0).plusMinutes(0),
+                    tirsdag = Duration.ofHours(7).plusMinutes(55),
+                    onsdag = null,
+                    torsdag = Duration.ofHours(1).plusMinutes(1),
+                    fredag = Duration.ofMinutes(43),
+                    tilleggsinformasjon = "Unntatt uke 43, da skal han være hos pappaen sin."
+                ),
+                vetIkke = null
             ),
-            vetIkke = null
-        )))
+            beredskap = Beredskap(
+                beredskap = true,
+                tilleggsinformasjon = "Jeg er i beredskap."
+            ),
+            nattevaak = Nattevaak(
+                harNattevaak = false,
+                tilleggsinformasjon = null
+            )
+        ))
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
         id = "9-medTilsynsordningVetIkke"

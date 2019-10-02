@@ -207,6 +207,46 @@
                 {{/eq}}
             {{/if}}
 
+            <!-- NATTEVÅK -->
+            {{# if nattevaak }}
+                <h2><span>Nattevåk</span></h2>
+                {{# if nattevaak.har_nattevaak }}
+                    <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Ja
+                    <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Nei
+                {{else}}
+                    <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Ja
+                    <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Nei
+                {{/if}}
+                {{# if nattevaak.tilleggsinformasjon }}
+                    <br/>
+                    <br/>
+                    <div class="fritekst">
+                        <img class="ikon" src="{{ image "Fritekst.png" }}"/>
+                        <p>{{nattevaak.tilleggsinformasjon}}</p>
+                    </div>
+                {{/if}}
+            {{/if}}
+
+            <!-- Beredskap -->
+            {{# if nattevaak }}
+                <h2><span>Beredskap</span></h2>
+                {{# if beredskap.i_beredskap }}
+                    <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Ja
+                    <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Nei
+                {{else}}
+                    <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Ja
+                    <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Nei
+                {{/if}}
+                {{# if beredskap.tilleggsinformasjon }}
+                    <br/>
+                    <br/>
+                    <div class="fritekst">
+                        <img class="ikon" src="{{ image "Fritekst.png" }}"/>
+                        <p>{{beredskap.tilleggsinformasjon}}</p>
+                    </div>
+                {{/if}}
+            {{/if}}
+
             <!-- MEDLEMSKAP -->
             <h2><span>Medlemskap</span></h2>
 

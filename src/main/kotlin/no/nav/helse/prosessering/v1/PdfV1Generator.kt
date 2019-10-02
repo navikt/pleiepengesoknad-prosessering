@@ -98,7 +98,9 @@ internal class PdfV1Generator  {
                     "ingen_arbeidsgivere" to melding.arbeidsgivere.organisasjoner.isEmpty(),
                     "sprak" to melding.sprak?.sprakTilTekst()
                 ),
-                "tilsynsordning" to tilsynsordning(melding.tilsynsordning)
+                "tilsynsordning" to tilsynsordning(melding.tilsynsordning),
+                "nattevaak" to nattevåk(melding.nattevaak),
+                "beredskap" to beredskap(melding.beredskap)
             ))
             .resolver(MapValueResolver.INSTANCE)
             .build()).let { html ->
@@ -115,6 +117,26 @@ internal class PdfV1Generator  {
             return outputStream.use {
                 it.toByteArray()
             }
+        }
+    }
+
+    private fun nattevåk(nattevaak: Nattevaak?) = when {
+        nattevaak == null -> null
+        else -> {
+            mapOf(
+                "har_nattevaak" to nattevaak.harNattevaak,
+                "tilleggsinformasjon" to nattevaak.tilleggsinformasjon
+            )
+        }
+    }
+
+    private fun beredskap(beredskap: Beredskap?) = when {
+        beredskap == null -> null
+        else -> {
+            mapOf(
+                "i_beredskap" to beredskap.beredskap,
+                "tilleggsinformasjon" to beredskap.tilleggsinformasjon
+            )
         }
     }
 
