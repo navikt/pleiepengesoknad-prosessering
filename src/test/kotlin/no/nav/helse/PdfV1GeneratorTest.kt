@@ -119,13 +119,13 @@ class PdfV1GeneratorTest {
                     onsdag = null,
                     torsdag = Duration.ofHours(1).plusMinutes(1),
                     fredag = Duration.ofMinutes(43),
-                    tilleggsinformasjon = "Unntatt uke 43, da skal han være hos pappaen sin."
+                    tilleggsinformasjon = "Unntatt uke 43, da skal han være hos pappaen sin.\rmed\nlinje\r\nlinjeskift."
                 ),
                 vetIkke = null
             ),
             beredskap = Beredskap(
                 beredskap = true,
-                tilleggsinformasjon = "Jeg er i beredskap."
+                tilleggsinformasjon = "Jeg er i beredskap\rmed\nlinje\r\nlinjeskift."
             ),
             nattevaak = Nattevaak(
                 harNattevaak = false,
@@ -140,7 +140,7 @@ class PdfV1GeneratorTest {
             ja = null,
             vetIkke = TilsynsordningVetIkke(
                 svar = "annet",
-                annet = "Jeg har ingen anelse om dette."
+                annet = "Jeg har ingen anelse om dette\rmed\nlinje\r\nlinjeskift."
             )
         )))
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)

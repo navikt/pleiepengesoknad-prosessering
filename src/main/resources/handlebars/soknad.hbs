@@ -171,7 +171,7 @@
                     {{#if tilsynsordning.tilleggsinformasjon}}
                         <div class="fritekst">
                             <img class="lite_ikon" src="{{ image "Fritekst.png" }}"/>
-                            <p class="fritekst_textarea">{{tilsynsordning.tilleggsinformasjon}}</p>
+                            <p class="fritekst_textarea">{{fritekst tilsynsordning.tilleggsinformasjon}}</p>
                         </div>
                     {{/if}}
                 {{/eq}}
@@ -200,7 +200,7 @@
                     {{#if tilsynsordning.annet}}
                         <div class="fritekst">
                             <img class="lite_ikon" src="{{ image "Fritekst.png" }}"/>
-                            <p class="fritekst_textarea">{{tilsynsordning.annet}}</p>
+                            <p class="fritekst_textarea">{{fritekst tilsynsordning.annet}}</p>
                         </div>
                     {{/if}}
                 {{/eq}}
@@ -221,7 +221,7 @@
                     <br/>
                     <div class="fritekst">
                         <img class="lite_ikon" src="{{ image "Fritekst.png" }}"/>
-                        <p class="fritekst_textarea">{{nattevaak.tilleggsinformasjon}}</p>
+                        <p class="fritekst_textarea">{{fritekst nattevaak.tilleggsinformasjon}}</p>
                     </div>
                 {{/if}}
             {{/if}}
@@ -241,7 +241,7 @@
                     <br/>
                     <div class="fritekst">
                         <img class="lite_ikon" src="{{ image "Fritekst.png" }}"/>
-                        <p class="fritekst_textarea">{{beredskap.tilleggsinformasjon}}</p>
+                        <p class="fritekst_textarea">{{fritekst beredskap.tilleggsinformasjon}}</p>
                     </div>
                 {{/if}}
             {{/if}}

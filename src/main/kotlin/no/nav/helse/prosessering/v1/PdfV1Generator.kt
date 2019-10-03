@@ -32,6 +32,15 @@ internal class PdfV1Generator  {
             registerHelper("eq", Helper<String> { context, options ->
                 if (context == options.param(0)) options.fn() else options.inverse()
             })
+            registerHelper("fritekst", Helper<String> { context, _ ->
+                if (context == null) "" else {
+                    val text = Handlebars.Utils.escapeExpression(context)
+                        .toString()
+                        .replace(Regex("\\r\\n|[\\n\\r]"), "<br/>")
+                    Handlebars.SafeString(text)
+                }
+            })
+
             infiniteLoops(true)
         }
 
