@@ -70,7 +70,11 @@
                 <img class="ikon" src="{{ image "Hjelp.png" }}"/>
                 <ul>
                     {{# if hjelp.har_medsoker }}
-                        <li>Det er angitt at flere personer vil søke om pleiepenger i samme periode.</li>
+                        <li>Det er angitt at flere personer vil søke om pleiepenger i samme periode.
+                            {{# if dager_per_uke_borte_fra_jobb }}
+                                Skal være borte fra jobb {{dager_per_uke_borte_fra_jobb}} dager per uke for å ta hånd om barnet.
+                            {{/if}}
+                        </li>
                     {{else}}
                         <li>Det er angitt at det <span class="highlight">ikke</span> er andre som søker pleiepenger i samme periode.</li>
                     {{/if}}
@@ -79,9 +83,6 @@
                     {{/if}}
                     {{# if hjelp.sprak }}
                         <li>Det er valgt {{hjelp.sprak}} som språk i søknaden.</li>
-                    {{/if}}
-                    {{# if dager_per_uke_borte_fra_jobb }}
-                        <li>Skal være borte fra jobb {{dager_per_uke_borte_fra_jobb}} dager per uke for å ta hånd om barnet.</li>
                     {{/if}}
                 </ul>
             </div>
