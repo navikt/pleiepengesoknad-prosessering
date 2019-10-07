@@ -72,7 +72,7 @@
                     {{# if hjelp.har_medsoker }}
                         <li>Det er angitt at flere personer vil søke om pleiepenger i samme periode.
                             {{# if dager_per_uke_borte_fra_jobb }}
-                                Denne søkeren skal være borte fra jobb {{dager_per_uke_borte_fra_jobb}} dager per uke for å ta hånd om barnet.
+                                Denne søkeren skal være borte fra jobb {{dager_per_uke_borte_fra_jobb}} dager per uke i perioden for å ta hånd om barnet.
                             {{/if}}
                         </li>
                     {{else}}
@@ -99,7 +99,7 @@
                     <li>Organisasjonsnummer {{org.organisasjonsnummer}}</li>
                     <li>
                         {{# if org.skal_jobbe_prosent }}
-                            Skal jobbe {{org.skal_jobbe_prosent }}% av normal tid, har et inntektstap i denne stillingen på {{org.inntektstap}}%
+                            Skal jobbe {{org.skal_jobbe_prosent }}% av sin stilling, har et inntektstap hos denne arbeidsgiveren på {{org.inntektstap}}%
                         {{/if}}
                     </li>
                 </ul>
