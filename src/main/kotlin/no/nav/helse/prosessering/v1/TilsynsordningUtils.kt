@@ -2,7 +2,7 @@ package no.nav.helse.prosessering.v1
 
 import java.time.Duration
 
-private val NormalArbeidsdag = Duration.ofHours(7).plusMinutes(30)
+internal val NormalArbeidsdag = Duration.ofHours(7).plusMinutes(30)
 private val NormalArbeidsuke = Duration.ofHours(37).plusMinutes(30)
 
 internal fun Duration.somTekst() : String {

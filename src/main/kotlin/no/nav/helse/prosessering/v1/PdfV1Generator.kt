@@ -65,12 +65,17 @@ internal class PdfV1Generator  {
         )
     }
 
+    private fun MeldingV1.resolvePdfVersion() = when {
+        nattevaak == null && beredskap == null -> "1.0"
+        else -> "2.0"
+    }
+
     internal fun generateSoknadOppsummeringPdf(
         melding: MeldingV1
     ) : ByteArray {
         soknadTemplate.apply(Context
             .newBuilder(mapOf(
-                "version" to "2.0",
+                "version" to melding.resolvePdfVersion(),
                 "soknad_id" to melding.soknadId,
                 "soknad_mottatt_dag" to melding.mottatt.withZoneSameInstant(ZONE_ID).norskDag(),
                 "soknad_mottatt" to DATE_TIME_FORMATTER.format(melding.mottatt),
