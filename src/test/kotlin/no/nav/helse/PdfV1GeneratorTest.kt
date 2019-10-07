@@ -25,12 +25,12 @@ class PdfV1GeneratorTest {
             Organisasjon(
                 organisasjonsnummer = "975124568",
                 navn = "Kiwi",
-                redusertArbeidsprosent = 22.00
+                skalJobbeProsent = 22.00
             ),
             Organisasjon(
                 organisasjonsnummer = "952352687",
                 navn = "Bjerkheim gård",
-                redusertArbeidsprosent = 50.665
+                skalJobbeProsent = 50.665
             ),
             Organisasjon(
                 organisasjonsnummer = "952352655",

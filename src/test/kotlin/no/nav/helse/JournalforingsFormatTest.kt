@@ -41,11 +41,11 @@ class JournalforingsFormatTest {
                 "organisasjoner": [{
                     "organisasjonsnummer": "1212",
                     "navn": "Nei",
-                    "redusert_arbeidsprosent": null
+                    "skal_jobbe_prosent": null
                 },{
                     "organisasjonsnummer": "54321",
                     "navn": "Navn",
-                    "redusert_arbeidsprosent": 22.512
+                    "skal_jobbe_prosent": 22.512
                 }]
             },
             "medlemskap": {

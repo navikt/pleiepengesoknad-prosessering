@@ -133,19 +133,19 @@ class PleiepengesoknadProsesseringTest {
     }
 
     @Test
-    fun `Melding med språk og redusert arbeidsprosent blir prosessert`() {
+    fun `Melding med språk og skal jobbe prosent blir prosessert`() {
 
         val sprak = "nn"
-        val jobb1RedusertArbeidsprosent = 50.422
-        val jobb2RedusertArbeidsprosent = 12.111
+        val jobb1SkalJobbeProsent = 50.422
+        val jobb2SkalJobberProsent = 12.111
 
         val melding = gyldigMelding(
             fodselsnummerSoker = gyldigFodselsnummerA,
             fodselsnummerBarn = gyldigFodselsnummerB,
             sprak = sprak,
             organisasjoner = listOf(
-                Organisasjon("917755736", "Jobb1", jobb1RedusertArbeidsprosent),
-                Organisasjon("917755737", "Jobb2", jobb2RedusertArbeidsprosent)
+                Organisasjon("917755736", "Jobb1", jobb1SkalJobbeProsent),
+                Organisasjon("917755737", "Jobb2", jobb2SkalJobberProsent)
             )
         )
 
@@ -157,8 +157,8 @@ class PleiepengesoknadProsesseringTest {
         val jobb2 = oppgaveOpprettet.melding.arbeidsgivere.organisasjoner.firstOrNull { it.navn == "Jobb2" }
         assertNotNull(jobb1)
         assertNotNull(jobb2)
-        assertEquals(jobb1RedusertArbeidsprosent, jobb1.redusertArbeidsprosent)
-        assertEquals(jobb2RedusertArbeidsprosent, jobb2.redusertArbeidsprosent)
+        assertEquals(jobb1SkalJobbeProsent, jobb1.skalJobbeProsent)
+        assertEquals(jobb2SkalJobberProsent, jobb2.skalJobbeProsent)
     }
 
     @Test

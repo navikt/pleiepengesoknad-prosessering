@@ -48,7 +48,7 @@ data class Arbeidsgivere(
 data class Organisasjon(
     val organisasjonsnummer: String,
     val navn: String?,
-    val redusertArbeidsprosent: Double? = null
+    val skalJobbeProsent: Double? = null
 )
 
 data class Medlemskap(

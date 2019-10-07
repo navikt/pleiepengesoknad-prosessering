@@ -179,13 +179,13 @@ internal class PdfV1Generator  {
 }
 
 private fun List<Organisasjon>.somMap() = map {
-    val redusertArbeidsprosent = it.redusertArbeidsprosent?.avrundetMedEnDesimal()
-    val inntektstap = redusertArbeidsprosent?.redusertArbeidsprosentTilInntektstap()
+    val skalJobbeProsent = it.skalJobbeProsent?.avrundetMedEnDesimal()
+    val inntektstap = skalJobbeProsent?.skalJobbeProsentTilInntektstap()
 
     mapOf<String,Any?>(
         "navn" to it.navn,
         "organisasjonsnummer" to it.formaterOrganisasjonsnummer(),
-        "redusert_arbeidsprosent" to redusertArbeidsprosent?.formatertMedEnDesimal(),
+        "skal_jobbe_prosent" to skalJobbeProsent?.formatertMedEnDesimal(),
         "inntektstap" to inntektstap?.formatertMedEnDesimal()
     )
 }
