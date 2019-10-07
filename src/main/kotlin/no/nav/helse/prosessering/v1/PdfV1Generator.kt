@@ -70,6 +70,7 @@ internal class PdfV1Generator  {
     ) : ByteArray {
         soknadTemplate.apply(Context
             .newBuilder(mapOf(
+                "version" to "2.0",
                 "soknad_id" to melding.soknadId,
                 "soknad_mottatt_dag" to melding.mottatt.withZoneSameInstant(ZONE_ID).norskDag(),
                 "soknad_mottatt" to DATE_TIME_FORMATTER.format(melding.mottatt),
