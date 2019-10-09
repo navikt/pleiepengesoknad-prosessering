@@ -89,7 +89,13 @@
 
             <!-- ARBEIDSGIVERE -->
             {{# if arbeidsgivere.har_arbeidsgivere }}
-            <h2><span>Arbeidsgivere</span></h2>
+            <h2><span>
+                {{# if arbeidsgivere.aktuelle_arbeidsgivere }}
+                    Aktuelle arbeidsgivere
+                {{else}}
+                    Arbeidsgivere søkeren er borte fra
+                {{/if}}
+            </span></h2>
 
             <ul>
             {{# each arbeidsgivere.organisasjoner as |org|~}}
@@ -298,7 +304,7 @@
 
         <!-- FOOTER -->
         <div id="footer">
-            <span class="soknadsid">Versjon {{ version }} - {{ soknad_id }}</span>
+            <span class="soknadsid">{{ soknad_id }}</span>
             <span class="sidetall">side <span id="pagenumber"></span> av <span id="pagecount"></span></span>
         </div>
     </body>

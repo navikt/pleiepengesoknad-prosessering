@@ -65,17 +65,11 @@ internal class PdfV1Generator  {
         )
     }
 
-    private fun MeldingV1.resolvePdfVersion() = when (tilsynsordning) {
-        null -> "1.0"
-        else -> "2.0"
-    }
-
     internal fun generateSoknadOppsummeringPdf(
         melding: MeldingV1
     ) : ByteArray {
         soknadTemplate.apply(Context
             .newBuilder(mapOf(
-                "version" to melding.resolvePdfVersion(),
                 "soknad_id" to melding.soknadId,
                 "soknad_mottatt_dag" to melding.mottatt.withZoneSameInstant(ZONE_ID).norskDag(),
                 "soknad_mottatt" to DATE_TIME_FORMATTER.format(melding.mottatt),
@@ -98,6 +92,7 @@ internal class PdfV1Generator  {
                 ),
                 "arbeidsgivere" to mapOf(
                     "har_arbeidsgivere" to melding.arbeidsgivere.organisasjoner.isNotEmpty(),
+                    "aktuelle_arbeidsgivere" to melding.arbeidsgivere.organisasjoner.erAktuelleArbeidsgivere(),
                     "organisasjoner" to melding.arbeidsgivere.organisasjoner.somMap()
                 ),
                 "medlemskap" to mapOf(
@@ -195,6 +190,8 @@ private fun List<Organisasjon>.somMap() = map {
         "inntektstap" to inntektstap?.formatertMedEnDesimal()
     )
 }
+
+private fun List<Organisasjon>.erAktuelleArbeidsgivere() = any { it.skalJobbeProsent != null }
 
 private fun String.formaterId() = if (length == 11) "${this.substring(0,6)} ${this.substring(6)}" else this
 private fun Soker.formatertFodselsnummer() = this.fodselsnummer.formaterId()

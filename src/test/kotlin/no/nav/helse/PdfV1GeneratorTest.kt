@@ -24,13 +24,11 @@ class PdfV1GeneratorTest {
             ),
             Organisasjon(
                 organisasjonsnummer = "975124568",
-                navn = "Kiwi",
-                skalJobbeProsent = 22.00
+                navn = "Kiwi"
             ),
             Organisasjon(
                 organisasjonsnummer = "952352687",
-                navn = "Bjerkheim gård",
-                skalJobbeProsent = 50.665
+                navn = "Bjerkheim gård"
             ),
             Organisasjon(
                 organisasjonsnummer = "952352655",
@@ -110,7 +108,7 @@ class PdfV1GeneratorTest {
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
         id = "8-medTilsynsOrdningJa"
-        pdf = generator.generateSoknadOppsummeringPdf(melding = gyldigMelding(soknadId = id, harMedsoker = false, organisasjoner = listOf(), barn = Barn(fodselsnummer = null, alternativId = null, navn = null), grad = null, dagerPerUkeBorteFraJobb = null,
+        pdf = generator.generateSoknadOppsummeringPdf(melding = gyldigMelding(soknadId = id, harMedsoker = false, barn = Barn(fodselsnummer = null, alternativId = null, navn = null), grad = null, dagerPerUkeBorteFraJobb = null,
             tilsynsordning = Tilsynsordning(
                 svar = "ja",
                 ja = TilsynsordningJa(
@@ -130,6 +128,18 @@ class PdfV1GeneratorTest {
             nattevaak = Nattevaak(
                 harNattevaak = false,
                 tilleggsinformasjon = null
+            ),
+            organisasjoner = listOf(
+                Organisasjon(
+                    organisasjonsnummer = "987564785",
+                    navn = "NAV",
+                    skalJobbeProsent = 22.5
+                ),
+                Organisasjon(
+                    organisasjonsnummer = "975124568",
+                    navn = "Kiwi",
+                    skalJobbeProsent = 88.3123
+                )
             )
         ))
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
