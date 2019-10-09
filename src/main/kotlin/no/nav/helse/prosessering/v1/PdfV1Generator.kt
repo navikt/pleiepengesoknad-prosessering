@@ -65,8 +65,8 @@ internal class PdfV1Generator  {
         )
     }
 
-    private fun MeldingV1.resolvePdfVersion() = when {
-        nattevaak == null && beredskap == null -> "1.0"
+    private fun MeldingV1.resolvePdfVersion() = when (tilsynsordning) {
+        null -> "1.0"
         else -> "2.0"
     }
 
