@@ -15,14 +15,14 @@ object TestConfiguration {
         aktoerRegisterBaseUrl : String? = wireMockServer?.getAktoerRegisterBaseUrl(),
         pleiepengerOppgaveBaseUrl : String? = wireMockServer?.getPleiepengerOppgaveBaseUrl(),
         pleiepengerJoarkBaseUrl : String? = wireMockServer?.getPleiepengerJoarkBaseUrl(),
-        pleiepeingerDokumentBaseUrl : String? = wireMockServer?.getPleiepengerDokumentBaseUrl()
+        k9DokumentBaseUrl : String? = wireMockServer?.getK9DokumentBaseUrl()
     ) : Map<String, String>{
         val map = mutableMapOf(
             Pair("ktor.deployment.port","$port"),
             Pair("nav.aktoer_register_base_url","$aktoerRegisterBaseUrl"),
             Pair("nav.pleiepenger_oppgave_base_url","$pleiepengerOppgaveBaseUrl"),
             Pair("nav.pleiepenger_joark_base_url","$pleiepengerJoarkBaseUrl"),
-            Pair("nav.pleiepenger_dokument_base_url","$pleiepeingerDokumentBaseUrl")
+            Pair("nav.k9_dokument_base_url","$k9DokumentBaseUrl")
         )
 
         // Clients
@@ -39,8 +39,8 @@ object TestConfiguration {
             map["nav.auth.clients.1.private_key_jwk"] = ClientCredentials.ClientA.privateKeyJwk
             map["nav.auth.clients.1.certificate_hex_thumbprint"] = ClientCredentials.ClientA.certificateHexThumbprint
             map["nav.auth.clients.1.discovery_endpoint"] = wireMockServer.getAzureV2WellKnownUrl()
-            map["nav.auth.scopes.lagre-dokument"] = "pleiepenger-dokument/.default"
-            map["nav.auth.scopes.slette-dokument"] = "pleiepenger-dokument/.default"
+            map["nav.auth.scopes.lagre-dokument"] = "k9-dokument/.default"
+            map["nav.auth.scopes.slette-dokument"] = "k9-dokument/.default"
             map["nav.auth.scopes.journalfore"] = "pleiepenger-joark/.default"
             map["nav.auth.scopes.opprette-oppgave"] = "pleiepenger-oppgave/.default"
         }

@@ -8,7 +8,7 @@ import java.util.*
 private const val aktoerRegisterBasePath = "/aktoerregister-mock"
 private const val pleiepengerOppgaveBaseUrl = "/pleiepenger-oppgave-mock"
 private const val pleiepengerJoarkBaseUrl = "/pleiepenger-joark-mock"
-private const val pleiepengerDokumentBasePath = "/pleiepenger-dokument-mock"
+private const val k9DokumentBasePath = "/k9-dokument-mock"
 
 internal fun WireMockServer.stubAktoerRegisterGetAktoerIdNotFound(
     fnr: String) : WireMockServer{
@@ -60,10 +60,10 @@ internal fun WireMockServer.stubAktoerRegisterGetAktoerId(
 
 internal fun WireMockServer.stubLagreDokument() : WireMockServer {
     WireMock.stubFor(
-        WireMock.post(WireMock.urlPathMatching(".*$pleiepengerDokumentBasePath.*")).willReturn(
+        WireMock.post(WireMock.urlPathMatching(".*$k9DokumentBasePath.*")).willReturn(
             WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
-                .withHeader("Location", "${getPleiepengerDokumentBaseUrl()}/v1/dokument/${UUID.randomUUID()}")
+                .withHeader("Location", "${getK9DokumentBaseUrl()}/v1/dokument/${UUID.randomUUID()}")
                 .withStatus(201)
         )
     )
@@ -72,7 +72,7 @@ internal fun WireMockServer.stubLagreDokument() : WireMockServer {
 
 internal fun WireMockServer.stubSlettDokument() : WireMockServer{
     WireMock.stubFor(
-        WireMock.delete(WireMock.urlPathMatching(".*$pleiepengerDokumentBasePath.*")).willReturn(
+        WireMock.delete(WireMock.urlPathMatching(".*$k9DokumentBasePath.*")).willReturn(
             WireMock.aResponse()
                 .withStatus(204)
         )
@@ -127,10 +127,10 @@ private fun WireMockServer.stubHealthEndpoint(
 }
 
 internal fun WireMockServer.stubPleiepengerOppgaveHealth() = stubHealthEndpoint("$pleiepengerOppgaveBaseUrl/health")
-internal fun WireMockServer.stubPleiepengerDokumentHealth() = stubHealthEndpoint("$pleiepengerDokumentBasePath/health")
+internal fun WireMockServer.stubK9DokumentHealth() = stubHealthEndpoint("$k9DokumentBasePath/health")
 internal fun WireMockServer.stubPleiepengerJoarkHealth() = stubHealthEndpoint("$pleiepengerJoarkBaseUrl/health")
 
 internal fun WireMockServer.getAktoerRegisterBaseUrl() = baseUrl() + aktoerRegisterBasePath
 internal fun WireMockServer.getPleiepengerOppgaveBaseUrl() = baseUrl() + pleiepengerOppgaveBaseUrl
 internal fun WireMockServer.getPleiepengerJoarkBaseUrl() = baseUrl() + pleiepengerJoarkBaseUrl
-internal fun WireMockServer.getPleiepengerDokumentBaseUrl() = baseUrl() + pleiepengerDokumentBasePath
+internal fun WireMockServer.getK9DokumentBaseUrl() = baseUrl() + k9DokumentBasePath

@@ -20,7 +20,7 @@ class PleiepengesoknadProsesseringWithMocks {
                 .withNaisStsSupport()
                 .withAzureSupport()
                 .build()
-                .stubPleiepengerDokumentHealth()
+                .stubK9DokumentHealth()
                 .stubPleiepengerJoarkHealth()
                 .stubPleiepengerOppgaveHealth()
                 .stubJournalfor()

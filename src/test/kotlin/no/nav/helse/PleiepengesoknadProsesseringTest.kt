@@ -41,7 +41,7 @@ class PleiepengesoknadProsesseringTest {
             .withNaisStsSupport()
             .withAzureSupport()
             .build()
-            .stubPleiepengerDokumentHealth()
+            .stubK9DokumentHealth()
             .stubPleiepengerJoarkHealth()
             .stubPleiepengerOppgaveHealth()
             .stubJournalfor()
@@ -229,7 +229,7 @@ class PleiepengesoknadProsesseringTest {
     private fun gyldigMelding(
         fodselsnummerSoker : String,
         fodselsnummerBarn: String,
-        vedleggUrl : URI = URI("${wireMockServer.getPleiepengerDokumentBaseUrl()}/v1/dokument/${UUID.randomUUID()}"),
+        vedleggUrl : URI = URI("${wireMockServer.getK9DokumentBaseUrl()}/v1/dokument/${UUID.randomUUID()}"),
         sprak: String? = null,
         organisasjoner: List<Organisasjon> = listOf(
             Organisasjon("917755736", "Gyldig")
