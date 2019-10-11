@@ -1,5 +1,6 @@
 package no.nav.helse
 
+import com.fasterxml.jackson.databind.SerializationFeature
 import io.ktor.application.*
 import io.ktor.features.ContentNegotiation
 import io.ktor.http.HttpStatusCode
@@ -42,7 +43,8 @@ fun Application.pleiepengesoknadProsessering() {
 
     install(ContentNegotiation) {
         jackson {
-            dusseldorfConfigured()
+            dusseldorfConfigured().configure(SerializationFeature.WRITE_DURATIONS_AS_TIMESTAMPS, false)
+
         }
     }
 

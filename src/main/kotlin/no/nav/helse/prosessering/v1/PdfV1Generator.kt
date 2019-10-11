@@ -32,6 +32,15 @@ internal class PdfV1Generator  {
             registerHelper("eq", Helper<String> { context, options ->
                 if (context == options.param(0)) options.fn() else options.inverse()
             })
+            registerHelper("fritekst", Helper<String> { context, _ ->
+                if (context == null) "" else {
+                    val text = Handlebars.Utils.escapeExpression(context)
+                        .toString()
+                        .replace(Regex("\\r\\n|[\\n\\r]"), "<br/>")
+                    Handlebars.SafeString(text)
+                }
+            })
+
             infiniteLoops(true)
         }
 
@@ -51,7 +60,8 @@ internal class PdfV1Generator  {
             "Checkbox_on.png" to loadPng("Checkbox_on"),
             "Hjelp.png" to loadPng("Hjelp"),
             "Navlogo.png" to loadPng("Navlogo"),
-            "Personikon.png" to loadPng("Personikon")
+            "Personikon.png" to loadPng("Personikon"),
+            "Fritekst.png" to loadPng("Fritekst")
         )
     }
 
@@ -82,6 +92,7 @@ internal class PdfV1Generator  {
                 ),
                 "arbeidsgivere" to mapOf(
                     "har_arbeidsgivere" to melding.arbeidsgivere.organisasjoner.isNotEmpty(),
+                    "aktuelle_arbeidsgivere" to melding.arbeidsgivere.organisasjoner.erAktuelleArbeidsgivere(),
                     "organisasjoner" to melding.arbeidsgivere.organisasjoner.somMap()
                 ),
                 "medlemskap" to mapOf(
@@ -96,7 +107,10 @@ internal class PdfV1Generator  {
                     "har_medsoker" to melding.harMedsoker,
                     "ingen_arbeidsgivere" to melding.arbeidsgivere.organisasjoner.isEmpty(),
                     "sprak" to melding.sprak?.sprakTilTekst()
-                )
+                ),
+                "tilsynsordning" to tilsynsordning(melding.tilsynsordning),
+                "nattevaak" to nattevåk(melding.nattevaak),
+                "beredskap" to beredskap(melding.beredskap)
             ))
             .resolver(MapValueResolver.INSTANCE)
             .build()).let { html ->
@@ -116,6 +130,49 @@ internal class PdfV1Generator  {
         }
     }
 
+    private fun nattevåk(nattevaak: Nattevaak?) = when {
+        nattevaak == null -> null
+        else -> {
+            mapOf(
+                "har_nattevaak" to nattevaak.harNattevaak,
+                "tilleggsinformasjon" to nattevaak.tilleggsinformasjon
+            )
+        }
+    }
+
+    private fun beredskap(beredskap: Beredskap?) = when {
+        beredskap == null -> null
+        else -> {
+            mapOf(
+                "i_beredskap" to beredskap.beredskap,
+                "tilleggsinformasjon" to beredskap.tilleggsinformasjon
+            )
+        }
+    }
+
+    private fun tilsynsordning(tilsynsordning: Tilsynsordning?) = when {
+        tilsynsordning == null -> null
+        "ja" == tilsynsordning.svar -> mapOf(
+            "tilsynsordning_svar" to "ja",
+            "mandag" to tilsynsordning.ja?.mandag?.somTekst(),
+            "tirsdag" to tilsynsordning.ja?.tirsdag?.somTekst(),
+            "onsdag" to tilsynsordning.ja?.onsdag?.somTekst(),
+            "torsdag" to tilsynsordning.ja?.torsdag?.somTekst(),
+            "fredag" to tilsynsordning.ja?.fredag?.somTekst(),
+            "tilleggsinformasjon" to tilsynsordning.ja?.tilleggsinformasjon,
+            "prosent_av_normal_arbeidsuke" to tilsynsordning.ja?.prosentAvNormalArbeidsuke()?.formatertMedEnDesimal()
+        )
+        "vet_ikke" == tilsynsordning.svar -> mapOf(
+            "tilsynsordning_svar" to "vet_ikke",
+            "svar" to tilsynsordning.vetIkke?.svar,
+            "annet" to tilsynsordning.vetIkke?.annet
+        )
+        "nei" == tilsynsordning.svar -> mapOf(
+            "tilsynsordning_svar" to "nei"
+        )
+        else -> null
+    }
+
     private fun PdfRendererBuilder.medFonter() =
         useFont({ ByteArrayInputStream(REGULAR_FONT) }, "Source Sans Pro", 400, BaseRendererBuilder.FontStyle.NORMAL, false)
         .useFont({ ByteArrayInputStream(BOLD_FONT) }, "Source Sans Pro", 700, BaseRendererBuilder.FontStyle.NORMAL, false)
@@ -123,16 +180,18 @@ internal class PdfV1Generator  {
 }
 
 private fun List<Organisasjon>.somMap() = map {
-    val redusertArbeidsprosent = it.redusertArbeidsprosent?.avrundetMedEnDesimal()
-    val inntektstap = redusertArbeidsprosent?.redusertArbeidsprosentTilInntektstap()
+    val skalJobbeProsent = it.skalJobbeProsent?.avrundetMedEnDesimal()
+    val inntektstap = skalJobbeProsent?.skalJobbeProsentTilInntektstap()
 
     mapOf<String,Any?>(
         "navn" to it.navn,
         "organisasjonsnummer" to it.formaterOrganisasjonsnummer(),
-        "redusert_arbeidsprosent" to redusertArbeidsprosent?.formatertMedEnDesimal(),
+        "skal_jobbe_prosent" to skalJobbeProsent?.formatertMedEnDesimal(),
         "inntektstap" to inntektstap?.formatertMedEnDesimal()
     )
 }
+
+private fun List<Organisasjon>.erAktuelleArbeidsgivere() = any { it.skalJobbeProsent != null }
 
 private fun String.formaterId() = if (length == 11) "${this.substring(0,6)} ${this.substring(6)}" else this
 private fun Soker.formatertFodselsnummer() = this.fodselsnummer.formaterId()

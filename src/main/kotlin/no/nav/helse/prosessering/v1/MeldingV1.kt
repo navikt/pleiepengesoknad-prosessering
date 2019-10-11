@@ -22,7 +22,10 @@ data class MeldingV1 (
     val harMedsoker : Boolean,
     val harForstattRettigheterOgPlikter : Boolean,
     val harBekreftetOpplysninger : Boolean,
-    val dagerPerUkeBorteFraJobb: Double? = null
+    val dagerPerUkeBorteFraJobb: Double? = null,
+    val tilsynsordning: Tilsynsordning?,
+    val beredskap: Beredskap?,
+    val nattevaak: Nattevaak?
 )
 
 data class Soker(
@@ -45,7 +48,7 @@ data class Arbeidsgivere(
 data class Organisasjon(
     val organisasjonsnummer: String,
     val navn: String?,
-    val redusertArbeidsprosent: Double? = null
+    val skalJobbeProsent: Double? = null
 )
 
 data class Medlemskap(
@@ -53,4 +56,35 @@ data class Medlemskap(
     val harBoddIUtlandetSiste12Mnd : Boolean,
     @JsonProperty("skal_bo_i_utlandet_neste_12_mnd")
     val skalBoIUtlandetNeste12Mnd : Boolean
+)
+
+data class TilsynsordningJa(
+    val mandag: Duration?,
+    val tirsdag: Duration?,
+    val onsdag: Duration?,
+    val torsdag: Duration?,
+    val fredag: Duration?,
+    val tilleggsinformasjon: String? = null
+)
+
+data class TilsynsordningVetIkke(
+    val svar: String,
+    val annet: String? = null
+)
+
+data class Tilsynsordning(
+    val svar: String,
+    val ja: TilsynsordningJa?,
+    val vetIkke: TilsynsordningVetIkke?
+)
+
+data class Nattevaak(
+    val harNattevaak: Boolean,
+    val tilleggsinformasjon: String?
+)
+
+data class Beredskap(
+    @JsonProperty("i_beredskap")
+    val beredskap: Boolean,
+    val tilleggsinformasjon: String?
 )
