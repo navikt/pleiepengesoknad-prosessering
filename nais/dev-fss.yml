@@ -42,8 +42,8 @@ spec:
       value: https://pleiepenger-oppgave.nais.preprod.local
     - name: PLEIEPENGER_JOARK_BASE_URL
       value: https://pleiepenger-joark.nais.preprod.local
-    - name: PLEIEPENGER_DOKUMENT_BASE_URL
-      value: https://pleiepenger-dokument.nais.preprod.local
+    - name: K9_DOKUMENT_BASE_URL
+      value: https://k9-dokument.nais.preprod.local
     - name: AKTOER_REGISTER_BASE_URL
       value: https://app-q1.adeo.no/aktoerregister
     - name: NAIS_STS_DISCOVERY_ENDPOINT

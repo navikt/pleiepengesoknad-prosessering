@@ -59,7 +59,7 @@ fun Application.pleiepengesoknadProsessering() {
     val aktoerService = AktoerService(aktoerGateway)
 
     val dokumentGateway = DokumentGateway(
-        baseUrl = configuration.getPleiepengerDokumentBaseUrl(),
+        baseUrl = configuration.getK9DokumentBaseUrl(),
         accessTokenClient = accessTokenClientResolver.dokumentAccessTokenClient(),
         lagreDokumentScopes = configuration.getLagreDokumentScopes(),
         sletteDokumentScopes = configuration.getSletteDokumentScopes()
@@ -117,7 +117,7 @@ fun Application.pleiepengesoknadProsessering() {
                     aktoerGateway,
                     HttpRequestHealthCheck(
                         mapOf(
-                            Url.healthURL(configuration.getPleiepengerDokumentBaseUrl()) to HttpRequestHealthConfig(expectedStatus = HttpStatusCode.OK),
+                            Url.healthURL(configuration.getK9DokumentBaseUrl()) to HttpRequestHealthConfig(expectedStatus = HttpStatusCode.OK),
                             Url.healthURL(configuration.getPleiepengerJoarkBaseUrl()) to HttpRequestHealthConfig(expectedStatus = HttpStatusCode.OK),
                             Url.healthURL(configuration.getPleiepengerOppgaveBaseUrl()) to HttpRequestHealthConfig(expectedStatus = HttpStatusCode.OK)
                         )
