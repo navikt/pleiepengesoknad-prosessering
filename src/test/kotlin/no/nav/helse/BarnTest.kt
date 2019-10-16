@@ -44,7 +44,8 @@ class BarnTest {
         return Barn(
             fodselsnummer = fodselsnummer,
             alternativId = null,
-            navn = null
+            navn = null,
+            aktoerId = null
         )
     }
 }

@@ -250,7 +250,8 @@ class PleiepengesoknadProsesseringTest {
         barn = Barn(
             navn = "Kari",
             fodselsnummer = fodselsnummerBarn,
-            alternativId = null
+            alternativId = null,
+            aktoerId = null
         ),
         relasjonTilBarnet = "Mor",
         arbeidsgivere = Arbeidsgivere(

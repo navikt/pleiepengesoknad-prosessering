@@ -4,6 +4,7 @@ import no.nav.helse.CorrelationId
 import no.nav.helse.aktoer.AktoerId
 import no.nav.helse.aktoer.AktoerService
 import no.nav.helse.aktoer.Fodselsnummer
+import no.nav.helse.barn.BarnOppslag
 import no.nav.helse.dokument.DokumentService
 import no.nav.helse.prosessering.Metadata
 import no.nav.helse.prosessering.SoknadId
@@ -12,7 +13,8 @@ import org.slf4j.LoggerFactory
 internal class PreprosseseringV1Service(
     private val aktoerService: AktoerService,
     private val pdfV1Generator: PdfV1Generator,
-    private val dokumentService: DokumentService
+    private val dokumentService: DokumentService,
+    private val barnOppslag: BarnOppslag
 ) {
 
     private companion object {
@@ -22,7 +24,7 @@ internal class PreprosseseringV1Service(
     internal suspend fun preprosseser(
         melding: MeldingV1,
         metadata: Metadata
-    ) : PreprossesertMeldingV1 {
+    ): PreprossesertMeldingV1 {
         val soknadId = SoknadId(melding.soknadId)
         logger.info("Preprosseserer $soknadId")
 
@@ -34,8 +36,10 @@ internal class PreprosseseringV1Service(
 
         logger.trace("Henter AktørID for barnet.")
         val barnAktoerId = hentBarnetsAktoerId(barn = melding.barn, correlationId = correlationId)
-
         logger.info("Barnets AktørID = $barnAktoerId")
+
+        val barnetsNavn: String =  slaaOppBarnetsNavn(melding.barn)
+
 
         logger.trace("Genererer Oppsummerings-PDF av søknaden.")
 
@@ -72,7 +76,7 @@ internal class PreprosseseringV1Service(
 
         if (melding.vedleggUrls.isNotEmpty()) {
             logger.trace("Legger til ${melding.vedleggUrls.size} vedlegg URL's fra meldingen som dokument.")
-            melding.vedleggUrls.forEach { komplettDokumentUrls.add(listOf(it))}
+            melding.vedleggUrls.forEach { komplettDokumentUrls.add(listOf(it)) }
         }
 
         logger.trace("Totalt ${komplettDokumentUrls.size} dokumentbolker.")
@@ -85,6 +89,34 @@ internal class PreprosseseringV1Service(
             sokerAktoerId = sokerAktoerId,
             barnAktoerId = barnAktoerId
         )
+    }
+
+    /**
+     * Slår opp barnets navn, gitt enten alternativId, fødselsNummer eller aktørId.
+     */
+    private suspend fun slaaOppBarnetsNavn(barn: Barn): String {
+        return when {
+            // Dersom barnet har navn, returner navnet.
+            !barn.navn.isNullOrBlank() -> barn.navn
+
+            !barn.alternativId.isNullOrBlank() -> {
+                // Slå opp på i TpsProxy ...
+
+
+                ""
+            }
+            // Ellers, hvis barnet har et fødselsNummer ...
+            !barn.fodselsnummer.isNullOrBlank() -> {
+                // Slå opp i TpsProxy ...
+
+                ""
+            }
+            // Ellers hvis
+            !barn.aktoerId.isNullOrBlank() -> {
+                ""
+            }
+            else -> ""
+        }
     }
 
     private suspend fun hentBarnetsAktoerId(

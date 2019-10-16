@@ -6,6 +6,7 @@ import com.github.tomakehurst.wiremock.matching.EqualToPattern
 import java.util.*
 
 private const val aktoerRegisterBasePath = "/aktoerregister-mock"
+private const val tpsProxyBasePath = "/tps-proxy-mock"
 private const val pleiepengerOppgaveBaseUrl = "/pleiepenger-oppgave-mock"
 private const val pleiepengerJoarkBaseUrl = "/pleiepenger-joark-mock"
 private const val k9DokumentBasePath = "/k9-dokument-mock"
@@ -131,6 +132,7 @@ internal fun WireMockServer.stubK9DokumentHealth() = stubHealthEndpoint("$k9Doku
 internal fun WireMockServer.stubPleiepengerJoarkHealth() = stubHealthEndpoint("$pleiepengerJoarkBaseUrl/health")
 
 internal fun WireMockServer.getAktoerRegisterBaseUrl() = baseUrl() + aktoerRegisterBasePath
+internal fun WireMockServer.getTpsProxyBaseUrl() = baseUrl() + tpsProxyBasePath
 internal fun WireMockServer.getPleiepengerOppgaveBaseUrl() = baseUrl() + pleiepengerOppgaveBaseUrl
 internal fun WireMockServer.getPleiepengerJoarkBaseUrl() = baseUrl() + pleiepengerJoarkBaseUrl
 internal fun WireMockServer.getK9DokumentBaseUrl() = baseUrl() + k9DokumentBasePath

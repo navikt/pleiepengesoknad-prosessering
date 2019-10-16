@@ -12,8 +12,11 @@ import io.ktor.routing.get
 import io.ktor.util.KtorExperimentalAPI
 import io.prometheus.client.hotspot.DefaultExports
 import no.nav.helse.aktoer.AktoerGateway
+import no.nav.helse.aktoer.AktoerRegisterV1Gateway
 import no.nav.helse.aktoer.AktoerService
+import no.nav.helse.aktoer.AktoerregisterV1
 import no.nav.helse.auth.AccessTokenClientResolver
+import no.nav.helse.barn.BarnOppslag
 import no.nav.helse.dokument.DokumentGateway
 import no.nav.helse.dokument.DokumentService
 import no.nav.helse.dusseldorf.ktor.auth.*
@@ -28,13 +31,15 @@ import no.nav.helse.oppgave.OppgaveGateway
 import no.nav.helse.prosessering.v1.PdfV1Generator
 import no.nav.helse.prosessering.v1.PreprosseseringV1Service
 import no.nav.helse.prosessering.v1.asynkron.AsynkronProsesseringV1Service
+import no.nav.helse.tpsproxy.TpsProxyV1
+import no.nav.helse.tpsproxy.TpsProxyV1Gateway
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.net.URI
 
 private val logger: Logger = LoggerFactory.getLogger("nav.PleiepengesoknadProsessering")
 
-fun main(args: Array<String>): Unit  = io.ktor.server.netty.EngineMain.main(args)
+fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
 @KtorExperimentalAPI
 fun Application.pleiepengesoknadProsessering() {
@@ -56,6 +61,7 @@ fun Application.pleiepengesoknadProsessering() {
         baseUrl = configuration.getAktoerRegisterBaseUrl(),
         accessTokenClient = accessTokenClientResolver.aktoerRegisterAccessTokenClient()
     )
+
     val aktoerService = AktoerService(aktoerGateway)
 
     val dokumentGateway = DokumentGateway(
@@ -66,10 +72,24 @@ fun Application.pleiepengesoknadProsessering() {
     )
     val dokumentService = DokumentService(dokumentGateway)
 
+    val aktoerRegisterV1Gateway = AktoerRegisterV1Gateway(
+        aktørRegisterV1 = AktoerregisterV1(
+            baseUrl = URI("${configuration.getAktoerRegisterBaseUrl()}/api/v1"),
+            accessTokenClient = accessTokenClientResolver.aktoerRegisterAccessTokenClient()
+        )
+    )
+
+    val tpsProxyV1Gateway = TpsProxyV1Gateway(
+        tpsProxyV1 = TpsProxyV1(
+            baseUrl = configuration.getTpsProxyV1Url()
+        )
+    )
+
     val preprosseseringV1Service = PreprosseseringV1Service(
         aktoerService = aktoerService,
         pdfV1Generator = PdfV1Generator(),
-        dokumentService = dokumentService
+        dokumentService = dokumentService,
+        barnOppslag = BarnOppslag(aktoerRegisterV1Gateway, tpsProxyV1Gateway)
     )
     val joarkGateway = JoarkGateway(
         baseUrl = configuration.getPleiepengerJoarkBaseUrl(),
@@ -127,4 +147,5 @@ fun Application.pleiepengesoknadProsessering() {
         )
     }
 }
+
 private fun Url.Companion.healthURL(baseUrl: URI) = Url.buildURL(baseUrl = baseUrl, pathParts = listOf("health"))
