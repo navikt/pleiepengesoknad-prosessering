@@ -1,14 +1,24 @@
 package no.nav.helse.prosessering.v1
 
+import io.ktor.application.ApplicationCall
+import io.ktor.application.call
 import no.nav.helse.CorrelationId
 import no.nav.helse.aktoer.AktoerId
 import no.nav.helse.aktoer.AktoerService
 import no.nav.helse.aktoer.Fodselsnummer
 import no.nav.helse.barn.BarnOppslag
 import no.nav.helse.dokument.DokumentService
+import no.nav.helse.dusseldorf.ktor.core.ParameterType
+import no.nav.helse.dusseldorf.ktor.core.Throwblem
+import no.nav.helse.dusseldorf.ktor.core.ValidationProblemDetails
+import no.nav.helse.dusseldorf.ktor.core.Violation
 import no.nav.helse.prosessering.Metadata
 import no.nav.helse.prosessering.SoknadId
+import no.nav.helse.tpsproxy.Attributt
+import no.nav.helse.tpsproxy.Ident
 import org.slf4j.LoggerFactory
+
+private const val ATTRIBUTT_QUERY_NAVN = "a"
 
 internal class PreprosseseringV1Service(
     private val aktoerService: AktoerService,
@@ -38,7 +48,7 @@ internal class PreprosseseringV1Service(
         val barnAktoerId = hentBarnetsAktoerId(barn = melding.barn, correlationId = correlationId)
         logger.info("Barnets AktørID = $barnAktoerId")
 
-        val barnetsNavn: String =  slaaOppBarnetsNavn(melding.barn)
+        val barnetsNavn: String = slaaOppBarnetsNavn(melding.barn)
 
 
         logger.trace("Genererer Oppsummerings-PDF av søknaden.")
@@ -95,19 +105,19 @@ internal class PreprosseseringV1Service(
      * Slår opp barnets navn, gitt enten alternativId, fødselsNummer eller aktørId.
      */
     private suspend fun slaaOppBarnetsNavn(barn: Barn): String {
+
         return when {
             // Dersom barnet har navn, returner navnet.
             !barn.navn.isNullOrBlank() -> barn.navn
 
             !barn.alternativId.isNullOrBlank() -> {
-                // Slå opp på i TpsProxy ...
-
+                // Slå opp på i barneOppslag med alternativId ...
 
                 ""
             }
             // Ellers, hvis barnet har et fødselsNummer ...
             !barn.fodselsnummer.isNullOrBlank() -> {
-                // Slå opp i TpsProxy ...
+                // Slå opp på i barneOppslag med fødselsnummer ...
 
                 ""
             }

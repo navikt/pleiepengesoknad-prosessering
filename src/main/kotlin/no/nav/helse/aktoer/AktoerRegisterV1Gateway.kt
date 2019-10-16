@@ -14,11 +14,8 @@ internal class AktoerRegisterV1Gateway(
     }
 
     internal suspend fun aktørId(
-        ident: Ident,
-        attributter: Set<Attributt>
-    ) : AktørId? {
-        return if (attributter.any { it in støttedeAttributter }) {
-            aktørRegisterV1.aktørId(ident)
-        } else null
+        ident: Ident
+    ): AktørId? {
+        return aktørRegisterV1.aktørId(ident)
     }
 }
