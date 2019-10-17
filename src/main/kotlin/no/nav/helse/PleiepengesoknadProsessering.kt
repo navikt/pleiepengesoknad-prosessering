@@ -77,16 +77,10 @@ fun Application.pleiepengesoknadProsessering() {
     )
     val dokumentService = DokumentService(dokumentGateway)
 
-    val naisStsAccessTokenClient = NaisStsAccessTokenClient(
-        tokenEndpoint = configuration.getRestTokenUrl(),
-        clientId = configuration.getClientId(),
-        clientSecret = configuration.getClientSecret()
-    )
-
     val tpsProxyV1Gateway = TpsProxyV1Gateway(
         tpsProxyV1 = TpsProxyV1(
             baseUrl = configuration.getTpsProxyV1Url(),
-            accessTokenClient = naisStsAccessTokenClient
+            accessTokenClient = accessTokenClientResolver.tpsProxyAccessTokenClient()
         )
     )
 
