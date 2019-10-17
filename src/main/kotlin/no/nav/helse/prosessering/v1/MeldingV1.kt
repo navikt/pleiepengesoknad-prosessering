@@ -37,7 +37,7 @@ data class Soker(
 )
 data class Barn(
     val fodselsnummer: String?,
-    val navn : String?,
+    var navn : String?,
     val alternativId: String?,
     val aktoerId: String?
 )

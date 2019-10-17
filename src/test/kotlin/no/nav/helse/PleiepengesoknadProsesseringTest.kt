@@ -15,6 +15,8 @@ import kotlinx.coroutines.time.delay
 import no.nav.common.KafkaEnvironment
 import no.nav.helse.dusseldorf.ktor.testsupport.wiremock.WireMockBuilder
 import no.nav.helse.prosessering.v1.*
+import no.nav.helse.prosessering.v1.asynkron.OppgaveOpprettet
+import no.nav.helse.prosessering.v1.asynkron.TopicEntry
 
 import org.junit.AfterClass
 import org.junit.BeforeClass
@@ -40,6 +42,7 @@ class PleiepengesoknadProsesseringTest {
         private val wireMockServer: WireMockServer = WireMockBuilder()
             .withNaisStsSupport()
             .withAzureSupport()
+            .navnOppslagConfig()
             .build()
             .stubK9DokumentHealth()
             .stubPleiepengerJoarkHealth()
@@ -48,6 +51,7 @@ class PleiepengesoknadProsesseringTest {
             .stubOpprettOppgave()
             .stubLagreDokument()
             .stubSlettDokument()
+            .stubTpsProxyGetNavn()
             .stubAktoerRegisterGetAktoerId("29099012345", "123456")
 
         private val kafkaEnvironment = KafkaWrapper.bootstrap()
@@ -64,9 +68,14 @@ class PleiepengesoknadProsesseringTest {
             start(wait = true)
         }
 
-        private fun getConfig(kafkaEnvironment: KafkaEnvironment?) : ApplicationConfig {
+        private fun getConfig(kafkaEnvironment: KafkaEnvironment?): ApplicationConfig {
             val fileConfig = ConfigFactory.load()
-            val testConfig = ConfigFactory.parseMap(TestConfiguration.asMap(wireMockServer = wireMockServer, kafkaEnvironment = kafkaEnvironment))
+            val testConfig = ConfigFactory.parseMap(
+                TestConfiguration.asMap(
+                    wireMockServer = wireMockServer,
+                    kafkaEnvironment = kafkaEnvironment
+                )
+            )
             val mergedConfig = testConfig.withFallback(fileConfig)
             return HoconApplicationConfig(mergedConfig)
         }
@@ -125,7 +134,8 @@ class PleiepengesoknadProsesseringTest {
     fun `Gylding melding blir prosessert`() {
         val melding = gyldigMelding(
             fodselsnummerSoker = gyldigFodselsnummerA,
-            fodselsnummerBarn = gyldigFodselsnummerB
+            fodselsnummerBarn = gyldigFodselsnummerB,
+            barnetsNavn = "kari"
         )
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
@@ -142,6 +152,7 @@ class PleiepengesoknadProsesseringTest {
         val melding = gyldigMelding(
             fodselsnummerSoker = gyldigFodselsnummerA,
             fodselsnummerBarn = gyldigFodselsnummerB,
+            barnetsNavn = "kari",
             sprak = sprak,
             organisasjoner = listOf(
                 Organisasjon("917755736", "Jobb1", jobb1SkalJobbeProsent),
@@ -165,7 +176,8 @@ class PleiepengesoknadProsesseringTest {
     fun `En feilprosessert melding vil bli prosessert etter at tjenesten restartes`() {
         val melding = gyldigMelding(
             fodselsnummerSoker = gyldigFodselsnummerA,
-            fodselsnummerBarn = gyldigFodselsnummerB
+            fodselsnummerBarn = gyldigFodselsnummerB,
+            barnetsNavn = "kari"
         )
 
         wireMockServer.stubJournalfor(500) // Simulerer feil ved journalføring
@@ -194,7 +206,8 @@ class PleiepengesoknadProsesseringTest {
     fun `Melding som gjeder søker med D-nummer`() {
         val melding = gyldigMelding(
             fodselsnummerSoker = dNummerA,
-            fodselsnummerBarn = gyldigFodselsnummerB
+            fodselsnummerBarn = gyldigFodselsnummerB,
+            barnetsNavn = "kari"
         )
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
@@ -206,6 +219,7 @@ class PleiepengesoknadProsesseringTest {
         val melding = gyldigMelding(
             fodselsnummerSoker = gyldigFodselsnummerA,
             fodselsnummerBarn = gyldigFodselsnummerB,
+            barnetsNavn = "kari",
             vedleggUrl = URI("http://localhost:8080/jeg-skal-feile/1")
         )
 
@@ -217,7 +231,8 @@ class PleiepengesoknadProsesseringTest {
     fun `Melding lagt til prosessering selv om oppslag paa aktoer ID for barn feiler`() {
         val melding = gyldigMelding(
             fodselsnummerSoker = gyldigFodselsnummerA,
-            fodselsnummerBarn = gyldigFodselsnummerC
+            fodselsnummerBarn = gyldigFodselsnummerC,
+            barnetsNavn = "kari"
         )
 
         wireMockServer.stubAktoerRegisterGetAktoerIdNotFound(gyldigFodselsnummerC)
@@ -226,15 +241,29 @@ class PleiepengesoknadProsesseringTest {
         kafkaTestConsumer.hentOpprettetOppgave(melding.soknadId)
     }
 
+    @Test
+    fun `Bruk barnets fødselsnummer til å slå opp i tps-proxy dersom navnet mangler`() {
+        val melding = gyldigMelding(
+            fodselsnummerSoker = gyldigFodselsnummerA,
+            fodselsnummerBarn = gyldigFodselsnummerC,
+            barnetsNavn = null
+        )
+
+        kafkaTestProducer.leggSoknadTilProsessering(melding)
+        val hentOpprettetOppgave: TopicEntry<OppgaveOpprettet> = kafkaTestConsumer.hentOpprettetOppgave(melding.soknadId)
+        assertEquals("BLUNKENDE SUPERKONSOLL KLØKTIG", hentOpprettetOppgave.data.melding.barn.navn)
+    }
+
     private fun gyldigMelding(
-        fodselsnummerSoker : String,
+        fodselsnummerSoker: String,
         fodselsnummerBarn: String,
+        barnetsNavn: String?,
         vedleggUrl : URI = URI("${wireMockServer.getK9DokumentBaseUrl()}/v1/dokument/${UUID.randomUUID()}"),
         sprak: String? = null,
         organisasjoner: List<Organisasjon> = listOf(
             Organisasjon("917755736", "Gyldig")
         )
-    ) : MeldingV1 = MeldingV1(
+    ): MeldingV1 = MeldingV1(
         sprak = sprak,
         soknadId = UUID.randomUUID().toString(),
         mottatt = ZonedDateTime.now(),
@@ -248,7 +277,7 @@ class PleiepengesoknadProsesseringTest {
             fornavn = "Ola"
         ),
         barn = Barn(
-            navn = "Kari",
+            navn = barnetsNavn,
             fodselsnummer = fodselsnummerBarn,
             alternativId = null,
             aktoerId = null
@@ -288,5 +317,5 @@ class PleiepengesoknadProsesseringTest {
         )
     )
 
-    private fun ventPaaAtRetryMekanismeIStreamProsessering() = runBlocking{ delay(Duration.ofSeconds(30)) }
+    private fun ventPaaAtRetryMekanismeIStreamProsessering() = runBlocking { delay(Duration.ofSeconds(30)) }
 }

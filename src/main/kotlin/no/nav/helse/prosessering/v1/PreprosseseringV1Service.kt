@@ -1,21 +1,16 @@
 package no.nav.helse.prosessering.v1
 
-import io.ktor.application.ApplicationCall
-import io.ktor.application.call
 import no.nav.helse.CorrelationId
 import no.nav.helse.aktoer.AktoerId
 import no.nav.helse.aktoer.AktoerService
 import no.nav.helse.aktoer.Fodselsnummer
 import no.nav.helse.barn.BarnOppslag
 import no.nav.helse.dokument.DokumentService
-import no.nav.helse.dusseldorf.ktor.core.ParameterType
-import no.nav.helse.dusseldorf.ktor.core.Throwblem
-import no.nav.helse.dusseldorf.ktor.core.ValidationProblemDetails
-import no.nav.helse.dusseldorf.ktor.core.Violation
 import no.nav.helse.prosessering.Metadata
 import no.nav.helse.prosessering.SoknadId
-import no.nav.helse.tpsproxy.Attributt
+import no.nav.helse.tpsproxy.ForkortetNavn
 import no.nav.helse.tpsproxy.Ident
+import no.nav.helse.tpsproxy.TpsNavn
 import org.slf4j.LoggerFactory
 
 private const val ATTRIBUTT_QUERY_NAVN = "a"
@@ -48,8 +43,12 @@ internal class PreprosseseringV1Service(
         val barnAktoerId = hentBarnetsAktoerId(barn = melding.barn, correlationId = correlationId)
         logger.info("Barnets AktørID = $barnAktoerId")
 
-        val barnetsNavn: String = slaaOppBarnetsNavn(melding.barn)
+        logger.info("Henter barnets navn ...")
+        val barnetsNavn: String = slaaOppBarnetsNavn(melding.barn, correlationId = correlationId)
+        logger.info("Barnets navn = $barnetsNavn")
 
+        melding.barn.navn = barnetsNavn
+        logger.info("Setter barnenavn på melding ${melding.barn.navn}")
 
         logger.trace("Genererer Oppsummerings-PDF av søknaden.")
 
@@ -104,22 +103,23 @@ internal class PreprosseseringV1Service(
     /**
      * Slår opp barnets navn, gitt enten alternativId, fødselsNummer eller aktørId.
      */
-    private suspend fun slaaOppBarnetsNavn(barn: Barn): String {
+    private suspend fun slaaOppBarnetsNavn(
+        barn: Barn,
+        correlationId: CorrelationId
+    ): String {
 
         return when {
             // Dersom barnet har navn, returner navnet.
-            !barn.navn.isNullOrBlank() -> barn.navn
+            !barn.navn.isNullOrBlank() -> barn.navn!!
 
             !barn.alternativId.isNullOrBlank() -> {
                 // Slå opp på i barneOppslag med alternativId ...
-
-                ""
+                getFullNavn(ident = barn.alternativId, correlationId = correlationId)
             }
             // Ellers, hvis barnet har et fødselsNummer ...
             !barn.fodselsnummer.isNullOrBlank() -> {
                 // Slå opp på i barneOppslag med fødselsnummer ...
-
-                ""
+              getFullNavn(ident = barn.fodselsnummer, correlationId = correlationId)
             }
             // Ellers hvis
             !barn.aktoerId.isNullOrBlank() -> {
@@ -127,6 +127,11 @@ internal class PreprosseseringV1Service(
             }
             else -> ""
         }
+    }
+
+    private suspend fun getFullNavn(ident: String, correlationId: CorrelationId): String {
+        val tpsNavn: TpsNavn = barnOppslag.navn(Ident(ident), correlationId)
+        return ForkortetNavn("${tpsNavn.fornavn} ${tpsNavn.mellomnavn} ${tpsNavn.etternavn}").fulltNavn
     }
 
     private suspend fun hentBarnetsAktoerId(

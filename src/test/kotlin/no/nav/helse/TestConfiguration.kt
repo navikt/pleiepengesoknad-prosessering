@@ -1,10 +1,12 @@
 package no.nav.helse
 
+import com.github.kittinunf.fuel.httpGet
 import com.github.tomakehurst.wiremock.WireMockServer
 import no.nav.common.KafkaEnvironment
 import no.nav.helse.dusseldorf.ktor.testsupport.jws.ClientCredentials
 import no.nav.helse.dusseldorf.ktor.testsupport.wiremock.getAzureV2WellKnownUrl
 import no.nav.helse.dusseldorf.ktor.testsupport.wiremock.getNaisStsWellKnownUrl
+import org.json.JSONObject
 
 object TestConfiguration {
 
@@ -18,6 +20,7 @@ object TestConfiguration {
         pleiepengerJoarkBaseUrl : String? = wireMockServer?.getPleiepengerJoarkBaseUrl(),
         k9DokumentBaseUrl : String? = wireMockServer?.getK9DokumentBaseUrl()
     ) : Map<String, String>{
+        val naisStsWellKnownJson = wireMockServer?.getNaisStsWellKnownUrl()?.getAsJson()
         val map = mutableMapOf(
             Pair("ktor.deployment.port","$port"),
             Pair("nav.aktoer_register_base_url","$aktoerRegisterBaseUrl"),
@@ -55,4 +58,5 @@ object TestConfiguration {
 
         return map.toMap()
     }
+    private fun String.getAsJson() = JSONObject(this.httpGet().responseString().third.component1())
 }
