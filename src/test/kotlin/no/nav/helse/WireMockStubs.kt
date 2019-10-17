@@ -16,6 +16,7 @@ private const val k9DokumentBasePath = "/k9-dokument-mock"
 
 fun WireMockBuilder.navnOppslagConfig() = wireMockConfiguration {
     it
+        .extensions(AktoerRegisterResponseTransformer())
         .extensions(TpsProxyResponseTransformer())
         .extensions(TpsProxyBarnResponseTransformer())
 }
@@ -52,10 +53,9 @@ internal fun WireMockServer.stubAktoerRegisterGetAktoerId(
     aktoerId: String
 ): WireMockServer {
     WireMock.stubFor(
-        WireMock.get(WireMock.urlPathMatching(".*$aktoerRegisterBasePath/.*")).withHeader(
-            "Nav-Personidenter",
-            EqualToPattern(fnr)
-        ).willReturn(
+        WireMock.get(WireMock.urlPathMatching(".*$aktoerRegisterBasePath/.*"))
+            .withHeader("Nav-Personidenter", EqualToPattern(fnr))
+            .willReturn(
             WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody(
@@ -76,6 +76,22 @@ internal fun WireMockServer.stubAktoerRegisterGetAktoerId(
                 )
                 .withStatus(200)
         )
+    )
+    return this
+}
+
+internal fun WireMockServer.stubAktoerRegisterHentNorskIdent(fnr: String) : WireMockServer {
+    WireMock.stubFor(
+        WireMock.get(WireMock.urlPathMatching(".*$aktoerRegisterBasePath/.*"))
+            .withQueryParam("gjeldende", EqualToPattern("true"))
+            .withQueryParam("identgruppe", EqualToPattern("NorskIdent"))
+            .withHeader("Nav-Personidenter", EqualToPattern(fnr))
+            .willReturn(
+                WireMock.aResponse()
+                    .withHeader("Content-Type", "application/json")
+                    .withStatus(200)
+                    .withTransformers("aktoer-register")
+            )
     )
     return this
 }

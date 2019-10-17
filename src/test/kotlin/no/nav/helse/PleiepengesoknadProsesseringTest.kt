@@ -53,6 +53,7 @@ class PleiepengesoknadProsesseringTest {
             .stubSlettDokument()
             .stubTpsProxyGetNavn()
             .stubAktoerRegisterGetAktoerId("29099012345", "123456")
+            .stubAktoerRegisterHentNorskIdent("29099012345")
 
         private val kafkaEnvironment = KafkaWrapper.bootstrap()
         private val kafkaTestConsumer = kafkaEnvironment.testConsumer()
@@ -134,8 +135,7 @@ class PleiepengesoknadProsesseringTest {
     fun `Gylding melding blir prosessert`() {
         val melding = gyldigMelding(
             fodselsnummerSoker = gyldigFodselsnummerA,
-            fodselsnummerBarn = gyldigFodselsnummerB,
-            barnetsNavn = "kari"
+            fodselsnummerBarn = gyldigFodselsnummerB
         )
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
@@ -152,7 +152,6 @@ class PleiepengesoknadProsesseringTest {
         val melding = gyldigMelding(
             fodselsnummerSoker = gyldigFodselsnummerA,
             fodselsnummerBarn = gyldigFodselsnummerB,
-            barnetsNavn = "kari",
             sprak = sprak,
             organisasjoner = listOf(
                 Organisasjon("917755736", "Jobb1", jobb1SkalJobbeProsent),
@@ -176,8 +175,7 @@ class PleiepengesoknadProsesseringTest {
     fun `En feilprosessert melding vil bli prosessert etter at tjenesten restartes`() {
         val melding = gyldigMelding(
             fodselsnummerSoker = gyldigFodselsnummerA,
-            fodselsnummerBarn = gyldigFodselsnummerB,
-            barnetsNavn = "kari"
+            fodselsnummerBarn = gyldigFodselsnummerB
         )
 
         wireMockServer.stubJournalfor(500) // Simulerer feil ved journalføring
@@ -206,8 +204,7 @@ class PleiepengesoknadProsesseringTest {
     fun `Melding som gjeder søker med D-nummer`() {
         val melding = gyldigMelding(
             fodselsnummerSoker = dNummerA,
-            fodselsnummerBarn = gyldigFodselsnummerB,
-            barnetsNavn = "kari"
+            fodselsnummerBarn = gyldigFodselsnummerB
         )
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
@@ -231,8 +228,7 @@ class PleiepengesoknadProsesseringTest {
     fun `Melding lagt til prosessering selv om oppslag paa aktoer ID for barn feiler`() {
         val melding = gyldigMelding(
             fodselsnummerSoker = gyldigFodselsnummerA,
-            fodselsnummerBarn = gyldigFodselsnummerC,
-            barnetsNavn = "kari"
+            fodselsnummerBarn = gyldigFodselsnummerC
         )
 
         wireMockServer.stubAktoerRegisterGetAktoerIdNotFound(gyldigFodselsnummerC)
@@ -254,11 +250,41 @@ class PleiepengesoknadProsesseringTest {
         assertEquals("BLUNKENDE SUPERKONSOLL KLØKTIG", hentOpprettetOppgave.data.melding.barn.navn)
     }
 
+    @Test
+    fun `Bruk barnets alternativ id til å slå opp i tps-proxy dersom navnet mangler`() {
+        val melding = gyldigMelding(
+            fodselsnummerSoker = gyldigFodselsnummerA,
+            fodselsnummerBarn = null,
+            barnetsNavn = null,
+            alternativIdBarn = "d-nummer"
+        )
+
+        kafkaTestProducer.leggSoknadTilProsessering(melding)
+        val hentOpprettetOppgave: TopicEntry<OppgaveOpprettet> = kafkaTestConsumer.hentOpprettetOppgave(melding.soknadId)
+        assertEquals("BLUNKENDE SUPERKONSOLL KLØKTIG", hentOpprettetOppgave.data.melding.barn.navn)
+    }
+
+    @Test
+    fun `Bruk barnets aktørId til å slå opp i tps-proxy dersom navnet mangler`() {
+        val melding = gyldigMelding(
+            fodselsnummerSoker = gyldigFodselsnummerA,
+            fodselsnummerBarn = null,
+            barnetsNavn = null,
+            aktoerIdBarn = "29099012345"
+        )
+
+        kafkaTestProducer.leggSoknadTilProsessering(melding)
+        val hentOpprettetOppgave: TopicEntry<OppgaveOpprettet> = kafkaTestConsumer.hentOpprettetOppgave(melding.soknadId)
+        assertEquals("BLUNKENDE SUPERKONSOLL KLØKTIG", hentOpprettetOppgave.data.melding.barn.navn)
+    }
+
     private fun gyldigMelding(
         fodselsnummerSoker: String,
         fodselsnummerBarn: String,
-        barnetsNavn: String?,
         vedleggUrl : URI = URI("${wireMockServer.getK9DokumentBaseUrl()}/v1/dokument/${UUID.randomUUID()}"),
+        barnetsNavn: String? = "kari",
+        alternativIdBarn: String? = null,
+        aktoerIdBarn: String? = null,
         sprak: String? = null,
         organisasjoner: List<Organisasjon> = listOf(
             Organisasjon("917755736", "Gyldig")
@@ -279,8 +305,8 @@ class PleiepengesoknadProsesseringTest {
         barn = Barn(
             navn = barnetsNavn,
             fodselsnummer = fodselsnummerBarn,
-            alternativId = null,
-            aktoerId = null
+            alternativId = alternativIdBarn,
+            aktoerId = aktoerIdBarn
         ),
         relasjonTilBarnet = "Mor",
         arbeidsgivere = Arbeidsgivere(

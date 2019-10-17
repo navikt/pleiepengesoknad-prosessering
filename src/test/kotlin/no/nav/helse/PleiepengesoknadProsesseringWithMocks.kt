@@ -30,6 +30,7 @@ class PleiepengesoknadProsesseringWithMocks {
                 .stubSlettDokument()
                 .stubTpsProxyGetNavn()
                 .stubAktoerRegisterGetAktoerId("29099012345", "123456")
+                .stubAktoerRegisterHentNorskIdent("29099012345")
 
             val kafkaEnvironment = KafkaWrapper.bootstrap()
 

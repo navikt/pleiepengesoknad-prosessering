@@ -10,8 +10,9 @@ import io.ktor.http.HttpHeaders
 import io.ktor.http.Url
 import no.nav.helse.CorrelationId
 import no.nav.helse.HttpError
-import no.nav.helse.dusseldorf.ktor.client.*
+import no.nav.helse.dusseldorf.ktor.client.buildURL
 import no.nav.helse.dusseldorf.ktor.core.Retry
+import no.nav.helse.dusseldorf.ktor.core.erGyldigFodselsnummer
 import no.nav.helse.dusseldorf.ktor.health.HealthCheck
 import no.nav.helse.dusseldorf.ktor.health.Healthy
 import no.nav.helse.dusseldorf.ktor.health.Result
@@ -31,20 +32,32 @@ import java.time.Duration
 class AktoerGateway(
     baseUrl: URI,
     private val accessTokenClient: AccessTokenClient,
-    private val henteAktoerIdScopes : Set<String> = setOf("openid")
+    private val henteAktoerIdScopes: Set<String> = setOf("openid")
 ) : HealthCheck {
 
     private companion object {
         private const val HENTE_AKTOER_ID_OPERATION = "hente-aktoer-id"
         private val logger: Logger = LoggerFactory.getLogger(AktoerGateway::class.java)
+        private val objectMapper = jacksonObjectMapper().apply {
+            configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+        }
     }
 
     private val completeUrl = Url.buildURL(
         baseUrl = baseUrl,
-        pathParts = listOf("api","v1","identer"),
+        pathParts = listOf("api", "v1", "identer"),
         queryParameters = mapOf(
             "gjeldende" to listOf("true"),
             "identgruppe" to listOf("AktoerId")
+        )
+    ).toString()
+
+    private val fodselsnummerUrl = Url.buildURL(
+        baseUrl = baseUrl,
+        pathParts = listOf("api", "v1", "identer"),
+        queryParameters = mapOf(
+            Pair("gjeldende", listOf("true")),
+            Pair("identgruppe", listOf("NorskIdent"))
         )
     ).toString()
 
@@ -64,7 +77,7 @@ class AktoerGateway(
     suspend fun getAktoerId(
         fnr: Fodselsnummer,
         correlationId: CorrelationId
-    ) : AktoerId {
+    ): AktoerId {
 
         val authorizationHeader = cachedAccessTokenClient.getAccessToken(henteAktoerIdScopes).asAuthoriationHeader()
 
@@ -74,7 +87,7 @@ class AktoerGateway(
                 HttpHeaders.Authorization to authorizationHeader,
                 HttpHeaders.Accept to "application/json",
                 "Nav-Consumer-Id" to "pleiepengesoknad-prosessering",
-                "Nav-Personidenter" to fnr.value,
+                "Nav-Personidenter" to fnr.getValue(),
                 "Nav-Call-Id" to correlationId.value
             )
 
@@ -89,7 +102,7 @@ class AktoerGateway(
                 resultResolver = { 200 == it.second.statusCode }
             ) { httpRequest.awaitStringResponseResult() }
             result.fold(
-                { success -> objectMapper.readValue<Map<String,IdentResponse>>(success)},
+                { success -> objectMapper.readValue<Map<String, IdentResponse>>(success) },
                 { error ->
                     logger.error("Error response = '${error.response.body().asString("text/plain")}' fra '${request.url}'")
                     logger.error(error.toString())
@@ -99,13 +112,13 @@ class AktoerGateway(
         }
 
 
-        if (!httpResponse.containsKey(fnr.value)) {
+        if (!httpResponse.containsKey(fnr.getValue())) {
             throw IllegalStateException("Svar fra '$completeUrl' inneholdt ikke data om det forsespurte fødselsnummeret.")
         }
 
-        val identResponse =  httpResponse.get(key = fnr.value)
+        val identResponse = httpResponse.get(key = fnr.getValue())
 
-        if (identResponse!!.feilmelding!= null) {
+        if (identResponse!!.feilmelding != null) {
             logger.warn("Mottok feilmelding fra AktørRegister : '${identResponse.feilmelding}'")
         }
 
@@ -122,12 +135,96 @@ class AktoerGateway(
         return aktoerId
     }
 
-    private fun configuredObjectMapper() : ObjectMapper {
+    private suspend fun get(
+        url: String,
+        personIdent: String,
+        correlationId: CorrelationId
+    ): String {
+        val authorizationHeader = cachedAccessTokenClient.getAccessToken(henteAktoerIdScopes).asAuthoriationHeader()
+
+        val httpRequest = url
+            .httpGet()
+            .header(
+                HttpHeaders.Authorization to authorizationHeader,
+                HttpHeaders.Accept to "application/json",
+                "Nav-Consumer-Id" to "pleiepengesoknad-api",
+                "Nav-Personidenter" to personIdent,
+                "Nav-Call-Id" to correlationId
+            )
+
+        val httpResponse = Retry.retry(
+            operation = HENTE_AKTOER_ID_OPERATION,
+            initialDelay = Duration.ofMillis(200),
+            factor = 2.0,
+            logger = logger
+        ) {
+            val (request, _, result) = Operation.monitored(
+                app = "pleiepengesoknad-api",
+                operation = HENTE_AKTOER_ID_OPERATION,
+                resultResolver = { 200 == it.second.statusCode }
+            ) { httpRequest.awaitStringResponseResult() }
+            result.fold(
+                { success -> Companion.objectMapper.readValue<Map<String, AktoerRegisterIdentResponse>>(success) },
+                { error ->
+                    logger.error("Error response = '${error.response.body().asString("text/plain")}' fra '${request.url}'")
+                    logger.error(error.toString())
+                    throw IllegalStateException("Feil ved henting av Aktør ID.")
+                }
+            )
+        }
+
+
+        if (!httpResponse.containsKey(personIdent)) {
+            throw IllegalStateException("Svar fra '$url' inneholdt ikke data om det forsespurte fødselsnummeret.")
+        }
+
+        val identResponse = httpResponse.get(key = personIdent)
+
+        if (identResponse!!.feilmelding != null) {
+            logger.warn("Mottok feilmelding fra AktørRegister : '${identResponse.feilmelding}'")
+        }
+
+        if (identResponse.identer == null) {
+            throw IllegalStateException("Fikk 0 AktørID'er for det forsespurte fødselsnummeret mot '$url'")
+        }
+
+        if (identResponse.identer.size != 1) {
+            throw IllegalStateException("Fikk ${identResponse.identer.size} AktørID'er for det forsespurte fødselsnummeret mot '$url'")
+        }
+
+        val aktoerId = AktoerId(identResponse.identer[0].ident)
+        logger.trace("Resolved AktørID $aktoerId")
+        return aktoerId.id
+    }
+
+    suspend fun hentNorskIdent(
+        aktoerId: AktoerId,
+        correlationId: CorrelationId
+    ): NorskIdent {
+        return get(
+            url = fodselsnummerUrl,
+            personIdent = aktoerId.id,
+            correlationId = correlationId
+        ).tilNorskIdent()
+    }
+
+    private fun configuredObjectMapper(): ObjectMapper {
         val objectMapper = jacksonObjectMapper()
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
         return objectMapper
     }
 }
 
+fun String.tilNorskIdent(): NorskIdent = if (erGyldigFodselsnummer()) Fodselsnummer(this) else AlternativId(this)
+
+interface NorskIdent {
+    fun getValue(): String
+}
+
+data class AlternativId(private val value: String) : NorskIdent {
+    override fun getValue() = value
+}
+
 data class Ident(val ident: String, val identgruppe: String)
-data class IdentResponse(val feilmelding : String?, val identer : List<Ident>?)
+data class IdentResponse(val feilmelding: String?, val identer: List<Ident>?)
+data class AktoerRegisterIdentResponse(val feilmelding: String?, val identer: List<Ident>?)
