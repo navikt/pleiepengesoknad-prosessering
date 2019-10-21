@@ -280,7 +280,7 @@ class PleiepengesoknadProsesseringTest {
 
     private fun gyldigMelding(
         fodselsnummerSoker: String,
-        fodselsnummerBarn: String,
+        fodselsnummerBarn: String?,
         vedleggUrl : URI = URI("${wireMockServer.getK9DokumentBaseUrl()}/v1/dokument/${UUID.randomUUID()}"),
         barnetsNavn: String? = "kari",
         alternativIdBarn: String? = null,
