@@ -20,7 +20,6 @@ object TestConfiguration {
         pleiepengerJoarkBaseUrl : String? = wireMockServer?.getPleiepengerJoarkBaseUrl(),
         k9DokumentBaseUrl : String? = wireMockServer?.getK9DokumentBaseUrl()
     ) : Map<String, String>{
-        val naisStsWellKnownJson = wireMockServer?.getNaisStsWellKnownUrl()?.getAsJson()
         val map = mutableMapOf(
             Pair("ktor.deployment.port","$port"),
             Pair("nav.aktoer_register_base_url","$aktoerRegisterBaseUrl"),
