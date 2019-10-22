@@ -247,7 +247,7 @@ class PleiepengesoknadProsesseringTest {
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
         val hentOpprettetOppgave: TopicEntry<OppgaveOpprettet> = kafkaTestConsumer.hentOpprettetOppgave(melding.soknadId)
-        assertEquals("BLUNKENDE SUPERKONSOLL KLØKTIG", hentOpprettetOppgave.data.melding.barn.navn)
+        assertEquals("KLØKTIG BLUNKENDE SUPERKONSOLL", hentOpprettetOppgave.data.melding.barn.navn)
     }
 
     @Test
@@ -261,7 +261,7 @@ class PleiepengesoknadProsesseringTest {
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
         val hentOpprettetOppgave: TopicEntry<OppgaveOpprettet> = kafkaTestConsumer.hentOpprettetOppgave(melding.soknadId)
-        assertEquals("BLUNKENDE SUPERKONSOLL KLØKTIG", hentOpprettetOppgave.data.melding.barn.navn)
+        assertEquals("KLØKTIG BLUNKENDE SUPERKONSOLL", hentOpprettetOppgave.data.melding.barn.navn)
     }
 
     @Test
@@ -275,7 +275,7 @@ class PleiepengesoknadProsesseringTest {
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
         val hentOpprettetOppgave: TopicEntry<OppgaveOpprettet> = kafkaTestConsumer.hentOpprettetOppgave(melding.soknadId)
-        assertEquals("BLUNKENDE SUPERKONSOLL KLØKTIG", hentOpprettetOppgave.data.melding.barn.navn)
+        assertEquals("KLØKTIG BLUNKENDE SUPERKONSOLL", hentOpprettetOppgave.data.melding.barn.navn)
     }
 
     private fun gyldigMelding(

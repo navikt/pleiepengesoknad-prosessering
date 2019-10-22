@@ -17,8 +17,6 @@ private const val k9DokumentBasePath = "/k9-dokument-mock"
 fun WireMockBuilder.navnOppslagConfig() = wireMockConfiguration {
     it
         .extensions(AktoerRegisterResponseTransformer())
-        .extensions(TpsProxyResponseTransformer())
-        .extensions(TpsProxyBarnResponseTransformer())
 }
 
 internal fun WireMockServer.stubAktoerRegisterGetAktoerIdNotFound(
