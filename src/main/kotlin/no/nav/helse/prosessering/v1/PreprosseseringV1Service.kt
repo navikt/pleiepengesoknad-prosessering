@@ -9,7 +9,6 @@ import no.nav.helse.barn.BarnOppslag
 import no.nav.helse.dokument.DokumentService
 import no.nav.helse.prosessering.Metadata
 import no.nav.helse.prosessering.SoknadId
-import no.nav.helse.tpsproxy.ForkortetNavn
 import no.nav.helse.tpsproxy.Ident
 import no.nav.helse.tpsproxy.TpsNavn
 import org.slf4j.LoggerFactory
@@ -45,9 +44,6 @@ internal class PreprosseseringV1Service(
         logger.info("Barnets AktørID = $barnAktoerId")
 
         val barnetsNavn: String = slaaOppBarnetsNavn(melding.barn, correlationId = correlationId)
-
-        melding.barn.navn = barnetsNavn
-        logger.info("Setter barnenavn på melding ${melding.barn.navn}")
 
         logger.trace("Genererer Oppsummerings-PDF av søknaden.")
 
@@ -95,7 +91,8 @@ internal class PreprosseseringV1Service(
             dokumentUrls = komplettDokumentUrls.toList(),
             melding = melding,
             sokerAktoerId = sokerAktoerId,
-            barnAktoerId = barnAktoerId
+            barnAktoerId = barnAktoerId,
+            barnetsNavn = barnetsNavn
         )
     }
 
@@ -109,7 +106,7 @@ internal class PreprosseseringV1Service(
 
         return when {
             // Dersom barnet har navn, returner navnet.
-            !barn.navn.isNullOrBlank() -> barn.navn!!
+            !barn.navn.isNullOrBlank() -> barn.navn
 
             // Ellers, hvis barnet har et fødselsNummer ...
             !barn.fodselsnummer.isNullOrBlank() -> {
@@ -135,7 +132,7 @@ internal class PreprosseseringV1Service(
 
     private suspend fun getFullNavn(ident: String, correlationId: CorrelationId): String {
         val tpsNavn: TpsNavn = barnOppslag.navn(Ident(ident), correlationId)
-        return ForkortetNavn("${tpsNavn.fornavn} ${tpsNavn.mellomnavn} ${tpsNavn.etternavn}").fulltNavn
+        return "${tpsNavn.fornavn} ${tpsNavn.mellomnavn} ${tpsNavn.etternavn}"
     }
 
     private suspend fun hentBarnetsAktoerId(
