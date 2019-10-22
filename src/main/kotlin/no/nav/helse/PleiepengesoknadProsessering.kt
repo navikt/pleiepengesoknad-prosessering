@@ -17,7 +17,6 @@ import io.prometheus.client.hotspot.DefaultExports
 import no.nav.helse.aktoer.AktoerGateway
 import no.nav.helse.aktoer.AktoerService
 import no.nav.helse.auth.AccessTokenClientResolver
-import no.nav.helse.auth.NaisStsAccessTokenClient
 import no.nav.helse.barn.BarnOppslag
 import no.nav.helse.dokument.DokumentGateway
 import no.nav.helse.dokument.DokumentService
@@ -36,7 +35,6 @@ import no.nav.helse.oppgave.OppgaveGateway
 import no.nav.helse.prosessering.v1.PdfV1Generator
 import no.nav.helse.prosessering.v1.PreprosseseringV1Service
 import no.nav.helse.prosessering.v1.asynkron.AsynkronProsesseringV1Service
-import no.nav.helse.tpsproxy.TpsProxyV1
 import no.nav.helse.tpsproxy.TpsProxyV1Gateway
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -78,10 +76,8 @@ fun Application.pleiepengesoknadProsessering() {
     val dokumentService = DokumentService(dokumentGateway)
 
     val tpsProxyV1Gateway = TpsProxyV1Gateway(
-        tpsProxyV1 = TpsProxyV1(
-            baseUrl = configuration.getTpsProxyV1Url(),
-            accessTokenClient = accessTokenClientResolver.tpsProxyAccessTokenClient()
-        )
+        baseUrl = configuration.getTpsProxyV1Url(),
+        accessTokenClient = accessTokenClientResolver.tpsProxyAccessTokenClient()
     )
 
     val preprosseseringV1Service = PreprosseseringV1Service(
@@ -136,9 +132,15 @@ fun Application.pleiepengesoknadProsessering() {
                     aktoerGateway,
                     HttpRequestHealthCheck(
                         mapOf(
-                            Url.healthURL(configuration.getK9DokumentBaseUrl()) to HttpRequestHealthConfig(expectedStatus = HttpStatusCode.OK),
-                            Url.healthURL(configuration.getPleiepengerJoarkBaseUrl()) to HttpRequestHealthConfig(expectedStatus = HttpStatusCode.OK),
-                            Url.healthURL(configuration.getPleiepengerOppgaveBaseUrl()) to HttpRequestHealthConfig(expectedStatus = HttpStatusCode.OK)
+                            Url.healthURL(configuration.getK9DokumentBaseUrl()) to HttpRequestHealthConfig(
+                                expectedStatus = HttpStatusCode.OK
+                            ),
+                            Url.healthURL(configuration.getPleiepengerJoarkBaseUrl()) to HttpRequestHealthConfig(
+                                expectedStatus = HttpStatusCode.OK
+                            ),
+                            Url.healthURL(configuration.getPleiepengerOppgaveBaseUrl()) to HttpRequestHealthConfig(
+                                expectedStatus = HttpStatusCode.OK
+                            )
                         )
                     )
                 ).plus(asynkronProsesseringV1Service.healthChecks()).toSet()
