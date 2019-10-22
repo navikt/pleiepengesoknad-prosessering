@@ -44,9 +44,7 @@ internal class PreprosseseringV1Service(
         val barnAktoerId = hentBarnetsAktoerId(barn = melding.barn, correlationId = correlationId)
         logger.info("Barnets AktørID = $barnAktoerId")
 
-        logger.info("Henter barnets navn ...")
         val barnetsNavn: String = slaaOppBarnetsNavn(melding.barn, correlationId = correlationId)
-        logger.info("Barnets navn = $barnetsNavn")
 
         melding.barn.navn = barnetsNavn
         logger.info("Setter barnenavn på melding ${melding.barn.navn}")
@@ -113,17 +111,21 @@ internal class PreprosseseringV1Service(
             // Dersom barnet har navn, returner navnet.
             !barn.navn.isNullOrBlank() -> barn.navn!!
 
-            !barn.alternativId.isNullOrBlank() -> {
-                // Slå opp på i barneOppslag med alternativId ...
-                getFullNavn(ident = barn.alternativId, correlationId = correlationId)
-            }
             // Ellers, hvis barnet har et fødselsNummer ...
             !barn.fodselsnummer.isNullOrBlank() -> {
                 // Slå opp på i barneOppslag med fødselsnummer ...
-              getFullNavn(ident = barn.fodselsnummer, correlationId = correlationId)
+                logger.info("Henter barnets navn gitt fødselsnummer ...")
+                getFullNavn(ident = barn.fodselsnummer, correlationId = correlationId)
+            }
+            // Ellers, hvis barnet har et alternativId ...
+            !barn.alternativId.isNullOrBlank() -> {
+                // Slå opp på i barneOppslag med alternativId ...
+                logger.info("Henter barnets navn gitt alternativId ...")
+                getFullNavn(ident = barn.alternativId, correlationId = correlationId)
             }
             // Ellers hvis
             !barn.aktoerId.isNullOrBlank() -> {
+                logger.info("Henter barnets navn gitt aktørId ...")
                 val fodselsnummer: NorskIdent = aktoerService.getIdent(barn.aktoerId, correlationId = correlationId)
                 getFullNavn(ident = fodselsnummer.getValue(), correlationId = correlationId)
             }
