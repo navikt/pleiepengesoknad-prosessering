@@ -13,8 +13,6 @@ import no.nav.helse.tpsproxy.Ident
 import no.nav.helse.tpsproxy.TpsNavn
 import org.slf4j.LoggerFactory
 
-private const val ATTRIBUTT_QUERY_NAVN = "a"
-
 internal class PreprosseseringV1Service(
     private val aktoerService: AktoerService,
     private val pdfV1Generator: PdfV1Generator,
