@@ -43,7 +43,7 @@ internal class PreprosseseringV1Service(
         val barnAktoerId = hentBarnetsAktoerId(barn = melding.barn, correlationId = correlationId)
         logger.info("Barnets AktørID = $barnAktoerId")
 
-        val barnetsNavn: String = slaaOppBarnetsNavn(melding.barn, correlationId = correlationId)
+        val barnetsNavn: String? = slaaOppBarnetsNavn(melding.barn, correlationId = correlationId)
 
         logger.trace("Genererer Oppsummerings-PDF av søknaden.")
 
@@ -102,7 +102,7 @@ internal class PreprosseseringV1Service(
     private suspend fun slaaOppBarnetsNavn(
         barn: Barn,
         correlationId: CorrelationId
-    ): String {
+    ): String? {
 
         return when {
             // Dersom barnet har navn, returner navnet.
@@ -126,7 +126,10 @@ internal class PreprosseseringV1Service(
                 val fodselsnummer: NorskIdent = aktoerService.getIdent(barn.aktoerId, correlationId = correlationId)
                 getFullNavn(ident = fodselsnummer.getValue(), correlationId = correlationId)
             }
-            else -> ""
+            else -> {
+                logger.warn("Kunne ikke finne barnets navn!")
+                null
+            }
         }
     }
 

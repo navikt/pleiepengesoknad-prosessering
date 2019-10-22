@@ -27,7 +27,7 @@ data class PreprossesertMeldingV1(
         dokumentUrls: List<List<URI>>,
         sokerAktoerId: AktoerId,
         barnAktoerId: AktoerId?,
-        barnetsNavn: String
+        barnetsNavn: String?
     ) : this(
         sprak = melding.sprak,
         soknadId = melding.soknadId,
@@ -69,7 +69,7 @@ data class PreprossesertBarn(
     val alternativId: String?,
     val aktoerId: String?
 ) {
-    internal constructor(barn: Barn, barnetsNavn: String, aktoerId: AktoerId?) : this(
+    internal constructor(barn: Barn, barnetsNavn: String?, aktoerId: AktoerId?) : this(
         fodselsnummer = barn.fodselsnummer,
         navn = barnetsNavn,
         alternativId = barn.alternativId,
