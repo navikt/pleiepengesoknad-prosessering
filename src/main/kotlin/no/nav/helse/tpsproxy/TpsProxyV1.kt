@@ -82,7 +82,7 @@ internal class TpsProxyV1(
     }
 }
 
-data class Ident(internal val value: String)
+internal data class Ident(internal val value: String)
 
 internal data class TpsNavn(
     internal val fornavn: String,
@@ -90,15 +90,15 @@ internal data class TpsNavn(
     internal val etternavn: String
 )
 
-fun Logger.restKall(url: String) = info("Utgående kall til $url")
-fun JSONObject.getStringOrNull(key: String) = if (has(key) && !isNull(key)) getString(key) else null
+private fun Logger.restKall(url: String) = info("Utgående kall til $url")
+private fun JSONObject.getStringOrNull(key: String) = if (has(key) && !isNull(key)) getString(key) else null
 
-object NavHeaders {
+private object NavHeaders {
     internal const val CallId = "Nav-Call-id"
     internal const val PersonIdent = "Nav-Personident"
     internal const val ConsumerId = "Nav-Consumer-Id"
 }
 
-object NavHeaderValues {
+private object NavHeaderValues {
     internal const val ConsumerId = "pleiepengesoknad-prosessering"
 }
