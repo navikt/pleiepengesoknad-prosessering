@@ -82,12 +82,6 @@ internal class TpsProxyV1(
     }
 }
 
-private class CoroutineRequestContext(
-    internal val correlationId: CorrelationId
-) : AbstractCoroutineContextElement(Key) {
-    internal companion object Key : CoroutineContext.Key<CoroutineRequestContext>
-}
-
 data class Ident(internal val value: String)
 
 internal data class TpsNavn(
@@ -95,32 +89,6 @@ internal data class TpsNavn(
     internal val mellomnavn: String?,
     internal val etternavn: String
 )
-
-data class ForkortetNavn(private val value: String) {
-    internal val fornavn: String
-    internal val mellomnavn: String?
-    internal val etternavn: String
-    internal val fulltNavn: String
-
-    init {
-        val splittetNavn = value
-            .split(" ")
-            .filterNot { it.isBlank() }
-        val splittetMellomnavn =
-            if (splittetNavn.size > 2) splittetNavn.slice(IntRange(2, splittetNavn.size - 1)) else emptyList()
-        fornavn = splittetNavn.fornavn()
-        mellomnavn = splittetMellomnavn.mellomnavn()
-        etternavn = splittetNavn.etternavn()
-
-        fulltNavn = if (mellomnavn.isNullOrEmpty()) {
-            "$fornavn $etternavn"
-        } else "$fornavn $mellomnavn $etternavn"
-    }
-
-    private fun List<String>.etternavn() = if (isEmpty()) "" else first()
-    private fun List<String>.fornavn() = if (size > 1) get(1) else ""
-    private fun List<String>.mellomnavn() = if (isEmpty()) null else joinToString(" ")
-}
 
 fun Logger.restKall(url: String) = info("Utgående kall til $url")
 fun JSONObject.getStringOrNull(key: String) = if (has(key) && !isNull(key)) getString(key) else null
@@ -132,5 +100,5 @@ object NavHeaders {
 }
 
 object NavHeaderValues {
-    internal const val ConsumerId = "k9-selvbetjening-oppslag"
+    internal const val ConsumerId = "pleiepengesoknad-prosessering"
 }
