@@ -38,7 +38,8 @@ class PdfV1GeneratorTest {
         barn: Barn = Barn(
             navn = "Børge Øverbø Ånsnes",
             fodselsnummer = null,
-            alternativId = "29091884321"
+            alternativId = "29091884321",
+            aktoerId = null
         ),
         grad: Int? = 60,
         harMedsoker: Boolean = true,
@@ -96,19 +97,19 @@ class PdfV1GeneratorTest {
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
         id = "5-utenInfoPaaBarn"
-        pdf = generator.generateSoknadOppsummeringPdf(melding = gyldigMelding(soknadId = id, harMedsoker = false, organisasjoner = listOf(), barn = Barn(fodselsnummer = null, alternativId = null, navn = null)))
+        pdf = generator.generateSoknadOppsummeringPdf(melding = gyldigMelding(soknadId = id, harMedsoker = false, organisasjoner = listOf(), barn = Barn(fodselsnummer = null, alternativId = null, navn = null, aktoerId = null)))
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
         id = "6-utenGrad"
-        pdf = generator.generateSoknadOppsummeringPdf(melding = gyldigMelding(soknadId = id, harMedsoker = false, organisasjoner = listOf(), barn = Barn(fodselsnummer = null, alternativId = null, navn = null), grad = null))
+        pdf = generator.generateSoknadOppsummeringPdf(melding = gyldigMelding(soknadId = id, harMedsoker = false, organisasjoner = listOf(), barn = Barn(fodselsnummer = null, alternativId = null, navn = null, aktoerId = null), grad = null))
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
         id = "7-utenDagerBorteFraJobb"
-        pdf = generator.generateSoknadOppsummeringPdf(melding = gyldigMelding(soknadId = id, harMedsoker = false, organisasjoner = listOf(), barn = Barn(fodselsnummer = null, alternativId = null, navn = null), grad = null, dagerPerUkeBorteFraJobb = null))
+        pdf = generator.generateSoknadOppsummeringPdf(melding = gyldigMelding(soknadId = id, harMedsoker = false, organisasjoner = listOf(), barn = Barn(fodselsnummer = null, alternativId = null, navn = null, aktoerId = null), grad = null, dagerPerUkeBorteFraJobb = null))
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
         id = "8-medTilsynsOrdningJa"
-        pdf = generator.generateSoknadOppsummeringPdf(melding = gyldigMelding(soknadId = id, harMedsoker = false, barn = Barn(fodselsnummer = null, alternativId = null, navn = null), grad = null, dagerPerUkeBorteFraJobb = null,
+        pdf = generator.generateSoknadOppsummeringPdf(melding = gyldigMelding(soknadId = id, harMedsoker = false, barn = Barn(fodselsnummer = null, alternativId = null, navn = null, aktoerId = null), grad = null, dagerPerUkeBorteFraJobb = null,
             tilsynsordning = Tilsynsordning(
                 svar = "ja",
                 ja = TilsynsordningJa(
@@ -145,7 +146,7 @@ class PdfV1GeneratorTest {
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
         id = "9-medTilsynsordningVetIkke"
-        pdf = generator.generateSoknadOppsummeringPdf(melding = gyldigMelding(soknadId = id, harMedsoker = false, organisasjoner = listOf(), barn = Barn(fodselsnummer = null, alternativId = null, navn = null), grad = null, dagerPerUkeBorteFraJobb = null, tilsynsordning = Tilsynsordning(
+        pdf = generator.generateSoknadOppsummeringPdf(melding = gyldigMelding(soknadId = id, harMedsoker = false, organisasjoner = listOf(), barn = Barn(fodselsnummer = null, alternativId = null, navn = null, aktoerId = null), grad = null, dagerPerUkeBorteFraJobb = null, tilsynsordning = Tilsynsordning(
             svar = "vet_ikke",
             ja = null,
             vetIkke = TilsynsordningVetIkke(
@@ -157,7 +158,7 @@ class PdfV1GeneratorTest {
 
 
         id = "10-medTilsynsordningNei"
-        pdf = generator.generateSoknadOppsummeringPdf(melding = gyldigMelding(soknadId = id, harMedsoker = false, organisasjoner = listOf(), barn = Barn(fodselsnummer = null, alternativId = null, navn = null), grad = null, dagerPerUkeBorteFraJobb = null, tilsynsordning = Tilsynsordning(
+        pdf = generator.generateSoknadOppsummeringPdf(melding = gyldigMelding(soknadId = id, harMedsoker = false, organisasjoner = listOf(), barn = Barn(fodselsnummer = null, alternativId = null, navn = null, aktoerId = null), grad = null, dagerPerUkeBorteFraJobb = null, tilsynsordning = Tilsynsordning(
             svar = "nei",
             ja = null,
             vetIkke = null

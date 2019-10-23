@@ -19,6 +19,7 @@ class PleiepengesoknadProsesseringWithMocks {
                 .withPort(8091)
                 .withNaisStsSupport()
                 .withAzureSupport()
+                .navnOppslagConfig()
                 .build()
                 .stubK9DokumentHealth()
                 .stubPleiepengerJoarkHealth()
@@ -27,7 +28,9 @@ class PleiepengesoknadProsesseringWithMocks {
                 .stubOpprettOppgave()
                 .stubLagreDokument()
                 .stubSlettDokument()
+                .stubTpsProxyGetNavn()
                 .stubAktoerRegisterGetAktoerId("29099012345", "123456")
+                .stubAktoerRegisterHentNorskIdent("29099012345")
 
             val kafkaEnvironment = KafkaWrapper.bootstrap()
 

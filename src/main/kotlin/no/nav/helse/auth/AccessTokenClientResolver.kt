@@ -44,4 +44,5 @@ internal class AccessTokenClientResolver(
     internal fun dokumentAccessTokenClient() = azureV2AccessTokenClient
     internal fun joarkAccessTokenClient() = azureV2AccessTokenClient
     internal fun aktoerRegisterAccessTokenClient() = naisStsAccessTokenClient
+    internal fun tpsProxyAccessTokenClient() = naisStsAccessTokenClient
 }

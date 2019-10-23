@@ -15,6 +15,8 @@ import kotlinx.coroutines.time.delay
 import no.nav.common.KafkaEnvironment
 import no.nav.helse.dusseldorf.ktor.testsupport.wiremock.WireMockBuilder
 import no.nav.helse.prosessering.v1.*
+import no.nav.helse.prosessering.v1.asynkron.OppgaveOpprettet
+import no.nav.helse.prosessering.v1.asynkron.TopicEntry
 
 import org.junit.AfterClass
 import org.junit.BeforeClass
@@ -40,6 +42,7 @@ class PleiepengesoknadProsesseringTest {
         private val wireMockServer: WireMockServer = WireMockBuilder()
             .withNaisStsSupport()
             .withAzureSupport()
+            .navnOppslagConfig()
             .build()
             .stubK9DokumentHealth()
             .stubPleiepengerJoarkHealth()
@@ -48,7 +51,9 @@ class PleiepengesoknadProsesseringTest {
             .stubOpprettOppgave()
             .stubLagreDokument()
             .stubSlettDokument()
+            .stubTpsProxyGetNavn()
             .stubAktoerRegisterGetAktoerId("29099012345", "123456")
+            .stubAktoerRegisterHentNorskIdent("29099012345")
 
         private val kafkaEnvironment = KafkaWrapper.bootstrap()
         private val kafkaTestConsumer = kafkaEnvironment.testConsumer()
@@ -64,9 +69,14 @@ class PleiepengesoknadProsesseringTest {
             start(wait = true)
         }
 
-        private fun getConfig(kafkaEnvironment: KafkaEnvironment?) : ApplicationConfig {
+        private fun getConfig(kafkaEnvironment: KafkaEnvironment?): ApplicationConfig {
             val fileConfig = ConfigFactory.load()
-            val testConfig = ConfigFactory.parseMap(TestConfiguration.asMap(wireMockServer = wireMockServer, kafkaEnvironment = kafkaEnvironment))
+            val testConfig = ConfigFactory.parseMap(
+                TestConfiguration.asMap(
+                    wireMockServer = wireMockServer,
+                    kafkaEnvironment = kafkaEnvironment
+                )
+            )
             val mergedConfig = testConfig.withFallback(fileConfig)
             return HoconApplicationConfig(mergedConfig)
         }
@@ -206,6 +216,7 @@ class PleiepengesoknadProsesseringTest {
         val melding = gyldigMelding(
             fodselsnummerSoker = gyldigFodselsnummerA,
             fodselsnummerBarn = gyldigFodselsnummerB,
+            barnetsNavn = "kari",
             vedleggUrl = URI("http://localhost:8080/jeg-skal-feile/1")
         )
 
@@ -226,15 +237,59 @@ class PleiepengesoknadProsesseringTest {
         kafkaTestConsumer.hentOpprettetOppgave(melding.soknadId)
     }
 
+    @Test
+    fun `Bruk barnets fødselsnummer til å slå opp i tps-proxy dersom navnet mangler`() {
+        val melding = gyldigMelding(
+            fodselsnummerSoker = gyldigFodselsnummerA,
+            fodselsnummerBarn = gyldigFodselsnummerC,
+            barnetsNavn = null
+        )
+
+        kafkaTestProducer.leggSoknadTilProsessering(melding)
+        val hentOpprettetOppgave: TopicEntry<OppgaveOpprettet> = kafkaTestConsumer.hentOpprettetOppgave(melding.soknadId)
+        assertEquals("KLØKTIG BLUNKENDE SUPERKONSOLL", hentOpprettetOppgave.data.melding.barn.navn)
+    }
+
+    @Test
+    fun `Bruk barnets alternativ id til å slå opp i tps-proxy dersom navnet mangler`() {
+        val melding = gyldigMelding(
+            fodselsnummerSoker = gyldigFodselsnummerA,
+            fodselsnummerBarn = null,
+            barnetsNavn = null,
+            alternativIdBarn = "d-nummer"
+        )
+
+        kafkaTestProducer.leggSoknadTilProsessering(melding)
+        val hentOpprettetOppgave: TopicEntry<OppgaveOpprettet> = kafkaTestConsumer.hentOpprettetOppgave(melding.soknadId)
+        assertEquals("KLØKTIG BLUNKENDE SUPERKONSOLL", hentOpprettetOppgave.data.melding.barn.navn)
+    }
+
+    @Test
+    fun `Bruk barnets aktørId til å slå opp i tps-proxy dersom navnet mangler`() {
+        val melding = gyldigMelding(
+            fodselsnummerSoker = gyldigFodselsnummerA,
+            fodselsnummerBarn = null,
+            barnetsNavn = null,
+            aktoerIdBarn = "29099012345"
+        )
+
+        kafkaTestProducer.leggSoknadTilProsessering(melding)
+        val hentOpprettetOppgave: TopicEntry<OppgaveOpprettet> = kafkaTestConsumer.hentOpprettetOppgave(melding.soknadId)
+        assertEquals("KLØKTIG BLUNKENDE SUPERKONSOLL", hentOpprettetOppgave.data.melding.barn.navn)
+    }
+
     private fun gyldigMelding(
-        fodselsnummerSoker : String,
-        fodselsnummerBarn: String,
+        fodselsnummerSoker: String,
+        fodselsnummerBarn: String?,
         vedleggUrl : URI = URI("${wireMockServer.getK9DokumentBaseUrl()}/v1/dokument/${UUID.randomUUID()}"),
+        barnetsNavn: String? = "kari",
+        alternativIdBarn: String? = null,
+        aktoerIdBarn: String? = null,
         sprak: String? = null,
         organisasjoner: List<Organisasjon> = listOf(
             Organisasjon("917755736", "Gyldig")
         )
-    ) : MeldingV1 = MeldingV1(
+    ): MeldingV1 = MeldingV1(
         sprak = sprak,
         soknadId = UUID.randomUUID().toString(),
         mottatt = ZonedDateTime.now(),
@@ -248,9 +303,10 @@ class PleiepengesoknadProsesseringTest {
             fornavn = "Ola"
         ),
         barn = Barn(
-            navn = "Kari",
+            navn = barnetsNavn,
             fodselsnummer = fodselsnummerBarn,
-            alternativId = null
+            alternativId = alternativIdBarn,
+            aktoerId = aktoerIdBarn
         ),
         relasjonTilBarnet = "Mor",
         arbeidsgivere = Arbeidsgivere(
@@ -287,5 +343,5 @@ class PleiepengesoknadProsesseringTest {
         )
     )
 
-    private fun ventPaaAtRetryMekanismeIStreamProsessering() = runBlocking{ delay(Duration.ofSeconds(30)) }
+    private fun ventPaaAtRetryMekanismeIStreamProsessering() = runBlocking { delay(Duration.ofSeconds(30)) }
 }

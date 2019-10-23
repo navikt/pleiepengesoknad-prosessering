@@ -11,4 +11,8 @@ class AktoerService(
     ): AktoerId {
         return aktoerGateway.getAktoerId(fnr, correlationId)
     }
+
+    suspend fun getIdent(aktoerId: String, correlationId: CorrelationId): NorskIdent {
+        return aktoerGateway.hentNorskIdent(aktoerId = AktoerId(id = aktoerId), correlationId = correlationId)
+    }
 }

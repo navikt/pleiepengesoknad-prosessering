@@ -46,6 +46,8 @@ spec:
       value: https://k9-dokument.nais.preprod.local
     - name: AKTOER_REGISTER_BASE_URL
       value: https://app-q1.adeo.no/aktoerregister
+    - name: TPS_PROXY_V1_URL
+      value: https://tps-proxy-q1.nais.preprod.local/api/v1
     - name: NAIS_STS_DISCOVERY_ENDPOINT
       value: https://security-token-service.nais.preprod.local/rest/v1/sts/.well-known/openid-configuration
     - name: AZURE_CLIENT_ID

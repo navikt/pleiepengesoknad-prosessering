@@ -1,10 +1,12 @@
 package no.nav.helse
 
+import com.github.kittinunf.fuel.httpGet
 import com.github.tomakehurst.wiremock.WireMockServer
 import no.nav.common.KafkaEnvironment
 import no.nav.helse.dusseldorf.ktor.testsupport.jws.ClientCredentials
 import no.nav.helse.dusseldorf.ktor.testsupport.wiremock.getAzureV2WellKnownUrl
 import no.nav.helse.dusseldorf.ktor.testsupport.wiremock.getNaisStsWellKnownUrl
+import org.json.JSONObject
 
 object TestConfiguration {
 
@@ -13,6 +15,7 @@ object TestConfiguration {
         kafkaEnvironment: KafkaEnvironment? = null,
         port : Int = 8080,
         aktoerRegisterBaseUrl : String? = wireMockServer?.getAktoerRegisterBaseUrl(),
+        tpsProxyBaseUrl : String? = wireMockServer?.getTpsProxyBaseUrl(),
         pleiepengerOppgaveBaseUrl : String? = wireMockServer?.getPleiepengerOppgaveBaseUrl(),
         pleiepengerJoarkBaseUrl : String? = wireMockServer?.getPleiepengerJoarkBaseUrl(),
         k9DokumentBaseUrl : String? = wireMockServer?.getK9DokumentBaseUrl()
@@ -20,6 +23,7 @@ object TestConfiguration {
         val map = mutableMapOf(
             Pair("ktor.deployment.port","$port"),
             Pair("nav.aktoer_register_base_url","$aktoerRegisterBaseUrl"),
+            Pair("nav.tps_proxy_v1_base_url","$tpsProxyBaseUrl"),
             Pair("nav.pleiepenger_oppgave_base_url","$pleiepengerOppgaveBaseUrl"),
             Pair("nav.pleiepenger_joark_base_url","$pleiepengerJoarkBaseUrl"),
             Pair("nav.k9_dokument_base_url","$k9DokumentBaseUrl")
@@ -53,4 +57,5 @@ object TestConfiguration {
 
         return map.toMap()
     }
+    private fun String.getAsJson() = JSONObject(this.httpGet().responseString().third.component1())
 }
