@@ -21,11 +21,6 @@ private val valgteArbeidsgivereHistogram = Histogram.build()
     .help("Antall arbeidsgivere valgt i søknadene")
     .register()
 
-private val opplastedeVedleggHistogram = Histogram.build()
-    .buckets(0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0)
-    .name("antall_oppplastede_vedlegg_histogram")
-    .help("Antall vedlegg lastet opp i søknader")
-    .register()
 
 private val gradHistogram = Histogram.build()
     .buckets(20.0, 30.0, 40.0, 50.0, 60.0, 70.0, 80.0, 90.0, 100.0)
@@ -67,7 +62,6 @@ internal fun PreprossesertMeldingV1.reportMetrics() {
         }
     }
     valgteArbeidsgivereHistogram.observe(arbeidsgivere.organisasjoner.size.toDouble())
-    opplastedeVedleggHistogram.observe(melding.vedleggUrls.size.toDouble())
     idTypePaaBarnCounter.labels(barn.idType()).inc()
     periodeSoknadGjelderIUkerHistogram.observe(ChronoUnit.WEEKS.between(fraOgMed, tilOgMed).toDouble())
     if (grad != null) gradHistogram.observe(grad.toDouble())

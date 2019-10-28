@@ -91,6 +91,7 @@ internal class PreprosseseringV1Service(
             barnAktoerId = barnAktoerId,
             barnetsNavn = barnetsNavn
         )
+        melding.reportMetrics()
         preprossesertMeldingV1.reportMetrics()
         return preprossesertMeldingV1
     }
