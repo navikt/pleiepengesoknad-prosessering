@@ -35,13 +35,13 @@ class BarnTest {
         assertFalse(fodseldato.aarSiden().erUnderEttAar())
     }
 
-    private fun barn(forventetAlder : Long) : Barn {
+    private fun barn(forventetAlder : Long) : PreprossesertBarn {
         val fodselsdato = if (forventetAlder == 0L) now.minusDays(1) else now.minusYears(forventetAlder)
         val dag = fodselsdato.dayOfMonth.toString().padStart(2, '0')
         val maned = fodselsdato.monthValue.toString().padStart(2, '0')
         val ar = fodselsdato.year.toString().substring(2,4)
         val fodselsnummer = "$dag$maned${ar}12345"
-        return Barn(
+        return PreprossesertBarn(
             fodselsnummer = fodselsnummer,
             alternativId = null,
             navn = null,
