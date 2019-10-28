@@ -110,13 +110,23 @@ internal class PreprosseseringV1Service(
             !barn.fodselsnummer.isNullOrBlank() -> {
                 // Slå opp på i barneOppslag med fødselsnummer ...
                 logger.info("Henter barnets navn gitt fødselsnummer ...")
-                getFullNavn(ident = barn.fodselsnummer, correlationId = correlationId)
+                return try {
+                    getFullNavn(ident = barn.fodselsnummer, correlationId = correlationId)
+                } catch (e: Exception) {
+                    logger.warn("Oppslag for barnets navn feilet. Prosesserer melding uten barnets navn.")
+                    null
+                }
             }
             // Ellers, hvis barnet har et alternativId ...
             !barn.alternativId.isNullOrBlank() -> {
                 // Slå opp på i barneOppslag med alternativId ...
                 logger.info("Henter barnets navn gitt alternativId ...")
-                getFullNavn(ident = barn.alternativId, correlationId = correlationId)
+                return try {
+                    getFullNavn(ident = barn.alternativId, correlationId = correlationId)
+                } catch (e: Exception) {
+                    logger.warn("Oppslag for barnets navn feilet. Prosesserer melding uten barnets navn.")
+                    null
+                }
             }
             // Ellers hvis
             !barn.aktoerId.isNullOrBlank() -> {
