@@ -57,7 +57,7 @@ private val barnetsAlderIUkerCounter = Counter.build()
     .labelNames("uker")
     .register()
 
-internal fun MeldingV1.reportMetrics() {
+internal fun PreprossesertMeldingV1.reportMetrics() {
     val barnetsFodselsdato = barn.fodseldato()
     if (barnetsFodselsdato != null) {
         val barnetsAlder = barnetsFodselsdato.aarSiden()
@@ -67,7 +67,7 @@ internal fun MeldingV1.reportMetrics() {
         }
     }
     valgteArbeidsgivereHistogram.observe(arbeidsgivere.organisasjoner.size.toDouble())
-    opplastedeVedleggHistogram.observe(vedleggUrls.size.toDouble())
+    opplastedeVedleggHistogram.observe(dokumentUrls.size.toDouble())
     idTypePaaBarnCounter.labels(barn.idType()).inc()
     periodeSoknadGjelderIUkerHistogram.observe(ChronoUnit.WEEKS.between(fraOgMed, tilOgMed).toDouble())
     if (grad != null) gradHistogram.observe(grad.toDouble())
@@ -77,14 +77,14 @@ internal fun MeldingV1.reportMetrics() {
 }
 
 internal fun Double.erUnderEttAar() = 0.0 == this
-private fun Barn.idType(): String {
+private fun PreprossesertBarn.idType(): String {
     return when {
         fodselsnummer != null -> "fodselsnummer"
         alternativId != null -> "alternativ_id"
         else -> "ingen_id"
     }
 }
-internal fun Barn.fodseldato() : LocalDate? {
+internal fun PreprossesertBarn.fodseldato() : LocalDate? {
     if (fodselsnummer == null) return null
     return try {
         val dag = fodselsnummer.substring(0,2).toInt()
