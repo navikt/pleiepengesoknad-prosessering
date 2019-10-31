@@ -83,15 +83,17 @@ internal class PreprosseseringV1Service(
 
         logger.trace("Totalt ${komplettDokumentUrls.size} dokumentbolker.")
 
-        melding.reportMetrics()
 
-        return PreprossesertMeldingV1(
+        val preprossesertMeldingV1 = PreprossesertMeldingV1(
             dokumentUrls = komplettDokumentUrls.toList(),
             melding = melding,
             sokerAktoerId = sokerAktoerId,
             barnAktoerId = barnAktoerId,
             barnetsNavn = barnetsNavn
         )
+        melding.reportMetrics()
+        preprossesertMeldingV1.reportMetrics()
+        return preprossesertMeldingV1
     }
 
     /**
