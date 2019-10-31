@@ -6,10 +6,10 @@ class AktoerService(
     private val aktoerGateway: AktoerGateway
 ){
     suspend fun getAktorId(
-        fnr: Fodselsnummer,
+        ident: NorskIdent,
         correlationId: CorrelationId
     ): AktoerId {
-        return aktoerGateway.getAktoerId(fnr, correlationId)
+        return aktoerGateway.getAktoerId(ident, correlationId)
     }
 
     suspend fun getIdent(aktoerId: String, correlationId: CorrelationId): NorskIdent {
