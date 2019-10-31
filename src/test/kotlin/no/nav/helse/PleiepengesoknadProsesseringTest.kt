@@ -52,8 +52,9 @@ class PleiepengesoknadProsesseringTest {
             .stubLagreDokument()
             .stubSlettDokument()
             .stubTpsProxyGetNavn()
-            .stubAktoerRegisterGetAktoerId("29099012345", "123456")
-            .stubAktoerRegisterHentNorskIdent("29099012345")
+            .stubAktoerRegister("29099012345", "123456")
+            .stubAktoerRegister("29099012346", "56789")
+            .stubAktoerRegister("55125314561", "56789")
 
         private val kafkaEnvironment = KafkaWrapper.bootstrap()
         private val kafkaTestConsumer = kafkaEnvironment.testConsumer()
@@ -96,8 +97,8 @@ class PleiepengesoknadProsesseringTest {
         @BeforeClass
         @JvmStatic
         fun buildUp() {
-            wireMockServer.stubAktoerRegisterGetAktoerId(gyldigFodselsnummerA, "666666666")
-            wireMockServer.stubAktoerRegisterGetAktoerId(gyldigFodselsnummerB, "777777777")
+            wireMockServer.stubAktoerRegister(gyldigFodselsnummerA, "666666666")
+            wireMockServer.stubAktoerRegister(gyldigFodselsnummerB, "777777777")
         }
 
         @AfterClass
@@ -240,8 +241,8 @@ class PleiepengesoknadProsesseringTest {
     @Test
     fun `Bruk barnets fødselsnummer til å slå opp i tps-proxy dersom navnet mangler`() {
         val melding = gyldigMelding(
-            fodselsnummerSoker = gyldigFodselsnummerA,
-            fodselsnummerBarn = gyldigFodselsnummerC,
+            fodselsnummerSoker = gyldigFodselsnummerC,
+            fodselsnummerBarn = gyldigFodselsnummerB,
             barnetsNavn = null
         )
 
@@ -256,7 +257,7 @@ class PleiepengesoknadProsesseringTest {
             fodselsnummerSoker = gyldigFodselsnummerA,
             fodselsnummerBarn = null,
             barnetsNavn = null,
-            alternativIdBarn = "d-nummer"
+            alternativIdBarn = dNummerA
         )
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
@@ -270,7 +271,7 @@ class PleiepengesoknadProsesseringTest {
             fodselsnummerSoker = gyldigFodselsnummerA,
             fodselsnummerBarn = null,
             barnetsNavn = null,
-            aktoerIdBarn = "29099012345"
+            aktoerIdBarn = "56789"
         )
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)

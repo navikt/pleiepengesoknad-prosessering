@@ -41,11 +41,16 @@ internal class PreprosseseringV1Service(
         }
         logger.info("Barnets AktørID = $barnAktoerId")
 
-        val barnetsNavn: String? = slaaOppBarnetsNavn(melding.barn, correlationId = correlationId)
+        val barnetsIdent: NorskIdent? = when {
+            barnAktoerId != null -> aktoerService.getIdent(barnAktoerId.id, correlationId = correlationId)
+            else -> null
+        }
+
+        val barnetsNavn: String? = slaaOppBarnetsNavn(melding.barn, barnetsIdent = barnetsIdent, correlationId = correlationId)
 
         logger.trace("Genererer Oppsummerings-PDF av søknaden.")
 
-        val soknadOppsummeringPdf = pdfV1Generator.generateSoknadOppsummeringPdf(melding)
+        val soknadOppsummeringPdf = pdfV1Generator.generateSoknadOppsummeringPdf(melding, barnetsIdent, barnetsNavn)
 
         logger.trace("Generering av Oppsummerings-PDF OK.")
         logger.trace("Mellomlagrer Oppsummerings-PDF.")
@@ -101,41 +106,27 @@ internal class PreprosseseringV1Service(
      */
     private suspend fun slaaOppBarnetsNavn(
         barn: Barn,
-        correlationId: CorrelationId
+        correlationId: CorrelationId,
+        barnetsIdent: NorskIdent?
     ): String? {
 
         return when {
             // Dersom barnet har navn, returner navnet.
             !barn.navn.isNullOrBlank() -> barn.navn
 
-            // Ellers, hvis barnet har et fødselsNummer ...
-            !barn.fodselsnummer.isNullOrBlank() -> {
-                // Slå opp på i barneOppslag med fødselsnummer ...
+            // Dersom barnet har et norsk ident...
+            barnetsIdent != null -> {
+                // Slå opp på i barneOppslag med barnets ident ...
                 logger.info("Henter barnets navn gitt fødselsnummer ...")
                 return try {
-                    getFullNavn(ident = barn.fodselsnummer, correlationId = correlationId)
+                    getFullNavn(ident = barnetsIdent.getValue(), correlationId = correlationId)
                 } catch (e: Exception) {
                     logger.warn("Oppslag for barnets navn feilet. Prosesserer melding uten barnets navn.")
                     null
                 }
             }
-            // Ellers, hvis barnet har et alternativId ...
-            !barn.alternativId.isNullOrBlank() -> {
-                // Slå opp på i barneOppslag med alternativId ...
-                logger.info("Henter barnets navn gitt alternativId ...")
-                return try {
-                    getFullNavn(ident = barn.alternativId, correlationId = correlationId)
-                } catch (e: Exception) {
-                    logger.warn("Oppslag for barnets navn feilet. Prosesserer melding uten barnets navn.")
-                    null
-                }
-            }
-            // Ellers hvis
-            !barn.aktoerId.isNullOrBlank() -> {
-                logger.info("Henter barnets navn gitt aktørId ...")
-                val fodselsnummer: NorskIdent = aktoerService.getIdent(barn.aktoerId, correlationId = correlationId)
-                getFullNavn(ident = fodselsnummer.getValue(), correlationId = correlationId)
-            }
+
+            // Ellers returner null
             else -> {
                 logger.warn("Kunne ikke finne barnets navn!")
                 null

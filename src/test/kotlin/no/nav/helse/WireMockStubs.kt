@@ -15,8 +15,7 @@ private const val pleiepengerJoarkBaseUrl = "/pleiepenger-joark-mock"
 private const val k9DokumentBasePath = "/k9-dokument-mock"
 
 fun WireMockBuilder.navnOppslagConfig() = wireMockConfiguration {
-    it
-        .extensions(AktoerRegisterResponseTransformer())
+
 }
 
 internal fun WireMockServer.stubAktoerRegisterGetAktoerIdNotFound(
@@ -46,20 +45,22 @@ internal fun WireMockServer.stubAktoerRegisterGetAktoerIdNotFound(
 }
 
 
-internal fun WireMockServer.stubAktoerRegisterGetAktoerId(
-    fnr: String,
+internal fun WireMockServer.stubAktoerRegister(
+    identNummer: String,
     aktoerId: String
 ): WireMockServer {
     WireMock.stubFor(
         WireMock.get(WireMock.urlPathMatching(".*$aktoerRegisterBasePath/.*"))
-            .withHeader("Nav-Personidenter", EqualToPattern(fnr))
+            .withQueryParam("gjeldende", EqualToPattern("true"))
+            .withQueryParam("identgruppe", EqualToPattern("AktoerId"))
+            .withHeader("Nav-Personidenter", EqualToPattern(identNummer))
             .willReturn(
-            WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
-                .withBody(
-                    """
+                WireMock.aResponse()
+                    .withHeader("Content-Type", "application/json")
+                    .withBody(
+                        """
                     {
-                      "$fnr": {
+                      "$identNummer": {
                         "identer": [
                           {
                             "ident": "$aktoerId",
@@ -71,28 +72,42 @@ internal fun WireMockServer.stubAktoerRegisterGetAktoerId(
                       }
                     }
                     """.trimIndent()
-                )
-                .withStatus(200)
-        )
+                    )
+                    .withStatus(200)
+            )
     )
-    return this
-}
 
-internal fun WireMockServer.stubAktoerRegisterHentNorskIdent(fnr: String) : WireMockServer {
     WireMock.stubFor(
         WireMock.get(WireMock.urlPathMatching(".*$aktoerRegisterBasePath/.*"))
             .withQueryParam("gjeldende", EqualToPattern("true"))
             .withQueryParam("identgruppe", EqualToPattern("NorskIdent"))
-            .withHeader("Nav-Personidenter", EqualToPattern(fnr))
+            .withHeader("Nav-Personidenter", EqualToPattern(aktoerId))
             .willReturn(
                 WireMock.aResponse()
                     .withHeader("Content-Type", "application/json")
                     .withStatus(200)
-                    .withTransformers("aktoer-register")
+                    .withBody(
+                        """
+                        {
+                          "$aktoerId": {
+                            "identer": [
+                              {
+                                "ident": "$identNummer",
+                                "identgruppe": "NorskIdent",
+                                "gjeldende": true
+                              }
+                            ],
+                            "feilmelding": null
+                          }
+                        }
+                        """.trimIndent()
+                    )
             )
     )
     return this
 }
+
+
 
 internal fun WireMockServer.stubLagreDokument(): WireMockServer {
     WireMock.stubFor(
