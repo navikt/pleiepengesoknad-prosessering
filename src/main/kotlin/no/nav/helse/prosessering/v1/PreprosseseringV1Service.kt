@@ -38,7 +38,10 @@ internal class PreprosseseringV1Service(
         logger.info("Søkerens AktørID = $sokerAktoerId")
 
         logger.trace("Henter AktørID for barnet.")
-        val barnAktoerId = hentBarnetsAktoerId(barn = melding.barn, correlationId = correlationId)
+        val barnAktoerId: AktoerId? = when {
+            melding.barn.aktoerId.isNullOrBlank() -> hentBarnetsAktoerId(barn = melding.barn, correlationId = correlationId)
+            else -> AktoerId(melding.barn.aktoerId)
+        }
         logger.info("Barnets AktørID = $barnAktoerId")
 
         val barnetsNavn: String? = slaaOppBarnetsNavn(melding.barn, correlationId = correlationId)
