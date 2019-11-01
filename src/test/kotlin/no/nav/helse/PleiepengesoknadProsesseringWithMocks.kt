@@ -28,7 +28,7 @@ class PleiepengesoknadProsesseringWithMocks {
                 .stubOpprettOppgave()
                 .stubLagreDokument()
                 .stubSlettDokument()
-                .stubTpsProxyGetNavn()
+                .stubTpsProxyGetNavn("Ole", "Dole", "Klok")
                 .stubAktoerRegister("29099012345", "123456")
 
             val kafkaEnvironment = KafkaWrapper.bootstrap()
