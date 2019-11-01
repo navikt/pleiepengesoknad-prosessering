@@ -75,7 +75,7 @@ class AktoerGateway(
     }
 
     suspend fun getAktoerId(
-        fnr: Fodselsnummer,
+        ident: NorskIdent,
         correlationId: CorrelationId
     ): AktoerId {
 
@@ -87,7 +87,7 @@ class AktoerGateway(
                 HttpHeaders.Authorization to authorizationHeader,
                 HttpHeaders.Accept to "application/json",
                 "Nav-Consumer-Id" to "pleiepengesoknad-prosessering",
-                "Nav-Personidenter" to fnr.getValue(),
+                "Nav-Personidenter" to ident.getValue(),
                 "Nav-Call-Id" to correlationId.value
             )
 
@@ -112,11 +112,11 @@ class AktoerGateway(
         }
 
 
-        if (!httpResponse.containsKey(fnr.getValue())) {
+        if (!httpResponse.containsKey(ident.getValue())) {
             throw IllegalStateException("Svar fra '$completeUrl' inneholdt ikke data om det forsespurte fødselsnummeret.")
         }
 
-        val identResponse = httpResponse.get(key = fnr.getValue())
+        val identResponse = httpResponse.get(key = ident.getValue())
 
         if (identResponse!!.feilmelding != null) {
             logger.warn("Mottok feilmelding fra AktørRegister : '${identResponse.feilmelding}'")

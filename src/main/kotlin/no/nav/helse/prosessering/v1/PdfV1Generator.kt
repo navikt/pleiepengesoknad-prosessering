@@ -7,6 +7,7 @@ import com.github.jknack.handlebars.context.MapValueResolver
 import com.github.jknack.handlebars.io.ClassPathTemplateLoader
 import com.openhtmltopdf.outputdevice.helper.BaseRendererBuilder
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder
+import no.nav.helse.aktoer.NorskIdent
 import no.nav.helse.dusseldorf.ktor.core.fromResources
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
@@ -66,7 +67,9 @@ internal class PdfV1Generator  {
     }
 
     internal fun generateSoknadOppsummeringPdf(
-        melding: MeldingV1
+        melding: MeldingV1,
+        barnetsIdent: NorskIdent?,
+        barnetsNavn: String?
     ) : ByteArray {
         soknadTemplate.apply(Context
             .newBuilder(mapOf(
@@ -78,12 +81,12 @@ internal class PdfV1Generator  {
                 "dager_per_uke_borte_fra_jobb" to melding.dagerPerUkeBorteFraJobb?.avrundetMedEnDesimal()?.formatertMedEnDesimal(),
                 "soker" to mapOf(
                     "navn" to melding.soker.formatertNavn(),
-                    "fodselsnummer" to melding.soker.formatertFodselsnummer(),
+                    "fodselsnummer" to melding.soker.fodselsnummer,
                     "relasjon_til_barnet" to melding.relasjonTilBarnet
                 ),
                 "barn" to mapOf(
-                    "navn" to melding.barn.navn,
-                    "id" to melding.barn.formatertId()
+                    "navn" to barnetsNavn,
+                    "id" to barnetsIdent?.getValue()
                 ),
                 "periode" to mapOf(
                     "fra_og_med" to DATE_FORMATTER.format(melding.fraOgMed),
@@ -193,12 +196,6 @@ private fun List<Organisasjon>.somMap() = map {
 
 private fun List<Organisasjon>.erAktuelleArbeidsgivere() = any { it.skalJobbeProsent != null }
 
-private fun String.formaterId() = if (length == 11) "${this.substring(0,6)} ${this.substring(6)}" else this
-private fun Soker.formatertFodselsnummer() = this.fodselsnummer.formaterId()
-private fun Barn.formatertId() : String? {
-    return if (fodselsnummer != null || alternativId != null) (fodselsnummer?:alternativId)!!.formaterId()
-    else null
-}
 private fun Soker.formatertNavn() = if (mellomnavn != null) "$fornavn $mellomnavn $etternavn" else "$fornavn $etternavn"
 private fun String.sprakTilTekst() = when (this.toLowerCase()) {
     "nb" -> "bokmål"
