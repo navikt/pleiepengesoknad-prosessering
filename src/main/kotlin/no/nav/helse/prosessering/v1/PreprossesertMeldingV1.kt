@@ -1,6 +1,7 @@
 package no.nav.helse.prosessering.v1
 
 import no.nav.helse.aktoer.AktoerId
+import no.nav.helse.aktoer.AlternativId
 import no.nav.helse.aktoer.Fodselsnummer
 import no.nav.helse.aktoer.NorskIdent
 import java.net.URI
@@ -30,7 +31,7 @@ data class PreprossesertMeldingV1(
         sokerAktoerId: AktoerId,
         barnAktoerId: AktoerId?,
         barnetsNavn: String?,
-        barnetsFodselsnummer: NorskIdent?
+        barnetsNorskeIdent: NorskIdent?
     ) : this(
         sprak = melding.sprak,
         soknadId = melding.soknadId,
@@ -39,7 +40,7 @@ data class PreprossesertMeldingV1(
         fraOgMed = melding.fraOgMed,
         tilOgMed = melding.tilOgMed,
         soker = PreprossesertSoker(melding.soker, sokerAktoerId),
-        barn = PreprossesertBarn(melding.barn, barnetsNavn, barnetsFodselsnummer, barnAktoerId),
+        barn = PreprossesertBarn(melding.barn, barnetsNavn, barnetsNorskeIdent, barnAktoerId),
         relasjonTilBarnet = melding.relasjonTilBarnet,
         arbeidsgivere = melding.arbeidsgivere,
         medlemskap = melding.medlemskap,
@@ -74,11 +75,11 @@ data class PreprossesertBarn(
 ) {
 
     internal constructor(
-        barn: Barn, barnetsNavn: String?, barnetsFodselsnummer: NorskIdent?, aktoerId: AktoerId?
+        barn: Barn, barnetsNavn: String?, barnetsNorskeIdent: NorskIdent?, aktoerId: AktoerId?
     ) : this(
-        fodselsnummer = (barnetsFodselsnummer as? Fodselsnummer)?.getValue() ?: barn.fodselsnummer,
+        fodselsnummer = (barnetsNorskeIdent as? Fodselsnummer)?.getValue() ?: barn.fodselsnummer,
         navn = barnetsNavn,
-        alternativId = barn.alternativId,
+        alternativId = (barnetsNorskeIdent as? AlternativId)?.getValue() ?: barn.fodselsnummer,
         aktoerId = aktoerId?.id
     )
 }

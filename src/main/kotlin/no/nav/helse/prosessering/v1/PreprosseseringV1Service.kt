@@ -95,7 +95,7 @@ internal class PreprosseseringV1Service(
             sokerAktoerId = sokerAktoerId,
             barnAktoerId = barnAktoerId,
             barnetsNavn = barnetsNavn,
-            barnetsFodselsnummer = barnetsIdent
+            barnetsNorskeIdent = barnetsIdent
         )
         melding.reportMetrics()
         preprossesertMeldingV1.reportMetrics()
