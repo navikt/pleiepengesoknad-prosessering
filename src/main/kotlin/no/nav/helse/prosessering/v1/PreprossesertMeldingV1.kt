@@ -1,6 +1,8 @@
 package no.nav.helse.prosessering.v1
 
 import no.nav.helse.aktoer.AktoerId
+import no.nav.helse.aktoer.Fodselsnummer
+import no.nav.helse.aktoer.NorskIdent
 import java.net.URI
 import java.time.LocalDate
 import java.time.ZonedDateTime
@@ -10,24 +12,25 @@ data class PreprossesertMeldingV1(
     val soknadId: String,
     val dokumentUrls: List<List<URI>>,
     val mottatt: ZonedDateTime,
-    val fraOgMed : LocalDate,
-    val tilOgMed : LocalDate,
-    val soker : PreprossesertSoker,
-    val barn : PreprossesertBarn,
-    val relasjonTilBarnet : String,
+    val fraOgMed: LocalDate,
+    val tilOgMed: LocalDate,
+    val soker: PreprossesertSoker,
+    val barn: PreprossesertBarn,
+    val relasjonTilBarnet: String,
     val arbeidsgivere: Arbeidsgivere,
     val medlemskap: Medlemskap,
-    val grad : Int?,
-    val harMedsoker : Boolean,
-    val harForstattRettigheterOgPlikter : Boolean,
-    val harBekreftetOpplysninger : Boolean
+    val grad: Int?,
+    val harMedsoker: Boolean,
+    val harForstattRettigheterOgPlikter: Boolean,
+    val harBekreftetOpplysninger: Boolean
 ) {
     internal constructor(
         melding: MeldingV1,
         dokumentUrls: List<List<URI>>,
         sokerAktoerId: AktoerId,
         barnAktoerId: AktoerId?,
-        barnetsNavn: String?
+        barnetsNavn: String?,
+        barnetsFodselsnummer: NorskIdent?
     ) : this(
         sprak = melding.sprak,
         soknadId = melding.soknadId,
@@ -36,7 +39,7 @@ data class PreprossesertMeldingV1(
         fraOgMed = melding.fraOgMed,
         tilOgMed = melding.tilOgMed,
         soker = PreprossesertSoker(melding.soker, sokerAktoerId),
-        barn = PreprossesertBarn(melding.barn, barnetsNavn, barnAktoerId),
+        barn = PreprossesertBarn(melding.barn, barnetsNavn, barnetsFodselsnummer, barnAktoerId),
         relasjonTilBarnet = melding.relasjonTilBarnet,
         arbeidsgivere = melding.arbeidsgivere,
         medlemskap = melding.medlemskap,
@@ -65,12 +68,15 @@ data class PreprossesertSoker(
 
 data class PreprossesertBarn(
     val fodselsnummer: String?,
-    val navn : String?,
+    val navn: String?,
     val alternativId: String?,
     val aktoerId: String?
 ) {
-    internal constructor(barn: Barn, barnetsNavn: String?, aktoerId: AktoerId?) : this(
-        fodselsnummer = barn.fodselsnummer,
+
+    internal constructor(
+        barn: Barn, barnetsNavn: String?, barnetsFodselsnummer: NorskIdent?, aktoerId: AktoerId?
+    ) : this(
+        fodselsnummer = (barnetsFodselsnummer as? Fodselsnummer)?.getValue() ?: barn.fodselsnummer,
         navn = barnetsNavn,
         alternativId = barn.alternativId,
         aktoerId = aktoerId?.id

@@ -279,6 +279,41 @@ class PleiepengesoknadProsesseringTest {
         assertEquals("KLØKTIG BLUNKENDE SUPERKONSOLL", hentOpprettetOppgave.data.melding.barn.navn)
     }
 
+    @Test
+    fun `Forvent barnets fodselsnummer dersom den er satt i melding`() {
+        wireMockServer.stubAktoerRegister(gyldigFodselsnummerB, "56789")
+
+        val forventetFodselsNummer = gyldigFodselsnummerB
+
+        val melding = gyldigMelding(
+            fodselsnummerSoker = gyldigFodselsnummerA,
+            fodselsnummerBarn = forventetFodselsNummer,
+            barnetsNavn = null,
+            aktoerIdBarn = "56789"
+        )
+
+        kafkaTestProducer.leggSoknadTilProsessering(melding)
+        val hentOpprettetOppgave: TopicEntry<OppgaveOpprettet> = kafkaTestConsumer.hentOpprettetOppgave(melding.soknadId)
+        assertEquals(forventetFodselsNummer, hentOpprettetOppgave.data.melding.barn.fodselsnummer)
+    }
+
+    @Test
+    fun `Forvent barnets fodselsnummer blir slått opp dersom den ikke er satt i melding`() {
+        wireMockServer.stubAktoerRegister(gyldigFodselsnummerB, "666")
+        val forventetFodselsNummer = gyldigFodselsnummerB
+
+        val melding = gyldigMelding(
+            fodselsnummerSoker = gyldigFodselsnummerA,
+            fodselsnummerBarn = null,
+            barnetsNavn = null,
+            aktoerIdBarn = "666"
+        )
+
+        kafkaTestProducer.leggSoknadTilProsessering(melding)
+        val hentOpprettetOppgave: TopicEntry<OppgaveOpprettet> = kafkaTestConsumer.hentOpprettetOppgave(melding.soknadId)
+        assertEquals(forventetFodselsNummer, hentOpprettetOppgave.data.melding.barn.fodselsnummer)
+    }
+
     private fun gyldigMelding(
         fodselsnummerSoker: String,
         fodselsnummerBarn: String?,
