@@ -77,9 +77,9 @@ data class PreprossesertBarn(
     internal constructor(
         barn: Barn, barnetsNavn: String?, barnetsNorskeIdent: NorskIdent?, aktoerId: AktoerId?
     ) : this(
-        fodselsnummer = (barnetsNorskeIdent as? Fodselsnummer)?.getValue() ?: barn.fodselsnummer,
+        fodselsnummer = barn.fodselsnummer ?: (barnetsNorskeIdent as? Fodselsnummer)?.getValue(),
         navn = barnetsNavn,
-        alternativId = (barnetsNorskeIdent as? AlternativId)?.getValue() ?: barn.fodselsnummer,
+        alternativId = barn.alternativId ?: (barnetsNorskeIdent as? AlternativId)?.getValue(),
         aktoerId = aktoerId?.id
     )
 }
