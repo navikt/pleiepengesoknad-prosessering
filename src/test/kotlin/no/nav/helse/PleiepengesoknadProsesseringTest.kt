@@ -51,10 +51,7 @@ class PleiepengesoknadProsesseringTest {
             .stubOpprettOppgave()
             .stubLagreDokument()
             .stubSlettDokument()
-            .stubTpsProxyGetNavn()
             .stubAktoerRegister("29099012345", "123456")
-            .stubAktoerRegister("29099012346", "56789")
-            .stubAktoerRegister("55125314561", "56789")
 
         private val kafkaEnvironment = KafkaWrapper.bootstrap()
         private val kafkaTestConsumer = kafkaEnvironment.testConsumer()
@@ -240,6 +237,7 @@ class PleiepengesoknadProsesseringTest {
 
     @Test
     fun `Bruk barnets fødselsnummer til å slå opp i tps-proxy dersom navnet mangler`() {
+        wireMockServer.stubTpsProxyGetNavn("KLØKTIG", "BLUNKENDE", "SUPERKONSOLL")
         val melding = gyldigMelding(
             fodselsnummerSoker = gyldigFodselsnummerC,
             fodselsnummerBarn = gyldigFodselsnummerB,
@@ -253,6 +251,9 @@ class PleiepengesoknadProsesseringTest {
 
     @Test
     fun `Bruk barnets alternativ id til å slå opp i tps-proxy dersom navnet mangler`() {
+        wireMockServer.stubAktoerRegister(dNummerA, "56789")
+        wireMockServer.stubTpsProxyGetNavn("KLØKTIG", "BLUNKENDE", "SUPERKONSOLL")
+
         val melding = gyldigMelding(
             fodselsnummerSoker = gyldigFodselsnummerA,
             fodselsnummerBarn = null,
@@ -267,6 +268,9 @@ class PleiepengesoknadProsesseringTest {
 
     @Test
     fun `Bruk barnets aktørId til å slå opp i tps-proxy dersom navnet mangler`() {
+        wireMockServer.stubAktoerRegister(dNummerA, "56789")
+        wireMockServer.stubTpsProxyGetNavn("KLØKTIG", "BLUNKENDE", "SUPERKONSOLL")
+
         val melding = gyldigMelding(
             fodselsnummerSoker = gyldigFodselsnummerA,
             fodselsnummerBarn = null,
@@ -277,6 +281,41 @@ class PleiepengesoknadProsesseringTest {
         kafkaTestProducer.leggSoknadTilProsessering(melding)
         val hentOpprettetOppgave: TopicEntry<OppgaveOpprettet> = kafkaTestConsumer.hentOpprettetOppgave(melding.soknadId)
         assertEquals("KLØKTIG BLUNKENDE SUPERKONSOLL", hentOpprettetOppgave.data.melding.barn.navn)
+    }
+
+    @Test
+    fun `Forvent barnets fodselsnummer dersom den er satt i melding`() {
+        wireMockServer.stubAktoerRegister(gyldigFodselsnummerB, "56789")
+
+        val forventetFodselsNummer = gyldigFodselsnummerB
+
+        val melding = gyldigMelding(
+            fodselsnummerSoker = gyldigFodselsnummerA,
+            fodselsnummerBarn = forventetFodselsNummer,
+            barnetsNavn = null,
+            aktoerIdBarn = "56789"
+        )
+
+        kafkaTestProducer.leggSoknadTilProsessering(melding)
+        val hentOpprettetOppgave: TopicEntry<OppgaveOpprettet> = kafkaTestConsumer.hentOpprettetOppgave(melding.soknadId)
+        assertEquals(forventetFodselsNummer, hentOpprettetOppgave.data.melding.barn.fodselsnummer)
+    }
+
+    @Test
+    fun `Forvent barnets fodselsnummer blir slått opp dersom den ikke er satt i melding`() {
+        wireMockServer.stubAktoerRegister(gyldigFodselsnummerB, "666")
+        val forventetFodselsNummer = gyldigFodselsnummerB
+
+        val melding = gyldigMelding(
+            fodselsnummerSoker = gyldigFodselsnummerA,
+            fodselsnummerBarn = null,
+            barnetsNavn = null,
+            aktoerIdBarn = "666"
+        )
+
+        kafkaTestProducer.leggSoknadTilProsessering(melding)
+        val hentOpprettetOppgave: TopicEntry<OppgaveOpprettet> = kafkaTestConsumer.hentOpprettetOppgave(melding.soknadId)
+        assertEquals(forventetFodselsNummer, hentOpprettetOppgave.data.melding.barn.fodselsnummer)
     }
 
     private fun gyldigMelding(

@@ -167,7 +167,7 @@ internal fun WireMockServer.stubJournalfor(responseCode: Int = 201): WireMockSer
     return this
 }
 
-internal fun WireMockServer.stubTpsProxyGetNavn(): WireMockServer {
+internal fun WireMockServer.stubTpsProxyGetNavn(fornavn: String, mellomNavn: String, etterNavn: String): WireMockServer {
     WireMock.stubFor(
         WireMock.get(WireMock.urlPathMatching(".*$tpsProxyBasePath/navn"))
             .withHeader(HttpHeaders.Authorization, AnythingPattern())
@@ -178,9 +178,9 @@ internal fun WireMockServer.stubTpsProxyGetNavn(): WireMockServer {
                     .withBody(
                         """  
                             {
-                                "fornavn": "KLØKTIG",
-                                "mellomnavn": "BLUNKENDE",
-                                "etternavn": "SUPERKONSOLL"
+                                "fornavn": "$fornavn",
+                                "mellomnavn": "$mellomNavn",
+                                "etternavn": "$etterNavn"
                             }
                         """.trimIndent()
                     )
