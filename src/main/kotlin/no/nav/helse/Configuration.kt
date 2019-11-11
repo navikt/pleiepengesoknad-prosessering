@@ -36,6 +36,7 @@ data class Configuration(private val config : ApplicationConfig) {
             bootstrapServers = bootstrapServers,
             credentials = Pair(config.getRequiredString("nav.kafka.username", secret = false), config.getRequiredString("nav.kafka.password", secret = true)),
             trustStore = trustStore,
+            exactlyOnce = trustStore != null,
             unreadyAfterStreamStoppedIn = unreadyAfterStreamStoppedIn()
         )
     }
