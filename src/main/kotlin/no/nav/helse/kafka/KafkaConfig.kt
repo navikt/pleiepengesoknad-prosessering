@@ -4,7 +4,7 @@ import org.apache.kafka.clients.CommonClientConfigs
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.common.config.SaslConfigs
 import org.apache.kafka.common.config.SslConfigs
-import org.apache.kafka.streams.StreamsConfig
+import org.apache.kafka.streams.StreamsConfig.*
 import org.apache.kafka.streams.errors.LogAndFailExceptionHandler
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -19,18 +19,31 @@ internal class KafkaConfig(
     bootstrapServers: String,
     credentials: Pair<String, String>,
     trustStore: Pair<String, String>?,
+    exactlyOnce: Boolean,
     internal val unreadyAfterStreamStoppedIn: Duration
 ) {
     private val streams = Properties().apply {
-        put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers)
-        put(StreamsConfig.DEFAULT_DESERIALIZATION_EXCEPTION_HANDLER_CLASS_CONFIG, LogAndFailExceptionHandler::class.java)
+        put(BOOTSTRAP_SERVERS_CONFIG, bootstrapServers)
+        put(DEFAULT_DESERIALIZATION_EXCEPTION_HANDLER_CLASS_CONFIG, LogAndFailExceptionHandler::class.java)
         put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest")
         medCredentials(credentials)
         medTrustStore(trustStore)
+        medProcessingGuarantee(exactlyOnce)
     }
 
     internal fun stream(name: String) = streams.apply {
-        put(StreamsConfig.APPLICATION_ID_CONFIG, "$ID_PREFIX$name")
+        put(APPLICATION_ID_CONFIG, "$ID_PREFIX$name")
+    }
+}
+
+private fun Properties.medProcessingGuarantee(exactlyOnce: Boolean) {
+    if (exactlyOnce) {
+        logger.info("$PROCESSING_GUARANTEE_CONFIG=$EXACTLY_ONCE")
+        put(PROCESSING_GUARANTEE_CONFIG, EXACTLY_ONCE)
+        put(REPLICATION_FACTOR_CONFIG, "3")
+    } else {
+        logger.info("$PROCESSING_GUARANTEE_CONFIG=$AT_LEAST_ONCE")
+        put(PROCESSING_GUARANTEE_CONFIG, AT_LEAST_ONCE)
     }
 }
 
