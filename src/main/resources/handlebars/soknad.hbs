@@ -75,6 +75,11 @@
                                 Denne søkeren skal være borte fra jobb {{dager_per_uke_borte_fra_jobb}} dager per uke i perioden for å ta hånd om barnet.
                             {{/if}}
                         </li>
+                       {{# if samtidig_hjemme }}
+                       <li>
+                           Søkeren har også oppgitt at medsøker vil samtidig være hjemme i samme tidsperiode for å ta hånd om barnet.
+                       </li>
+                        {{/if}}
                     {{else}}
                         <li>Det er angitt at det <span class="highlight">ikke</span> er andre som søker pleiepenger i samme periode.</li>
                     {{/if}}
@@ -104,8 +109,15 @@
 
                     <li>Organisasjonsnummer {{org.organisasjonsnummer}}</li>
                     <li>
-                        {{# if org.skal_jobbe_prosent }}
-                            Skal jobbe {{org.skal_jobbe_prosent }}% av sin stilling, har et inntektstap hos denne arbeidsgiveren på {{org.inntektstap}}%
+                        {{#if org.skal_jobbe_prosent }}
+                            {{#unless org.jobber_normaltimer }}
+                                Skal jobbe {{org.skal_jobbe_prosent }}% av sin stilling, har et inntektstap hos denne arbeidsgiveren på {{org.inntektstap_prosent}}%
+                            {{/unless}}
+                        {{/if}}
+                    </li>
+                    <li>
+                        {{#if org.jobber_normaltimer }}
+                            Skal jobbe {{org.skal_jobbe_prosent}}% av sin {{org.jobber_normaltimer }} timers stilling.
                         {{/if}}
                     </li>
                 </ul>

@@ -152,8 +152,8 @@ class PleiepengesoknadProsesseringTest {
             fodselsnummerBarn = gyldigFodselsnummerB,
             sprak = sprak,
             organisasjoner = listOf(
-                Organisasjon("917755736", "Jobb1", jobb1SkalJobbeProsent),
-                Organisasjon("917755737", "Jobb2", jobb2SkalJobberProsent)
+                Organisasjon("917755736", "Jobb1", skalJobbeProsent = jobb1SkalJobbeProsent),
+                Organisasjon("917755737", "Jobb2", skalJobbeProsent = jobb2SkalJobberProsent)
             )
         )
 

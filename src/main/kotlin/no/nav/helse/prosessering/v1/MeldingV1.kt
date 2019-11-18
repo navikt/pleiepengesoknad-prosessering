@@ -20,6 +20,7 @@ data class MeldingV1 (
     val medlemskap: Medlemskap,
     val grad : Int?,
     val harMedsoker : Boolean,
+    val samtidigHjemme: Boolean? = null,
     val harForstattRettigheterOgPlikter : Boolean,
     val harBekreftetOpplysninger : Boolean,
     val dagerPerUkeBorteFraJobb: Double? = null,
@@ -49,7 +50,9 @@ data class Arbeidsgivere(
 data class Organisasjon(
     val organisasjonsnummer: String,
     val navn: String?,
-    val skalJobbeProsent: Double? = null
+    val jobberNormalTimer: Double? = null,
+    val skalJobbeProsent: Double?  = null,
+    val vetIkkeEkstrainfo: String? = null
 )
 
 data class Medlemskap(
