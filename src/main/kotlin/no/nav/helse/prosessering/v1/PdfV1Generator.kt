@@ -187,13 +187,15 @@ private fun List<Organisasjon>.somMap() = map {
     val skalJobbeProsent = it.skalJobbeProsent?.avrundetMedEnDesimal()
     val jobberNormaltimer = it.jobberNormalTimer
     val inntektstapProsent = skalJobbeProsent?.skalJobbeProsentTilInntektstap()
+    val vetIkkeEkstrainfo = it.vetIkkeEkstrainfo
 
     mapOf<String,Any?>(
         "navn" to it.navn,
         "organisasjonsnummer" to it.formaterOrganisasjonsnummer(),
         "skal_jobbe_prosent" to skalJobbeProsent?.formatertMedEnDesimal(),
         "inntektstap_prosent" to inntektstapProsent?.formatertMedEnDesimal(),
-        "jobber_normaltimer" to jobberNormaltimer
+        "jobber_normaltimer" to jobberNormaltimer,
+        "vet_ikke_ekstra_info" to vetIkkeEkstrainfo
     )
 }
 
