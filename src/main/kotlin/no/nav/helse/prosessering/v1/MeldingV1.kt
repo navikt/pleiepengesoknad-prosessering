@@ -50,7 +50,7 @@ data class Arbeidsgivere(
 data class Organisasjon(
     val organisasjonsnummer: String,
     val navn: String?,
-    val jobberNormalTimer: Double? = null,
+    val jobberNormaltTimer: Double? = null,
     val skalJobbeProsent: Double?  = null,
     val vetIkkeEkstrainfo: String? = null
 )

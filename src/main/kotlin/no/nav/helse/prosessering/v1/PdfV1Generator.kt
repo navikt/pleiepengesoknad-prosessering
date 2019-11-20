@@ -185,7 +185,7 @@ internal class PdfV1Generator  {
 
 private fun List<Organisasjon>.somMap() = map {
     val skalJobbeProsent = it.skalJobbeProsent?.avrundetMedEnDesimal()
-    val jobberNormaltimer = it.jobberNormalTimer
+    val jobberNormaltimer = it.jobberNormaltTimer
     val inntektstapProsent = skalJobbeProsent?.skalJobbeProsentTilInntektstap()
     val vetIkkeEkstrainfo = it.vetIkkeEkstrainfo
 

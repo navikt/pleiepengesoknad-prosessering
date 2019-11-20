@@ -250,7 +250,7 @@ class PdfV1GeneratorTest {
                     Organisasjon(
                         organisasjonsnummer = "952352655",
                         navn = "Hopp i havet",
-                        jobberNormalTimer = 30.0,
+                        jobberNormaltTimer = 30.0,
                         skalJobbeProsent = 50.0
                     )
                 ), barn = Barn(fodselsnummer = null, alternativId = null, navn = null, aktoerId = null)
@@ -267,7 +267,7 @@ class PdfV1GeneratorTest {
                     Organisasjon(
                         organisasjonsnummer = "952352655",
                         navn = "Hopp i havet",
-                        jobberNormalTimer = 30.0,
+                        jobberNormaltTimer = 30.0,
                         vetIkkeEkstrainfo = "Liker ikke å jobbe..."
                     )
                 ), barn = Barn(fodselsnummer = null, alternativId = null, navn = null, aktoerId = null)
