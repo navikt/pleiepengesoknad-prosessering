@@ -67,76 +67,74 @@
 
     <!-- HJELP -->
     <div class="hjelp">
-        <img class="ikon" src="{{ image "Hjelp.png" }}"/>
+        <h2><span>
+               Antalll søkere
+        </span></h2>
         <ul>
             {{# if hjelp.har_medsoker }}
-                <li>Det er angitt at flere personer vil søke om pleiepenger i samme periode.
-                    {{# if dager_per_uke_borte_fra_jobb }}
-                        Denne søkeren skal være borte fra jobb {{dager_per_uke_borte_fra_jobb}} dager per uke i perioden
-                        for å ta hånd om barnet.
-                    {{/if}}
+                <li>Søker har opplyst om at en medsøker skal søke for samnme periode.
                 </li>
                 {{# if samtidig_hjemme }}
                     <li>
-                        Søkeren har også oppgitt at medsøker vil samtidig være hjemme i samme tidsperiode for å ta hånd
-                        om barnet.
+                        Søker og medsøker skal være hjemme samtidig.
                     </li>
                 {{/if}}
             {{else}}
-                <li>Det er angitt at det <span class="highlight">ikke</span> er andre som søker pleiepenger i samme
-                    periode.
+                <li>Det er <span class="highlight">ikke</span> oppgitt andre medsøkere.
                 </li>
             {{/if}}
             {{# if hjelp.ingen_arbeidsgivere }}
                 <li class="ikke_satt">Det er ikke angitt noen arbeidsgivere i søknaden.</li>
             {{/if}}
-            {{# if hjelp.sprak }}
+            <!--{{# if hjelp.sprak }}
                 <li>Det er valgt {{hjelp.sprak}} som språk i søknaden.</li>
-            {{/if}}
+            {{/if}}-->
         </ul>
     </div>
 
     <!-- ARBEIDSGIVERE -->
     {{# if arbeidsgivere.har_arbeidsgivere }}
         <h2><span>
-            {{# if arbeidsgivere.aktuelle_arbeidsgivere }}
-                Aktuelle arbeidsgivere
-            {{else}}
-                Arbeidsgivere
-            {{/if}}
+           Arbeidsforhold
         </span></h2>
 
         <ul>
             {{# each arbeidsgivere.organisasjoner as |org|~}}
-                <li class="sporsmalstekst">{{org.navn}}</li>
+                <li class="sporsmalstekst">{{org.navn}} (orgnr: {{org.organisasjonsnummer}})</li>
                 <ul>
-
-                    <li>Organisasjonsnummer {{org.organisasjonsnummer}}</li>
                     <li>
                         {{#if org.skal_jobbe_prosent }}
                             {{#unless org.jobber_normaltimer }}
-                                Skal jobbe {{org.skal_jobbe_prosent }}% av sin stilling, har et inntektstap hos denne
-                                arbeidsgiveren på {{org.inntektstap_prosent}}%
+                                Skal jobbe {{org.skal_jobbe_prosent }}% av sin stilling. Søker får et inntektstap
+                                på {{org.inntektstap_prosent}}%
                             {{/unless}}
                         {{/if}}
                     </li>
-                    <li>
-                        {{#if org.skal_jobbe_prosent }}
-                            {{#if org.jobber_normaltimer }}
-                                Skal jobbe {{org.skal_jobbe_prosent }}% av sin {{org.jobber_normaltimer }} timers stilling, har et inntektstap hos denne
-                                arbeidsgiveren på {{org.inntektstap_prosent}}%
-                            {{/if}}
+                <li>
+                    {{#if org.skal_jobbe_prosent }}
+                        {{#if org.jobber_normaltimer }}
+                            <li>Søker jobber vanligvis {{org.jobber_normaltimer }} timer i uken.</li>
+                            <li>I perioden skal hen jobbe {{org.skal_jobbe_prosent }}%. Søker får et inntektstap
+                                på {{org.inntektstap_prosent}}%
+                            </li>
                         {{/if}}
+                    {{/if}}
                     </li>
                     <li>
                         {{#if org.jobber_normaltimer}}
                             {{#if org.vet_ikke_ekstra_info}}
-                                Søker vet ikke om han/hun kan jobbe, men Jobber normalt {{org.jobber_normaltimer}} timer i uken.<br/>
-                                Grunn: {{org.vet_ikke_ekstra_info}}
+                                Søker vet ikke om hen skal jobbe. Jobber vanligvis {{org.jobber_normaltimer}} timer i
+                                uken.<br/>
                             {{/if}}
                         {{/if}}
                     </li>
                 </ul>
+                {{#if org.vet_ikke_ekstra_info}}
+                    <div class="fritekst">
+                        <p class="sporsmalstekst"><img class="lite_ikon" src="{{ image "Fritekst.png" }}"/>Søker vet ikke, fordi:</p>
+                        <p class="fritekst_textarea">{{org.vet_ikke_ekstra_info}}</p>
+                    </div>
+                {{/if}}
             {{/each}}
         </ul>
     {{/if}}
@@ -149,17 +147,17 @@
         {{#eq tilsynsordning.tilsynsordning_svar "ja" }}
             <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Ja
             <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Nei
-            <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Vet ikke
+            <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Usikker
         {{/eq}}
         {{#eq tilsynsordning.tilsynsordning_svar "nei" }}
             <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Ja
             <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Nei
-            <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Vet ikke
+            <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Usikker
         {{/eq}}
         {{#eq tilsynsordning.tilsynsordning_svar "vet_ikke" }}
             <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Ja
             <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Nei
-            <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Vet ikke
+            <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Usikker
         {{/eq}}
 
         <!-- Ja -->
@@ -206,7 +204,7 @@
             <br/>
             {{#if tilsynsordning.tilleggsinformasjon}}
                 <div class="fritekst">
-                    <img class="lite_ikon" src="{{ image "Fritekst.png" }}"/>
+                    <p class="sporsmalstekst"><img class="lite_ikon" src="{{ image "Fritekst.png" }}"/> Søkers tilleggsopplysninger:</p>
                     <p class="fritekst_textarea">{{fritekst tilsynsordning.tilleggsinformasjon}}</p>
                 </div>
             {{/if}}
@@ -235,7 +233,7 @@
             <br/>
             {{#if tilsynsordning.annet}}
                 <div class="fritekst">
-                    <img class="lite_ikon" src="{{ image "Fritekst.png" }}"/>
+                    <p class="sporsmalstekst"><img class="lite_ikon" src="{{ image "Fritekst.png" }}"/> Søker er usikker, fordi:</p>
                     <p class="fritekst_textarea">{{fritekst tilsynsordning.annet}}</p>
                 </div>
             {{/if}}
@@ -256,7 +254,7 @@
             <br/>
             <br/>
             <div class="fritekst">
-                <img class="lite_ikon" src="{{ image "Fritekst.png" }}"/>
+                <p class="sporsmalstekst"><img class="lite_ikon" src="{{ image "Fritekst.png" }}"/>Søker tilleggsopplysninger:</p>
                 <p class="fritekst_textarea">{{fritekst nattevaak.tilleggsinformasjon}}</p>
             </div>
         {{/if}}
@@ -276,7 +274,7 @@
             <br/>
             <br/>
             <div class="fritekst">
-                <img class="lite_ikon" src="{{ image "Fritekst.png" }}"/>
+                <p class="sporsmalstekst"><img class="lite_ikon" src="{{ image "Fritekst.png" }}"/>Søkers tilleggsopplysninger:</p>
                 <p class="fritekst_textarea">{{fritekst beredskap.tilleggsinformasjon}}</p>
             </div>
         {{/if}}
