@@ -32,7 +32,7 @@
                     <img class="ikon" src="{{ image "Personikon.png" }}"/>
                     <div class="persontekst__personalia">
                         <p>
-                            {{ soker.relasjon_til_barnet }}
+                            Søker
                         </p>
                         <p class="navn">
                             {{ soker.navn }}
@@ -141,9 +141,9 @@
         </ul>
     {{/if}}
 
-    <!-- TILSYNSORDNING -->
+    <!-- Omsorgstilbud -->
     {{# if tilsynsordning }}
-        <h2><span>Tilsynsordning</span></h2>
+        <h2><span>Omsorgstilbud</span></h2>
 
         <!-- Sjekkbokser -->
         {{#eq tilsynsordning.tilsynsordning_svar "ja" }}
