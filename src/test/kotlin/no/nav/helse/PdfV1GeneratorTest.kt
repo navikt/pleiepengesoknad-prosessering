@@ -243,10 +243,10 @@ class PdfV1GeneratorTest {
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
-        id = "11-SkalJobbeProsenterAvNormaltid"
+        id = "11-jobberRedusert"
         pdf = generator.generateSoknadOppsummeringPdf(
             melding = gyldigMelding(
-                soknadId = id, harMedsoker = true, organisasjoner = listOf(
+                grad = null, soknadId = id, harMedsoker = true, organisasjoner = listOf(
                     Organisasjon(
                         organisasjonsnummer = "952352655",
                         navn = "Hopp i havet",
@@ -263,12 +263,12 @@ class PdfV1GeneratorTest {
         id = "12-vetIkkeHvorMyeVedkommendeSkalJobbe"
         pdf = generator.generateSoknadOppsummeringPdf(
             melding = gyldigMelding(
-                soknadId = id, harMedsoker = true, samtidigHjemme = true, organisasjoner = listOf(
+                grad = null, soknadId = id, harMedsoker = true, samtidigHjemme = true, organisasjoner = listOf(
                     Organisasjon(
                         organisasjonsnummer = "952352655",
                         navn = "Hopp i havet",
                         jobberNormaltTimer = 30.0,
-                        vetIkkeEkstrainfo = "Liker ikke å jobbe..."
+                        vetIkkeEkstrainfo = "Vondt i hode, skulker og kne og tå."
                     )
                 ), barn = Barn(fodselsnummer = null, alternativId = null, navn = null, aktoerId = null)
             ),
@@ -280,6 +280,7 @@ class PdfV1GeneratorTest {
         id = "13-samtidigHjemme"
         pdf = generator.generateSoknadOppsummeringPdf(
             melding = gyldigMelding(
+                grad = null,
                 soknadId = id,
                 harMedsoker = true,
                 samtidigHjemme = true,
@@ -299,7 +300,7 @@ class PdfV1GeneratorTest {
     }
 
     @Test
-    @Ignore
+    //@Ignore
     fun `opprett lesbar oppsummerings-PDF`() {
         genererOppsummeringsPdfer(true)
     }

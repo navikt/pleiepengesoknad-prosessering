@@ -121,6 +121,14 @@
                         {{/if}}
                     </li>
                     <li>
+                        {{#if org.skal_jobbe_prosent }}
+                            {{#if org.jobber_normaltimer }}
+                                Skal jobbe {{org.skal_jobbe_prosent }}% av sin {{org.jobber_normaltimer }} timers stilling, har et inntektstap hos denne
+                                arbeidsgiveren på {{org.inntektstap_prosent}}%
+                            {{/if}}
+                        {{/if}}
+                    </li>
+                    <li>
                         {{#if org.jobber_normaltimer}}
                             {{#if org.vet_ikke_ekstra_info}}
                                 Søker vet ikke om han/hun kan jobbe, men Jobber normalt {{org.jobber_normaltimer}} timer i uken.<br/>
