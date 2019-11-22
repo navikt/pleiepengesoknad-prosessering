@@ -192,6 +192,7 @@ private fun List<Organisasjon>.somMap() = map {
     mapOf<String,Any?>(
         "navn" to it.navn,
         "organisasjonsnummer" to it.formaterOrganisasjonsnummer(),
+        "skal_jobbe" to it.skalJobbe,
         "skal_jobbe_prosent" to skalJobbeProsent?.formatertMedEnDesimal(),
         "inntektstap_prosent" to inntektstapProsent?.formatertMedEnDesimal(),
         "jobber_normaltimer" to jobberNormaltimer,

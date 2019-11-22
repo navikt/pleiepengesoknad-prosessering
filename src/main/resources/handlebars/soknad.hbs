@@ -103,6 +103,26 @@
                 <li class="sporsmalstekst">{{org.navn}} (orgnr: {{org.organisasjonsnummer}})</li>
                 <ul>
                     <li>
+                        {{#if org.skal_jobbe}}
+                            {{#eq org.skal_jobbe "ja"}}
+                                Jobber her
+                            {{/eq}}
+
+                            {{#eq org.skal_jobbe "nei"}}
+                                Jobber ikke her
+                            {{/eq}}
+
+                            {{#eq org.skal_jobbe "redusert"}}
+                                Jobber redusert
+                            {{/eq}}
+
+                            {{#eq org.skal_jobbe "vet_ikke"}}
+                                Vet ikke om hen skal jobbe her.
+                            {{/eq}}
+                        {{/if}}
+                    </li>
+
+                    <li>
                         {{#if org.skal_jobbe_prosent }}
                             {{#unless org.jobber_normaltimer }}
                                 Skal jobbe {{org.skal_jobbe_prosent }}% av sin stilling. Søker får et inntektstap
@@ -131,7 +151,8 @@
                 </ul>
                 {{#if org.vet_ikke_ekstra_info}}
                     <div class="fritekst">
-                        <p class="sporsmalstekst"><img class="lite_ikon" src="{{ image "Fritekst.png" }}"/>Søker vet ikke, fordi:</p>
+                        <p class="sporsmalstekst"><img class="lite_ikon" src="{{ image "Fritekst.png" }}"/>Søker vet
+                            ikke, fordi:</p>
                         <p class="fritekst_textarea">{{org.vet_ikke_ekstra_info}}</p>
                     </div>
                 {{/if}}
@@ -204,7 +225,8 @@
             <br/>
             {{#if tilsynsordning.tilleggsinformasjon}}
                 <div class="fritekst">
-                    <p class="sporsmalstekst"><img class="lite_ikon" src="{{ image "Fritekst.png" }}"/> Søkers tilleggsopplysninger:</p>
+                    <p class="sporsmalstekst"><img class="lite_ikon" src="{{ image "Fritekst.png" }}"/> Søkers
+                        tilleggsopplysninger:</p>
                     <p class="fritekst_textarea">{{fritekst tilsynsordning.tilleggsinformasjon}}</p>
                 </div>
             {{/if}}
@@ -233,7 +255,8 @@
             <br/>
             {{#if tilsynsordning.annet}}
                 <div class="fritekst">
-                    <p class="sporsmalstekst"><img class="lite_ikon" src="{{ image "Fritekst.png" }}"/> Søker er usikker, fordi:</p>
+                    <p class="sporsmalstekst"><img class="lite_ikon" src="{{ image "Fritekst.png" }}"/> Søker er
+                        usikker, fordi:</p>
                     <p class="fritekst_textarea">{{fritekst tilsynsordning.annet}}</p>
                 </div>
             {{/if}}
@@ -254,7 +277,8 @@
             <br/>
             <br/>
             <div class="fritekst">
-                <p class="sporsmalstekst"><img class="lite_ikon" src="{{ image "Fritekst.png" }}"/>Søker tilleggsopplysninger:</p>
+                <p class="sporsmalstekst"><img class="lite_ikon" src="{{ image "Fritekst.png" }}"/>Søker
+                    tilleggsopplysninger:</p>
                 <p class="fritekst_textarea">{{fritekst nattevaak.tilleggsinformasjon}}</p>
             </div>
         {{/if}}
@@ -274,7 +298,8 @@
             <br/>
             <br/>
             <div class="fritekst">
-                <p class="sporsmalstekst"><img class="lite_ikon" src="{{ image "Fritekst.png" }}"/>Søkers tilleggsopplysninger:</p>
+                <p class="sporsmalstekst"><img class="lite_ikon" src="{{ image "Fritekst.png" }}"/>Søkers
+                    tilleggsopplysninger:</p>
                 <p class="fritekst_textarea">{{fritekst beredskap.tilleggsinformasjon}}</p>
             </div>
         {{/if}}
@@ -308,6 +333,8 @@
     {{/if}}
 
     <!-- SAMTYKKE -->
+    <br/>
+    <br/>
     <h2><span>Samtykke</span></h2>
 
     <p class="sporsmalstekst">Har forstått rettigheter og plikter?</p>
