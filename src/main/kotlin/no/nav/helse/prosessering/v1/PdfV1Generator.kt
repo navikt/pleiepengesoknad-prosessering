@@ -77,6 +77,7 @@ internal class PdfV1Generator  {
                 "soknad_mottatt_dag" to melding.mottatt.withZoneSameInstant(ZONE_ID).norskDag(),
                 "soknad_mottatt" to DATE_TIME_FORMATTER.format(melding.mottatt),
                 "har_medsoker" to melding.harMedsoker,
+                "samtidig_hjemme" to melding.samtidigHjemme,
                 "grad" to melding.grad,
                 "dager_per_uke_borte_fra_jobb" to melding.dagerPerUkeBorteFraJobb?.avrundetMedEnDesimal()?.formatertMedEnDesimal(),
                 "soker" to mapOf(
@@ -184,13 +185,18 @@ internal class PdfV1Generator  {
 
 private fun List<Organisasjon>.somMap() = map {
     val skalJobbeProsent = it.skalJobbeProsent?.avrundetMedEnDesimal()
-    val inntektstap = skalJobbeProsent?.skalJobbeProsentTilInntektstap()
+    val jobberNormaltimer = it.jobberNormaltTimer
+    val inntektstapProsent = skalJobbeProsent?.skalJobbeProsentTilInntektstap()
+    val vetIkkeEkstrainfo = it.vetIkkeEkstrainfo
 
     mapOf<String,Any?>(
         "navn" to it.navn,
         "organisasjonsnummer" to it.formaterOrganisasjonsnummer(),
+        "skal_jobbe" to it.skalJobbe,
         "skal_jobbe_prosent" to skalJobbeProsent?.formatertMedEnDesimal(),
-        "inntektstap" to inntektstap?.formatertMedEnDesimal()
+        "inntektstap_prosent" to inntektstapProsent?.formatertMedEnDesimal(),
+        "jobber_normaltimer" to jobberNormaltimer,
+        "vet_ikke_ekstra_info" to vetIkkeEkstrainfo
     )
 }
 

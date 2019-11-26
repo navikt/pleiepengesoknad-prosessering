@@ -42,11 +42,17 @@ class JournalforingsFormatTest {
                 "organisasjoner": [{
                     "organisasjonsnummer": "1212",
                     "navn": "Nei",
-                    "skal_jobbe_prosent": null
+                    "skal_jobbe": "nei",
+                    "jobber_normalt_timer": null,
+                    "skal_jobbe_prosent": null,
+                    "vet_ikke_ekstrainfo": null,
                 },{
                     "organisasjonsnummer": "54321",
                     "navn": "Navn",
-                    "skal_jobbe_prosent": 22.512
+                    "skal_jobbe": "redusert",
+                    "skal_jobbe_prosent": 22.512,
+                    "vet_ikke_ekstrainfo": null,
+                    "jobber_normalt_timer": null,
                 }]
             },
             "medlemskap": {
@@ -55,6 +61,7 @@ class JournalforingsFormatTest {
             },
             "grad": 55,
             "har_medsoker": true,
+            "samtidig_hjemme": null,
             "har_bekreftet_opplysninger" : true,
 	        "har_forstatt_rettigheter_og_plikter": true,
             "dager_per_uke_borte_fra_jobb": 3.5,
@@ -104,8 +111,8 @@ class JournalforingsFormatTest {
         relasjonTilBarnet = "Mor",
         arbeidsgivere = Arbeidsgivere(
             organisasjoner = listOf(
-                Organisasjon("1212", "Nei"),
-                Organisasjon("54321", "Navn", 22.512)
+                Organisasjon("1212", "Nei", jobberNormaltTimer = null, vetIkkeEkstrainfo = null, skalJobbe = "nei"),
+                Organisasjon("54321", "Navn", skalJobbeProsent = 22.512, jobberNormaltTimer = null, vetIkkeEkstrainfo = null, skalJobbe = "redusert")
             )
         ),
         vedleggUrls = listOf(
