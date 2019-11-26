@@ -23,7 +23,6 @@
             <p>
                 <span class="nokkeldata__overskrift">Gjelder perioden</span><br/>
                 {{ periode.fra_og_med }} - {{ periode.til_og_med }}<br/>
-                Totalt {{ periode.virkedager }} virkedager
             </p>
         </div>
         <div class="personinfo">
@@ -122,7 +121,7 @@
                             {{/eq}}
 
                             {{#eq org.skal_jobbe "vet_ikke"}}
-                                Vet ikke om hen skal jobbe her.
+                                Søker vet ikke om hen skal jobbe her, men sier fra hvis det blir tilfelle.
                             {{/eq}}
                         {{/if}}
                     </li>
@@ -148,19 +147,11 @@
                     <li>
                         {{#if org.jobber_normaltimer}}
                             {{#if org.vet_ikke_ekstra_info}}
-                                Søker vet ikke om hen skal jobbe. Jobber vanligvis {{org.jobber_normaltimer}} timer i
-                                uken.<br/>
+                                Søker jobber vanligvis {{org.jobber_normaltimer}} timer i uken.<br/>
                             {{/if}}
                         {{/if}}
                     </li>
                 </ul>
-                {{#if org.vet_ikke_ekstra_info}}
-                    <div class="fritekst">
-                        <p class="sporsmalstekst"><img class="lite_ikon" src="{{ image "Fritekst.png" }}"/>Søker vet
-                            ikke, fordi:</p>
-                        <p class="fritekst_textarea">{{org.vet_ikke_ekstra_info}}</p>
-                    </div>
-                {{/if}}
             {{/each}}
         </ul>
     {{/if}}
