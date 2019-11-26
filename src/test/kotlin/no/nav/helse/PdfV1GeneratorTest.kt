@@ -202,7 +202,21 @@ class PdfV1GeneratorTest {
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
-        id = "4-utenSprak"
+        id = "4-medsøkerIkkeSamtidigHjemme"
+        pdf = generator.generateSoknadOppsummeringPdf(
+            melding = gyldigMelding(
+                grad = null,
+                soknadId = id,
+                harMedsoker = true,
+                samtidigHjemme = false,
+                barn = Barn(fodselsnummer = null, alternativId = null, navn = null, aktoerId = null)
+            ),
+            barnetsIdent = barnetsIdent,
+            barnetsNavn = barnetsNavn
+        )
+        if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
+
+        id = "5-utenSprak"
         pdf = generator.generateSoknadOppsummeringPdf(
             melding = gyldigMelding(soknadId = id, harMedsoker = false, sprak = null),
             barnetsIdent = barnetsIdent,
@@ -210,7 +224,7 @@ class PdfV1GeneratorTest {
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
-        id = "5-utenArbeidsgivere"
+        id = "6-utenArbeidsgivere"
         pdf = generator.generateSoknadOppsummeringPdf(
             melding = gyldigMelding(soknadId = id, harMedsoker = false, organisasjoner = listOf()),
             barnetsIdent = barnetsIdent,
@@ -218,7 +232,7 @@ class PdfV1GeneratorTest {
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
-        id = "6-utenInfoPaaBarn"
+        id = "7-utenInfoPaaBarn"
         pdf = generator.generateSoknadOppsummeringPdf(
             melding = gyldigMelding(
                 soknadId = id,
@@ -231,7 +245,7 @@ class PdfV1GeneratorTest {
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
-        id = "7-utenGrad"
+        id = "8-utenGrad"
         pdf = generator.generateSoknadOppsummeringPdf(
             melding = gyldigMelding(
                 soknadId = id,
@@ -245,7 +259,7 @@ class PdfV1GeneratorTest {
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
-        id = "8-utenDagerBorteFraJobb"
+        id = "9-utenDagerBorteFraJobb"
         pdf = generator.generateSoknadOppsummeringPdf(
             melding = gyldigMelding(
                 soknadId = id,
@@ -260,7 +274,7 @@ class PdfV1GeneratorTest {
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
-        id = "9-medTilsynsOrdningJa"
+        id = "10-medTilsynsOrdningJa"
         pdf = generator.generateSoknadOppsummeringPdf(
             melding = gyldigMelding(
                 soknadId = id,
@@ -304,7 +318,7 @@ class PdfV1GeneratorTest {
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
-        id = "10-medTilsynsordningVetIkke"
+        id = "11-medTilsynsordningVetIkke"
         pdf = generator.generateSoknadOppsummeringPdf(
             melding = gyldigMelding(
                 soknadId = id,
@@ -326,7 +340,7 @@ class PdfV1GeneratorTest {
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
 
-        id = "11-medTilsynsordningNei"
+        id = "12-medTilsynsordningNei"
         pdf = generator.generateSoknadOppsummeringPdf(
             melding = gyldigMelding(
                 soknadId = id,
@@ -344,7 +358,7 @@ class PdfV1GeneratorTest {
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
-        id = "12-skalJobbeRedusert"
+        id = "13-skalJobbeRedusert"
         pdf = generator.generateSoknadOppsummeringPdf(
             melding = gyldigMelding(
                 grad = null, soknadId = id, harMedsoker = true, organisasjoner = listOf(
@@ -362,7 +376,7 @@ class PdfV1GeneratorTest {
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
-        id = "13-skalJobbeVetIkke"
+        id = "14-skalJobbeVetIkke"
         pdf = generator.generateSoknadOppsummeringPdf(
             melding = gyldigMelding(
                 grad = null, soknadId = id, harMedsoker = true, samtidigHjemme = true, organisasjoner = listOf(
@@ -380,7 +394,7 @@ class PdfV1GeneratorTest {
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
-        id = "14-skalJobbeJa"
+        id = "15-skalJobbeJa"
         pdf = generator.generateSoknadOppsummeringPdf(
             melding = gyldigMelding(
                 grad = null, soknadId = id, harMedsoker = true, organisasjoner = listOf(
@@ -397,7 +411,7 @@ class PdfV1GeneratorTest {
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
-        id = "15-skalJobbeNei"
+        id = "16-skalJobbeNei"
         pdf = generator.generateSoknadOppsummeringPdf(
             melding = gyldigMelding(
                 grad = null, soknadId = id, harMedsoker = true, organisasjoner = listOf(
@@ -414,7 +428,7 @@ class PdfV1GeneratorTest {
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
-        id = "16-flereArbeidsgivereSkalJobbeJaNeiVetIkkeRedusert"
+        id = "17-flereArbeidsgivereSkalJobbeJaNeiVetIkkeRedusert"
         pdf = generator.generateSoknadOppsummeringPdf(
             melding = gyldigMelding(
                 grad = null, soknadId = id, harMedsoker = true, organisasjoner = listOf(

@@ -76,9 +76,14 @@
                 </li>
                 {{# if samtidig_hjemme }}
                     <li>
-                        Søker og medsøker skal være hjemme samtidig.
+                        Søker og medsøker skal være hjemme / på sykehus samtidig.
                     </li>
                 {{/if}}
+                {{#unless samtidig_hjemme}}
+                    <li>
+                        Søker og medsøker skal <span class="highlight">ikke</span> være hjemme / på sykehus samtidig.
+                    </li>
+                {{/unless}}
             {{else}}
                 <li>Det er <span class="highlight">ikke</span> oppgitt andre medsøkere.
                 </li>
