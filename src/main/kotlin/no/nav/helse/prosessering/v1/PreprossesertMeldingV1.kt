@@ -82,4 +82,8 @@ data class PreprossesertBarn(
         alternativId = barn.alternativId ?: (barnetsNorskeIdent as? AlternativId)?.getValue(),
         aktoerId = aktoerId?.id
     )
+
+    override fun toString(): String {
+        return "PreprossesertBarn(navn=$navn, aktoerId=$aktoerId)"
+    }
 }

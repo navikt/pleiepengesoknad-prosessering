@@ -35,13 +35,22 @@ data class Soker(
     val fornavn: String,
     val mellomnavn: String?,
     val etternavn: String
-)
+) {
+    override fun toString(): String {
+        return "Soker(aktoerId='$aktoerId', fornavn='$fornavn', mellomnavn=$mellomnavn, etternavn='$etternavn')"
+    }
+}
+
 data class Barn(
     val fodselsnummer: String?,
     val navn : String?,
     val alternativId: String?,
     val aktoerId: String?
-)
+) {
+    override fun toString(): String {
+        return "Barn(navn=$navn, aktoerId=$aktoerId)"
+    }
+}
 
 data class Arbeidsgivere(
     val organisasjoner : List<Organisasjon>
@@ -70,12 +79,20 @@ data class TilsynsordningJa(
     val torsdag: Duration?,
     val fredag: Duration?,
     val tilleggsinformasjon: String? = null
-)
+) {
+    override fun toString(): String {
+        return "TilsynsordningJa(mandag=$mandag, tirsdag=$tirsdag, onsdag=$onsdag, torsdag=$torsdag, fredag=$fredag)"
+    }
+}
 
 data class TilsynsordningVetIkke(
     val svar: String,
     val annet: String? = null
-)
+) {
+    override fun toString(): String {
+        return "TilsynsordningVetIkke(svar='$svar')"
+    }
+}
 
 data class Tilsynsordning(
     val svar: String,
@@ -86,10 +103,18 @@ data class Tilsynsordning(
 data class Nattevaak(
     val harNattevaak: Boolean,
     val tilleggsinformasjon: String?
-)
+) {
+    override fun toString(): String {
+        return "Nattevaak(harNattevaak=$harNattevaak)"
+    }
+}
 
 data class Beredskap(
     @JsonProperty("i_beredskap")
     val beredskap: Boolean,
     val tilleggsinformasjon: String?
-)
+) {
+    override fun toString(): String {
+        return "Beredskap(beredskap=$beredskap)"
+    }
+}
