@@ -57,7 +57,9 @@ class JournalforingsFormatTest {
             },
             "medlemskap": {
                 "har_bodd_i_utlandet_siste_12_mnd": true,
-                "skal_bo_i_utlandet_neste_12_mnd": true
+                "utenlandsopphold_neste_12_mnd": [],
+                "skal_bo_i_utlandet_neste_12_mnd": true,
+                "utenlandsopphold_siste_12_mnd": []
             },
             "grad": 55,
             "har_medsoker": true,

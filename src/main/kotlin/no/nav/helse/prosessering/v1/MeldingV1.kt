@@ -1,5 +1,6 @@
 package no.nav.helse.prosessering.v1
 
+import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.annotation.JsonProperty
 import java.net.URI
 import java.time.Duration
@@ -68,8 +69,12 @@ data class Organisasjon(
 data class Medlemskap(
     @JsonProperty("har_bodd_i_utlandet_siste_12_mnd")
     val harBoddIUtlandetSiste12Mnd : Boolean,
+    @JsonProperty("utenlandsopphold_siste_12_mnd")
+    val utenlandsoppholdSiste12Mnd: List<Utenlandsopphold> = listOf(),
     @JsonProperty("skal_bo_i_utlandet_neste_12_mnd")
-    val skalBoIUtlandetNeste12Mnd : Boolean
+    val skalBoIUtlandetNeste12Mnd : Boolean,
+    @JsonProperty("utenlandsopphold_neste_12_mnd")
+    val utenlandsoppholdNeste12Mnd: List<Utenlandsopphold> = listOf()
 )
 
 data class TilsynsordningJa(
@@ -116,5 +121,16 @@ data class Beredskap(
 ) {
     override fun toString(): String {
         return "Beredskap(beredskap=$beredskap)"
+    }
+}
+
+data class Utenlandsopphold(
+    @JsonFormat(pattern = "yyyy-MM-dd") val fraOgMed: LocalDate,
+    @JsonFormat(pattern = "yyyy-MM-dd") val tilOgMed: LocalDate,
+    val landkode: String,
+    val landnavn: String
+) {
+    override fun toString(): String {
+        return "Utenlandsopphold(fraOgMed=$fraOgMed, tilOgMed=$tilOgMed, landkode='$landkode', landnavn='$landnavn')"
     }
 }

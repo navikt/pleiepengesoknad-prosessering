@@ -101,7 +101,9 @@ internal class PdfV1Generator  {
                 ),
                 "medlemskap" to mapOf(
                     "har_bodd_i_utlandet_siste_12_mnd" to melding.medlemskap.harBoddIUtlandetSiste12Mnd,
-                    "skal_bo_i_utlandet_neste_12_mnd" to melding.medlemskap.skalBoIUtlandetNeste12Mnd
+                    "utenlandsopphold_siste_12_mnd" to melding.medlemskap.utenlandsoppholdSiste12Mnd.somMapUtenlandsopphold(),
+                    "skal_bo_i_utlandet_neste_12_mnd" to melding.medlemskap.skalBoIUtlandetNeste12Mnd,
+                    "utenlandsopphold_neste_12_mnd" to melding.medlemskap.utenlandsoppholdNeste12Mnd.somMapUtenlandsopphold()
                 ),
                 "samtykke" to mapOf(
                     "har_forstatt_rettigheter_og_plikter" to melding.harForstattRettigheterOgPlikter,
@@ -198,6 +200,17 @@ private fun List<Organisasjon>.somMap() = map {
         "jobber_normaltimer" to jobberNormaltimer,
         "vet_ikke_ekstra_info" to vetIkkeEkstrainfo
     )
+}
+
+private fun List<Utenlandsopphold>.somMapUtenlandsopphold(): List<Map<String, Any?>> {
+    val dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy").withZone(ZoneId.of("Europe/Oslo"))
+    return map {
+        mapOf<String,Any?>(
+            "landnavn" to it.landnavn,
+            "fraOgMed" to dateFormatter.format(it.fraOgMed),
+            "tilOgMed" to dateFormatter.format(it.tilOgMed)
+            )
+    }
 }
 
 private fun List<Organisasjon>.erAktuelleArbeidsgivere() = any { it.skalJobbeProsent != null }
