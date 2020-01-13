@@ -9,8 +9,8 @@ private val opplastedeVedleggHistogram = Histogram.build()
     .help("Antall vedlegg lastet opp i søknader")
     .register()
 
-private val tilsynsordningCounter = Counter.build()
-    .name("ja_tilsyn_counter")
+private val omsorgstilbudCounter = Counter.build()
+    .name("omsorgstilbud_counter")
     .help("Teller for svar på ja på spørsmål om tilsynsordning i søknaden")
     .labelNames("spm", "svar")
     .register()
@@ -19,9 +19,10 @@ internal fun MeldingV1.reportMetrics() {
     opplastedeVedleggHistogram.observe(vedleggUrls.size.toDouble())
 
     tilsynsordning?.ja?.run {
-        tilsynsordningCounter.labels("tilsynsordning", "ja").inc()
+        omsorgstilbudCounter.labels("omsorgstilbud", "ja").inc()
     }
+
     tilsynsordning?.vetIkke?.run {
-        tilsynsordningCounter.labels("tilsynsordning", "vetIkke").inc()
+        omsorgstilbudCounter.labels("omsorgstilbud", "vetIkke").inc()
     }
 }
