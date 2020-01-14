@@ -18,11 +18,9 @@ private val omsorgstilbudCounter = Counter.build()
 internal fun MeldingV1.reportMetrics() {
     opplastedeVedleggHistogram.observe(vedleggUrls.size.toDouble())
 
-    tilsynsordning?.ja?.run {
-        omsorgstilbudCounter.labels("omsorgstilbud", "ja").inc()
-    }
-
-    tilsynsordning?.vetIkke?.run {
-        omsorgstilbudCounter.labels("omsorgstilbud", "vetIkke").inc()
+    when (tilsynsordning?.svar) {
+        "ja"  -> omsorgstilbudCounter.labels("omsorgstilbud", "ja").inc()
+        "nei" -> omsorgstilbudCounter.labels("omsorgstilbud", "nei").inc()
+        else -> omsorgstilbudCounter.labels("omsorgstilbud", "vetIkke").inc()
     }
 }
