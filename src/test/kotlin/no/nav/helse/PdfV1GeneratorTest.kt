@@ -31,7 +31,7 @@ class PdfV1GeneratorTest {
                 etternavn = "Ånsnes",
                 fodselsnummer = "29099012345"
             ),
-            barn = Barn(fodselsnummer = barnetsIdent.getValue(), aktoerId = "123456", navn = barnetsNavn, alternativId = null),
+            barn = Barn(fodselsnummer = barnetsIdent.getValue(), aktoerId = "123456", navn = barnetsNavn, fodselsdato = null),
             relasjonTilBarnet = "Mor",
             arbeidsgivere = Arbeidsgivere(
                 organisasjoner = listOf(
@@ -127,7 +127,7 @@ class PdfV1GeneratorTest {
         barn: Barn = Barn(
             navn = "Børge Øverbø Ånsnes",
             fodselsnummer = null,
-            alternativId = "29091884321",
+            fodselsdato = LocalDate.now().minusDays(10),
             aktoerId = null
         ),
         grad: Int? = 60,
@@ -194,7 +194,7 @@ class PdfV1GeneratorTest {
                 soknadId = id,
                 harMedsoker = true,
                 samtidigHjemme = true,
-                barn = Barn(fodselsnummer = null, alternativId = null, navn = null, aktoerId = null)
+                barn = Barn(fodselsnummer = null, fodselsdato = null, navn = null, aktoerId = null)
             ),
             barnetsIdent = barnetsIdent,
             barnetsNavn = barnetsNavn
@@ -208,7 +208,7 @@ class PdfV1GeneratorTest {
                 soknadId = id,
                 harMedsoker = true,
                 samtidigHjemme = false,
-                barn = Barn(fodselsnummer = null, alternativId = null, navn = null, aktoerId = null)
+                barn = Barn(fodselsnummer = null, fodselsdato = null, navn = null, aktoerId = null)
             ),
             barnetsIdent = barnetsIdent,
             barnetsNavn = barnetsNavn
@@ -237,7 +237,7 @@ class PdfV1GeneratorTest {
                 soknadId = id,
                 harMedsoker = false,
                 organisasjoner = listOf(),
-                barn = Barn(fodselsnummer = null, alternativId = null, navn = null, aktoerId = null)
+                barn = Barn(fodselsnummer = null, fodselsdato = null, navn = null, aktoerId = null)
             ),
             barnetsIdent = barnetsIdent,
             barnetsNavn = barnetsNavn
@@ -250,7 +250,7 @@ class PdfV1GeneratorTest {
                 soknadId = id,
                 harMedsoker = false,
                 organisasjoner = listOf(),
-                barn = Barn(fodselsnummer = null, alternativId = null, navn = null, aktoerId = null),
+                barn = Barn(fodselsnummer = null, fodselsdato = null, navn = null, aktoerId = null),
                 grad = null
             ),
             barnetsIdent = barnetsIdent,
@@ -264,7 +264,7 @@ class PdfV1GeneratorTest {
                 soknadId = id,
                 harMedsoker = false,
                 organisasjoner = listOf(),
-                barn = Barn(fodselsnummer = null, alternativId = null, navn = null, aktoerId = null),
+                barn = Barn(fodselsnummer = null, fodselsdato = null, navn = null, aktoerId = null),
                 grad = null,
                 dagerPerUkeBorteFraJobb = null
             ),
@@ -278,7 +278,7 @@ class PdfV1GeneratorTest {
             melding = gyldigMelding(
                 soknadId = id,
                 harMedsoker = false,
-                barn = Barn(fodselsnummer = null, alternativId = null, navn = null, aktoerId = null),
+                barn = Barn(fodselsnummer = null, fodselsdato = null, navn = null, aktoerId = null),
                 grad = null,
                 dagerPerUkeBorteFraJobb = null,
                 tilsynsordning = Tilsynsordning(
@@ -323,7 +323,7 @@ class PdfV1GeneratorTest {
                 soknadId = id,
                 harMedsoker = false,
                 organisasjoner = listOf(),
-                barn = Barn(fodselsnummer = null, alternativId = null, navn = null, aktoerId = null),
+                barn = Barn(fodselsnummer = null, fodselsdato = null, navn = null, aktoerId = null),
                 grad = null,
                 dagerPerUkeBorteFraJobb = null,
                 tilsynsordning = Tilsynsordning(
@@ -345,7 +345,7 @@ class PdfV1GeneratorTest {
                 soknadId = id,
                 harMedsoker = false,
                 organisasjoner = listOf(),
-                barn = Barn(fodselsnummer = null, alternativId = null, navn = null, aktoerId = null),
+                barn = Barn(fodselsnummer = null, fodselsdato = null, navn = null, aktoerId = null),
                 grad = null,
                 dagerPerUkeBorteFraJobb = null,
                 tilsynsordning = Tilsynsordning(
@@ -368,7 +368,7 @@ class PdfV1GeneratorTest {
                         jobberNormaltTimer = 30.0,
                         skalJobbeProsent = 50.0
                     )
-                ), barn = Barn(fodselsnummer = null, alternativId = null, navn = null, aktoerId = null)
+                ), barn = Barn(fodselsnummer = null, fodselsdato = null, navn = null, aktoerId = null)
             ),
             barnetsIdent = barnetsIdent,
             barnetsNavn = barnetsNavn
@@ -386,7 +386,7 @@ class PdfV1GeneratorTest {
                         jobberNormaltTimer = 30.0,
                         vetIkkeEkstrainfo = "Vondt i hode, skulker, kne og tå, kne og tå"
                     )
-                ), barn = Barn(fodselsnummer = null, alternativId = null, navn = null, aktoerId = null)
+                ), barn = Barn(fodselsnummer = null, fodselsdato = null, navn = null, aktoerId = null)
             ),
             barnetsIdent = barnetsIdent,
             barnetsNavn = barnetsNavn
@@ -403,7 +403,7 @@ class PdfV1GeneratorTest {
                         skalJobbe = "ja",
                         skalJobbeProsent = 100.0
                     )
-                ), barn = Barn(fodselsnummer = null, alternativId = null, navn = null, aktoerId = null)
+                ), barn = Barn(fodselsnummer = null, fodselsdato = null, navn = null, aktoerId = null)
             ),
             barnetsIdent = barnetsIdent,
             barnetsNavn = barnetsNavn
@@ -420,7 +420,7 @@ class PdfV1GeneratorTest {
                         skalJobbe = "nei",
                         skalJobbeProsent = 0.0
                     )
-                ), barn = Barn(fodselsnummer = null, alternativId = null, navn = null, aktoerId = null)
+                ), barn = Barn(fodselsnummer = null, fodselsdato = null, navn = null, aktoerId = null)
             ),
             barnetsIdent = barnetsIdent,
             barnetsNavn = barnetsNavn
@@ -457,7 +457,7 @@ class PdfV1GeneratorTest {
                         jobberNormaltTimer = 30.0,
                         skalJobbeProsent = 50.0
                     )
-                ), barn = Barn(fodselsnummer = null, alternativId = null, navn = null, aktoerId = null)
+                ), barn = Barn(fodselsnummer = null, fodselsdato = null, navn = null, aktoerId = null)
             ),
             barnetsIdent = barnetsIdent,
             barnetsNavn = barnetsNavn

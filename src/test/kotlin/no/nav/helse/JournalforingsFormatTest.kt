@@ -105,7 +105,7 @@ class JournalforingsFormatTest {
         barn = Barn(
             navn = "Kari",
             fodselsnummer = "2323",
-            alternativId = null,
+            fodselsdato = null,
             aktoerId = null
         ),
         relasjonTilBarnet = "Mor",

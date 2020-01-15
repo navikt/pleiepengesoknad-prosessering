@@ -17,7 +17,6 @@ import no.nav.helse.dusseldorf.ktor.testsupport.wiremock.WireMockBuilder
 import no.nav.helse.prosessering.v1.*
 import no.nav.helse.prosessering.v1.asynkron.OppgaveOpprettet
 import no.nav.helse.prosessering.v1.asynkron.TopicEntry
-
 import org.junit.AfterClass
 import org.junit.BeforeClass
 import org.slf4j.Logger
@@ -28,7 +27,9 @@ import java.time.LocalDate
 import java.time.ZonedDateTime
 import java.util.*
 import java.util.concurrent.TimeUnit
-import kotlin.test.*
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
 
 
 @KtorExperimentalAPI
@@ -250,23 +251,6 @@ class PleiepengesoknadProsesseringTest {
     }
 
     @Test
-    fun `Bruk barnets alternativ id til å slå opp i tps-proxy dersom navnet mangler`() {
-        wireMockServer.stubAktoerRegister(dNummerA, "56789")
-        wireMockServer.stubTpsProxyGetNavn("KLØKTIG", "BLUNKENDE", "SUPERKONSOLL")
-
-        val melding = gyldigMelding(
-            fodselsnummerSoker = gyldigFodselsnummerA,
-            fodselsnummerBarn = null,
-            barnetsNavn = null,
-            alternativIdBarn = dNummerA
-        )
-
-        kafkaTestProducer.leggSoknadTilProsessering(melding)
-        val hentOpprettetOppgave: TopicEntry<OppgaveOpprettet> = kafkaTestConsumer.hentOpprettetOppgave(melding.soknadId)
-        assertEquals("KLØKTIG BLUNKENDE SUPERKONSOLL", hentOpprettetOppgave.data.melding.barn.navn)
-    }
-
-    @Test
     fun `Bruk barnets aktørId til å slå opp i tps-proxy dersom navnet mangler`() {
         wireMockServer.stubAktoerRegister(dNummerA, "56789")
         wireMockServer.stubTpsProxyGetNavn("KLØKTIG", "BLUNKENDE", "SUPERKONSOLL")
@@ -323,7 +307,7 @@ class PleiepengesoknadProsesseringTest {
         fodselsnummerBarn: String?,
         vedleggUrl : URI = URI("${wireMockServer.getK9DokumentBaseUrl()}/v1/dokument/${UUID.randomUUID()}"),
         barnetsNavn: String? = "kari",
-        alternativIdBarn: String? = null,
+        fodselsdato: LocalDate? = null,
         aktoerIdBarn: String? = null,
         sprak: String? = null,
         organisasjoner: List<Organisasjon> = listOf(
@@ -345,7 +329,7 @@ class PleiepengesoknadProsesseringTest {
         barn = Barn(
             navn = barnetsNavn,
             fodselsnummer = fodselsnummerBarn,
-            alternativId = alternativIdBarn,
+            fodselsdato = fodselsdato,
             aktoerId = aktoerIdBarn
         ),
         relasjonTilBarnet = "Mor",

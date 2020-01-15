@@ -1,7 +1,6 @@
 package no.nav.helse.prosessering.v1
 
 import no.nav.helse.aktoer.AktoerId
-import no.nav.helse.aktoer.AlternativId
 import no.nav.helse.aktoer.Fodselsnummer
 import no.nav.helse.aktoer.NorskIdent
 import java.net.URI
@@ -70,7 +69,7 @@ data class PreprossesertSoker(
 data class PreprossesertBarn(
     val fodselsnummer: String?,
     val navn: String?,
-    val alternativId: String?,
+    val fodselsdato: LocalDate?,
     val aktoerId: String?
 ) {
 
@@ -79,7 +78,7 @@ data class PreprossesertBarn(
     ) : this(
         fodselsnummer = barn.fodselsnummer ?: (barnetsNorskeIdent as? Fodselsnummer)?.getValue(),
         navn = barnetsNavn,
-        alternativId = barn.alternativId ?: (barnetsNorskeIdent as? AlternativId)?.getValue(),
+        fodselsdato = barn.fodselsdato,
         aktoerId = aktoerId?.id
     )
 

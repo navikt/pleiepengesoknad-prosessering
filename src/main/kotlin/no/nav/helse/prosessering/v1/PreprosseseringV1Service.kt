@@ -1,7 +1,10 @@
 package no.nav.helse.prosessering.v1
 
 import no.nav.helse.CorrelationId
-import no.nav.helse.aktoer.*
+import no.nav.helse.aktoer.AktoerId
+import no.nav.helse.aktoer.AktoerService
+import no.nav.helse.aktoer.Fodselsnummer
+import no.nav.helse.aktoer.NorskIdent
 import no.nav.helse.barn.BarnOppslag
 import no.nav.helse.dokument.DokumentService
 import no.nav.helse.prosessering.Metadata
@@ -148,10 +151,6 @@ internal class PreprosseseringV1Service(
             when {
                 !barn.fodselsnummer.isNullOrBlank() -> aktoerService.getAktorId(
                     ident = Fodselsnummer(barn.fodselsnummer),
-                    correlationId = correlationId
-                )
-                !barn.alternativId.isNullOrBlank() -> aktoerService.getAktorId(
-                    ident = AlternativId(barn.alternativId),
                     correlationId = correlationId
                 )
                 else -> null

@@ -43,7 +43,7 @@ class BarnTest {
         val fodselsnummer = "$dag$maned${ar}12345"
         return PreprossesertBarn(
             fodselsnummer = fodselsnummer,
-            alternativId = null,
+            fodselsdato = null,
             navn = null,
             aktoerId = null
         )
