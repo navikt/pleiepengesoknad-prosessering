@@ -53,7 +53,7 @@ internal class PreprosseseringV1Service(
 
         logger.trace("Genererer Oppsummerings-PDF av søknaden.")
 
-        val soknadOppsummeringPdf = pdfV1Generator.generateSoknadOppsummeringPdf(melding, barnetsIdent, barnetsNavn)
+        val soknadOppsummeringPdf = pdfV1Generator.generateSoknadOppsummeringPdf(melding, barnetsIdent, null, barnetsNavn)
 
         logger.trace("Generering av Oppsummerings-PDF OK.")
         logger.trace("Mellomlagrer Oppsummerings-PDF.")
@@ -106,7 +106,7 @@ internal class PreprosseseringV1Service(
     }
 
     /**
-     * Slår opp barnets navn, gitt enten alternativId, fødselsNummer eller aktørId.
+     * Slår opp barnets navn, fødselsNummer eller aktørId.
      */
     private suspend fun slaaOppBarnetsNavn(
         barn: Barn,

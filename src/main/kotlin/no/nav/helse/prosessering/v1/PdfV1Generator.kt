@@ -11,6 +11,7 @@ import no.nav.helse.aktoer.NorskIdent
 import no.nav.helse.dusseldorf.ktor.core.fromResources
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
+import java.time.LocalDate
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.*
@@ -69,6 +70,7 @@ internal class PdfV1Generator  {
     internal fun generateSoknadOppsummeringPdf(
         melding: MeldingV1,
         barnetsIdent: NorskIdent?,
+        fødselsdato: LocalDate?,
         barnetsNavn: String?
     ) : ByteArray {
         soknadTemplate.apply(Context
@@ -87,7 +89,8 @@ internal class PdfV1Generator  {
                 ),
                 "barn" to mapOf(
                     "navn" to barnetsNavn,
-                    "id" to barnetsIdent?.getValue()
+                    "fødselsdato" to fødselsdato,
+                    "id" to barnetsIdent
                 ),
                 "periode" to mapOf(
                     "fra_og_med" to DATE_FORMATTER.format(melding.fraOgMed),

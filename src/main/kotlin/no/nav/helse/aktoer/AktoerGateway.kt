@@ -215,15 +215,12 @@ class AktoerGateway(
     }
 }
 
-fun String.tilNorskIdent(): NorskIdent = if (erGyldigFodselsnummer()) Fodselsnummer(this) else AlternativId(this)
+fun String.tilNorskIdent(): NorskIdent = if (erGyldigFodselsnummer()) Fodselsnummer(this) else Dnummer(this)
 
 interface NorskIdent {
     fun getValue(): String
 }
 
-data class AlternativId(private val value: String) : NorskIdent {
-    override fun getValue() = value
-}
 
 data class Ident(val ident: String, val identgruppe: String)
 data class IdentResponse(val feilmelding: String?, val identer: List<Ident>?)

@@ -34,7 +34,7 @@ class JournalforingsFormatTest {
             "barn": {
                 "fodselsnummer": "2323",
                 "navn": "Kari",
-                "alternativ_id": null,
+                "fødselsdato": null,
                 "aktoer_id": null
             },
             "relasjon_til_barnet": "Mor",
