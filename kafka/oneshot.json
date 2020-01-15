@@ -46,7 +46,11 @@
         {
           "member": "srvpps-prosessering",
           "role": "CONSUMER"
-        }
+        },
+        {
+					"member": "srvk9-fordel",
+					"role": "CONSUMER"
+				}
       ],
       "numPartitions": 3,
       "topicName": "privat-pleiepengesoknad-journalfort"
