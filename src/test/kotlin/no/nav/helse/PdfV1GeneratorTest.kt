@@ -16,7 +16,7 @@ class PdfV1GeneratorTest {
         private val generator = PdfV1Generator()
         private val barnetsIdent = Fodselsnummer("02119970078")
         private val barnetsNavn = "Ole Dole"
-        private val fødselsdato = LocalDate.now().minusDays(10)
+        private val fodselsdato = LocalDate.now().minusDays(10)
     }
 
     private fun fullGyldigMelding(soknadsId: String): MeldingV1 {
@@ -184,7 +184,7 @@ class PdfV1GeneratorTest {
             melding = fullGyldigMelding(soknadsId = id),
             barnetsIdent = barnetsIdent,
             barnetsNavn = barnetsNavn,
-            fødselsdato = fødselsdato
+            fodselsdato = fodselsdato
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
@@ -193,7 +193,7 @@ class PdfV1GeneratorTest {
             melding = gyldigMelding(soknadId = id, harMedsoker = false),
             barnetsIdent = barnetsIdent,
             barnetsNavn = barnetsNavn,
-            fødselsdato = fødselsdato
+            fodselsdato = fodselsdato
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
@@ -208,7 +208,7 @@ class PdfV1GeneratorTest {
             ),
             barnetsIdent = barnetsIdent,
             barnetsNavn = barnetsNavn,
-            fødselsdato = fødselsdato
+            fodselsdato = fodselsdato
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
@@ -223,7 +223,7 @@ class PdfV1GeneratorTest {
             ),
             barnetsIdent = barnetsIdent,
             barnetsNavn = barnetsNavn,
-            fødselsdato = fødselsdato
+            fodselsdato = fodselsdato
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
@@ -232,7 +232,7 @@ class PdfV1GeneratorTest {
             melding = gyldigMelding(soknadId = id, harMedsoker = false, sprak = null),
             barnetsIdent = barnetsIdent,
             barnetsNavn = barnetsNavn,
-            fødselsdato = fødselsdato
+            fodselsdato = fodselsdato
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
@@ -241,7 +241,7 @@ class PdfV1GeneratorTest {
             melding = gyldigMelding(soknadId = id, harMedsoker = false, organisasjoner = listOf()),
             barnetsIdent = barnetsIdent,
             barnetsNavn = barnetsNavn,
-            fødselsdato = fødselsdato
+            fodselsdato = fodselsdato
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
@@ -255,7 +255,7 @@ class PdfV1GeneratorTest {
             ),
             barnetsIdent = barnetsIdent,
             barnetsNavn = barnetsNavn,
-            fødselsdato = fødselsdato
+            fodselsdato = fodselsdato
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
@@ -270,7 +270,7 @@ class PdfV1GeneratorTest {
             ),
             barnetsIdent = barnetsIdent,
             barnetsNavn = barnetsNavn,
-            fødselsdato = fødselsdato
+            fodselsdato = fodselsdato
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
@@ -286,7 +286,7 @@ class PdfV1GeneratorTest {
             ),
             barnetsIdent = barnetsIdent,
             barnetsNavn = barnetsNavn,
-            fødselsdato = fødselsdato
+            fodselsdato = fodselsdato
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
@@ -331,7 +331,7 @@ class PdfV1GeneratorTest {
                     )
                 )
             ), barnetsIdent = barnetsIdent, barnetsNavn = barnetsNavn,
-            fødselsdato = fødselsdato
+            fodselsdato = fodselsdato
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
@@ -353,7 +353,7 @@ class PdfV1GeneratorTest {
                     )
                 )
             ), barnetsIdent = barnetsIdent, barnetsNavn = barnetsNavn,
-            fødselsdato = fødselsdato
+            fodselsdato = fodselsdato
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
@@ -373,7 +373,7 @@ class PdfV1GeneratorTest {
                     vetIkke = null
                 )
             ), barnetsIdent = barnetsIdent, barnetsNavn = barnetsNavn,
-            fødselsdato = fødselsdato
+            fodselsdato = fodselsdato
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
@@ -392,7 +392,7 @@ class PdfV1GeneratorTest {
             ),
             barnetsIdent = barnetsIdent,
             barnetsNavn = barnetsNavn,
-            fødselsdato = fødselsdato
+            fodselsdato = fodselsdato
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
@@ -411,7 +411,7 @@ class PdfV1GeneratorTest {
             ),
             barnetsIdent = barnetsIdent,
             barnetsNavn = barnetsNavn,
-            fødselsdato = fødselsdato
+            fodselsdato = fodselsdato
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
@@ -429,7 +429,7 @@ class PdfV1GeneratorTest {
             ),
             barnetsIdent = barnetsIdent,
             barnetsNavn = barnetsNavn,
-            fødselsdato = fødselsdato
+            fodselsdato = fodselsdato
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
@@ -447,7 +447,7 @@ class PdfV1GeneratorTest {
             ),
             barnetsIdent = barnetsIdent,
             barnetsNavn = barnetsNavn,
-            fødselsdato = fødselsdato
+            fodselsdato = fodselsdato
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
@@ -485,7 +485,7 @@ class PdfV1GeneratorTest {
             ),
             barnetsIdent = barnetsIdent,
             barnetsNavn = barnetsNavn,
-            fødselsdato = fødselsdato
+            fodselsdato = fodselsdato
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
@@ -497,7 +497,7 @@ class PdfV1GeneratorTest {
             ),
             barnetsIdent = barnetsIdent,
             barnetsNavn = barnetsNavn,
-            fødselsdato = fødselsdato
+            fodselsdato = fodselsdato
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
@@ -510,7 +510,7 @@ class PdfV1GeneratorTest {
             ),
             barnetsIdent = null,
             barnetsNavn = barnetsNavn,
-            fødselsdato = null
+            fodselsdato = null
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
