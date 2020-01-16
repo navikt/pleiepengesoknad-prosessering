@@ -50,7 +50,7 @@ data class Barn(
     val aktoerId: String?
 ) {
     override fun toString(): String {
-        return "Barn(navn=$navn, aktoerId=$aktoerId)"
+        return "Barn(navn=$navn, aktoerId=$aktoerId, fodselsdato=$fodselsdato)"
     }
 }
 

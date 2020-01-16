@@ -83,6 +83,6 @@ data class PreprossesertBarn(
     )
 
     override fun toString(): String {
-        return "PreprossesertBarn(navn=$navn, aktoerId=$aktoerId)"
+        return "PreprossesertBarn(navn=$navn, aktoerId=$aktoerId, fodselsdato=$fodselsdato)"
     }
 }
