@@ -70,7 +70,7 @@ internal class PdfV1Generator  {
     internal fun generateSoknadOppsummeringPdf(
         melding: MeldingV1,
         barnetsIdent: NorskIdent?,
-        fødselsdato: LocalDate?,
+        fodselsdato: LocalDate?,
         barnetsNavn: String?
     ) : ByteArray {
         soknadTemplate.apply(Context
@@ -89,7 +89,7 @@ internal class PdfV1Generator  {
                 ),
                 "barn" to mapOf(
                     "navn" to barnetsNavn,
-                    "fødselsdato" to fødselsdato?.format(DATE_FORMATTER),
+                    "fodselsdato" to fodselsdato?.format(DATE_FORMATTER),
                     "id" to barnetsIdent?.getValue()
                 ),
                 "periode" to mapOf(

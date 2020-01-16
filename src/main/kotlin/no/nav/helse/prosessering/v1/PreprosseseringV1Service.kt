@@ -55,7 +55,7 @@ internal class PreprosseseringV1Service(
         logger.info("Barnets fødselsdato $barnetsFødselsdato")
         logger.trace("Genererer Oppsummerings-PDF av søknaden.")
 
-        val soknadOppsummeringPdf = pdfV1Generator.generateSoknadOppsummeringPdf(melding, barnetsIdent, null, barnetsNavn)
+        val soknadOppsummeringPdf = pdfV1Generator.generateSoknadOppsummeringPdf(melding, barnetsIdent, barnetsFødselsdato, barnetsNavn)
 
         logger.trace("Generering av Oppsummerings-PDF OK.")
         logger.trace("Mellomlagrer Oppsummerings-PDF.")
