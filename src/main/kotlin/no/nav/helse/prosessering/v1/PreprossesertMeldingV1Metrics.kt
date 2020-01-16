@@ -53,7 +53,7 @@ private val barnetsAlderIUkerCounter = Counter.build()
     .register()
 
 internal fun PreprossesertMeldingV1.reportMetrics() {
-    val barnetsFodselsdato = barn.fodseldato()
+    val barnetsFodselsdato = barn.fodseldato() ?: barn.fodselsdato
     if (barnetsFodselsdato != null) {
         val barnetsAlder = barnetsFodselsdato.aarSiden()
         barnetsAlderHistogram.observe(barnetsAlder)
@@ -74,7 +74,7 @@ internal fun Double.erUnderEttAar() = 0.0 == this
 private fun PreprossesertBarn.idType(): String {
     return when {
         fodselsnummer != null -> "fodselsnummer"
-        alternativId != null -> "alternativ_id"
+        fodselsdato != null -> "fodselsdato"
         else -> "ingen_id"
     }
 }

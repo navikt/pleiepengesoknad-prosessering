@@ -1,7 +1,10 @@
 package no.nav.helse.prosessering.v1
 
 import no.nav.helse.CorrelationId
-import no.nav.helse.aktoer.*
+import no.nav.helse.aktoer.AktoerId
+import no.nav.helse.aktoer.AktoerService
+import no.nav.helse.aktoer.NorskIdent
+import no.nav.helse.aktoer.tilNorskIdent
 import no.nav.helse.barn.BarnOppslag
 import no.nav.helse.dokument.DokumentService
 import no.nav.helse.prosessering.Metadata
@@ -47,10 +50,11 @@ internal class PreprosseseringV1Service(
         }
 
         val barnetsNavn: String? = slaaOppBarnetsNavn(melding.barn, barnetsIdent = barnetsIdent, correlationId = correlationId)
+        val barnetsFødselsdato = melding.barn.fodselsdato
 
         logger.trace("Genererer Oppsummerings-PDF av søknaden.")
 
-        val soknadOppsummeringPdf = pdfV1Generator.generateSoknadOppsummeringPdf(melding, barnetsIdent, barnetsNavn)
+        val soknadOppsummeringPdf = pdfV1Generator.generateSoknadOppsummeringPdf(melding, barnetsIdent, barnetsFødselsdato, barnetsNavn)
 
         logger.trace("Generering av Oppsummerings-PDF OK.")
         logger.trace("Mellomlagrer Oppsummerings-PDF.")
@@ -88,14 +92,14 @@ internal class PreprosseseringV1Service(
 
         logger.trace("Totalt ${komplettDokumentUrls.size} dokumentbolker.")
 
-
         val preprossesertMeldingV1 = PreprossesertMeldingV1(
-            dokumentUrls = komplettDokumentUrls.toList(),
             melding = melding,
+            dokumentUrls = komplettDokumentUrls.toList(),
             sokerAktoerId = sokerAktoerId,
             barnAktoerId = barnAktoerId,
             barnetsNavn = barnetsNavn,
-            barnetsNorskeIdent = barnetsIdent
+            barnetsNorskeIdent = barnetsIdent,
+            barnetsFødselsdato = barnetsFødselsdato
         )
         melding.reportMetrics()
         preprossesertMeldingV1.reportMetrics()
@@ -103,7 +107,7 @@ internal class PreprosseseringV1Service(
     }
 
     /**
-     * Slår opp barnets navn, gitt enten alternativId, fødselsNummer eller aktørId.
+     * Slår opp barnets navn, fødselsNummer eller aktørId.
      */
     private suspend fun slaaOppBarnetsNavn(
         barn: Barn,
@@ -147,17 +151,13 @@ internal class PreprosseseringV1Service(
         return try {
             when {
                 !barn.fodselsnummer.isNullOrBlank() -> aktoerService.getAktorId(
-                    ident = Fodselsnummer(barn.fodselsnummer),
-                    correlationId = correlationId
-                )
-                !barn.alternativId.isNullOrBlank() -> aktoerService.getAktorId(
-                    ident = AlternativId(barn.alternativId),
+                    ident = barn.fodselsnummer.tilNorskIdent(),
                     correlationId = correlationId
                 )
                 else -> null
             }
         } catch (cause: Throwable) {
-            logger.warn("Feil ved oppslag på Aktør ID basert på barnets fødselsnummer. Kan være at det ikke er registrert i Aktørregisteret enda. ${cause.message}")
+            logger.warn("Feil ved oppslag på Aktør ID basert på barnets fødselsnummer/dnummer. Kan være at det ikke er registrert i Aktørregisteret enda. ${cause.message}")
             null
         }
     }

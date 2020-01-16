@@ -51,13 +51,17 @@
                                 <span class="ikke_satt">Navn ikke angitt</span>
                             {{/if}}
                         </p>
-                        <p class="id">
-                            {{# if barn.id }}
-                                {{ barn.id }}
-                            {{else}}
-                                <span class="ikke_satt">ID ikke angitt</span>
+                        {{# if id }}
+                        <p class="barnid">
+                                {{ id }}
+                        </p>
+                        {{else}}
+                        <p class="fodselsdato">
+                            {{# if barn.fodselsdato }}
+                                {{ barn.fodselsdato }}
                             {{/if}}
                         </p>
+                        {{/if}}
                     </div>
                 </div>
             </div>
