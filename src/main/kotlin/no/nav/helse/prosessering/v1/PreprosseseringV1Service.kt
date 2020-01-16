@@ -52,7 +52,6 @@ internal class PreprosseseringV1Service(
         val barnetsNavn: String? = slaaOppBarnetsNavn(melding.barn, barnetsIdent = barnetsIdent, correlationId = correlationId)
         val barnetsFødselsdato = melding.barn.fodselsdato
 
-        logger.info("Barnets fødselsdato $barnetsFødselsdato")
         logger.trace("Genererer Oppsummerings-PDF av søknaden.")
 
         val soknadOppsummeringPdf = pdfV1Generator.generateSoknadOppsummeringPdf(melding, barnetsIdent, barnetsFødselsdato, barnetsNavn)
