@@ -30,7 +30,8 @@ data class PreprossesertMeldingV1(
         sokerAktoerId: AktoerId,
         barnAktoerId: AktoerId?,
         barnetsNavn: String?,
-        barnetsNorskeIdent: NorskIdent?
+        barnetsNorskeIdent: NorskIdent?,
+        barnetsFødselsdato: LocalDate?
     ) : this(
         sprak = melding.sprak,
         soknadId = melding.soknadId,
@@ -39,7 +40,7 @@ data class PreprossesertMeldingV1(
         fraOgMed = melding.fraOgMed,
         tilOgMed = melding.tilOgMed,
         soker = PreprossesertSoker(melding.soker, sokerAktoerId),
-        barn = PreprossesertBarn(melding.barn, barnetsNavn, barnetsNorskeIdent, barnAktoerId),
+        barn = PreprossesertBarn(melding.barn, barnetsNavn, barnetsNorskeIdent, barnAktoerId, barnetsFødselsdato),
         relasjonTilBarnet = melding.relasjonTilBarnet,
         arbeidsgivere = melding.arbeidsgivere,
         medlemskap = melding.medlemskap,
@@ -74,11 +75,15 @@ data class PreprossesertBarn(
 ) {
 
     internal constructor(
-        barn: Barn, barnetsNavn: String?, barnetsNorskeIdent: NorskIdent?, aktoerId: AktoerId?
+        barn: Barn,
+        barnetsNavn: String?,
+        barnetsNorskeIdent: NorskIdent?,
+        aktoerId: AktoerId?,
+        fødselsdato: LocalDate?
     ) : this(
         fodselsnummer = barn.fodselsnummer ?: (barnetsNorskeIdent as? Fodselsnummer)?.getValue(),
         navn = barnetsNavn,
-        fodselsdato = barn.fodselsdato,
+        fodselsdato = fødselsdato,
         aktoerId = aktoerId?.id
     )
 

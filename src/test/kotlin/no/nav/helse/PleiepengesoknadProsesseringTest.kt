@@ -302,12 +302,29 @@ class PleiepengesoknadProsesseringTest {
         assertEquals(forventetFodselsNummer, hentOpprettetOppgave.data.melding.barn.fodselsnummer)
     }
 
+    @Test
+    fun `Forvent barnets fødselsdato`() {
+        wireMockServer.stubAktoerRegister(gyldigFodselsnummerB, "666")
+
+        val melding = gyldigMelding(
+            fodselsnummerSoker = gyldigFodselsnummerA,
+            fodselsnummerBarn = null,
+            fodselsdatoBarn = LocalDate.now(),
+            barnetsNavn = null,
+            aktoerIdBarn = "666"
+        )
+
+        kafkaTestProducer.leggSoknadTilProsessering(melding)
+        val hentOpprettetOppgave: TopicEntry<OppgaveOpprettet> = kafkaTestConsumer.hentOpprettetOppgave(melding.soknadId)
+        assertEquals(LocalDate.now(), hentOpprettetOppgave.data.melding.barn.fodselsdato)
+    }
+
     private fun gyldigMelding(
         fodselsnummerSoker: String,
         fodselsnummerBarn: String?,
         vedleggUrl : URI = URI("${wireMockServer.getK9DokumentBaseUrl()}/v1/dokument/${UUID.randomUUID()}"),
         barnetsNavn: String? = "kari",
-        fodselsdato: LocalDate? = null,
+        fodselsdatoBarn: LocalDate? = LocalDate.now(),
         aktoerIdBarn: String? = null,
         sprak: String? = null,
         organisasjoner: List<Organisasjon> = listOf(
@@ -329,7 +346,7 @@ class PleiepengesoknadProsesseringTest {
         barn = Barn(
             navn = barnetsNavn,
             fodselsnummer = fodselsnummerBarn,
-            fodselsdato = fodselsdato,
+            fodselsdato = fodselsdatoBarn,
             aktoerId = aktoerIdBarn
         ),
         relasjonTilBarnet = "Mor",

@@ -1,6 +1,5 @@
 package no.nav.helse.prosessering.v1
 
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.helse.CorrelationId
 import no.nav.helse.aktoer.AktoerId
 import no.nav.helse.aktoer.AktoerService
@@ -31,7 +30,6 @@ internal class PreprosseseringV1Service(
     ): PreprossesertMeldingV1 {
         val soknadId = SoknadId(melding.soknadId)
         logger.info("Preprosseserer $soknadId")
-        logger.info("Debug " + jacksonObjectMapper().writeValueAsString(melding))
 
         val correlationId = CorrelationId(metadata.correlationId)
 
@@ -52,7 +50,9 @@ internal class PreprosseseringV1Service(
         }
 
         val barnetsNavn: String? = slaaOppBarnetsNavn(melding.barn, barnetsIdent = barnetsIdent, correlationId = correlationId)
+        val barnetsFødselsdato = melding.barn.fodselsdato
 
+        logger.info("Barnets fødselsdato $barnetsFødselsdato")
         logger.trace("Genererer Oppsummerings-PDF av søknaden.")
 
         val soknadOppsummeringPdf = pdfV1Generator.generateSoknadOppsummeringPdf(melding, barnetsIdent, null, barnetsNavn)
@@ -93,14 +93,14 @@ internal class PreprosseseringV1Service(
 
         logger.trace("Totalt ${komplettDokumentUrls.size} dokumentbolker.")
 
-
         val preprossesertMeldingV1 = PreprossesertMeldingV1(
-            dokumentUrls = komplettDokumentUrls.toList(),
             melding = melding,
+            dokumentUrls = komplettDokumentUrls.toList(),
             sokerAktoerId = sokerAktoerId,
             barnAktoerId = barnAktoerId,
             barnetsNavn = barnetsNavn,
-            barnetsNorskeIdent = barnetsIdent
+            barnetsNorskeIdent = barnetsIdent,
+            barnetsFødselsdato = barnetsFødselsdato
         )
         melding.reportMetrics()
         preprossesertMeldingV1.reportMetrics()
