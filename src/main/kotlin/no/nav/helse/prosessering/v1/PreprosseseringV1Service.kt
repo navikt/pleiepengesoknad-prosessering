@@ -3,8 +3,8 @@ package no.nav.helse.prosessering.v1
 import no.nav.helse.CorrelationId
 import no.nav.helse.aktoer.AktoerId
 import no.nav.helse.aktoer.AktoerService
-import no.nav.helse.aktoer.Fodselsnummer
 import no.nav.helse.aktoer.NorskIdent
+import no.nav.helse.aktoer.tilNorskIdent
 import no.nav.helse.barn.BarnOppslag
 import no.nav.helse.dokument.DokumentService
 import no.nav.helse.prosessering.Metadata
@@ -151,13 +151,13 @@ internal class PreprosseseringV1Service(
         return try {
             when {
                 !barn.fodselsnummer.isNullOrBlank() -> aktoerService.getAktorId(
-                    ident = Fodselsnummer(barn.fodselsnummer),
+                    ident = barn.fodselsnummer.tilNorskIdent(),
                     correlationId = correlationId
                 )
                 else -> null
             }
         } catch (cause: Throwable) {
-            logger.warn("Feil ved oppslag på Aktør ID basert på barnets fødselsnummer. Kan være at det ikke er registrert i Aktørregisteret enda. ${cause.message}")
+            logger.warn("Feil ved oppslag på Aktør ID basert på barnets fødselsnummer/dnummer. Kan være at det ikke er registrert i Aktørregisteret enda. ${cause.message}")
             null
         }
     }

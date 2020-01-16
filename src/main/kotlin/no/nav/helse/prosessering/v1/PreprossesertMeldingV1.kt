@@ -1,7 +1,6 @@
 package no.nav.helse.prosessering.v1
 
 import no.nav.helse.aktoer.AktoerId
-import no.nav.helse.aktoer.Fodselsnummer
 import no.nav.helse.aktoer.NorskIdent
 import java.net.URI
 import java.time.LocalDate
@@ -81,7 +80,7 @@ data class PreprossesertBarn(
         aktoerId: AktoerId?,
         fødselsdato: LocalDate?
     ) : this(
-        fodselsnummer = barn.fodselsnummer ?: (barnetsNorskeIdent as? Fodselsnummer)?.getValue(),
+        fodselsnummer = barn.fodselsnummer ?: barnetsNorskeIdent?.getValue(),
         navn = barnetsNavn,
         fodselsdato = fødselsdato,
         aktoerId = aktoerId?.id
