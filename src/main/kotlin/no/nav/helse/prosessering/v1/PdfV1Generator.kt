@@ -89,8 +89,8 @@ internal class PdfV1Generator  {
                 ),
                 "barn" to mapOf(
                     "navn" to barnetsNavn,
-                    "fødselsdato" to fødselsdato,
-                    "id" to barnetsIdent
+                    "fødselsdato" to fødselsdato?.format(DATE_FORMATTER),
+                    "id" to barnetsIdent?.getValue()
                 ),
                 "periode" to mapOf(
                     "fra_og_med" to DATE_FORMATTER.format(melding.fraOgMed),

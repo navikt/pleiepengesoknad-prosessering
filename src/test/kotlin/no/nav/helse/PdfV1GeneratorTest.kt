@@ -32,7 +32,12 @@ class PdfV1GeneratorTest {
                 etternavn = "Ånsnes",
                 fodselsnummer = "29099012345"
             ),
-            barn = Barn(fodselsnummer = barnetsIdent.getValue(), aktoerId = "123456", navn = barnetsNavn, fodselsdato = null),
+            barn = Barn(
+                fodselsnummer = barnetsIdent.getValue(),
+                aktoerId = "123456",
+                navn = barnetsNavn,
+                fodselsdato = null
+            ),
             relasjonTilBarnet = "Mor",
             arbeidsgivere = Arbeidsgivere(
                 organisasjoner = listOf(
@@ -80,7 +85,7 @@ class PdfV1GeneratorTest {
             harBekreftetOpplysninger = true,
             tilsynsordning = Tilsynsordning(
                 svar = "ja",
-                ja =  TilsynsordningJa(
+                ja = TilsynsordningJa(
                     mandag = Duration.ofHours(0).plusMinutes(0),
                     tirsdag = Duration.ofHours(7).plusMinutes(55),
                     onsdag = null,
@@ -129,7 +134,7 @@ class PdfV1GeneratorTest {
         barn: Barn = Barn(
             navn = "Børge Øverbø Ånsnes",
             fodselsnummer = null,
-            fodselsdato = fødselsdato,
+            fodselsdato = null,
             aktoerId = null
         ),
         grad: Int? = 60,
@@ -483,6 +488,31 @@ class PdfV1GeneratorTest {
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
+        id = "19-barnHarIkkeIdBareFødselsdato"
+        pdf = generator.generateSoknadOppsummeringPdf(
+            melding = gyldigMelding(
+                grad = null, soknadId = id, harMedsoker = true, organisasjoner = listOf(
+                ), barn = Barn(fodselsnummer = null, fodselsdato = LocalDate.now(), navn = null, aktoerId = null)
+            ),
+            barnetsIdent = barnetsIdent,
+            barnetsNavn = barnetsNavn,
+            fødselsdato = fødselsdato
+        )
+        if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
+
+
+        id = "20-barnManglerIdOgFødselsdato"
+        pdf = generator.generateSoknadOppsummeringPdf(
+            melding = gyldigMelding(
+                grad = null, soknadId = id, harMedsoker = true, organisasjoner = listOf(
+                ), barn = Barn(fodselsnummer = null, fodselsdato = null, navn = null, aktoerId = null)
+            ),
+            barnetsIdent = null,
+            barnetsNavn = barnetsNavn,
+            fødselsdato = null
+        )
+        if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
+
     }
 
     private fun pdfPath(soknadId: String) = "${System.getProperty("user.dir")}/generated-pdf-$soknadId.pdf"
@@ -493,7 +523,6 @@ class PdfV1GeneratorTest {
     }
 
     @Test
- //   @Ignore
     fun `opprett lesbar oppsummerings-PDF`() {
         genererOppsummeringsPdfer(true)
     }
