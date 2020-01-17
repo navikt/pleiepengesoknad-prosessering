@@ -34,7 +34,7 @@ class JournalforingsFormatTest {
             "barn": {
                 "fodselsnummer": "2323",
                 "navn": "Kari",
-                "alternativ_id": null,
+                "fodselsdato": null,
                 "aktoer_id": null
             },
             "relasjon_til_barnet": "Mor",
@@ -107,7 +107,7 @@ class JournalforingsFormatTest {
         barn = Barn(
             navn = "Kari",
             fodselsnummer = "2323",
-            alternativId = null,
+            fodselsdato = null,
             aktoerId = null
         ),
         relasjonTilBarnet = "Mor",

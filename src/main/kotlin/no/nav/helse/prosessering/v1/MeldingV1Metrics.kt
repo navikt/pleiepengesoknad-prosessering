@@ -1,5 +1,6 @@
 package no.nav.helse.prosessering.v1
 
+import io.prometheus.client.Counter
 import io.prometheus.client.Histogram
 
 private val opplastedeVedleggHistogram = Histogram.build()
@@ -8,6 +9,18 @@ private val opplastedeVedleggHistogram = Histogram.build()
     .help("Antall vedlegg lastet opp i søknader")
     .register()
 
+private val omsorgstilbudCounter = Counter.build()
+    .name("omsorgstilbud_counter")
+    .help("Teller for svar på ja på spørsmål om tilsynsordning i søknaden")
+    .labelNames("spm", "svar")
+    .register()
+
 internal fun MeldingV1.reportMetrics() {
     opplastedeVedleggHistogram.observe(vedleggUrls.size.toDouble())
+
+    when (tilsynsordning?.svar) {
+        "ja"  -> omsorgstilbudCounter.labels("omsorgstilbud", "ja").inc()
+        "nei" -> omsorgstilbudCounter.labels("omsorgstilbud", "nei").inc()
+        else -> omsorgstilbudCounter.labels("omsorgstilbud", "vetIkke").inc()
+    }
 }

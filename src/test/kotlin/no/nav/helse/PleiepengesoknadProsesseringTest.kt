@@ -17,7 +17,6 @@ import no.nav.helse.dusseldorf.ktor.testsupport.wiremock.WireMockBuilder
 import no.nav.helse.prosessering.v1.*
 import no.nav.helse.prosessering.v1.asynkron.OppgaveOpprettet
 import no.nav.helse.prosessering.v1.asynkron.TopicEntry
-
 import org.junit.AfterClass
 import org.junit.BeforeClass
 import org.slf4j.Logger
@@ -28,7 +27,9 @@ import java.time.LocalDate
 import java.time.ZonedDateTime
 import java.util.*
 import java.util.concurrent.TimeUnit
-import kotlin.test.*
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
 
 
 @KtorExperimentalAPI
@@ -223,6 +224,23 @@ class PleiepengesoknadProsesseringTest {
     }
 
     @Test
+    fun `Bruk barnets dnummer id til å slå opp i tps-proxy dersom navnet mangler`() {
+        wireMockServer.stubAktoerRegister(dNummerA, "56789")
+        wireMockServer.stubTpsProxyGetNavn("KLØKTIG", "BLUNKENDE", "SUPERKONSOLL")
+
+        val melding = gyldigMelding(
+            fodselsnummerSoker = gyldigFodselsnummerA,
+            fodselsnummerBarn = dNummerA,
+            barnetsNavn = null
+        )
+
+        kafkaTestProducer.leggSoknadTilProsessering(melding)
+        val hentOpprettetOppgave: TopicEntry<OppgaveOpprettet> = kafkaTestConsumer.hentOpprettetOppgave(melding.soknadId)
+        assertEquals("KLØKTIG BLUNKENDE SUPERKONSOLL", hentOpprettetOppgave.data.melding.barn.navn)
+    }
+
+
+    @Test
     fun `Melding lagt til prosessering selv om oppslag paa aktoer ID for barn feiler`() {
         val melding = gyldigMelding(
             fodselsnummerSoker = gyldigFodselsnummerA,
@@ -242,23 +260,6 @@ class PleiepengesoknadProsesseringTest {
             fodselsnummerSoker = gyldigFodselsnummerC,
             fodselsnummerBarn = gyldigFodselsnummerB,
             barnetsNavn = null
-        )
-
-        kafkaTestProducer.leggSoknadTilProsessering(melding)
-        val hentOpprettetOppgave: TopicEntry<OppgaveOpprettet> = kafkaTestConsumer.hentOpprettetOppgave(melding.soknadId)
-        assertEquals("KLØKTIG BLUNKENDE SUPERKONSOLL", hentOpprettetOppgave.data.melding.barn.navn)
-    }
-
-    @Test
-    fun `Bruk barnets alternativ id til å slå opp i tps-proxy dersom navnet mangler`() {
-        wireMockServer.stubAktoerRegister(dNummerA, "56789")
-        wireMockServer.stubTpsProxyGetNavn("KLØKTIG", "BLUNKENDE", "SUPERKONSOLL")
-
-        val melding = gyldigMelding(
-            fodselsnummerSoker = gyldigFodselsnummerA,
-            fodselsnummerBarn = null,
-            barnetsNavn = null,
-            alternativIdBarn = dNummerA
         )
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
@@ -318,12 +319,29 @@ class PleiepengesoknadProsesseringTest {
         assertEquals(forventetFodselsNummer, hentOpprettetOppgave.data.melding.barn.fodselsnummer)
     }
 
+    @Test
+    fun `Forvent barnets fødselsdato`() {
+        wireMockServer.stubAktoerRegister(gyldigFodselsnummerB, "666")
+
+        val melding = gyldigMelding(
+            fodselsnummerSoker = gyldigFodselsnummerA,
+            fodselsnummerBarn = null,
+            fodselsdatoBarn = LocalDate.now(),
+            barnetsNavn = null,
+            aktoerIdBarn = "666"
+        )
+
+        kafkaTestProducer.leggSoknadTilProsessering(melding)
+        val hentOpprettetOppgave: TopicEntry<OppgaveOpprettet> = kafkaTestConsumer.hentOpprettetOppgave(melding.soknadId)
+        assertEquals(LocalDate.now(), hentOpprettetOppgave.data.melding.barn.fodselsdato)
+    }
+
     private fun gyldigMelding(
         fodselsnummerSoker: String,
         fodselsnummerBarn: String?,
         vedleggUrl : URI = URI("${wireMockServer.getK9DokumentBaseUrl()}/v1/dokument/${UUID.randomUUID()}"),
         barnetsNavn: String? = "kari",
-        alternativIdBarn: String? = null,
+        fodselsdatoBarn: LocalDate? = LocalDate.now(),
         aktoerIdBarn: String? = null,
         sprak: String? = null,
         organisasjoner: List<Organisasjon> = listOf(
@@ -345,7 +363,7 @@ class PleiepengesoknadProsesseringTest {
         barn = Barn(
             navn = barnetsNavn,
             fodselsnummer = fodselsnummerBarn,
-            alternativId = alternativIdBarn,
+            fodselsdato = fodselsdatoBarn,
             aktoerId = aktoerIdBarn
         ),
         relasjonTilBarnet = "Mor",

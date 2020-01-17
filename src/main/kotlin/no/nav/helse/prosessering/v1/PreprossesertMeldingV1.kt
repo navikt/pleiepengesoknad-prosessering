@@ -1,8 +1,6 @@
 package no.nav.helse.prosessering.v1
 
 import no.nav.helse.aktoer.AktoerId
-import no.nav.helse.aktoer.AlternativId
-import no.nav.helse.aktoer.Fodselsnummer
 import no.nav.helse.aktoer.NorskIdent
 import java.net.URI
 import java.time.LocalDate
@@ -31,7 +29,8 @@ data class PreprossesertMeldingV1(
         sokerAktoerId: AktoerId,
         barnAktoerId: AktoerId?,
         barnetsNavn: String?,
-        barnetsNorskeIdent: NorskIdent?
+        barnetsNorskeIdent: NorskIdent?,
+        barnetsFødselsdato: LocalDate?
     ) : this(
         sprak = melding.sprak,
         soknadId = melding.soknadId,
@@ -40,7 +39,7 @@ data class PreprossesertMeldingV1(
         fraOgMed = melding.fraOgMed,
         tilOgMed = melding.tilOgMed,
         soker = PreprossesertSoker(melding.soker, sokerAktoerId),
-        barn = PreprossesertBarn(melding.barn, barnetsNavn, barnetsNorskeIdent, barnAktoerId),
+        barn = PreprossesertBarn(melding.barn, barnetsNavn, barnetsNorskeIdent, barnAktoerId, barnetsFødselsdato),
         relasjonTilBarnet = melding.relasjonTilBarnet,
         arbeidsgivere = melding.arbeidsgivere,
         medlemskap = melding.medlemskap,
@@ -70,20 +69,24 @@ data class PreprossesertSoker(
 data class PreprossesertBarn(
     val fodselsnummer: String?,
     val navn: String?,
-    val alternativId: String?,
+    val fodselsdato: LocalDate?,
     val aktoerId: String?
 ) {
 
     internal constructor(
-        barn: Barn, barnetsNavn: String?, barnetsNorskeIdent: NorskIdent?, aktoerId: AktoerId?
+        barn: Barn,
+        barnetsNavn: String?,
+        barnetsNorskeIdent: NorskIdent?,
+        aktoerId: AktoerId?,
+        fødselsdato: LocalDate?
     ) : this(
-        fodselsnummer = barn.fodselsnummer ?: (barnetsNorskeIdent as? Fodselsnummer)?.getValue(),
+        fodselsnummer = barn.fodselsnummer ?: barnetsNorskeIdent?.getValue(),
         navn = barnetsNavn,
-        alternativId = barn.alternativId ?: (barnetsNorskeIdent as? AlternativId)?.getValue(),
+        fodselsdato = fødselsdato,
         aktoerId = aktoerId?.id
     )
 
     override fun toString(): String {
-        return "PreprossesertBarn(navn=$navn, aktoerId=$aktoerId)"
+        return "PreprossesertBarn(navn=$navn, aktoerId=$aktoerId, fodselsdato=$fodselsdato)"
     }
 }

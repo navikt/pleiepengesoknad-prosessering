@@ -51,13 +51,17 @@
                                 <span class="ikke_satt">Navn ikke angitt</span>
                             {{/if}}
                         </p>
-                        <p class="id">
-                            {{# if barn.id }}
-                                {{ barn.id }}
-                            {{else}}
-                                <span class="ikke_satt">ID ikke angitt</span>
+                        {{# if id }}
+                        <p class="barnid">
+                                {{ id }}
+                        </p>
+                        {{else}}
+                        <p class="fodselsdato">
+                            {{# if barn.fodselsdato }}
+                                {{ barn.fodselsdato }}
                             {{/if}}
                         </p>
+                        {{/if}}
                     </div>
                 </div>
             </div>
@@ -65,43 +69,44 @@
     </div>
 
     <!-- HJELP -->
-    <div class="hjelp">
-        <h2><span>
+    <h2><span>
                Antall søkere
         </span></h2>
-        <ul>
-            {{# if hjelp.har_medsoker }}
-                <li>Søker har opplyst om at en medsøker skal søke for samme periode.
-                </li>
-                {{# if samtidig_hjemme }}
-                    <li>
-                        Søker og medsøker skal være hjemme / på sykehus samtidig.
-                    </li>
-                {{/if}}
-                {{#unless samtidig_hjemme}}
-                    <li>
-                        Søker og medsøker skal <span class="highlight">ikke</span> være hjemme / på sykehus samtidig.
-                    </li>
-                {{/unless}}
-            {{else}}
-                <li>Det er <span class="highlight">ikke</span> oppgitt andre medsøkere.
+    <ul>
+        {{# if hjelp.har_medsoker }}
+            <li>Søker har opplyst om at en medsøker skal søke for samme periode.
+            </li>
+            {{# if samtidig_hjemme }}
+                <li>
+                    Søker og medsøker skal være hjemme / på sykehus samtidig.
                 </li>
             {{/if}}
-            {{# if hjelp.ingen_arbeidsgivere }}
-                <li class="ikke_satt">Det er ikke angitt noen arbeidsgivere i søknaden.</li>
-            {{/if}}
-            <!--{{# if hjelp.sprak }}
+            {{#unless samtidig_hjemme}}
+                <li>
+                    Søker og medsøker skal <span class="highlight">ikke</span> være hjemme / på sykehus samtidig.
+                </li>
+            {{/unless}}
+        {{else}}
+            <li>Det er <span class="highlight">ikke</span> oppgitt andre medsøkere.
+            </li>
+        {{/if}}
+
+        <!--{{# if hjelp.sprak }}
                 <li>Det er valgt {{hjelp.sprak}} som språk i søknaden.</li>
             {{/if}}-->
-        </ul>
-    </div>
-
-    <!-- ARBEIDSGIVERE -->
-    {{# if arbeidsgivere.har_arbeidsgivere }}
-        <h2><span>
+    </ul>
+    <h2>
+        <span>
            Arbeidsforhold
         </span></h2>
+    <!-- ARBEIDSGIVERE -->
+    {{# if hjelp.ingen_arbeidsgivere }}
+        <ul>
+            <li class="ikke_satt">Det er ikke angitt noen arbeidsgivere i søknaden.</li>
+        </ul>
+    {{/if}}
 
+    {{# if arbeidsgivere.har_arbeidsgivere }}
         <ul>
             {{# each arbeidsgivere.organisasjoner as |org|~}}
                 <li class="sporsmalstekst">{{org.navn}} (orgnr: {{org.organisasjonsnummer}})</li>
