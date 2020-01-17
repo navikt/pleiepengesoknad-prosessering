@@ -92,7 +92,7 @@ class PdfV1GeneratorTest {
             harBekreftetOpplysninger = true,
             tilsynsordning = Tilsynsordning(
                 svar = "ja",
-                ja =  TilsynsordningJa(
+                ja = TilsynsordningJa(
                     mandag = Duration.ofHours(0).plusMinutes(0),
                     tirsdag = Duration.ofHours(7).plusMinutes(55),
                     onsdag = null,
@@ -115,6 +115,7 @@ class PdfV1GeneratorTest {
             )
         )
     }
+
 
     private fun gyldigMelding(
         soknadId: String,
@@ -179,10 +180,7 @@ class PdfV1GeneratorTest {
         arbeidsgivere = Arbeidsgivere(
             organisasjoner = organisasjoner
         ),
-        medlemskap = Medlemskap(
-            harBoddIUtlandetSiste12Mnd = true,
-            skalBoIUtlandetNeste12Mnd = false
-        ),
+        medlemskap = medlemskap,
         grad = grad,
         harMedsoker = harMedsoker,
         samtidigHjemme = samtidigHjemme,
