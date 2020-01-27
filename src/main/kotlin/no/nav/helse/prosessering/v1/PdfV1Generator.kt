@@ -205,7 +205,7 @@ private fun List<Organisasjon>.somMap() = map {
     )
 }
 
-private fun List<Utenlandsopphold>.somMapUtenlandsopphold(): List<Map<String, Any?>> {
+private fun List<Bosted>.somMapUtenlandsopphold(): List<Map<String, Any?>> {
     val dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy").withZone(ZoneId.of("Europe/Oslo"))
     return map {
         mapOf<String,Any?>(

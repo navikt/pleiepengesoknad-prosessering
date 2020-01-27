@@ -78,7 +78,7 @@ class PdfV1GeneratorTest {
             medlemskap = Medlemskap(
                 harBoddIUtlandetSiste12Mnd = true,
                 utenlandsoppholdSiste12Mnd = listOf(
-                    Utenlandsopphold(
+                    Bosted(
                         LocalDate.of(2020, 1, 2),
                         LocalDate.of(2020, 1, 3),
                         "US", "USA"
@@ -112,7 +112,9 @@ class PdfV1GeneratorTest {
             beredskap = Beredskap(
                 beredskap = true,
                 tilleggsinformasjon = "Jeg er i beredskap\rmed\nlinje\r\nlinjeskift."
-            )
+            ),
+            utenlandsoppholdIPerioden = UtenlandsoppholdIPerioden(skalOppholdeSegIUtlandetIPerioden = false, opphold = listOf()),
+            ferieuttakIPerioden = FerieuttakIPerioden(skalTaUtFerieIPerioden = false, ferieuttak = listOf())
         )
     }
 
@@ -154,7 +156,7 @@ class PdfV1GeneratorTest {
         medlemskap: Medlemskap = Medlemskap(
             harBoddIUtlandetSiste12Mnd = true,
             utenlandsoppholdSiste12Mnd = listOf(
-                Utenlandsopphold(
+                Bosted(
                     LocalDate.of(2020, 1, 2),
                     LocalDate.of(2020, 1, 3),
                     "US", "USA"
@@ -189,7 +191,9 @@ class PdfV1GeneratorTest {
         dagerPerUkeBorteFraJobb = dagerPerUkeBorteFraJobb,
         tilsynsordning = tilsynsordning,
         nattevaak = nattevaak,
-        beredskap = beredskap
+        beredskap = beredskap,
+        utenlandsoppholdIPerioden = UtenlandsoppholdIPerioden(skalOppholdeSegIUtlandetIPerioden = false, opphold = listOf()),
+        ferieuttakIPerioden = FerieuttakIPerioden(skalTaUtFerieIPerioden = false, ferieuttak = listOf())
     )
 
     private fun genererOppsummeringsPdfer(writeBytes: Boolean) {
@@ -512,11 +516,11 @@ class PdfV1GeneratorTest {
                     utenlandsoppholdSiste12Mnd = listOf(),
                     skalBoIUtlandetNeste12Mnd = true,
                     utenlandsoppholdNeste12Mnd = listOf(
-                        Utenlandsopphold(
+                        Bosted(
                             LocalDate.of(2022, 1, 2),
                             LocalDate.of(2022, 1, 3),
                             "US", "USA"
-                        ) ,Utenlandsopphold(
+                        ) ,Bosted(
                             LocalDate.of(2022, 1, 3),
                             LocalDate.of(2022, 1, 4),
                             "DK", "Danmark"
