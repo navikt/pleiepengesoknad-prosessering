@@ -104,9 +104,9 @@ internal class PdfV1Generator  {
                 ),
                 "medlemskap" to mapOf(
                     "har_bodd_i_utlandet_siste_12_mnd" to melding.medlemskap.harBoddIUtlandetSiste12Mnd,
-                    "utenlandsopphold_siste_12_mnd" to melding.medlemskap.utenlandsoppholdSiste12Mnd.somMapUtenlandsopphold(),
+                    "utenlandsopphold_siste_12_mnd" to melding.medlemskap.utenlandsoppholdSiste12Mnd.somMapBosted(),
                     "skal_bo_i_utlandet_neste_12_mnd" to melding.medlemskap.skalBoIUtlandetNeste12Mnd,
-                    "utenlandsopphold_neste_12_mnd" to melding.medlemskap.utenlandsoppholdNeste12Mnd.somMapUtenlandsopphold()
+                    "utenlandsopphold_neste_12_mnd" to melding.medlemskap.utenlandsoppholdNeste12Mnd.somMapBosted()
                 ),
                 "samtykke" to mapOf(
                     "har_forstatt_rettigheter_og_plikter" to melding.harForstattRettigheterOgPlikter,
@@ -119,7 +119,15 @@ internal class PdfV1Generator  {
                 ),
                 "tilsynsordning" to tilsynsordning(melding.tilsynsordning),
                 "nattevaak" to nattevåk(melding.nattevaak),
-                "beredskap" to beredskap(melding.beredskap)
+                "beredskap" to beredskap(melding.beredskap),
+                "utenlandsoppholdIPerioden" to mapOf(
+                    "skalOppholdeSegIUtlandetIPerioden" to melding.utenlandsoppholdIPerioden.skalOppholdeSegIUtlandetIPerioden,
+                    "opphold" to melding.utenlandsoppholdIPerioden.opphold.somMapUtenlandsopphold()
+                ),
+                "ferieuttakIPerioden" to mapOf(
+                    "skalTaUtFerieIPerioden" to melding.ferieuttakIPerioden.skalTaUtFerieIPerioden,
+                    "ferieuttak" to melding.ferieuttakIPerioden.ferieuttak.somMapFerieuttak()
+                )
             ))
             .resolver(MapValueResolver.INSTANCE)
             .build()).let { html ->
@@ -205,11 +213,32 @@ private fun List<Organisasjon>.somMap() = map {
     )
 }
 
-private fun List<Bosted>.somMapUtenlandsopphold(): List<Map<String, Any?>> {
+private fun List<Bosted>.somMapBosted(): List<Map<String, Any?>> {
     val dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy").withZone(ZoneId.of("Europe/Oslo"))
     return map {
         mapOf<String,Any?>(
             "landnavn" to it.landnavn,
+            "fraOgMed" to dateFormatter.format(it.fraOgMed),
+            "tilOgMed" to dateFormatter.format(it.tilOgMed)
+            )
+    }
+}
+
+private fun List<Utenlandsopphold>.somMapUtenlandsopphold(): List<Map<String, Any?>> {
+    val dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy").withZone(ZoneId.of("Europe/Oslo"))
+    return map {
+        mapOf<String,Any?>(
+            "landnavn" to it.landnavn,
+            "fraOgMed" to dateFormatter.format(it.fraOgMed),
+            "tilOgMed" to dateFormatter.format(it.tilOgMed)
+            )
+    }
+}
+
+private fun List<Ferieuttak>.somMapFerieuttak(): List<Map<String, Any?>> {
+    val dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy").withZone(ZoneId.of("Europe/Oslo"))
+    return map {
+        mapOf<String,Any?>(
             "fraOgMed" to dateFormatter.format(it.fraOgMed),
             "tilOgMed" to dateFormatter.format(it.tilOgMed)
             )

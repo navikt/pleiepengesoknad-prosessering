@@ -113,8 +113,29 @@ class PdfV1GeneratorTest {
                 beredskap = true,
                 tilleggsinformasjon = "Jeg er i beredskap\rmed\nlinje\r\nlinjeskift."
             ),
-            utenlandsoppholdIPerioden = UtenlandsoppholdIPerioden(skalOppholdeSegIUtlandetIPerioden = false, opphold = listOf()),
-            ferieuttakIPerioden = FerieuttakIPerioden(skalTaUtFerieIPerioden = false, ferieuttak = listOf())
+            utenlandsoppholdIPerioden = UtenlandsoppholdIPerioden(
+                skalOppholdeSegIUtlandetIPerioden = true,
+                opphold = listOf(
+                    Utenlandsopphold(
+                        fraOgMed = LocalDate.now().plusDays(10),
+                        tilOgMed = LocalDate.now().plusDays(15),
+                        landkode = "US",
+                        landnavn = "USA",
+                        arsak = null,
+                        erBarnetInnlagt = null,
+                        erUtenforEos = null
+                    )
+                )
+            ),
+            ferieuttakIPerioden = FerieuttakIPerioden(
+                skalTaUtFerieIPerioden = true,
+                ferieuttak = listOf(
+                    Ferieuttak(fraOgMed = LocalDate.now().plusDays(10),
+                        tilOgMed = LocalDate.now().plusDays(15)),
+                    Ferieuttak(fraOgMed = LocalDate.now().plusDays(100),
+                        tilOgMed = LocalDate.now().plusDays(150))
+                )
+            )
         )
     }
 
@@ -192,8 +213,19 @@ class PdfV1GeneratorTest {
         tilsynsordning = tilsynsordning,
         nattevaak = nattevaak,
         beredskap = beredskap,
-        utenlandsoppholdIPerioden = UtenlandsoppholdIPerioden(skalOppholdeSegIUtlandetIPerioden = false, opphold = listOf()),
-        ferieuttakIPerioden = FerieuttakIPerioden(skalTaUtFerieIPerioden = false, ferieuttak = listOf())
+        utenlandsoppholdIPerioden = UtenlandsoppholdIPerioden(
+            skalOppholdeSegIUtlandetIPerioden = false,
+            opphold = listOf()
+        ),
+        ferieuttakIPerioden =  FerieuttakIPerioden(
+            skalTaUtFerieIPerioden = true,
+            ferieuttak = listOf(
+                Ferieuttak(fraOgMed = LocalDate.now().plusDays(10),
+                    tilOgMed = LocalDate.now().plusDays(15)),
+                Ferieuttak(fraOgMed = LocalDate.now().plusDays(100),
+                    tilOgMed = LocalDate.now().plusDays(150))
+            )
+        )
     )
 
     private fun genererOppsummeringsPdfer(writeBytes: Boolean) {
@@ -520,7 +552,7 @@ class PdfV1GeneratorTest {
                             LocalDate.of(2022, 1, 2),
                             LocalDate.of(2022, 1, 3),
                             "US", "USA"
-                        ) ,Bosted(
+                        ), Bosted(
                             LocalDate.of(2022, 1, 3),
                             LocalDate.of(2022, 1, 4),
                             "DK", "Danmark"
