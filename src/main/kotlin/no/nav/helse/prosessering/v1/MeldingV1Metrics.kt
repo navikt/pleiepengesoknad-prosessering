@@ -15,6 +15,18 @@ private val omsorgstilbudCounter = Counter.build()
     .labelNames("spm", "svar")
     .register()
 
+private val beredskapCounter = Counter.build()
+    .name("beredskap_counter")
+    .help("Teller for svar på ja på spørsmål om beredskap i søknaden")
+    .labelNames("spm", "svar")
+    .register()
+
+private val nattevaakCounter = Counter.build()
+    .name("nattevaak_counter")
+    .help("Teller for svar på ja på spørsmål om nattevåk i søknaden")
+    .labelNames("spm", "svar")
+    .register()
+
 internal fun MeldingV1.reportMetrics() {
     opplastedeVedleggHistogram.observe(vedleggUrls.size.toDouble())
 
@@ -22,5 +34,15 @@ internal fun MeldingV1.reportMetrics() {
         "ja"  -> omsorgstilbudCounter.labels("omsorgstilbud", "ja").inc()
         "nei" -> omsorgstilbudCounter.labels("omsorgstilbud", "nei").inc()
         else -> omsorgstilbudCounter.labels("omsorgstilbud", "vetIkke").inc()
+    }
+
+    when (beredskap?.beredskap) {
+        true  -> beredskapCounter.labels("beredskap", "ja").inc()
+        false -> beredskapCounter.labels("beredskap", "nei").inc()
+    }
+
+    when (nattevaak?.harNattevaak) {
+        true  -> nattevaakCounter.labels("nattevåk", "ja").inc()
+        false -> nattevaakCounter.labels("nattevåk", "nei").inc()
     }
 }
