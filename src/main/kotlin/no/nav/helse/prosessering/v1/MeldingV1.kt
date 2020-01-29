@@ -20,9 +20,9 @@ data class MeldingV1 (
     var vedleggUrls : List<URI> = listOf(),
     val medlemskap: Medlemskap,
     @JsonProperty("utenlandsopphold_i_perioden")
-    val utenlandsoppholdIPerioden: UtenlandsoppholdIPerioden,
+    val utenlandsoppholdIPerioden: UtenlandsoppholdIPerioden?,
     @JsonProperty("ferieuttak_i_perioden")
-    val ferieuttakIPerioden: FerieuttakIPerioden,
+    val ferieuttakIPerioden: FerieuttakIPerioden?,
     val grad : Int?,
     val harMedsoker : Boolean,
     val samtidigHjemme: Boolean? = null,
