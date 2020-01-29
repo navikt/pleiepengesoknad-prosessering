@@ -113,29 +113,8 @@ class PdfV1GeneratorTest {
                 beredskap = true,
                 tilleggsinformasjon = "Jeg er i beredskap\rmed\nlinje\r\nlinjeskift."
             ),
-            utenlandsoppholdIPerioden = UtenlandsoppholdIPerioden(
-                skalOppholdeSegIUtlandetIPerioden = true,
-                opphold = listOf(
-                    Utenlandsopphold(
-                        fraOgMed = LocalDate.now().plusDays(10),
-                        tilOgMed = LocalDate.now().plusDays(15),
-                        landkode = "US",
-                        landnavn = "USA",
-                        arsak = null,
-                        erBarnetInnlagt = null,
-                        erUtenforEos = null
-                    )
-                )
-            ),
-            ferieuttakIPerioden = FerieuttakIPerioden(
-                skalTaUtFerieIPerioden = true,
-                ferieuttak = listOf(
-                    Ferieuttak(fraOgMed = LocalDate.now().plusDays(10),
-                        tilOgMed = LocalDate.now().plusDays(15)),
-                    Ferieuttak(fraOgMed = LocalDate.now().plusDays(100),
-                        tilOgMed = LocalDate.now().plusDays(150))
-                )
-            )
+            utenlandsoppholdIPerioden = null,
+            ferieuttakIPerioden = null
         )
     }
 
@@ -213,19 +192,8 @@ class PdfV1GeneratorTest {
         tilsynsordning = tilsynsordning,
         nattevaak = nattevaak,
         beredskap = beredskap,
-        utenlandsoppholdIPerioden = UtenlandsoppholdIPerioden(
-            skalOppholdeSegIUtlandetIPerioden = false,
-            opphold = listOf()
-        ),
-        ferieuttakIPerioden =  FerieuttakIPerioden(
-            skalTaUtFerieIPerioden = true,
-            ferieuttak = listOf(
-                Ferieuttak(fraOgMed = LocalDate.now().plusDays(10),
-                    tilOgMed = LocalDate.now().plusDays(15)),
-                Ferieuttak(fraOgMed = LocalDate.now().plusDays(100),
-                    tilOgMed = LocalDate.now().plusDays(150))
-            )
-        )
+        utenlandsoppholdIPerioden = null,
+        ferieuttakIPerioden = null
     )
 
     private fun genererOppsummeringsPdfer(writeBytes: Boolean) {
