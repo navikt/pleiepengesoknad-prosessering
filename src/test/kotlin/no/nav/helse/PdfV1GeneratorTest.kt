@@ -2,6 +2,7 @@ package no.nav.helse
 
 import no.nav.helse.aktoer.Fodselsnummer
 import no.nav.helse.prosessering.v1.*
+import org.junit.Ignore
 import java.io.File
 import java.net.URI
 import java.time.Duration
@@ -570,6 +571,7 @@ class PdfV1GeneratorTest {
     }
 
     @Test
+    @Ignore
     fun `opprett lesbar oppsummerings-PDF`() {
         genererOppsummeringsPdfer(true)
     }
