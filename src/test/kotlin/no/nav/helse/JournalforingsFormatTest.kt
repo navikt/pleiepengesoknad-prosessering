@@ -57,7 +57,9 @@ class JournalforingsFormatTest {
             },
             "medlemskap": {
                 "har_bodd_i_utlandet_siste_12_mnd": true,
-                "skal_bo_i_utlandet_neste_12_mnd": true
+                "utenlandsopphold_neste_12_mnd": [],
+                "skal_bo_i_utlandet_neste_12_mnd": true,
+                "utenlandsopphold_siste_12_mnd": []
             },
             "grad": 55,
             "har_medsoker": true,
@@ -84,7 +86,16 @@ class JournalforingsFormatTest {
             "nattevaak": {
                 "har_nattevaak": true,
                 "tilleggsinformasjon": "Har Nattevåk"
-            }
+            },
+             "utenlandsopphold_i_perioden": {
+                "skal_oppholde_seg_i_utlandet_i_perioden": false,
+                "opphold": []
+            },
+          "ferieuttak_i_perioden": {
+            "skal_ta_ut_ferie_i_periode": false,
+            "ferieuttak": [
+            ]
+          }
         }
         """.trimIndent(), String(json), true)
 
@@ -147,6 +158,8 @@ class JournalforingsFormatTest {
         nattevaak = Nattevaak(
             harNattevaak = true,
             tilleggsinformasjon = "Har Nattevåk"
-        )
+        ),
+        utenlandsoppholdIPerioden = UtenlandsoppholdIPerioden(skalOppholdeSegIUtlandetIPerioden = false, opphold = listOf()),
+        ferieuttakIPerioden = FerieuttakIPerioden(skalTaUtFerieIPerioden = false, ferieuttak = listOf())
     )
 }

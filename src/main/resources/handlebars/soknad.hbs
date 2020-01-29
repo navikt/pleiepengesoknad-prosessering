@@ -95,6 +95,44 @@
                 <li>Det er valgt {{hjelp.sprak}} som språk i søknaden.</li>
             {{/if}}-->
     </ul>
+    {{# if utenlandsoppholdIPerioden.skalOppholdeSegIUtlandetIPerioden }}
+        <h2>
+            <span>
+               Utenlandsopphold / Ferie
+            </span>
+        </h2>
+        <p class="sporsmalstekst">Skal du reise til utlandet i perioden du søker for?</p>
+        {{# if utenlandsoppholdIPerioden.skalOppholdeSegIUtlandetIPerioden }}
+            <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Ja
+            <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Nei
+            <ul>
+                {{# each utenlandsoppholdIPerioden.opphold as |opphold|~}}
+                    <li>
+                        {{opphold.landnavn}} ({{opphold.fraOgMed}} - {{opphold.tilOgMed}})
+                    </li>
+                {{/each}}
+            </ul>
+        {{else}}
+            <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Ja
+            <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Nei
+        {{/if}}
+
+        <p class="sporsmalstekst">Skal du ta ut feriedager i perioden?</p>
+        {{# if ferieuttakIPerioden.skalTaUtFerieIPerioden }}
+            <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Ja
+            <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Nei
+            <ul>
+                {{# each ferieuttakIPerioden.ferieuttak as |ferieuttak|~}}
+                    <li>
+                       {{ferieuttak.fraOgMed}} - {{ferieuttak.tilOgMed}}
+                    </li>
+                {{/each}}
+            </ul>
+        {{else}}
+            <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Ja
+            <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Nei
+        {{/if}}
+    {{/if}}
     <h2>
         <span>
            Arbeidsforhold
@@ -313,6 +351,13 @@
     {{# if medlemskap.har_bodd_i_utlandet_siste_12_mnd }}
         <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Ja
         <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Nei
+        <ul>
+            {{# each medlemskap.utenlandsopphold_siste_12_mnd as |opphold|~}}
+                <li>
+                    {{opphold.landnavn}} ({{opphold.fraOgMed}} - {{opphold.tilOgMed}})
+                </li>
+            {{/each}}
+        </ul>
     {{else}}
         <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Ja
         <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Nei
@@ -322,6 +367,13 @@
     {{# if medlemskap.skal_bo_i_utlandet_neste_12_mnd }}
         <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Ja
         <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Nei
+        <ul>
+            {{# each medlemskap.utenlandsopphold_neste_12_mnd as |opphold|~}}
+                <li>
+                    {{opphold.landnavn}} ({{opphold.fraOgMed}} - {{opphold.tilOgMed}})
+                </li>
+            {{/each}}
+        </ul>
     {{else}}
         <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Ja
         <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Nei

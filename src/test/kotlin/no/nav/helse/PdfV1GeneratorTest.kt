@@ -78,6 +78,13 @@ class PdfV1GeneratorTest {
             grad = null,
             medlemskap = Medlemskap(
                 harBoddIUtlandetSiste12Mnd = true,
+                utenlandsoppholdSiste12Mnd = listOf(
+                    Bosted(
+                        LocalDate.of(2020, 1, 2),
+                        LocalDate.of(2020, 1, 3),
+                        "US", "USA"
+                    )
+                ),
                 skalBoIUtlandetNeste12Mnd = false
             ),
             harMedsoker = true,
@@ -106,7 +113,9 @@ class PdfV1GeneratorTest {
             beredskap = Beredskap(
                 beredskap = true,
                 tilleggsinformasjon = "Jeg er i beredskap\rmed\nlinje\r\nlinjeskift."
-            )
+            ),
+            utenlandsoppholdIPerioden = null,
+            ferieuttakIPerioden = null
         )
     }
 
@@ -144,7 +153,18 @@ class PdfV1GeneratorTest {
         dagerPerUkeBorteFraJobb: Double? = 4.5,
         tilsynsordning: Tilsynsordning? = null,
         beredskap: Beredskap? = null,
-        nattevaak: Nattevaak? = null
+        nattevaak: Nattevaak? = null,
+        medlemskap: Medlemskap = Medlemskap(
+            harBoddIUtlandetSiste12Mnd = true,
+            utenlandsoppholdSiste12Mnd = listOf(
+                Bosted(
+                    LocalDate.of(2020, 1, 2),
+                    LocalDate.of(2020, 1, 3),
+                    "US", "USA"
+                )
+            ),
+            skalBoIUtlandetNeste12Mnd = false
+        )
     ) = MeldingV1(
         sprak = sprak,
         soknadId = soknadId,
@@ -163,10 +183,7 @@ class PdfV1GeneratorTest {
         arbeidsgivere = Arbeidsgivere(
             organisasjoner = organisasjoner
         ),
-        medlemskap = Medlemskap(
-            harBoddIUtlandetSiste12Mnd = true,
-            skalBoIUtlandetNeste12Mnd = false
-        ),
+        medlemskap = medlemskap,
         grad = grad,
         harMedsoker = harMedsoker,
         samtidigHjemme = samtidigHjemme,
@@ -175,7 +192,9 @@ class PdfV1GeneratorTest {
         dagerPerUkeBorteFraJobb = dagerPerUkeBorteFraJobb,
         tilsynsordning = tilsynsordning,
         nattevaak = nattevaak,
-        beredskap = beredskap
+        beredskap = beredskap,
+        utenlandsoppholdIPerioden = null,
+        ferieuttakIPerioden = null
     )
 
     private fun genererOppsummeringsPdfer(writeBytes: Boolean) {
@@ -489,6 +508,33 @@ class PdfV1GeneratorTest {
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
+        id = "18-flerePlanlagteUtenlandsopphold"
+        pdf = generator.generateSoknadOppsummeringPdf(
+            melding = gyldigMelding(
+                soknadId = id,
+                medlemskap = Medlemskap(
+                    harBoddIUtlandetSiste12Mnd = false,
+                    utenlandsoppholdSiste12Mnd = listOf(),
+                    skalBoIUtlandetNeste12Mnd = true,
+                    utenlandsoppholdNeste12Mnd = listOf(
+                        Bosted(
+                            LocalDate.of(2022, 1, 2),
+                            LocalDate.of(2022, 1, 3),
+                            "US", "USA"
+                        ), Bosted(
+                            LocalDate.of(2022, 1, 3),
+                            LocalDate.of(2022, 1, 4),
+                            "DK", "Danmark"
+                        )
+                    )
+                )
+            ),
+            barnetsIdent = barnetsIdent,
+            barnetsNavn = barnetsNavn,
+            fodselsdato = null
+        )
+        if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
+
         id = "19-barnHarIkkeIdBareFødselsdato"
         pdf = generator.generateSoknadOppsummeringPdf(
             melding = gyldigMelding(
@@ -513,6 +559,7 @@ class PdfV1GeneratorTest {
             fodselsdato = null
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
+
 
     }
 

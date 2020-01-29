@@ -19,6 +19,10 @@ data class MeldingV1 (
     val arbeidsgivere: Arbeidsgivere,
     var vedleggUrls : List<URI> = listOf(),
     val medlemskap: Medlemskap,
+    @JsonProperty("utenlandsopphold_i_perioden")
+    val utenlandsoppholdIPerioden: UtenlandsoppholdIPerioden?,
+    @JsonProperty("ferieuttak_i_perioden")
+    val ferieuttakIPerioden: FerieuttakIPerioden?,
     val grad : Int?,
     val harMedsoker : Boolean,
     val samtidigHjemme: Boolean? = null,
@@ -70,8 +74,12 @@ data class Organisasjon(
 data class Medlemskap(
     @JsonProperty("har_bodd_i_utlandet_siste_12_mnd")
     val harBoddIUtlandetSiste12Mnd : Boolean,
+    @JsonProperty("utenlandsopphold_siste_12_mnd")
+    val utenlandsoppholdSiste12Mnd: List<Bosted> = listOf(),
     @JsonProperty("skal_bo_i_utlandet_neste_12_mnd")
-    val skalBoIUtlandetNeste12Mnd : Boolean
+    val skalBoIUtlandetNeste12Mnd : Boolean,
+    @JsonProperty("utenlandsopphold_neste_12_mnd")
+    val utenlandsoppholdNeste12Mnd: List<Bosted> = listOf()
 )
 
 data class TilsynsordningJa(
@@ -118,5 +126,61 @@ data class Beredskap(
 ) {
     override fun toString(): String {
         return "Beredskap(beredskap=$beredskap)"
+    }
+}
+
+data class Bosted(
+    @JsonFormat(pattern = "yyyy-MM-dd") val fraOgMed: LocalDate,
+    @JsonFormat(pattern = "yyyy-MM-dd") val tilOgMed: LocalDate,
+    val landkode: String,
+    val landnavn: String
+) {
+    override fun toString(): String {
+        return "Utenlandsopphold(fraOgMed=$fraOgMed, tilOgMed=$tilOgMed, landkode='$landkode', landnavn='$landnavn')"
+    }
+}
+
+data class Utenlandsopphold(
+    @JsonFormat(pattern = "yyyy-MM-dd") val fraOgMed: LocalDate,
+    @JsonFormat(pattern = "yyyy-MM-dd") val tilOgMed: LocalDate,
+    val landkode: String,
+    val landnavn: String,
+    val erUtenforEos: Boolean?,
+    val erBarnetInnlagt: Boolean?,
+    val arsak: Arsak?
+) {
+    override fun toString(): String {
+        return "Utenlandsopphold(fraOgMed=$fraOgMed, tilOgMed=$tilOgMed, landkode='$landkode', landnavn='$landnavn', erUtenforEos=$erUtenforEos, erBarnetInnlagt=$erBarnetInnlagt, arsak=$arsak)"
+    }
+}
+
+enum class Arsak {
+    BARNET_INNLAGT_I_HELSEINSTITUSJON_FOR_NORSK_OFFENTLIG_REGNING,
+    BARNET_INNLAGT_I_HELSEINSTITUSJON_DEKKET_ETTER_AVTALE_MED_ET_ANNET_LAND_OM_TRYGD,
+    ANNET,
+}
+
+data class UtenlandsoppholdIPerioden(
+    @JsonProperty("skal_oppholde_seg_i_utlandet_i_perioden")
+    val skalOppholdeSegIUtlandetIPerioden: Boolean? = null,
+    val opphold: List<Utenlandsopphold> = listOf()
+)
+
+data class FerieuttakIPerioden(
+    @JsonProperty("skal_ta_ut_ferie_i_periode")
+    val skalTaUtFerieIPerioden: Boolean,
+    val ferieuttak: List<Ferieuttak>
+) {
+    override fun toString(): String {
+        return "FerieuttakIPerioden(skalTaUtFerieIPerioden=$skalTaUtFerieIPerioden, ferieuttak=$ferieuttak)"
+    }
+}
+
+data class Ferieuttak(
+    @JsonFormat(pattern = "yyyy-MM-dd") val fraOgMed: LocalDate,
+    @JsonFormat(pattern = "yyyy-MM-dd") val tilOgMed: LocalDate
+) {
+    override fun toString(): String {
+        return "Ferieuttak(fraOgMed=$fraOgMed, tilOgMed=$tilOgMed)"
     }
 }

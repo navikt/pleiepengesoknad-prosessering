@@ -1,5 +1,6 @@
 package no.nav.helse.prosessering.v1
 
+import com.fasterxml.jackson.annotation.JsonProperty
 import no.nav.helse.aktoer.AktoerId
 import no.nav.helse.aktoer.NorskIdent
 import java.net.URI
@@ -18,6 +19,10 @@ data class PreprossesertMeldingV1(
     val relasjonTilBarnet: String,
     val arbeidsgivere: Arbeidsgivere,
     val medlemskap: Medlemskap,
+    @JsonProperty("utenlandsopphold_i_perioden")
+    val utenlandsoppholdIPerioden: UtenlandsoppholdIPerioden?,
+    @JsonProperty("ferieuttak_i_perioden")
+    val ferieuttakIPerioden: FerieuttakIPerioden?,
     val grad: Int?,
     val harMedsoker: Boolean,
     val harForstattRettigheterOgPlikter: Boolean,
@@ -46,7 +51,9 @@ data class PreprossesertMeldingV1(
         grad = melding.grad,
         harMedsoker = melding.harMedsoker,
         harForstattRettigheterOgPlikter = melding.harForstattRettigheterOgPlikter,
-        harBekreftetOpplysninger = melding.harBekreftetOpplysninger
+        harBekreftetOpplysninger = melding.harBekreftetOpplysninger,
+        utenlandsoppholdIPerioden = melding.utenlandsoppholdIPerioden,
+        ferieuttakIPerioden = melding.ferieuttakIPerioden
     )
 }
 

@@ -235,7 +235,8 @@ class PleiepengesoknadProsesseringTest {
         )
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
-        val hentOpprettetOppgave: TopicEntry<OppgaveOpprettet> = kafkaTestConsumer.hentOpprettetOppgave(melding.soknadId)
+        val hentOpprettetOppgave: TopicEntry<OppgaveOpprettet> =
+            kafkaTestConsumer.hentOpprettetOppgave(melding.soknadId)
         assertEquals("KLØKTIG BLUNKENDE SUPERKONSOLL", hentOpprettetOppgave.data.melding.barn.navn)
     }
 
@@ -263,7 +264,8 @@ class PleiepengesoknadProsesseringTest {
         )
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
-        val hentOpprettetOppgave: TopicEntry<OppgaveOpprettet> = kafkaTestConsumer.hentOpprettetOppgave(melding.soknadId)
+        val hentOpprettetOppgave: TopicEntry<OppgaveOpprettet> =
+            kafkaTestConsumer.hentOpprettetOppgave(melding.soknadId)
         assertEquals("KLØKTIG BLUNKENDE SUPERKONSOLL", hentOpprettetOppgave.data.melding.barn.navn)
     }
 
@@ -280,7 +282,8 @@ class PleiepengesoknadProsesseringTest {
         )
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
-        val hentOpprettetOppgave: TopicEntry<OppgaveOpprettet> = kafkaTestConsumer.hentOpprettetOppgave(melding.soknadId)
+        val hentOpprettetOppgave: TopicEntry<OppgaveOpprettet> =
+            kafkaTestConsumer.hentOpprettetOppgave(melding.soknadId)
         assertEquals("KLØKTIG BLUNKENDE SUPERKONSOLL", hentOpprettetOppgave.data.melding.barn.navn)
     }
 
@@ -298,7 +301,8 @@ class PleiepengesoknadProsesseringTest {
         )
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
-        val hentOpprettetOppgave: TopicEntry<OppgaveOpprettet> = kafkaTestConsumer.hentOpprettetOppgave(melding.soknadId)
+        val hentOpprettetOppgave: TopicEntry<OppgaveOpprettet> =
+            kafkaTestConsumer.hentOpprettetOppgave(melding.soknadId)
         assertEquals(forventetFodselsNummer, hentOpprettetOppgave.data.melding.barn.fodselsnummer)
     }
 
@@ -315,7 +319,8 @@ class PleiepengesoknadProsesseringTest {
         )
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
-        val hentOpprettetOppgave: TopicEntry<OppgaveOpprettet> = kafkaTestConsumer.hentOpprettetOppgave(melding.soknadId)
+        val hentOpprettetOppgave: TopicEntry<OppgaveOpprettet> =
+            kafkaTestConsumer.hentOpprettetOppgave(melding.soknadId)
         assertEquals(forventetFodselsNummer, hentOpprettetOppgave.data.melding.barn.fodselsnummer)
     }
 
@@ -332,14 +337,15 @@ class PleiepengesoknadProsesseringTest {
         )
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
-        val hentOpprettetOppgave: TopicEntry<OppgaveOpprettet> = kafkaTestConsumer.hentOpprettetOppgave(melding.soknadId)
+        val hentOpprettetOppgave: TopicEntry<OppgaveOpprettet> =
+            kafkaTestConsumer.hentOpprettetOppgave(melding.soknadId)
         assertEquals(LocalDate.now(), hentOpprettetOppgave.data.melding.barn.fodselsdato)
     }
 
     private fun gyldigMelding(
         fodselsnummerSoker: String,
         fodselsnummerBarn: String?,
-        vedleggUrl : URI = URI("${wireMockServer.getK9DokumentBaseUrl()}/v1/dokument/${UUID.randomUUID()}"),
+        vedleggUrl: URI = URI("${wireMockServer.getK9DokumentBaseUrl()}/v1/dokument/${UUID.randomUUID()}"),
         barnetsNavn: String? = "kari",
         fodselsdatoBarn: LocalDate? = LocalDate.now(),
         aktoerIdBarn: String? = null,
@@ -398,7 +404,12 @@ class PleiepengesoknadProsesseringTest {
         nattevaak = Nattevaak(
             harNattevaak = true,
             tilleggsinformasjon = "Har Nattevåk"
-        )
+        ),
+        utenlandsoppholdIPerioden = UtenlandsoppholdIPerioden(
+            skalOppholdeSegIUtlandetIPerioden = false,
+            opphold = listOf()
+        ),
+        ferieuttakIPerioden = FerieuttakIPerioden(skalTaUtFerieIPerioden = false, ferieuttak = listOf())
     )
 
     private fun ventPaaAtRetryMekanismeIStreamProsessering() = runBlocking { delay(Duration.ofSeconds(30)) }
