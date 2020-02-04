@@ -46,7 +46,7 @@ jobs:
         run: ./gradlew clean shadowjar # Creates a combined JAR of project and runTime dependencies.
       - name: Create Docker tag
         env:
-          NAME: pleiepengesoknad-joark
+          NAME: pleiepengesoknad-prosessering
         run: |
           echo "docker.pkg.github.com"/"$GITHUB_REPOSITORY"/"$NAME" > .docker_image
           echo "$(date "+%Y.%m.%d")-$(git rev-parse --short HEAD)" > .docker_tag
