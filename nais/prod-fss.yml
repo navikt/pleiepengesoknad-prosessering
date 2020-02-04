@@ -41,7 +41,7 @@ spec:
     - name: PLEIEPENGER_OPPGAVE_BASE_URL
       value: https://pleiepenger-oppgave.nais.adeo.no
     - name: PLEIEPENGER_JOARK_BASE_URL
-      value: https://pleiepenger-joark.nais.adeo.no
+      value: https://k9-joark.nais.adeo.no
     - name: K9_DOKUMENT_BASE_URL
       value: https://k9-dokument.nais.adeo.no
     - name: AKTOER_REGISTER_BASE_URL
