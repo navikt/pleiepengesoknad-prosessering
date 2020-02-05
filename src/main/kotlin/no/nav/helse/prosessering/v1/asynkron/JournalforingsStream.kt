@@ -48,7 +48,8 @@ internal class JournalforingsStream(
                             mottatt = entry.data.mottatt,
                             aktoerId = AktoerId(entry.data.soker.aktoerId),
                             correlationId = CorrelationId(entry.metadata.correlationId),
-                            dokumenter = entry.data.dokumentUrls
+                            dokumenter = entry.data.dokumentUrls,
+                            norskIdent = entry.data.soker.fodselsnummer
                         )
                         logger.info("Dokumenter journalført med ID = ${journaPostId.journalPostId}.")
                         Journalfort(
