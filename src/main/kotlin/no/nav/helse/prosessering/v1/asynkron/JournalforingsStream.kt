@@ -44,6 +44,7 @@ internal class JournalforingsStream(
                 .mapValues { soknadId, entry  ->
                     process(NAME, soknadId, entry) {
                         logger.info("Journalfører dokumenter.")
+                        logger.info("Antall dokumenter" + entry.data.dokumentUrls.size)
                         val journaPostId = joarkGateway.journalfoer(
                             mottatt = entry.data.mottatt,
                             aktoerId = AktoerId(entry.data.soker.aktoerId),
