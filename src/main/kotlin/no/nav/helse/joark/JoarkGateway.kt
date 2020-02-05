@@ -12,7 +12,7 @@ import io.ktor.http.HttpHeaders
 import io.ktor.http.Url
 import no.nav.helse.CorrelationId
 import no.nav.helse.HttpError
-import no.nav.helse.aktoer.AktoerId
+import no.nav.helse.aktoer.NorskIdent
 import no.nav.helse.dusseldorf.ktor.client.buildURL
 import no.nav.helse.dusseldorf.ktor.health.HealthCheck
 import no.nav.helse.dusseldorf.ktor.health.Healthy
@@ -57,7 +57,7 @@ class JoarkGateway(
     }
 
     suspend fun journalfoer(
-        aktoerId: AktoerId,
+        norskIdent: NorskIdent,
         mottatt: ZonedDateTime,
         dokumenter: List<List<URI>>,
         correlationId: CorrelationId
@@ -66,7 +66,7 @@ class JoarkGateway(
         val authorizationHeader = cachedAccessTokenClient.getAccessToken(journalforeScopes).asAuthoriationHeader()
 
         val joarkRequest = JoarkRequest(
-            aktoerId = aktoerId.id,
+            norskIdent = norskIdent.getValue(),
             mottatt = mottatt,
             dokumenter = dokumenter
         )
@@ -111,7 +111,7 @@ class JoarkGateway(
     }
 }
 private data class JoarkRequest(
-    val aktoerId: String,
+    val norskIdent: String,
     val mottatt: ZonedDateTime,
     val dokumenter: List<List<URI>>
 )
