@@ -113,10 +113,10 @@ class JoarkGateway(
     }
 }
 private data class JoarkRequest(
+    val norskIdent: String,
     val aktoerId: String,
     val mottatt: ZonedDateTime,
-    val dokumenter: List<List<URI>>,
-    val norskIdent: String
+    val dokumenter: List<List<URI>>
 )
 
 data class JournalPostId(val journalPostId: String)
