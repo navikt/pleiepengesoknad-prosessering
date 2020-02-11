@@ -160,6 +160,20 @@ class JournalforingsFormatTest {
             tilleggsinformasjon = "Har Nattevåk"
         ),
         utenlandsoppholdIPerioden = UtenlandsoppholdIPerioden(skalOppholdeSegIUtlandetIPerioden = false, opphold = listOf()),
-        ferieuttakIPerioden = FerieuttakIPerioden(skalTaUtFerieIPerioden = false, ferieuttak = listOf())
+        ferieuttakIPerioden = FerieuttakIPerioden(skalTaUtFerieIPerioden = false, ferieuttak = listOf()),
+        frilans = Frilans(
+            harHattOppdragForFamilie = true,
+            harHattInntektSomFosterforelder = true,
+            startdato = LocalDate.now().minusYears(3),
+            jobberFortsattSomFrilans = true,
+            oppdrag = listOf(
+                Oppdrag(
+                    arbeidsgivernavn = "Montesorri barnehage",
+                    fraOgMed = LocalDate.now().minusYears(2),
+                    tilOgMed = null,
+                    erPagaende = true
+                )
+            )
+        )
     )
 }

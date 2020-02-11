@@ -31,7 +31,8 @@ data class MeldingV1 (
     val dagerPerUkeBorteFraJobb: Double? = null,
     val tilsynsordning: Tilsynsordning?,
     val beredskap: Beredskap?,
-    val nattevaak: Nattevaak?
+    val nattevaak: Nattevaak?,
+    val frilans: Frilans?
 )
 
 data class Soker(
@@ -119,6 +120,21 @@ data class Nattevaak(
     }
 }
 
+data class Oppdrag(
+    val arbeidsgivernavn: String,
+    val fraOgMed: LocalDate,
+    val tilOgMed: LocalDate? = null,
+    val erPagaende: Boolean
+)
+
+data class Frilans(
+    val harHattOppdragForFamilie: Boolean,
+    val harHattInntektSomFosterforelder: Boolean,
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    val startdato: LocalDate,
+    val jobberFortsattSomFrilans: Boolean,
+    val oppdrag: List<Oppdrag>
+)
 data class Beredskap(
     @JsonProperty("i_beredskap")
     val beredskap: Boolean,

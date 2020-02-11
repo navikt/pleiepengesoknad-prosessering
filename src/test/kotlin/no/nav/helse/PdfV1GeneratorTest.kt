@@ -115,7 +115,21 @@ class PdfV1GeneratorTest {
                 tilleggsinformasjon = "Jeg er i beredskap\rmed\nlinje\r\nlinjeskift."
             ),
             utenlandsoppholdIPerioden = null,
-            ferieuttakIPerioden = null
+            ferieuttakIPerioden = null,
+            frilans = Frilans(
+                harHattOppdragForFamilie = true,
+                harHattInntektSomFosterforelder = true,
+                startdato = LocalDate.now().minusYears(3),
+                jobberFortsattSomFrilans = true,
+                oppdrag = listOf(
+                    Oppdrag(
+                        arbeidsgivernavn = "Motesorri barnehage",
+                        fraOgMed = LocalDate.now().minusYears(2),
+                        tilOgMed = null,
+                        erPagaende = true
+                    )
+                )
+            )
         )
     }
 
@@ -164,6 +178,20 @@ class PdfV1GeneratorTest {
                 )
             ),
             skalBoIUtlandetNeste12Mnd = false
+        ),
+        frilans: Frilans = Frilans(
+            harHattOppdragForFamilie = true,
+            harHattInntektSomFosterforelder = true,
+            startdato = LocalDate.now().minusYears(3),
+            jobberFortsattSomFrilans = true,
+            oppdrag = listOf(
+                Oppdrag(
+                    arbeidsgivernavn = "Motesorri barnehage",
+                    fraOgMed = LocalDate.now().minusYears(2),
+                    tilOgMed = null,
+                    erPagaende = true
+                )
+            )
         )
     ) = MeldingV1(
         sprak = sprak,
@@ -194,7 +222,8 @@ class PdfV1GeneratorTest {
         nattevaak = nattevaak,
         beredskap = beredskap,
         utenlandsoppholdIPerioden = null,
-        ferieuttakIPerioden = null
+        ferieuttakIPerioden = null,
+        frilans = frilans
     )
 
     private fun genererOppsummeringsPdfer(writeBytes: Boolean) {
@@ -206,7 +235,6 @@ class PdfV1GeneratorTest {
             fodselsdato = fodselsdato
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
-
         id = "2-utenMedsoker"
         pdf = generator.generateSoknadOppsummeringPdf(
             melding = gyldigMelding(soknadId = id, harMedsoker = false),
@@ -560,7 +588,17 @@ class PdfV1GeneratorTest {
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
-
+        id = "21-har-du-jobbet-og-hatt-inntekt-som-frilanser"
+        pdf = generator.generateSoknadOppsummeringPdf(
+            melding = gyldigMelding(
+                grad = null, soknadId = id, harMedsoker = true, organisasjoner = listOf(
+                ), barn = Barn(fodselsnummer = null, fodselsdato = null, navn = null, aktoerId = null)
+            ),
+            barnetsIdent = null,
+            barnetsNavn = barnetsNavn,
+            fodselsdato = null
+        )
+        if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
     }
 
     private fun pdfPath(soknadId: String) = "${System.getProperty("user.dir")}/generated-pdf-$soknadId.pdf"

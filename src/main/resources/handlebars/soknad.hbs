@@ -344,9 +344,34 @@
         {{/if}}
     {{/if}}
 
+    <!-- FRILANS -->
+    {{# if frilans }}
+        <h2><span>Frilans</span></h2>
+        <p class="sporsmalstekst">Har du jobbet og hatt inntekt som frilanser de siste 10 månedene?</p>
+        <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Ja
+        <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Nei
+        <br/>
+        <p>Når startet du som frilanser? {{frilans.startdato}}</p>
+        <p class="sporsmalstekst">Jobber du fortsatt som frilanser?</p>
+        {{# if frilans.jobberFortsattSomFrilans}}
+            <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Ja
+            <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Nei
+        {{else}}
+            <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Ja
+            <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Nei
+        {{/if}}
+        <p class="sporsmalstekst">Har du hatt oppdrag for nær venn eller familie de siste 10 månedene?</p>
+        {{# if frilans.harHattOppdragForFamilie}}
+            <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Ja
+            <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Nei
+        {{else}}
+            <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Ja
+            <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Nei
+        {{/if}}
+    {{/if}}
+
     <!-- MEDLEMSKAP -->
     <h2><span>Medlemskap</span></h2>
-
     <p class="sporsmalstekst">Har bodd i utlandet siste 12 månedene?</p>
     {{# if medlemskap.har_bodd_i_utlandet_siste_12_mnd }}
         <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Ja

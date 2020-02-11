@@ -127,7 +127,8 @@ internal class PdfV1Generator  {
                 "ferieuttakIPerioden" to mapOf(
                     "skalTaUtFerieIPerioden" to melding.ferieuttakIPerioden?.skalTaUtFerieIPerioden,
                     "ferieuttak" to melding.ferieuttakIPerioden?.ferieuttak?.somMapFerieuttak()
-                )
+                ),
+                "frilans" to frilans(melding.frilans)
             ))
             .resolver(MapValueResolver.INSTANCE)
             .build()).let { html ->
@@ -146,7 +147,17 @@ internal class PdfV1Generator  {
             }
         }
     }
-
+    private fun frilans(frilans: Frilans?) = when {
+        frilans == null -> null
+        else -> {
+            mapOf(
+                "harHattOppdragForFamilie" to frilans.harHattOppdragForFamilie,
+                "harHattInntektSomFosterforelder" to frilans.harHattInntektSomFosterforelder,
+                "startdato" to frilans.startdato,
+                "jobberFortsattSomFrilans" to frilans.jobberFortsattSomFrilans
+            )
+        }
+    }
     private fun nattevåk(nattevaak: Nattevaak?) = when {
         nattevaak == null -> null
         else -> {
