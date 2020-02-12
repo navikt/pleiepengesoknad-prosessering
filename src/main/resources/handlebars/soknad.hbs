@@ -368,6 +368,28 @@
             <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Ja
             <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Nei
         {{/if}}
+        {{#if frilans.oppdrag}}
+            <ul>
+                {{# each frilans.oppdrag as |oppdrag|~}}
+                    <li>
+                        {{oppdrag.arbeidsgivernavn}} ({{oppdrag.fraOgMed}} -
+                        {{#if oppdrag.tilOgMed}}
+                            {{oppdrag.tilOgMed}})
+                        {{else}}
+                            pågående)
+                        {{/if}}
+                    </li>
+                {{/each}}
+            </ul>
+        {{/if}}
+        <p class="sporsmalstekst">Har du hatt inntekt som forsterforelder?</p>
+        {{# if frilans.harHattInntektSomFosterforelder}}
+            <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Ja
+            <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Nei
+        {{else}}
+            <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Ja
+            <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Nei
+        {{/if}}
     {{/if}}
 
     <!-- MEDLEMSKAP -->
