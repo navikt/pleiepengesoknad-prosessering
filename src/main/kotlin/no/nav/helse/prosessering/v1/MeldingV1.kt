@@ -135,6 +135,7 @@ data class Frilans(
     val jobberFortsattSomFrilans: Boolean,
     val oppdrag: List<Oppdrag>
 )
+
 data class Beredskap(
     @JsonProperty("i_beredskap")
     val beredskap: Boolean,

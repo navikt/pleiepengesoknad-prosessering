@@ -190,7 +190,20 @@ class PdfV1GeneratorTest {
                     fraOgMed = LocalDate.now().minusYears(2),
                     tilOgMed = null,
                     erPagaende = true
+                ),
+                Oppdrag(
+                    arbeidsgivernavn = "BariBar",
+                    fraOgMed = LocalDate.now().minusYears(1),
+                    tilOgMed = LocalDate.now(),
+                    erPagaende = false
+                ),
+                Oppdrag(
+                    arbeidsgivernavn = "TullOgTøys",
+                    fraOgMed = LocalDate.now().minusYears(3),
+                    tilOgMed = LocalDate.now(),
+                    erPagaende = false
                 )
+
             )
         )
     ) = MeldingV1(
@@ -227,6 +240,7 @@ class PdfV1GeneratorTest {
     )
 
     private fun genererOppsummeringsPdfer(writeBytes: Boolean) {
+/*
         var id = "1-full-søknad"
         var pdf = generator.generateSoknadOppsummeringPdf(
             melding = fullGyldigMelding(soknadsId = id),
@@ -587,9 +601,10 @@ class PdfV1GeneratorTest {
             fodselsdato = null
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
+*/
 
-        id = "21-har-du-jobbet-og-hatt-inntekt-som-frilanser"
-        pdf = generator.generateSoknadOppsummeringPdf(
+        var id = "21-har-du-jobbet-og-hatt-inntekt-som-frilanser"
+        var pdf = generator.generateSoknadOppsummeringPdf(
             melding = gyldigMelding(
                 grad = null, soknadId = id, harMedsoker = true, organisasjoner = listOf(
                 ), barn = Barn(fodselsnummer = null, fodselsdato = null, navn = null, aktoerId = null)
@@ -609,7 +624,6 @@ class PdfV1GeneratorTest {
     }
 
     @Test
-    @Ignore
     fun `opprett lesbar oppsummerings-PDF`() {
         genererOppsummeringsPdfer(true)
     }
