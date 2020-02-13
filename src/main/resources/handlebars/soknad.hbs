@@ -5,6 +5,17 @@
     <title>Søknad om pleiepenger for pleie av sykt barn</title>
     {{#block 'style' }}
     {{/block}}
+
+    {{#*inline "jaNeiCheckbox"}}
+        {{#if parameter}}
+            <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Ja
+            <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Nei
+        {{else}}
+            <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Ja
+            <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Nei
+        {{/if}}
+    {{/inline}}
+
 </head>
 <body>
 <div id="header">
@@ -348,14 +359,13 @@
     {{# if frilans }}
         <h2><span>Frilans</span></h2>
         <p class="sporsmalstekst">Har du jobbet og hatt inntekt som frilanser de siste 10 månedene?</p>
-        <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Ja
-        <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Nei
+        {{>jaNeiCheckbox parameter=frilans}}
         <br/>
         <p>Når startet du som frilanser? {{frilans.startdato}}</p>
         <p class="sporsmalstekst">Jobber du fortsatt som frilanser?</p>
-        {{>partials/checkbox_partial value=frilans.jobberFortsattSomFrilans}}
+        {{>jaNeiCheckbox parameter=frilans.jobberFortsattSomFrilans}}
         <p class="sporsmalstekst">Har du hatt oppdrag for nær venn eller familie de siste 10 månedene?</p>
-        {{>partials/checkbox_partial value=frilans.harHattOppdragForFamilie}}
+        {{>jaNeiCheckbox parameter=frilans.harHattOppdragForFamilie}}
         {{#if frilans.oppdrag}}
             <ul>
                 {{# each frilans.oppdrag as |oppdrag|~}}
@@ -371,15 +381,14 @@
             </ul>
         {{/if}}
         <p class="sporsmalstekst">Har du hatt inntekt som forsterforelder?</p>
-        {{>partials/checkbox_partial value=frilans.harHattInntektSomFosterforelder}}
+        {{>jaNeiCheckbox parameter=frilans.harHattInntektSomFosterforelder}}
     {{/if}}
 
     <!-- MEDLEMSKAP -->
     <h2><span>Medlemskap</span></h2>
     <p class="sporsmalstekst">Har bodd i utlandet siste 12 månedene?</p>
     {{# if medlemskap.har_bodd_i_utlandet_siste_12_mnd }}
-        <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Ja
-        <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Nei
+        {{>jaNeiCheckbox parameter=medlemskap.har_bodd_i_utlandet_siste_12_mnd}}
         <ul>
             {{# each medlemskap.utenlandsopphold_siste_12_mnd as |opphold|~}}
                 <li>
@@ -388,13 +397,12 @@
             {{/each}}
         </ul>
     {{else}}
-        <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Ja
-        <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Nei
+        {{>jaNeiCheckbox parameter=medlemskap.har_bodd_i_utlandet_siste_12_mnd}}
     {{/if}}
     <hr/>
     <p class="sporsmalstekst">Skal bo i utlandet de neste 12 månedene?</p>
     {{# if medlemskap.skal_bo_i_utlandet_neste_12_mnd }}
-        {{> partials/checkbox_partial value = edlemskap.skal_bo_i_utlandet_neste_12_mnd}}
+        {{> jaNeiCheckbox parameter=medlemskap.skal_bo_i_utlandet_neste_12_mnd}}
         <ul>
             {{# each medlemskap.utenlandsopphold_neste_12_mnd as |opphold|~}}
                 <li>
@@ -403,8 +411,7 @@
             {{/each}}
         </ul>
     {{else}}
-        {{> partials/checkbox_partial value = null}}
-
+        {{> jaNeiCheckbox parameter=false}}
     {{/if}}
 
     <!-- ANNET -->
@@ -419,10 +426,10 @@
     <h2><span>Samtykke</span></h2>
 
     <p class="sporsmalstekst">Har forstått rettigheter og plikter?</p>
-    {{> partials/checkbox_partial value = samtykke.har_forstatt_rettigheter_og_plikter}}
+    {{> jaNeiCheckbox parameter=samtykke.har_forstatt_rettigheter_og_plikter}}
     <hr/>
     <p class="sporsmalstekst">Har bekreftet opplysninger?</p>
-    {{> partials/checkbox_partial value = samtykke.har_bekreftet_opplysninger}}
+    {{> jaNeiCheckbox parameter=samtykke.har_bekreftet_opplysninger}}
 </div>
 
 <!-- FOOTER -->
