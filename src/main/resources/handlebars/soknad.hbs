@@ -5,6 +5,17 @@
     <title>Søknad om pleiepenger for pleie av sykt barn</title>
     {{#block 'style' }}
     {{/block}}
+
+    {{#*inline "jaNeiCheckbox"}}
+        {{#if parameter}}
+            <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Ja
+            <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Nei
+        {{else}}
+            <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Ja
+            <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Nei
+        {{/if}}
+    {{/inline}}
+
 </head>
 <body>
 <div id="header">
@@ -344,13 +355,40 @@
         {{/if}}
     {{/if}}
 
+    <!-- FRILANS -->
+    {{# if frilans }}
+        <h2><span>Frilans</span></h2>
+        <p class="sporsmalstekst">Har du jobbet og hatt inntekt som frilanser de siste 10 månedene?</p>
+        {{>jaNeiCheckbox parameter=frilans}}
+        <br/>
+        <p>Når startet du som frilanser? {{frilans.startdato}}</p>
+        <p class="sporsmalstekst">Jobber du fortsatt som frilanser?</p>
+        {{>jaNeiCheckbox parameter=frilans.jobberFortsattSomFrilans}}
+        <p class="sporsmalstekst">Har du hatt oppdrag for nær venn eller familie de siste 10 månedene?</p>
+        {{>jaNeiCheckbox parameter=frilans.harHattOppdragForFamilie}}
+        {{#if frilans.oppdrag}}
+            <ul>
+                {{# each frilans.oppdrag as |oppdrag|~}}
+                    <li>
+                        {{oppdrag.arbeidsgivernavn}} ({{oppdrag.fraOgMed}} -
+                        {{#if oppdrag.tilOgMed}}
+                            {{oppdrag.tilOgMed}})
+                        {{else}}
+                            pågående)
+                        {{/if}}
+                    </li>
+                {{/each}}
+            </ul>
+        {{/if}}
+        <p class="sporsmalstekst">Har du hatt inntekt som forsterforelder?</p>
+        {{>jaNeiCheckbox parameter=frilans.harHattInntektSomFosterforelder}}
+    {{/if}}
+
     <!-- MEDLEMSKAP -->
     <h2><span>Medlemskap</span></h2>
-
     <p class="sporsmalstekst">Har bodd i utlandet siste 12 månedene?</p>
     {{# if medlemskap.har_bodd_i_utlandet_siste_12_mnd }}
-        <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Ja
-        <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Nei
+        {{>jaNeiCheckbox parameter=medlemskap.har_bodd_i_utlandet_siste_12_mnd}}
         <ul>
             {{# each medlemskap.utenlandsopphold_siste_12_mnd as |opphold|~}}
                 <li>
@@ -359,14 +397,12 @@
             {{/each}}
         </ul>
     {{else}}
-        <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Ja
-        <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Nei
+        {{>jaNeiCheckbox parameter=medlemskap.har_bodd_i_utlandet_siste_12_mnd}}
     {{/if}}
     <hr/>
     <p class="sporsmalstekst">Skal bo i utlandet de neste 12 månedene?</p>
     {{# if medlemskap.skal_bo_i_utlandet_neste_12_mnd }}
-        <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Ja
-        <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Nei
+        {{> jaNeiCheckbox parameter=medlemskap.skal_bo_i_utlandet_neste_12_mnd}}
         <ul>
             {{# each medlemskap.utenlandsopphold_neste_12_mnd as |opphold|~}}
                 <li>
@@ -375,8 +411,7 @@
             {{/each}}
         </ul>
     {{else}}
-        <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Ja
-        <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Nei
+        {{> jaNeiCheckbox parameter=false}}
     {{/if}}
 
     <!-- ANNET -->
@@ -391,22 +426,10 @@
     <h2><span>Samtykke</span></h2>
 
     <p class="sporsmalstekst">Har forstått rettigheter og plikter?</p>
-    {{# if samtykke.har_forstatt_rettigheter_og_plikter }}
-        <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Ja
-        <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Nei
-    {{else}}
-        <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Ja
-        <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Nei
-    {{/if}}
+    {{> jaNeiCheckbox parameter=samtykke.har_forstatt_rettigheter_og_plikter}}
     <hr/>
     <p class="sporsmalstekst">Har bekreftet opplysninger?</p>
-    {{# if samtykke.har_bekreftet_opplysninger }}
-        <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Ja
-        <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Nei
-    {{else}}
-        <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Ja
-        <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Nei
-    {{/if}}
+    {{> jaNeiCheckbox parameter=samtykke.har_bekreftet_opplysninger}}
 </div>
 
 <!-- FOOTER -->
