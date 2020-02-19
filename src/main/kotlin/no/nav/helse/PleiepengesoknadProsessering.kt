@@ -31,7 +31,6 @@ import no.nav.helse.dusseldorf.ktor.health.HealthService
 import no.nav.helse.dusseldorf.ktor.jackson.dusseldorfConfigured
 import no.nav.helse.dusseldorf.ktor.metrics.MetricsRoute
 import no.nav.helse.joark.JoarkGateway
-import no.nav.helse.oppgave.OppgaveGateway
 import no.nav.helse.prosessering.v1.PdfV1Generator
 import no.nav.helse.prosessering.v1.PreprosseseringV1Service
 import no.nav.helse.prosessering.v1.asynkron.AsynkronProsesseringV1Service
@@ -92,17 +91,10 @@ fun Application.pleiepengesoknadProsessering() {
         journalforeScopes = configuration.getJournalforeScopes()
     )
 
-    val oppgaveGateway = OppgaveGateway(
-        baseUrl = configuration.getPleiepengerOppgaveBaseUrl(),
-        accessTokenClient = accessTokenClientResolver.oppgaveAccessTokenClient(),
-        oppretteOppgaveScopes = configuration.getOppretteOppgaveScopes()
-    )
-
     val asynkronProsesseringV1Service = AsynkronProsesseringV1Service(
         kafkaConfig = configuration.getKafkaConfig(),
         preprosseseringV1Service = preprosseseringV1Service,
         joarkGateway = joarkGateway,
-        oppgaveGateway = oppgaveGateway,
         dokumentService = dokumentService
     )
 
@@ -128,7 +120,6 @@ fun Application.pleiepengesoknadProsessering() {
                 healthChecks = mutableSetOf(
                     dokumentGateway,
                     joarkGateway,
-                    oppgaveGateway,
                     aktoerGateway,
                     HttpRequestHealthCheck(
                         mapOf(
@@ -136,9 +127,6 @@ fun Application.pleiepengesoknadProsessering() {
                                 expectedStatus = HttpStatusCode.OK
                             ),
                             Url.healthURL(configuration.getPleiepengerJoarkBaseUrl()) to HttpRequestHealthConfig(
-                                expectedStatus = HttpStatusCode.OK
-                            ),
-                            Url.healthURL(configuration.getPleiepengerOppgaveBaseUrl()) to HttpRequestHealthConfig(
                                 expectedStatus = HttpStatusCode.OK
                             )
                         )

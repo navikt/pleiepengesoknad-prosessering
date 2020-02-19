@@ -16,7 +16,6 @@ object TestConfiguration {
         port : Int = 8080,
         aktoerRegisterBaseUrl : String? = wireMockServer?.getAktoerRegisterBaseUrl(),
         tpsProxyBaseUrl : String? = wireMockServer?.getTpsProxyBaseUrl(),
-        pleiepengerOppgaveBaseUrl : String? = wireMockServer?.getPleiepengerOppgaveBaseUrl(),
         pleiepengerJoarkBaseUrl : String? = wireMockServer?.getPleiepengerJoarkBaseUrl(),
         k9DokumentBaseUrl : String? = wireMockServer?.getK9DokumentBaseUrl()
     ) : Map<String, String>{
@@ -24,7 +23,6 @@ object TestConfiguration {
             Pair("ktor.deployment.port","$port"),
             Pair("nav.aktoer_register_base_url","$aktoerRegisterBaseUrl"),
             Pair("nav.tps_proxy_v1_base_url","$tpsProxyBaseUrl"),
-            Pair("nav.pleiepenger_oppgave_base_url","$pleiepengerOppgaveBaseUrl"),
             Pair("nav.pleiepenger_joark_base_url","$pleiepengerJoarkBaseUrl"),
             Pair("nav.k9_dokument_base_url","$k9DokumentBaseUrl")
         )

@@ -15,7 +15,6 @@ import kotlinx.coroutines.time.delay
 import no.nav.common.KafkaEnvironment
 import no.nav.helse.dusseldorf.ktor.testsupport.wiremock.WireMockBuilder
 import no.nav.helse.prosessering.v1.*
-import no.nav.helse.prosessering.v1.asynkron.OppgaveOpprettet
 import no.nav.helse.prosessering.v1.asynkron.TopicEntry
 import org.junit.AfterClass
 import org.junit.BeforeClass
@@ -47,9 +46,7 @@ class PleiepengesoknadProsesseringTest {
             .build()
             .stubK9DokumentHealth()
             .stubPleiepengerJoarkHealth()
-            .stubPleiepengerOppgaveHealth()
             .stubJournalfor()
-            .stubOpprettOppgave()
             .stubLagreDokument()
             .stubSlettDokument()
             .stubAktoerRegister("29099012345", "123456")
@@ -138,7 +135,7 @@ class PleiepengesoknadProsesseringTest {
         )
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
-        kafkaTestConsumer.hentOpprettetOppgave(melding.soknadId)
+        kafkaTestConsumer.hentPreprosessertMelding(melding.soknadId)
     }
 
     @Test
@@ -159,11 +156,11 @@ class PleiepengesoknadProsesseringTest {
         )
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
-        val oppgaveOpprettet = kafkaTestConsumer.hentOpprettetOppgave(melding.soknadId).data
-        assertEquals(sprak, oppgaveOpprettet.melding.sprak)
-        assertEquals(2, oppgaveOpprettet.melding.arbeidsgivere.organisasjoner.size)
-        val jobb1 = oppgaveOpprettet.melding.arbeidsgivere.organisasjoner.firstOrNull { it.navn == "Jobb1" }
-        val jobb2 = oppgaveOpprettet.melding.arbeidsgivere.organisasjoner.firstOrNull { it.navn == "Jobb2" }
+        val oppgaveOpprettet = kafkaTestConsumer.hentPreprosessertMelding(melding.soknadId).data
+        assertEquals(sprak, oppgaveOpprettet.sprak)
+        assertEquals(2, oppgaveOpprettet.arbeidsgivere.organisasjoner.size)
+        val jobb1 = oppgaveOpprettet.arbeidsgivere.organisasjoner.firstOrNull { it.navn == "Jobb1" }
+        val jobb2 = oppgaveOpprettet.arbeidsgivere.organisasjoner.firstOrNull { it.navn == "Jobb2" }
         assertNotNull(jobb1)
         assertNotNull(jobb2)
         assertEquals(jobb1SkalJobbeProsent, jobb1.skalJobbeProsent)
@@ -185,7 +182,7 @@ class PleiepengesoknadProsesseringTest {
 
         wireMockServer.stubJournalfor(201) // Simulerer journalføring fungerer igjen
         restartEngine()
-        kafkaTestConsumer.hentOpprettetOppgave(melding.soknadId)
+        kafkaTestConsumer.hentPreprosessertMelding(melding.soknadId)
     }
 
     private fun readyGir200HealthGir503() {
@@ -207,7 +204,7 @@ class PleiepengesoknadProsesseringTest {
         )
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
-        kafkaTestConsumer.hentOpprettetOppgave(melding.soknadId)
+        kafkaTestConsumer.hentPreprosessertMelding(melding.soknadId)
     }
 
     @Test
@@ -220,7 +217,7 @@ class PleiepengesoknadProsesseringTest {
         )
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
-        kafkaTestConsumer.hentOpprettetOppgave(melding.soknadId)
+        kafkaTestConsumer.hentPreprosessertMelding(melding.soknadId)
     }
 
     @Test
@@ -235,9 +232,9 @@ class PleiepengesoknadProsesseringTest {
         )
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
-        val hentOpprettetOppgave: TopicEntry<OppgaveOpprettet> =
-            kafkaTestConsumer.hentOpprettetOppgave(melding.soknadId)
-        assertEquals("KLØKTIG BLUNKENDE SUPERKONSOLL", hentOpprettetOppgave.data.melding.barn.navn)
+        val hentOpprettetOppgave: TopicEntry<PreprossesertMeldingV1> =
+            kafkaTestConsumer.hentPreprosessertMelding(melding.soknadId)
+        assertEquals("KLØKTIG BLUNKENDE SUPERKONSOLL", hentOpprettetOppgave.data.barn.navn)
     }
 
     @Test
@@ -268,7 +265,7 @@ class PleiepengesoknadProsesseringTest {
         wireMockServer.stubAktoerRegisterGetAktoerIdNotFound(gyldigFodselsnummerC)
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
-        kafkaTestConsumer.hentOpprettetOppgave(melding.soknadId)
+        kafkaTestConsumer.hentPreprosessertMelding(melding.soknadId)
     }
 
     @Test
@@ -281,9 +278,9 @@ class PleiepengesoknadProsesseringTest {
         )
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
-        val hentOpprettetOppgave: TopicEntry<OppgaveOpprettet> =
-            kafkaTestConsumer.hentOpprettetOppgave(melding.soknadId)
-        assertEquals("KLØKTIG BLUNKENDE SUPERKONSOLL", hentOpprettetOppgave.data.melding.barn.navn)
+        val hentOpprettetOppgave: TopicEntry<PreprossesertMeldingV1> =
+            kafkaTestConsumer.hentPreprosessertMelding(melding.soknadId)
+        assertEquals("KLØKTIG BLUNKENDE SUPERKONSOLL", hentOpprettetOppgave.data.barn.navn)
     }
 
     @Test
@@ -299,9 +296,9 @@ class PleiepengesoknadProsesseringTest {
         )
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
-        val hentOpprettetOppgave: TopicEntry<OppgaveOpprettet> =
-            kafkaTestConsumer.hentOpprettetOppgave(melding.soknadId)
-        assertEquals("KLØKTIG BLUNKENDE SUPERKONSOLL", hentOpprettetOppgave.data.melding.barn.navn)
+        val hentOpprettetOppgave: TopicEntry<PreprossesertMeldingV1> =
+            kafkaTestConsumer.hentPreprosessertMelding(melding.soknadId)
+        assertEquals("KLØKTIG BLUNKENDE SUPERKONSOLL", hentOpprettetOppgave.data.barn.navn)
     }
 
     @Test
@@ -318,9 +315,9 @@ class PleiepengesoknadProsesseringTest {
         )
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
-        val hentOpprettetOppgave: TopicEntry<OppgaveOpprettet> =
-            kafkaTestConsumer.hentOpprettetOppgave(melding.soknadId)
-        assertEquals(forventetFodselsNummer, hentOpprettetOppgave.data.melding.barn.fodselsnummer)
+        val hentOpprettetOppgave: TopicEntry<PreprossesertMeldingV1> =
+            kafkaTestConsumer.hentPreprosessertMelding(melding.soknadId)
+        assertEquals(forventetFodselsNummer, hentOpprettetOppgave.data.barn.fodselsnummer)
     }
 
     @Test
@@ -336,9 +333,9 @@ class PleiepengesoknadProsesseringTest {
         )
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
-        val hentOpprettetOppgave: TopicEntry<OppgaveOpprettet> =
-            kafkaTestConsumer.hentOpprettetOppgave(melding.soknadId)
-        assertEquals(forventetFodselsNummer, hentOpprettetOppgave.data.melding.barn.fodselsnummer)
+        val hentOpprettetOppgave: TopicEntry<PreprossesertMeldingV1> =
+            kafkaTestConsumer.hentPreprosessertMelding(melding.soknadId)
+        assertEquals(forventetFodselsNummer, hentOpprettetOppgave.data.barn.fodselsnummer)
     }
 
     @Test
@@ -354,9 +351,9 @@ class PleiepengesoknadProsesseringTest {
         )
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
-        val hentOpprettetOppgave: TopicEntry<OppgaveOpprettet> =
-            kafkaTestConsumer.hentOpprettetOppgave(melding.soknadId)
-        assertEquals(LocalDate.now(), hentOpprettetOppgave.data.melding.barn.fodselsdato)
+        val hentOpprettetOppgave: TopicEntry<PreprossesertMeldingV1> =
+            kafkaTestConsumer.hentPreprosessertMelding(melding.soknadId)
+        assertEquals(LocalDate.now(), hentOpprettetOppgave.data.barn.fodselsdato)
     }
 
     private fun gyldigMelding(

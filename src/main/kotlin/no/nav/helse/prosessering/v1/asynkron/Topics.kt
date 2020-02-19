@@ -7,14 +7,15 @@ import no.nav.helse.dusseldorf.ktor.jackson.dusseldorfConfigured
 import no.nav.helse.prosessering.Metadata
 import no.nav.helse.prosessering.v1.MeldingV1
 import no.nav.helse.prosessering.v1.PreprossesertMeldingV1
+import no.nav.k9.søknad.pleiepengerbarn.PleiepengerBarnSøknad
 import org.apache.kafka.common.serialization.Deserializer
 import org.apache.kafka.common.serialization.Serdes
 import org.apache.kafka.common.serialization.Serializer
 import org.apache.kafka.common.serialization.StringSerializer
 
 data class TopicEntry<V>(val metadata: Metadata, val data: V)
-internal data class Journalfort(val journalPostId: String, val melding: PreprossesertMeldingV1)
-data class OppgaveOpprettet(val journalPostId: String, val oppgaveId: String, val melding: PreprossesertMeldingV1)
+data class Journalfort(val journalpostId: String, val søknad: PleiepengerBarnSøknad)
+data class Cleanup(val metadata: Metadata, val melding: PreprossesertMeldingV1, val journalførtMelding: Journalfort)
 
 internal data class Topic<V>(
     val name: String,
@@ -38,9 +39,9 @@ internal object Topics {
         name = "privat-pleiepengesoknad-journalfort",
         serDes = JournalfortSerDes()
     )
-    val OPPGAVE_OPPRETTET = Topic(
-        name = "privat-pleiepengesoknad-oppgaveOpprettet",
-        serDes = OppgaveOpprettetSerDes()
+    val CLEANUP = Topic(
+        name = "privat-pleiepengesoknad-cleanup",
+        serDes = CleanupSerDes()
     )
 }
 
@@ -77,8 +78,8 @@ private class JournalfortSerDes: SerDes<TopicEntry<Journalfort>>() {
         }
     }
 }
-private class OppgaveOpprettetSerDes: SerDes<TopicEntry<OppgaveOpprettet>>() {
-    override fun deserialize(topic: String?, data: ByteArray?): TopicEntry<OppgaveOpprettet>? {
+private class CleanupSerDes: SerDes<TopicEntry<Cleanup>>() {
+    override fun deserialize(topic: String?, data: ByteArray?): TopicEntry<Cleanup>? {
         return data?.let {
             objectMapper.readValue(it)
         }

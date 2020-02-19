@@ -58,7 +58,7 @@ class DokumentService(
 
     internal suspend fun slettDokumeter(
         urlBolks: List<List<URI>>,
-        aktoerId: AktoerId,
+        aktørId: AktoerId,
         correlationId : CorrelationId
     ) {
         val urls = mutableListOf<URI>()
@@ -67,7 +67,7 @@ class DokumentService(
         logger.trace("Sletter ${urls.size} dokumenter")
         dokumentGateway.slettDokmenter(
             urls = urls,
-            aktoerId = aktoerId,
+            aktoerId = aktørId,
             correlationId = correlationId
         )
     }

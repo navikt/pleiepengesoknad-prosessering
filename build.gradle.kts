@@ -3,6 +3,7 @@ import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
 val dusseldorfKtorVersion = "1.2.5.b695602"
 val ktorVersion = ext.get("ktorVersion").toString()
+val k9FormatVersion = "2.0.0.518a9c5"
 val slf4jVersion = ext.get("slf4jVersion").toString()
 val kotlinxCoroutinesVersion = ext.get("kotlinxCoroutinesVersion").toString()
 
@@ -30,6 +31,9 @@ dependencies {
     compile ( "no.nav.helse:dusseldorf-ktor-health:$dusseldorfKtorVersion")
     compile ( "no.nav.helse:dusseldorf-ktor-auth:$dusseldorfKtorVersion")
     compile ("org.jetbrains.kotlinx:kotlinx-coroutines-slf4j:$kotlinxCoroutinesVersion")
+
+    compile ( "no.nav.k9:soknad-pleiepenger-barn:$k9FormatVersion")
+    compile ( "no.nav.k9:soknad-felles:$k9FormatVersion")
     
     // Client
     compile ( "no.nav.helse:dusseldorf-ktor-client:$dusseldorfKtorVersion")
@@ -58,6 +62,15 @@ repositories {
     maven("https://dl.bintray.com/kotlin/ktor")
     maven("https://kotlin.bintray.com/kotlinx")
     maven("http://packages.confluent.io/maven/")
+
+    maven {
+        name = "GitHubPackages"
+        url = uri("https://maven.pkg.github.com/navikt/k9-format")
+        credentials {
+            username = project.findProperty("gpr.user") as String? ?: System.getenv("GITHUB_USERNAME")
+            password = project.findProperty("gpr.key") as String? ?: System.getenv("GITHUB_TOKEN")
+        }
+    }
 
     jcenter()
     mavenLocal()

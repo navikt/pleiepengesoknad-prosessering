@@ -24,6 +24,9 @@ data class PreprossesertMeldingV1(
     @JsonProperty("ferieuttak_i_perioden")
     val ferieuttakIPerioden: FerieuttakIPerioden?,
     val grad: Int?,
+    val beredskap: Beredskap?,
+    val nattevaak: Nattevaak?,
+    val tilsynsordning: Tilsynsordning?,
     val harMedsoker: Boolean,
     val harForstattRettigheterOgPlikter: Boolean,
     val harBekreftetOpplysninger: Boolean
@@ -49,6 +52,9 @@ data class PreprossesertMeldingV1(
         arbeidsgivere = melding.arbeidsgivere,
         medlemskap = melding.medlemskap,
         grad = melding.grad,
+        beredskap = melding.beredskap,
+        nattevaak = melding.nattevaak,
+        tilsynsordning = melding.tilsynsordning,
         harMedsoker = melding.harMedsoker,
         harForstattRettigheterOgPlikter = melding.harForstattRettigheterOgPlikter,
         harBekreftetOpplysninger = melding.harBekreftetOpplysninger,
