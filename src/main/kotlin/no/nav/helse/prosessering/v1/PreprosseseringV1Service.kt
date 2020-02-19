@@ -141,7 +141,10 @@ internal class PreprosseseringV1Service(
 
     private suspend fun getFullNavn(ident: String, correlationId: CorrelationId): String {
         val tpsNavn: TpsNavn = barnOppslag.navn(Ident(ident), correlationId)
-        return "${tpsNavn.fornavn} ${tpsNavn.mellomnavn} ${tpsNavn.etternavn}"
+        return when {
+            tpsNavn.mellomnavn.isNullOrBlank() -> "${tpsNavn.fornavn} ${tpsNavn.etternavn}"
+            else -> "${tpsNavn.fornavn} ${tpsNavn.mellomnavn} ${tpsNavn.etternavn}"
+        }
     }
 
     private suspend fun hentBarnetsAktoerId(

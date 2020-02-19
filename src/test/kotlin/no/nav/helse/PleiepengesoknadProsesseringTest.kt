@@ -240,6 +240,23 @@ class PleiepengesoknadProsesseringTest {
         assertEquals("KLØKTIG BLUNKENDE SUPERKONSOLL", hentOpprettetOppgave.data.melding.barn.navn)
     }
 
+    @Test
+    fun `Sjekker at dersom barnet ikke har mellomnavn så blir det ikke med i barnetsNavn`() {
+        wireMockServer.stubAktoerRegister(dNummerA, "56789")
+        wireMockServer.stubTpsProxyGetNavn("KLØKTIG", null, "SUPERKONSOLL")
+
+        val melding = gyldigMelding(
+            fodselsnummerSoker = gyldigFodselsnummerA,
+            fodselsnummerBarn = dNummerA,
+            barnetsNavn = null
+        )
+
+        kafkaTestProducer.leggSoknadTilProsessering(melding)
+        val hentOpprettetOppgave: TopicEntry<OppgaveOpprettet> =
+            kafkaTestConsumer.hentOpprettetOppgave(melding.soknadId)
+        assertEquals("KLØKTIG SUPERKONSOLL", hentOpprettetOppgave.data.melding.barn.navn)
+    }
+
 
     @Test
     fun `Melding lagt til prosessering selv om oppslag paa aktoer ID for barn feiler`() {
