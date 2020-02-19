@@ -167,7 +167,8 @@ internal fun WireMockServer.stubJournalfor(responseCode: Int = 201): WireMockSer
     return this
 }
 
-internal fun WireMockServer.stubTpsProxyGetNavn(fornavn: String, mellomNavn: String, etterNavn: String): WireMockServer {
+internal fun WireMockServer.stubTpsProxyGetNavn(fornavn: String, mellomNavn: String? = "BLUNKENDE", etterNavn: String): WireMockServer {
+    val mellomnavnUtenNull = if (mellomNavn.isNullOrBlank()) null else "$mellomNavn"
     WireMock.stubFor(
         WireMock.get(WireMock.urlPathMatching(".*$tpsProxyBasePath/navn"))
             .withHeader(HttpHeaders.Authorization, AnythingPattern())
@@ -179,7 +180,7 @@ internal fun WireMockServer.stubTpsProxyGetNavn(fornavn: String, mellomNavn: Str
                         """  
                             {
                                 "fornavn": "$fornavn",
-                                "mellomnavn": "$mellomNavn",
+                                "mellomnavn": $mellomnavnUtenNull,
                                 "etternavn": "$etterNavn"
                             }
                         """.trimIndent()
