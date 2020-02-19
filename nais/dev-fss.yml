@@ -6,7 +6,7 @@ metadata:
   labels:
     team: {{team}}
 spec:
-  image: {{version}}
+  image: {{ image }}:{{ tag }}
   port: 8080
   liveness:
     path: isalive
@@ -41,7 +41,7 @@ spec:
     - name: PLEIEPENGER_OPPGAVE_BASE_URL
       value: https://pleiepenger-oppgave.nais.preprod.local
     - name: PLEIEPENGER_JOARK_BASE_URL
-      value: https://pleiepenger-joark.nais.preprod.local
+      value: https://k9-joark.nais.preprod.local
     - name: K9_DOKUMENT_BASE_URL
       value: https://k9-dokument.nais.preprod.local
     - name: AKTOER_REGISTER_BASE_URL

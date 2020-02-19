@@ -2,8 +2,8 @@ package no.nav.helse.prosessering.v1.asynkron
 
 import no.nav.helse.dokument.DokumentService
 import no.nav.helse.joark.JoarkGateway
-import no.nav.helse.oppgave.OppgaveGateway
 import no.nav.helse.kafka.KafkaConfig
+import no.nav.helse.oppgave.OppgaveGateway
 import no.nav.helse.prosessering.v1.PreprosseseringV1Service
 import org.slf4j.LoggerFactory
 
