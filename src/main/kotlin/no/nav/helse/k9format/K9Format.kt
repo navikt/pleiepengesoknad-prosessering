@@ -7,21 +7,30 @@ import no.nav.k9.søknad.felles.Barn
 import no.nav.k9.søknad.pleiepengerbarn.*
 import no.nav.k9.søknad.pleiepengerbarn.Beredskap
 import no.nav.k9.søknad.pleiepengerbarn.Utenlandsopphold
+import java.lang.IllegalArgumentException
 import java.math.BigDecimal
+import java.time.LocalDate
 
 fun PreprossesertMeldingV1.tilK9PleiepengeBarnSøknad(): PleiepengerBarnSøknad {
+    val språk = when (sprak) {
+        "nb" -> Språk.NORSK_BOKMÅL
+        "nn" -> Språk.NORSK_NYNORSK
+        else -> Språk.NORSK_BOKMÅL
+    }
     val builder = PleiepengerBarnSøknad.builder()
         .søknadId(SøknadId.of(soknadId))
         .mottattDato(mottatt)
-        .språk(Språk.valueOf(sprak ?: "nb"))
+        .språk(språk)
         .søker(soker.tilK9Søker())
         .arbeid(
             arbeidsgivere.tilK9Arbeid(
+                frilans,
                 Periode.builder().fraOgMed(fraOgMed).tilOgMed(tilOgMed).build(),
                 NorskIdentitetsnummer.of(soker.fodselsnummer)
             )
         )
         .barn(barn.tilK9Barn())
+        .søknadsperiode(Periode.builder().fraOgMed(fraOgMed).tilOgMed(tilOgMed).build(), SøknadsperiodeInfo())
 
     builder.bosteder(medlemskap.tilK9bosteder())
 
@@ -50,7 +59,7 @@ fun PreprossesertMeldingV1.tilK9PleiepengeBarnSøknad(): PleiepengerBarnSøknad 
     }
 
     tilsynsordning?.let {
-        builder.tilsynsordning(tilsynsordning.tilK9Tilsynsordning())
+        builder.tilsynsordning(tilsynsordning.tilK9Tilsynsordning(fraOgMed, tilOgMed))
     }
 
     ferieuttakIPerioden?.let {
@@ -97,13 +106,22 @@ fun Medlemskap.tilK9bosteder(): Bosteder {
         .build()
 }
 
-fun Tilsynsordning.tilK9Tilsynsordning(): no.nav.k9.søknad.pleiepengerbarn.Tilsynsordning {
+fun Tilsynsordning.tilK9Tilsynsordning(
+    fraOgMed: LocalDate,
+    tilOgMed: LocalDate
+): no.nav.k9.søknad.pleiepengerbarn.Tilsynsordning {
     val builder = no.nav.k9.søknad.pleiepengerbarn.Tilsynsordning.builder()
     return when {
         this.ja != null -> {
+            val tilsynsordningSvar = when(svar) {
+                "ja" -> TilsynsordningSvar.JA
+                "nei" -> TilsynsordningSvar.NEI
+                else -> throw IllegalArgumentException("Ikke gyldig tilsynsordningsvar. Forventet ja/nei, men fikk $svar")
+            }
             builder
-                .iTilsynsordning(TilsynsordningSvar.valueOf(svar))
-                .uke(this.ja.tilK9TilsynsordningUke()).build()
+                .iTilsynsordning(tilsynsordningSvar)
+                .uke(this.ja.tilK9TilsynsordningUke(fraOgMed, tilOgMed))
+                .build()
         }
         this.vetIkke != null -> {
             builder.iTilsynsordning(TilsynsordningSvar.valueOf(svar)).build()
@@ -112,7 +130,7 @@ fun Tilsynsordning.tilK9Tilsynsordning(): no.nav.k9.søknad.pleiepengerbarn.Tils
     }
 }
 
-fun TilsynsordningJa.tilK9TilsynsordningUke(): TilsynsordningUke {
+fun TilsynsordningJa.tilK9TilsynsordningUke(fraOgMed: LocalDate, tilOgMed: LocalDate): TilsynsordningUke {
     val builder = TilsynsordningUke.builder()
     mandag?.let { builder.mandag(mandag) }
     tirsdag?.let { builder.tirsdag(tirsdag) }
@@ -120,7 +138,9 @@ fun TilsynsordningJa.tilK9TilsynsordningUke(): TilsynsordningUke {
     torsdag?.let { builder.torsdag(torsdag) }
     fredag?.let { builder.fredag(fredag) }
 
-    return builder.build()
+    return builder
+        .periode(Periode.builder().fraOgMed(fraOgMed).tilOgMed(tilOgMed).build())
+        .build()
 }
 
 fun UtenlandsoppholdIPerioden.tilK9Utenlandsopphold(): Utenlandsopphold? {
@@ -150,14 +170,14 @@ fun PreprossesertSoker.tilK9Søker(): Søker = Søker.builder()
     .build()
 
 fun Arbeidsgivere.tilK9Arbeid(
+    frilans: Frilans?,
     søknadsPeriode: Periode,
     norskIdentitetsnummer: NorskIdentitetsnummer
 ): Arbeid {
 
-    return Arbeid.builder()
+    val builder = Arbeid.builder()
         .arbeidstaker(organisasjoner.map { org ->
             Arbeidstaker.builder()
-                .norskIdentitetsnummer(norskIdentitetsnummer)
                 .organisasjonsnummer(Organisasjonsnummer.of(org.organisasjonsnummer))
                 .periode(
                     søknadsPeriode,
@@ -167,5 +187,24 @@ fun Arbeidsgivere.tilK9Arbeid(
                 )
                 .build()
         }.toMutableList())
+
+    frilans?.let {
+        builder.frilanser(frilans.tilK9Frilanser())
+    }
+
+
+    return builder.build()
+}
+
+private fun Frilans.tilK9Frilanser(): Frilanser {
+    val perioder = mutableMapOf<Periode, Frilanser.FrilanserPeriodeInfo>()
+    oppdrag.forEach {
+        perioder.put(
+            Periode.builder().fraOgMed(it.fraOgMed).tilOgMed(it.tilOgMed).build(),
+            Frilanser.FrilanserPeriodeInfo()
+        )
+    }
+    return Frilanser.builder()
+        .perioder(perioder)
         .build()
 }

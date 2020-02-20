@@ -28,6 +28,7 @@ data class PreprossesertMeldingV1(
     val nattevaak: Nattevaak?,
     val tilsynsordning: Tilsynsordning?,
     val harMedsoker: Boolean,
+    val frilans: Frilans?,
     val harForstattRettigheterOgPlikter: Boolean,
     val harBekreftetOpplysninger: Boolean
 ) {
@@ -56,6 +57,7 @@ data class PreprossesertMeldingV1(
         nattevaak = melding.nattevaak,
         tilsynsordning = melding.tilsynsordning,
         harMedsoker = melding.harMedsoker,
+        frilans = melding.frilans,
         harForstattRettigheterOgPlikter = melding.harForstattRettigheterOgPlikter,
         harBekreftetOpplysninger = melding.harBekreftetOpplysninger,
         utenlandsoppholdIPerioden = melding.utenlandsoppholdIPerioden,
