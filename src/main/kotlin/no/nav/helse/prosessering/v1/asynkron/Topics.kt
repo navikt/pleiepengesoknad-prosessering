@@ -1,5 +1,6 @@
 package no.nav.helse.prosessering.v1.asynkron
 
+import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
@@ -7,14 +8,13 @@ import no.nav.helse.dusseldorf.ktor.jackson.dusseldorfConfigured
 import no.nav.helse.prosessering.Metadata
 import no.nav.helse.prosessering.v1.MeldingV1
 import no.nav.helse.prosessering.v1.PreprossesertMeldingV1
-import no.nav.k9.søknad.pleiepengerbarn.PleiepengerBarnSøknad
 import org.apache.kafka.common.serialization.Deserializer
 import org.apache.kafka.common.serialization.Serdes
 import org.apache.kafka.common.serialization.Serializer
 import org.apache.kafka.common.serialization.StringSerializer
 
 data class TopicEntry<V>(val metadata: Metadata, val data: V)
-data class Journalfort(val journalpostId: String, val søknad: PleiepengerBarnSøknad)
+data class Journalfort(val journalpostId: String, val søknad: JsonNode)
 data class Cleanup(val metadata: Metadata, val melding: PreprossesertMeldingV1, val journalførtMelding: Journalfort)
 
 internal data class Topic<V>(
@@ -49,7 +49,6 @@ internal abstract class SerDes<V> : Serializer<V>, Deserializer<V> {
     protected val objectMapper = jacksonObjectMapper()
         .dusseldorfConfigured()
         .configure(SerializationFeature.WRITE_DURATIONS_AS_TIMESTAMPS, false)
-        .configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false)
     override fun serialize(topic: String?, data: V): ByteArray? {
         return data?.let {
             objectMapper.writeValueAsBytes(it)

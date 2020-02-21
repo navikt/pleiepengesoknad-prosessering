@@ -588,15 +588,11 @@ class PleiepengesoknadProsesseringTest {
 }
         """.trimIndent()
         val journalførtMelding: TopicEntry<Journalfort> = journalførtConsumer.hentJournalførtMelding(melding.soknadId)
-        val joournalførtMeldingJson = objectMapper().writeValueAsString(journalførtMelding.data.søknad)
+        val joournalførtMeldingJson = journalførtMelding.data.søknad.toString()
         assertNotNull(journalførtMelding)
         JSONAssert.assertEquals(forventet, joournalførtMeldingJson, false)
     }
 
-    private fun objectMapper(): ObjectMapper = jacksonObjectMapper()
-        .dusseldorfConfigured()
-        .configure(SerializationFeature.WRITE_DURATIONS_AS_TIMESTAMPS, false)
-        .configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false)
 
     private fun gyldigMelding(
         fodselsnummerSoker: String,

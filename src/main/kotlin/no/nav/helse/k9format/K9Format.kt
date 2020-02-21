@@ -1,7 +1,9 @@
 package no.nav.helse.k9format
 
+import com.fasterxml.jackson.databind.JsonNode
 import no.nav.helse.prosessering.v1.*
 import no.nav.helse.prosessering.v1.Tilsynsordning
+import no.nav.k9.søknad.JsonUtils.getObjectMapper
 import no.nav.k9.søknad.felles.*
 import no.nav.k9.søknad.felles.Barn
 import no.nav.k9.søknad.pleiepengerbarn.*
@@ -11,7 +13,7 @@ import java.lang.IllegalArgumentException
 import java.math.BigDecimal
 import java.time.LocalDate
 
-fun PreprossesertMeldingV1.tilK9PleiepengeBarnSøknad(): PleiepengerBarnSøknad {
+fun PreprossesertMeldingV1.tilK9PleiepengeBarnSøknad(): JsonNode {
     val språk = when (sprak) {
         "nb" -> Språk.NORSK_BOKMÅL
         "nn" -> Språk.NORSK_NYNORSK
@@ -66,8 +68,7 @@ fun PreprossesertMeldingV1.tilK9PleiepengeBarnSøknad(): PleiepengerBarnSøknad 
             builder.lovbestemtFerie(ferieuttakIPerioden.tilK9LovbestemtFerie())
         }
     }
-
-    return builder.build()
+    return getObjectMapper().readTree(PleiepengerBarnSøknad.SerDes.serialize(builder.build()))
 }
 
 private fun FerieuttakIPerioden.tilK9LovbestemtFerie(): LovbestemtFerie {
