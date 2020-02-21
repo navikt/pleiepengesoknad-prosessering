@@ -194,18 +194,18 @@ fun Arbeidsgivere.tilK9Arbeid(
         }.toMutableList())
 
     frilans?.let {
-        builder.frilanser(frilans.tilK9Frilanser())
+        builder.frilanser(frilans.tilK9Frilanser(søknadsPeriode))
     }
 
 
     return builder.build()
 }
 
-private fun Frilans.tilK9Frilanser(): Frilanser {
+private fun Frilans.tilK9Frilanser(søknadsPeriode: Periode): Frilanser {
     val perioder = mutableMapOf<Periode, Frilanser.FrilanserPeriodeInfo>()
     oppdrag.forEach {
         perioder.put(
-            Periode.builder().fraOgMed(it.fraOgMed).tilOgMed(it.tilOgMed).build(),
+            Periode.builder().fraOgMed(it.fraOgMed).tilOgMed(it.tilOgMed?: søknadsPeriode.tilOgMed).build(),
             Frilanser.FrilanserPeriodeInfo()
         )
     }
