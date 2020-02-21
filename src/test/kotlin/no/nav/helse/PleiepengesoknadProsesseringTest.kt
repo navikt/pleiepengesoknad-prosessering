@@ -544,20 +544,8 @@ class PleiepengesoknadProsesseringTest {
   "tilsynsordning": {
     "iTilsynsordning": "ja",
     "opphold": {
-      "2020-01-06/2020-01-06": {
-        "lengde": "PT7H30M"
-      },
-      "2020-01-07/2020-01-07": {
-        "lengde": "PT7H30M"
-      },
-      "2020-01-08/2020-01-08": {
-        "lengde": "PT7H30M"
-      },
-      "2020-01-09/2020-01-09": {
-        "lengde": "PT7H30M"
-      },
-      "2020-01-10/2020-01-10": {
-        "lengde": "PT7H30M"
+      "2020-01-06/2020-01-10": {
+        "lengde": "PT37H30M"
       }
     }
   },
