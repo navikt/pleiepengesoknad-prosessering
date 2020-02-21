@@ -8,6 +8,7 @@ import no.nav.helse.prosessering.v1.PreprossesertMeldingV1
 import no.nav.helse.prosessering.v1.asynkron.Journalfort
 import no.nav.helse.prosessering.v1.asynkron.TopicEntry
 import no.nav.helse.prosessering.v1.asynkron.Topics
+import no.nav.helse.prosessering.v1.asynkron.Topics.CLEANUP
 import no.nav.helse.prosessering.v1.asynkron.Topics.JOURNALFORT
 import no.nav.helse.prosessering.v1.asynkron.Topics.MOTTATT
 import no.nav.helse.prosessering.v1.asynkron.Topics.PREPROSSESERT
@@ -36,7 +37,8 @@ object KafkaWrapper {
             topicNames= listOf(
                 MOTTATT.name,
                 PREPROSSESERT.name,
-                JOURNALFORT.name
+                JOURNALFORT.name,
+                CLEANUP.name
             )
         )
         return kafkaEnvironment

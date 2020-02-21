@@ -1,5 +1,8 @@
 package no.nav.helse
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.SerializationFeature
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.typesafe.config.ConfigFactory
 import io.ktor.config.ApplicationConfig
@@ -13,11 +16,14 @@ import io.ktor.util.KtorExperimentalAPI
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.time.delay
 import no.nav.common.KafkaEnvironment
+import no.nav.helse.dusseldorf.ktor.jackson.dusseldorfConfigured
 import no.nav.helse.dusseldorf.ktor.testsupport.wiremock.WireMockBuilder
 import no.nav.helse.prosessering.v1.*
+import no.nav.helse.prosessering.v1.asynkron.Journalfort
 import no.nav.helse.prosessering.v1.asynkron.TopicEntry
 import org.junit.AfterClass
 import org.junit.BeforeClass
+import org.skyscreamer.jsonassert.JSONAssert
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.net.URI
@@ -53,6 +59,7 @@ class PleiepengesoknadProsesseringTest {
 
         private val kafkaEnvironment = KafkaWrapper.bootstrap()
         private val kafkaTestConsumer = kafkaEnvironment.testConsumer()
+        private val journalførtConsumer = kafkaEnvironment.journalføringsKonsumer()
         private val kafkaTestProducer = kafkaEnvironment.testProducer()
 
         // Se https://github.com/navikt/dusseldorf-ktor#f%C3%B8dselsnummer
@@ -355,6 +362,253 @@ class PleiepengesoknadProsesseringTest {
             kafkaTestConsumer.hentPreprosessertMelding(melding.soknadId)
         assertEquals(LocalDate.now(), hentOpprettetOppgave.data.barn.fodselsdato)
     }
+
+    @Test
+    fun `Forvent korrekt format på melding sendt på journalført topic`() {
+        wireMockServer.stubAktoerRegister(gyldigFodselsnummerB, "666")
+
+        val melding = MeldingV1(
+            sprak = "nb",
+            soknadId = "583a3cf8-767a-49f4-a5dd-619df2c72c7a",
+            mottatt = ZonedDateTime.parse("2019-10-20T07:15:36.124Z"),
+            fraOgMed = LocalDate.parse("2020-01-06"),
+            tilOgMed = LocalDate.parse("2020-01-10"),
+            soker = Soker(
+                aktoerId = "123456",
+                fodselsnummer = gyldigFodselsnummerA,
+                fornavn = "Ola",
+                mellomnavn = "Mellomnavn",
+                etternavn = "Nordmann"
+            ),
+            relasjonTilBarnet = "far",
+            harMedsoker = false,
+            barn = Barn(
+                navn = "Bjarne",
+                fodselsnummer = gyldigFodselsnummerB,
+                fodselsdato = null,
+                aktoerId = "666"
+            ),
+            arbeidsgivere = Arbeidsgivere(
+                organisasjoner = listOf(
+                    Organisasjon("917755736", "Jobb1", skalJobbeProsent = 50.25),
+                    Organisasjon("917755737", "Jobb2", skalJobbeProsent = 20.0)
+                )
+            ),
+            frilans = Frilans(
+                harHattOppdragForFamilie = true,
+                harHattInntektSomFosterforelder = true,
+                startdato = LocalDate.now().minusYears(3),
+                jobberFortsattSomFrilans = true,
+                oppdrag = listOf(
+                    Oppdrag(
+                        arbeidsgivernavn = "Montesorri barnehage",
+                        fraOgMed = LocalDate.parse("2019-10-01"),
+                        tilOgMed = LocalDate.parse("2019-12-01"),
+                        erPagaende = false
+                    ),
+                    Oppdrag(
+                        arbeidsgivernavn = "Bislett Kebab House",
+                        fraOgMed = LocalDate.parse("2019-12-02"),
+                        tilOgMed = LocalDate.parse("2019-12-31"),
+                        erPagaende = true
+                    )
+                )
+            ),
+            medlemskap = Medlemskap(
+                harBoddIUtlandetSiste12Mnd = true,
+                utenlandsoppholdSiste12Mnd = listOf(
+                    Bosted(
+                        fraOgMed = LocalDate.parse("2019-06-15"),
+                        tilOgMed = LocalDate.parse("2019-06-28"),
+                        landkode = "POL",
+                        landnavn = "Polen"
+                    ),
+                    Bosted(
+                        fraOgMed = LocalDate.parse("2019-07-01"),
+                        tilOgMed = LocalDate.parse("2019-07-10"),
+                        landkode = "DK",
+                        landnavn = "Danmark"
+                    )
+                ),
+                skalBoIUtlandetNeste12Mnd = true,
+                utenlandsoppholdNeste12Mnd = listOf(
+                    Bosted(
+                        fraOgMed = LocalDate.parse("2020-06-15"),
+                        tilOgMed = LocalDate.parse("2020-06-28"),
+                        landkode = "AW",
+                        landnavn = "Aruba"
+                    ),
+                    Bosted(
+                        fraOgMed = LocalDate.parse("2020-07-01"),
+                        tilOgMed = LocalDate.parse("2020-07-10"),
+                        landkode = "BG",
+                        landnavn = "Bulgaria"
+                    )
+                )
+            ),
+            utenlandsoppholdIPerioden = UtenlandsoppholdIPerioden(
+                skalOppholdeSegIUtlandetIPerioden = true,
+                opphold = listOf(
+                    Utenlandsopphold(
+                        fraOgMed = LocalDate.parse("2020-06-15"),
+                        tilOgMed = LocalDate.parse("2020-06-28"),
+                        landkode = "AW",
+                        landnavn = "Aruba",
+                        arsak = Arsak.BARNET_INNLAGT_I_HELSEINSTITUSJON_FOR_NORSK_OFFENTLIG_REGNING, //barnetInnlagtIHelseinstitusjonForNorskOffentligRegning
+                        erBarnetInnlagt = true,
+                        erUtenforEos = false
+                    )
+                )
+            ),
+            beredskap = Beredskap(
+                beredskap = true,
+                tilleggsinformasjon = "I Beredskap"
+            ),
+            nattevaak = Nattevaak(
+                harNattevaak = true,
+                tilleggsinformasjon = "Har Nattevåk"
+            ),
+            tilsynsordning = Tilsynsordning(
+                svar = "ja",
+                ja = TilsynsordningJa(
+                    mandag = Duration.parse("PT7H30M"),
+                    tirsdag = Duration.parse("PT7H30M"),
+                    onsdag = Duration.parse("PT7H30M"),
+                    torsdag = Duration.parse("PT7H30M"),
+                    fredag = Duration.parse("PT7H30M"),
+                    tilleggsinformasjon = "Annet."
+                ),
+                vetIkke = null
+            ),
+            ferieuttakIPerioden = FerieuttakIPerioden(
+                skalTaUtFerieIPerioden = true,
+                ferieuttak = listOf(
+                    Ferieuttak(LocalDate.parse("2020-01-07"), LocalDate.parse("2020-01-08")),
+                    Ferieuttak(LocalDate.parse("2020-01-09"), LocalDate.parse("2020-01-10"))
+                )
+            ),
+            grad = null,
+            harBekreftetOpplysninger = true,
+            harForstattRettigheterOgPlikter = true
+        )
+
+        kafkaTestProducer.leggSoknadTilProsessering(melding)
+        val forventet: String = """
+{
+  "versjon": "1.0.0",
+  "søknadId": "583a3cf8-767a-49f4-a5dd-619df2c72c7a",
+  "mottattDato": "2019-10-20T07:15:36.124Z",
+  "språk": "nb",
+  "søker": {
+    "norskIdentitetsnummer": "02119970078"
+  },
+  "perioder": {
+    "2020-01-06/2020-01-10": {}
+  },
+  "barn": {
+    "fødselsdato": null,
+    "norskIdentitetsnummer": "19066672169"
+  },
+  "bosteder": {
+    "perioder": {
+      "2019-06-15/2019-06-28": {
+        "land": "POL"
+      },
+      "2019-07-01/2019-07-10": {
+        "land": "DK"
+      }
+    }
+  },
+  "utenlandsopphold": {
+    "perioder": {
+      "2020-06-15/2020-06-28": {
+        "land": "AW",
+        "årsak": "barnetInnlagtIHelseinstitusjonForNorskOffentligRegning"
+      }
+    }
+  },
+  "beredskap": {
+    "perioder": {
+      "2020-01-06/2020-01-10": {
+        "tilleggsinformasjon": "I Beredskap"
+      }
+    }
+  },
+  "nattevåk": {
+    "perioder": {
+      "2020-01-06/2020-01-10": {
+        "tilleggsinformasjon": "Har Nattevåk"
+      }
+    }
+  },
+  "tilsynsordning": {
+    "iTilsynsordning": "ja",
+    "opphold": {
+      "2020-01-06/2020-01-06": {
+        "lengde": "PT7H30M"
+      },
+      "2020-01-07/2020-01-07": {
+        "lengde": "PT7H30M"
+      },
+      "2020-01-08/2020-01-08": {
+        "lengde": "PT7H30M"
+      },
+      "2020-01-09/2020-01-09": {
+        "lengde": "PT7H30M"
+      },
+      "2020-01-10/2020-01-10": {
+        "lengde": "PT7H30M"
+      }
+    }
+  },
+  "arbeid": {
+    "arbeidstaker": [
+      {
+        "organisasjonsnummer": "917755736",
+        "norskIdentitetsnummer": null,
+        "perioder": {
+          "2020-01-06/2020-01-10": {
+            "skalJobbeProsent": 50.25
+          }
+        }
+      },
+      {
+        "organisasjonsnummer": "917755737",
+        "norskIdentitetsnummer": null,
+        "perioder": {
+          "2020-01-06/2020-01-10": {
+            "skalJobbeProsent": 20.00
+          }
+        }
+      }
+    ],
+    "frilanser": [
+      {
+        "perioder": {
+          "2019-10-01/2019-12-01": {},
+          "2019-12-02/2019-12-31": {}
+        }
+      }
+    ]
+  },
+  "lovbestemtFerie": {
+    "perioder": {
+      "2020-01-07/2020-01-08": {},
+      "2020-01-09/2020-01-10": {}
+    }
+  }
+}
+        """.trimIndent()
+        val journalførtMelding: TopicEntry<Journalfort> = journalførtConsumer.hentJournalførtMelding(melding.soknadId)
+        val joournalførtMeldingJson = objectMapper().writeValueAsString(journalførtMelding.data.søknad)
+        assertNotNull(journalførtMelding)
+        JSONAssert.assertEquals(forventet, joournalførtMeldingJson, false)
+    }
+
+    private fun objectMapper(): ObjectMapper = jacksonObjectMapper()
+        .dusseldorfConfigured()
+        .configure(SerializationFeature.WRITE_DURATIONS_AS_TIMESTAMPS, false)
+        .configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false)
 
     private fun gyldigMelding(
         fodselsnummerSoker: String,

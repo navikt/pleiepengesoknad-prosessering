@@ -25,8 +25,7 @@ fun PreprossesertMeldingV1.tilK9PleiepengeBarnSøknad(): PleiepengerBarnSøknad 
         .arbeid(
             arbeidsgivere.tilK9Arbeid(
                 frilans,
-                Periode.builder().fraOgMed(fraOgMed).tilOgMed(tilOgMed).build(),
-                NorskIdentitetsnummer.of(soker.fodselsnummer)
+                Periode.builder().fraOgMed(fraOgMed).tilOgMed(tilOgMed).build()
             )
         )
         .barn(barn.tilK9Barn())
@@ -43,7 +42,7 @@ fun PreprossesertMeldingV1.tilK9PleiepengeBarnSøknad(): PleiepengerBarnSøknad 
         )
     }
 
-    utenlandsoppholdIPerioden?.let { oppholdIPerioden: UtenlandsoppholdIPerioden ->
+    utenlandsoppholdIPerioden?.let {
         builder.utenlandsopphold(utenlandsoppholdIPerioden.tilK9Utenlandsopphold())
     }
 
@@ -72,7 +71,6 @@ fun PreprossesertMeldingV1.tilK9PleiepengeBarnSøknad(): PleiepengerBarnSøknad 
 }
 
 private fun FerieuttakIPerioden.tilK9LovbestemtFerie(): LovbestemtFerie {
-
     val perioder = mutableMapOf<Periode, LovbestemtFerie.LovbestemtFeriePeriodeInfo>()
     ferieuttak.forEach {
         perioder.put(
@@ -113,7 +111,7 @@ fun Tilsynsordning.tilK9Tilsynsordning(
     val builder = no.nav.k9.søknad.pleiepengerbarn.Tilsynsordning.builder()
     return when {
         this.ja != null -> {
-            val tilsynsordningSvar = when(svar) {
+            val tilsynsordningSvar = when (svar) {
                 "ja" -> TilsynsordningSvar.JA
                 "nei" -> TilsynsordningSvar.NEI
                 else -> throw IllegalArgumentException("Ikke gyldig tilsynsordningsvar. Forventet ja/nei, men fikk $svar")
@@ -146,10 +144,17 @@ fun TilsynsordningJa.tilK9TilsynsordningUke(fraOgMed: LocalDate, tilOgMed: Local
 fun UtenlandsoppholdIPerioden.tilK9Utenlandsopphold(): Utenlandsopphold? {
     val perioder = mutableMapOf<Periode, Utenlandsopphold.UtenlandsoppholdPeriodeInfo>()
     opphold.forEach {
+        val årsak = when (it.arsak) {
+            Arsak.BARNET_INNLAGT_I_HELSEINSTITUSJON_FOR_NORSK_OFFENTLIG_REGNING -> Utenlandsopphold.UtenlandsoppholdÅrsak.BARNET_INNLAGT_I_HELSEINSTITUSJON_FOR_NORSK_OFFENTLIG_REGNING
+            Arsak.BARNET_INNLAGT_I_HELSEINSTITUSJON_DEKKET_ETTER_AVTALE_MED_ET_ANNET_LAND_OM_TRYGD -> Utenlandsopphold.UtenlandsoppholdÅrsak.BARNET_INNLAGT_I_HELSEINSTITUSJON_DEKKET_ETTER_AVTALE_MED_ET_ANNET_LAND_OM_TRYGD
+            else -> null
+        }
+
         perioder.put(
             Periode.builder().fraOgMed(it.fraOgMed).tilOgMed(it.tilOgMed).build(),
             Utenlandsopphold.UtenlandsoppholdPeriodeInfo.builder()
                 .land(Landkode.of(it.landkode))
+                .årsak(årsak)
                 .build()
         )
     }
@@ -171,8 +176,7 @@ fun PreprossesertSoker.tilK9Søker(): Søker = Søker.builder()
 
 fun Arbeidsgivere.tilK9Arbeid(
     frilans: Frilans?,
-    søknadsPeriode: Periode,
-    norskIdentitetsnummer: NorskIdentitetsnummer
+    søknadsPeriode: Periode
 ): Arbeid {
 
     val builder = Arbeid.builder()

@@ -49,6 +49,7 @@ internal abstract class SerDes<V> : Serializer<V>, Deserializer<V> {
     protected val objectMapper = jacksonObjectMapper()
         .dusseldorfConfigured()
         .configure(SerializationFeature.WRITE_DURATIONS_AS_TIMESTAMPS, false)
+        .configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false)
     override fun serialize(topic: String?, data: V): ByteArray? {
         return data?.let {
             objectMapper.writeValueAsBytes(it)
