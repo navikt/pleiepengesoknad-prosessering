@@ -128,7 +128,10 @@ internal class PdfV1Generator  {
                     "skalTaUtFerieIPerioden" to melding.ferieuttakIPerioden?.skalTaUtFerieIPerioden,
                     "ferieuttak" to melding.ferieuttakIPerioden?.ferieuttak?.somMapFerieuttak()
                 ),
-                "frilans" to frilans(melding.frilans)
+                "frilans" to frilans(melding.frilans),
+                "selvstendigVirksomheter" to mapOf(
+                    "virksomhet" to melding.selvstendigVirksomheter?.somMapVirksomheter()
+                )
             ))
             .resolver(MapValueResolver.INSTANCE)
             .build()).let { html ->
@@ -145,6 +148,19 @@ internal class PdfV1Generator  {
             return outputStream.use {
                 it.toByteArray()
             }
+        }
+    }
+
+    private fun List<Virksomhet>.somMapVirksomheter(): List<Map<String, Any?>> {
+        val dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy").withZone(ZoneId.of("Europe/Oslo"))
+        return map {
+            mapOf(
+                "navnPaVirksomheten" to it.navnPaVirksomheten,
+                "fraOgMed" to it.fraOgMed,
+                "tilOgMed" to it.tilOgMed,
+                "erPagaende" to it.erPagaende,
+                "naringsinntekt" to it.naringsinntekt
+            )
         }
     }
 
