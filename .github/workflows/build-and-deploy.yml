@@ -8,6 +8,7 @@ on:
       - '.gitignore'
       - 'LICENCE'
       - 'CODEOWNERS'
+      - 'kafka/oneshot.json'
     branches:
 
 jobs:
