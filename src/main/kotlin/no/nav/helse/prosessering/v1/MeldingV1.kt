@@ -32,7 +32,61 @@ data class MeldingV1 (
     val tilsynsordning: Tilsynsordning?,
     val beredskap: Beredskap?,
     val nattevaak: Nattevaak?,
-    val frilans: Frilans?
+    val frilans: Frilans?,
+    val selvstendigVirksomheter: List<Virksomhet>? = null
+)
+
+data class Virksomhet(
+    val naringstype: List<Naringstype>,
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    val fraOgMed: LocalDate,
+    val tilOgMed: LocalDate? = null,
+    val erPagaende: Boolean,
+    val naringsinntekt: Int,
+    val navnPaVirksomheten: String,
+    val organisasjonsnummer: String? = null,
+    @JsonProperty("registrert_i_norge")
+    val registrertINorge: Boolean,
+    @JsonProperty("registrert_i_land")
+    val registrertILand: String? = null,
+    val harBlittYrkesaktivSisteTreFerdigliknendeArene: Boolean? = null,
+    val yrkesaktivSisteTreFerdigliknedeArene: YrkesaktivSisteTreFerdigliknedeArene? = null,
+    val harVarigEndringAvInntektSiste4Kalenderar: Boolean? = null,
+    val varigEndring: VarigEndring? = null,
+    val harRegnskapsforer: Boolean,
+    val regnskapsforer: Regnskapsforer? = null,
+    val harRevisor: Boolean? = null,
+    val revisor: Revisor? = null
+)
+
+enum class Naringstype(val detaljert: String) {
+    @JsonProperty("FISKE") FISKER("FISKE"),
+    @JsonProperty("JORDBRUK_SKOGBRUK") JORDBRUK("JORDBRUK_SKOGBRUK"),
+    @JsonProperty("ANNEN") ANNET("ANNEN"),
+    DAGMAMMA("DAGMAMMA")
+}
+
+data class YrkesaktivSisteTreFerdigliknedeArene(
+    val oppstartsdato: LocalDate?
+)
+
+data class VarigEndring(
+    val dato: LocalDate? = null,
+    val inntektEtterEndring: Int? = null,
+    val forklaring: String? = null
+)
+
+data class Revisor(
+    val navn: String,
+    val telefon: String,
+    val erNarVennFamilie: Boolean,
+    val kanInnhenteOpplysninger: Boolean?
+)
+
+data class Regnskapsforer(
+    val navn: String,
+    val telefon: String,
+    val erNarVennFamilie: Boolean
 )
 
 data class Soker(

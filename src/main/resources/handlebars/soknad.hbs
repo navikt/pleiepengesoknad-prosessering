@@ -384,6 +384,19 @@
         {{>jaNeiCheckbox parameter=frilans.harHattInntektSomFosterforelder}}
     {{/if}}
 
+    <!-- SELVSTENDIG NÆRINGSDRIVENDE -->
+    {{#if selvstendigVirksomheter}}
+        <h2><span>Selvstendig næringsdrivende</span></h2>
+        {{# each selvstendigVirksomheter.virksomhet as |virksomhet|~}}
+            <ul>
+                <p>Navn på virksomhet: {{virksomhet.navnPaVirksomheten }}</p>
+                <p>Fra og med: {{virksomhet.fraOgMed}}</p>
+                <p>Til og med: {{virksomhet.tilOgMed}}</p>
+                <p>Er pågående: {{virksomhet.erPagaende}}</p>
+            </ul>
+        {{/each}}
+    {{/if}}
+
     <!-- MEDLEMSKAP -->
     <h2><span>Medlemskap</span></h2>
     <p class="sporsmalstekst">Har bodd i utlandet siste 12 månedene?</p>
