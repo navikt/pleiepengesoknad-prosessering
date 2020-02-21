@@ -256,9 +256,9 @@ class PleiepengesoknadProsesseringTest {
         )
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
-        val hentOpprettetOppgave: TopicEntry<OppgaveOpprettet> =
-            kafkaTestConsumer.hentOpprettetOppgave(melding.soknadId)
-        assertEquals("KLØKTIG SUPERKONSOLL", hentOpprettetOppgave.data.melding.barn.navn)
+        val hentOpprettetOppgave: TopicEntry<PreprossesertMeldingV1> =
+            kafkaTestConsumer.hentPreprosessertMelding(melding.soknadId)
+        assertEquals("KLØKTIG SUPERKONSOLL", hentOpprettetOppgave.data.barn.navn)
     }
 
 
