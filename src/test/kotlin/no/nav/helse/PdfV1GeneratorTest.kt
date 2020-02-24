@@ -337,7 +337,7 @@ class PdfV1GeneratorTest {
             fodselsdato = fodselsdato
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
-/*
+
         id = "2-utenMedsoker"
         pdf = generator.generateSoknadOppsummeringPdf(
             melding = gyldigMelding(soknadId = id, harMedsoker = false),
@@ -704,7 +704,7 @@ class PdfV1GeneratorTest {
 
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
-    */
+
          id = "22-har-du-hatt-inntekt-som-selvstendig-næringsdrivende"
          pdf = generator.generateSoknadOppsummeringPdf(
             melding = gyldigMelding(
@@ -727,7 +727,7 @@ class PdfV1GeneratorTest {
     }
 
     @Test
-    //@Ignore
+    @Ignore
     fun `opprett lesbar oppsummerings-PDF`() {
         genererOppsummeringsPdfer(true)
     }
