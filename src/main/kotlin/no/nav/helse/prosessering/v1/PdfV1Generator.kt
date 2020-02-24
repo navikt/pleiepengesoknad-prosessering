@@ -156,10 +156,65 @@ internal class PdfV1Generator  {
         return map {
             mapOf(
                 "navnPaVirksomheten" to it.navnPaVirksomheten,
+                "naringstype" to it.naringstype.somMapNaringstype(),
                 "fraOgMed" to it.fraOgMed,
                 "tilOgMed" to it.tilOgMed,
                 "erPagaende" to it.erPagaende,
-                "naringsinntekt" to it.naringsinntekt
+                "naringsinntekt" to it.naringsinntekt,
+                "registrertINorge" to it.registrertINorge,
+                "organisasjonsnummer" to it.organisasjonsnummer,
+                "registrertILand" to it.registrertILand,
+                "harBlittYrkesaktivSisteTreFerdigliknendeArene" to it.harBlittYrkesaktivSisteTreFerdigliknendeArene,
+                "yrkesaktivSisteTreFerdigliknedeArene" to it.yrkesaktivSisteTreFerdigliknedeArene?.oppstartsdato,
+                "harVarigEndringAvInntektSiste4Kalenderar" to it.harVarigEndringAvInntektSiste4Kalenderar,
+                "varigEndring" to varigEndring(it.varigEndring),
+                "harRegnskapsforer" to it.harRegnskapsforer,
+                "harRevisor" to it.harRevisor,
+                "regnskapsforer" to regnskapsforer(it.regnskapsforer),
+                "revisor" to revisor(it.revisor)
+            )
+        }
+    }
+
+    private fun List<Naringstype>.somMapNaringstype(): List<Map<String, Any?>> {
+        val dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy").withZone(ZoneId.of("Europe/Oslo"))
+        return map {
+            mapOf(
+                "typeDetaljert" to it.detaljert
+            )
+        }
+    }
+
+    private fun varigEndring(varigEndring: VarigEndring?) = when (varigEndring) {
+        null -> null
+        else -> {
+            mapOf(
+                "dato" to varigEndring.dato,
+                "inntektEtterEndring" to varigEndring.inntektEtterEndring,
+                "forklaring" to varigEndring.forklaring
+            )
+        }
+    }
+
+    private fun revisor(revisor: Revisor?) = when (revisor) {
+        null -> null
+        else -> {
+            mapOf(
+                "navn" to revisor.navn,
+                "telefon" to revisor.telefon,
+                "erNarVennFamilie" to revisor.erNarVennFamilie,
+                "kanInnhenteOpplysninger" to revisor.kanInnhenteOpplysninger
+            )
+        }
+    }
+
+    private fun regnskapsforer(regnskapsforer: Regnskapsforer?) = when (regnskapsforer) {
+        null -> null
+        else -> {
+            mapOf(
+                "navn" to regnskapsforer.navn,
+                "telefon" to regnskapsforer.telefon,
+                "erNarVennFamilie" to regnskapsforer.erNarVennFamilie
             )
         }
     }
