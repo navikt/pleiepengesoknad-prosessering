@@ -389,10 +389,72 @@
         <h2><span>Selvstendig næringsdrivende</span></h2>
         {{# each selvstendigVirksomheter.virksomhet as |virksomhet|~}}
             <ul>
-                <p>Navn på virksomhet: {{virksomhet.navnPaVirksomheten }}</p>
-                <p>Fra og med: {{virksomhet.fraOgMed}}</p>
-                <p>Til og med: {{virksomhet.tilOgMed}}</p>
-                <p>Er pågående: {{virksomhet.erPagaende}}</p>
+                <h3>{{virksomhet.navnPaVirksomheten}} ({{virksomhet.fraOgMed}} -
+                    {{#if virksomhet.tilOgMed}}
+                        {{virksomhet.tilOgMed}})
+                    {{else}}
+                        pågående)
+                    {{/if}}</h3>
+                    <p>Næringstype:
+                    {{# each virksomhet.naringstype as |naringstype|~}}
+                        {{#if @first}}
+                            {{naringstype.typeDetaljert}}
+                        {{else}}
+                            , {{naringstype.typeDetaljert}}
+                        {{/if}}
+                    {{/each}}</p>
+                <p>Næringsinntekt: {{virksomhet.naringsinntekt}},-</p>
+                {{#if virksomhet.registrertINorge}}
+                    <p>Registrert i Norge</p>
+                    <p>Organisasjonsnummeret: {{virksomhet.organisasjonsnummer}}</p>
+                {{else}}
+                    <p>Registrert i land: {{virksomhet.registrertILand}}</p>
+                {{/if}}
+
+                {{#if virksomhet.yrkesaktivSisteTreFerdigliknedeArene}}
+                    <p>Oppgi dato for når du ble yrkesaktiv: {{virksomhet.yrkesaktivSisteTreFerdigliknedeArene}}</p>
+                {{/if}}
+
+                {{#if virksomhet.harVarigEndringAvInntektSiste4Kalenderar}}
+                    <h3>Varig endring</h3>
+                    <ul>
+                        <p>Dato for endring: {{virksomhet.varigEndring.dato}}</p>
+                        <p>Næringsinntekten etter endringen: {{virksomhet.varigEndring.inntektEtterEndring}}</p>
+                        <div class="fritekst">
+                            <p class="sporsmalstekst"><img class="lite_ikon" src="{{ image "Fritekst.png" }}"/>Søkers
+                                forklaring:</p>
+                            <p class="fritekst_textarea">{{virksomhet.varigEndring.forklaring}}</p>
+                        </div>
+                    </ul>
+                {{/if}}
+                {{#if virksomhet.harRegnskapsforer}}
+                    <h3>Regnskapsfører:</h3>
+                    <ul>
+                        <p>Navn: {{virksomhet.regnskapsforer.navn}}</p>
+                        <p>Telefon: {{virksomhet.regnskapsforer.telefon}}</p>
+                        <p class="sporsmalstekst">Er dere nære venner eller i familie?</p>
+                        {{>jaNeiCheckbox parameter=virksomhet.regnskapsforer.erNarVennFamilie}}
+                    </ul>
+                {{else}}
+                    {{#if virksomhet.harRevisor}}
+                        <h3>Revisor:</h3>
+                        <ul>
+                            <p>Navn: {{virksomhet.revisor.navn}}</p>
+                            <p>Telefon: {{virksomhet.revisor.telefon}}</p>
+                            <p class="sporsmalstekst">Er dere nære venner eller i familie?</p>
+                            {{>jaNeiCheckbox parameter=virksomhet.revisor.erNarVennFamilie}}
+                            {{#if virksomhet.revisor.erNarVennFamilie}}
+                                <p class="sporsmalstekst">Gir du NAV fullmakt til å innhente opplysninger direkte fra revisor?</p>
+                                {{>jaNeiCheckbox parameter=virksomhet.revisor.erNarVennFamilie}}
+                            {{/if}}
+                        </ul>
+                    {{/if}}
+                {{/if}}
+                {{#if @last}}
+                    <!--Setter ikke <hr/> på siste linje -->
+                {{else}}
+                    <hr/>
+                {{/if}}
             </ul>
         {{/each}}
     {{/if}}
