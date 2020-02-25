@@ -732,4 +732,3 @@ class PdfV1GeneratorTest {
         genererOppsummeringsPdfer(true)
     }
 }
-
