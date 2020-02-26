@@ -328,7 +328,6 @@ class PdfV1GeneratorTest {
     )
 
     private fun genererOppsummeringsPdfer(writeBytes: Boolean) {
-
         var id = "1-full-søknad"
         var pdf = generator.generateSoknadOppsummeringPdf(
             melding = fullGyldigMelding(soknadsId = id),
@@ -703,7 +702,6 @@ class PdfV1GeneratorTest {
         )
 
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
-
 
          id = "22-har-du-hatt-inntekt-som-selvstendig-næringsdrivende"
          pdf = generator.generateSoknadOppsummeringPdf(
