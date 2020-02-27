@@ -364,24 +364,6 @@
         <p>Når startet du som frilanser? {{frilans.startdato}}</p>
         <p class="sporsmalstekst">Jobber du fortsatt som frilanser?</p>
         {{>jaNeiCheckbox parameter=frilans.jobberFortsattSomFrilans}}
-        <p class="sporsmalstekst">Har du hatt oppdrag for nær venn eller familie de siste 10 månedene?</p>
-        {{>jaNeiCheckbox parameter=frilans.harHattOppdragForFamilie}}
-        {{#if frilans.oppdrag}}
-            <ul>
-                {{# each frilans.oppdrag as |oppdrag|~}}
-                    <li>
-                        {{oppdrag.arbeidsgivernavn}} ({{oppdrag.fraOgMed}} -
-                        {{#if oppdrag.tilOgMed}}
-                            {{oppdrag.tilOgMed}})
-                        {{else}}
-                            pågående)
-                        {{/if}}
-                    </li>
-                {{/each}}
-            </ul>
-        {{/if}}
-        <p class="sporsmalstekst">Har du hatt inntekt som forsterforelder?</p>
-        {{>jaNeiCheckbox parameter=frilans.harHattInntektSomFosterforelder}}
     {{/if}}
 
     <!-- MEDLEMSKAP -->

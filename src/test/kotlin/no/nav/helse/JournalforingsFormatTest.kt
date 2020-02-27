@@ -97,18 +97,8 @@ class JournalforingsFormatTest {
             ]
           },
             "frilans": {
-              "har_hatt_oppdrag_for_familie": true,
-              "har_hatt_inntekt_som_fosterforelder": true,
               "startdato": "2018-02-01",
-              "jobber_fortsatt_som_frilans": true,
-              "oppdrag": [
-                {
-                  "arbeidsgivernavn": "Montesorri barnehage",
-                  "fra_og_med": "2019-02-01",
-                  "til_og_med": null,
-                  "er_pagaende": true
-                }
-              ]
+              "jobber_fortsatt_som_frilans": true
             }
         }
         """.trimIndent(), String(json), true)
@@ -176,18 +166,8 @@ class JournalforingsFormatTest {
         utenlandsoppholdIPerioden = UtenlandsoppholdIPerioden(skalOppholdeSegIUtlandetIPerioden = false, opphold = listOf()),
         ferieuttakIPerioden = FerieuttakIPerioden(skalTaUtFerieIPerioden = false, ferieuttak = listOf()),
         frilans = Frilans(
-            harHattOppdragForFamilie = true,
-            harHattInntektSomFosterforelder = true,
             startdato = LocalDate.parse("2018-02-01"),
-            jobberFortsattSomFrilans = true,
-            oppdrag = listOf(
-                Oppdrag(
-                    arbeidsgivernavn = "Montesorri barnehage",
-                    fraOgMed = LocalDate.parse("2019-02-01"),
-                    tilOgMed = null,
-                    erPagaende = true
-                )
-            )
+            jobberFortsattSomFrilans = true
         )
     )
 }

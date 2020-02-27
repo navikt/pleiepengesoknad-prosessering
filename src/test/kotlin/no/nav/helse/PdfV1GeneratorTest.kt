@@ -117,18 +117,8 @@ class PdfV1GeneratorTest {
             utenlandsoppholdIPerioden = null,
             ferieuttakIPerioden = null,
             frilans = Frilans(
-                harHattOppdragForFamilie = true,
-                harHattInntektSomFosterforelder = true,
                 startdato = LocalDate.now().minusYears(3),
-                jobberFortsattSomFrilans = true,
-                oppdrag = listOf(
-                    Oppdrag(
-                        arbeidsgivernavn = "Motesorri barnehage",
-                        fraOgMed = LocalDate.now().minusYears(2),
-                        tilOgMed = null,
-                        erPagaende = true
-                    )
-                )
+                jobberFortsattSomFrilans = true
             )
         )
     }
@@ -180,31 +170,8 @@ class PdfV1GeneratorTest {
             skalBoIUtlandetNeste12Mnd = false
         ),
         frilans: Frilans = Frilans(
-            harHattOppdragForFamilie = true,
-            harHattInntektSomFosterforelder = true,
             startdato = LocalDate.now().minusYears(3),
-            jobberFortsattSomFrilans = true,
-            oppdrag = listOf(
-                Oppdrag(
-                    arbeidsgivernavn = "Motesorri barnehage",
-                    fraOgMed = LocalDate.now().minusYears(2),
-                    tilOgMed = null,
-                    erPagaende = true
-                ),
-                Oppdrag(
-                    arbeidsgivernavn = "BariBar",
-                    fraOgMed = LocalDate.now().minusYears(1),
-                    tilOgMed = LocalDate.now(),
-                    erPagaende = false
-                ),
-                Oppdrag(
-                    arbeidsgivernavn = "TullOgTøys",
-                    fraOgMed = LocalDate.now().minusYears(3),
-                    tilOgMed = LocalDate.now(),
-                    erPagaende = false
-                )
-
-            )
+            jobberFortsattSomFrilans = true
         )
     ) = MeldingV1(
         sprak = sprak,
