@@ -274,7 +274,8 @@ class PdfV1GeneratorTest {
                 )
             ),
             Virksomhet(
-                naringstype = listOf(Naringstype.ANNET),
+                naringstype = listOf(Naringstype.ANNET, Naringstype.FISKER),
+                fiskerinfo = listOf(Fiskerinfo.BLAD_A, Fiskerinfo.HYRE),
                 fraOgMed = LocalDate.now(),
                 tilOgMed = LocalDate.now().plusDays(10),
                 erPagaende = false,
