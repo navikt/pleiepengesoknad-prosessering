@@ -403,6 +403,17 @@
                             , {{naringstype.typeDetaljert}}
                         {{/if}}
                     {{/each}}</p>
+                {{#if virksomhet.fiskerinfo}}
+                    <p>Fiskeinfo:
+                        {{# each virksomhet.fiskerinfo as |fiskerinfo|~}}
+                            {{#if @first}}
+                                {{fiskerinfo.fiskerinfoName}}
+                            {{else}}
+                                , {{fiskerinfo.fiskerinfoName}}
+                            {{/if}}
+                        {{/each}}</p>
+                {{/if}}
+
                 <p>Næringsinntekt: {{virksomhet.naringsinntekt}},-</p>
                 {{#if virksomhet.registrertINorge}}
                     <p>Registrert i Norge</p>

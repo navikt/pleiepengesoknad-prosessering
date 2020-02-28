@@ -152,11 +152,11 @@ internal class PdfV1Generator  {
     }
 
     private fun List<Virksomhet>.somMapVirksomheter(): List<Map<String, Any?>> {
-        val dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy").withZone(ZoneId.of("Europe/Oslo"))
         return map {
             mapOf(
                 "navnPaVirksomheten" to it.navnPaVirksomheten,
                 "naringstype" to it.naringstype.somMapNaringstype(),
+                "fiskerinfo" to it.fiskerinfo?.somMapFiskerinfo(),
                 "fraOgMed" to it.fraOgMed,
                 "tilOgMed" to it.tilOgMed,
                 "erPagaende" to it.erPagaende,
@@ -177,10 +177,17 @@ internal class PdfV1Generator  {
     }
 
     private fun List<Naringstype>.somMapNaringstype(): List<Map<String, Any?>> {
-        val dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy").withZone(ZoneId.of("Europe/Oslo"))
         return map {
             mapOf(
                 "typeDetaljert" to it.detaljert
+            )
+        }
+    }
+
+    private fun List<Fiskerinfo>.somMapFiskerinfo(): List<Map<String, Any?>> {
+        return map {
+            mapOf(
+                "fiskerinfoName" to it.name
             )
         }
     }
