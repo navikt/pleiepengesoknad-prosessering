@@ -590,6 +590,7 @@ class PleiepengesoknadProsesseringTest {
         val journalførtMelding: TopicEntry<Journalfort> = journalførtConsumer.hentJournalførtMelding(melding.soknadId)
         val joournalførtMeldingJson = journalførtMelding.data.søknad.toString()
         assertNotNull(journalførtMelding)
+        assertNotNull(journalførtMelding.data.journalpostId)
         JSONAssert.assertEquals(forventet, joournalførtMeldingJson, false)
     }
 
