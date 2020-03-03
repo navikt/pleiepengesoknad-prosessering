@@ -34,7 +34,6 @@ import kotlin.test.assertNotNull
 
 
 @KtorExperimentalAPI
-@Ignore
 class PleiepengesoknadProsesseringTest {
 
     @KtorExperimentalAPI
