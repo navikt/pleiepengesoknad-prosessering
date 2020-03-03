@@ -219,14 +219,7 @@ private fun List<Virksomhet>.tilK9SelvstendigNæringsdrivende(): SelvstendigNær
 }
 
 private fun Frilans.tilK9Frilanser(): Frilanser {
-    val perioder = mutableMapOf<Periode, Frilanser.FrilanserPeriodeInfo>()
-    oppdrag.forEach {
-        perioder.put(
-            Periode.builder().fraOgMed(it.fraOgMed).tilOgMed(it.tilOgMed).build(),
-            Frilanser.FrilanserPeriodeInfo()
-        )
-    }
     return Frilanser.builder()
-        .perioder(perioder)
+        .periode(Periode.builder().fraOgMed(this.startdato).build(), Frilanser.FrilanserPeriodeInfo())
         .build()
 }

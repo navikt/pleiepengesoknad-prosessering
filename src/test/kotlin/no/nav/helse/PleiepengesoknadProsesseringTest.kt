@@ -393,24 +393,8 @@ class PleiepengesoknadProsesseringTest {
                 )
             ),
             frilans = Frilans(
-                harHattOppdragForFamilie = true,
-                harHattInntektSomFosterforelder = true,
-                startdato = LocalDate.now().minusYears(3),
-                jobberFortsattSomFrilans = true,
-                oppdrag = listOf(
-                    Oppdrag(
-                        arbeidsgivernavn = "Montesorri barnehage",
-                        fraOgMed = LocalDate.parse("2019-10-01"),
-                        tilOgMed = LocalDate.parse("2019-12-01"),
-                        erPagaende = false
-                    ),
-                    Oppdrag(
-                        arbeidsgivernavn = "Bislett Kebab House",
-                        fraOgMed = LocalDate.parse("2019-12-02"),
-                        tilOgMed = LocalDate.parse("2019-12-31"),
-                        erPagaende = true
-                    )
-                )
+                startdato = LocalDate.parse("2018-08-01"),
+                jobberFortsattSomFrilans = true
             ),
             selvstendigVirksomheter = listOf(
                 Virksomhet(
@@ -603,8 +587,7 @@ class PleiepengesoknadProsesseringTest {
         }],
         "frilanser" : [ {
           "perioder" : {
-            "2019-12-02/2019-12-31" : { },
-            "2019-10-01/2019-12-01" : { }
+            "2018-08-01/.." : { }
           }
         } ]
       },
