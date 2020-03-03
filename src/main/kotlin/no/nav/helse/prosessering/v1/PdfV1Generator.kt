@@ -209,7 +209,6 @@ internal class PdfV1Generator  {
             mapOf(
                 "navn" to revisor.navn,
                 "telefon" to revisor.telefon,
-                "erNarVennFamilie" to revisor.erNarVennFamilie,
                 "kanInnhenteOpplysninger" to revisor.kanInnhenteOpplysninger
             )
         }
@@ -220,8 +219,7 @@ internal class PdfV1Generator  {
         else -> {
             mapOf(
                 "navn" to regnskapsforer.navn,
-                "telefon" to regnskapsforer.telefon,
-                "erNarVennFamilie" to regnskapsforer.erNarVennFamilie
+                "telefon" to regnskapsforer.telefon
             )
         }
     }
