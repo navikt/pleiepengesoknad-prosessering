@@ -443,7 +443,6 @@
                     <ul>
                         <p>Navn: {{virksomhet.regnskapsforer.navn}}</p>
                         <p>Telefon: {{virksomhet.regnskapsforer.telefon}}</p>
-                        <p class="sporsmalstekst">Er dere nære venner eller i familie?</p>
                     </ul>
                 {{else}}
                     {{#if virksomhet.harRevisor}}
@@ -451,7 +450,6 @@
                         <ul>
                             <p>Navn: {{virksomhet.revisor.navn}}</p>
                             <p>Telefon: {{virksomhet.revisor.telefon}}</p>
-                            <p class="sporsmalstekst">Er dere nære venner eller i familie?</p>
                             <p class="sporsmalstekst">Gir du NAV fullmakt til å innhente opplysninger direkte fra revisor?</p>
                             {{>jaNeiCheckbox parameter=virksomhet.revisor.kanInnhenteOpplysninger}}
                         </ul>
