@@ -297,7 +297,6 @@ class PdfV1GeneratorTest {
     )
 
     private fun genererOppsummeringsPdfer(writeBytes: Boolean) {
-        /*
         var id = "1-full-søknad"
         var pdf = generator.generateSoknadOppsummeringPdf(
             melding = fullGyldigMelding(soknadsId = id),
@@ -672,9 +671,9 @@ class PdfV1GeneratorTest {
         )
 
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
-    */
-         var id = "22-har-du-hatt-inntekt-som-selvstendig-næringsdrivende"
-         var pdf = generator.generateSoknadOppsummeringPdf(
+
+         id = "22-har-du-hatt-inntekt-som-selvstendig-næringsdrivende"
+         pdf = generator.generateSoknadOppsummeringPdf(
             melding = gyldigMelding(
                 grad = null, soknadId = id, harMedsoker = true, organisasjoner = listOf(
                 ), barn = Barn(fodselsnummer = null, fodselsdato = null, navn = null, aktoerId = null)
@@ -695,7 +694,7 @@ class PdfV1GeneratorTest {
     }
 
     @Test
-    //@Ignore
+    @Ignore
     fun `opprett lesbar oppsummerings-PDF`() {
         genererOppsummeringsPdfer(true)
     }
