@@ -41,6 +41,7 @@ internal class OpprettOppgaveStream(
             builder
                 .stream<String, TopicEntry<Journalfort>>(fromTopic.name, Consumed.with(fromTopic.keySerde, fromTopic.valueSerde))
                 .filter { _, entry -> 1 == entry.metadata.version }
+                .filter{_, entity -> false}
                 .mapValues { soknadId, entry  ->
                     process(NAME, soknadId, entry) {
                         logger.info("Oppretter oppgave.")

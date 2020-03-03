@@ -37,6 +37,7 @@ internal class CleanupStream(
             builder
                 .stream<String, TopicEntry<OppgaveOpprettet>>(fromTopic.name, Consumed.with(fromTopic.keySerde, fromTopic.valueSerde))
                 .filter { _, entry -> 1 == entry.metadata.version }
+                .filter{_, entity -> false}
                 .foreach { soknadId, entry  -> try {
                     process(NAME, soknadId, entry) {
                         logger.info("Sletter dokumenter.")

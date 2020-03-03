@@ -19,6 +19,7 @@ import no.nav.helse.prosessering.v1.asynkron.OppgaveOpprettet
 import no.nav.helse.prosessering.v1.asynkron.TopicEntry
 import org.junit.AfterClass
 import org.junit.BeforeClass
+import org.junit.Ignore
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.net.URI
@@ -33,6 +34,7 @@ import kotlin.test.assertNotNull
 
 
 @KtorExperimentalAPI
+@Ignore
 class PleiepengesoknadProsesseringTest {
 
     @KtorExperimentalAPI
