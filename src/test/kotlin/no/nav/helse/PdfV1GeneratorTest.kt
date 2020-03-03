@@ -146,7 +146,6 @@ class PdfV1GeneratorTest {
                     revisor = Revisor(
                         navn = "Kjell Revisor",
                         telefon = "9999",
-                        erNarVennFamilie = true,
                         kanInnhenteOpplysninger = true
                     )
                 ),
@@ -169,8 +168,7 @@ class PdfV1GeneratorTest {
                     harRegnskapsforer = true,
                     regnskapsforer = Regnskapsforer(
                         navn = "Bjarne Regnskap",
-                        telefon = "65484578",
-                        erNarVennFamilie = true
+                        telefon = "65484578"
                     )
                 )
             )
@@ -269,8 +267,7 @@ class PdfV1GeneratorTest {
                 harRegnskapsforer = true,
                 regnskapsforer = Regnskapsforer(
                     navn = "Bjarne Regnskap",
-                    telefon = "65484578",
-                    erNarVennFamilie = true
+                    telefon = "65484578"
                 )
             ),
             Virksomhet(
@@ -289,7 +286,6 @@ class PdfV1GeneratorTest {
                 revisor = Revisor(
                     navn = "Kjell",
                     telefon = "9999",
-                    erNarVennFamilie = true,
                     kanInnhenteOpplysninger = true
                 )
             )
