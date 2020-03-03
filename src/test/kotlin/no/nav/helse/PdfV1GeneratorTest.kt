@@ -117,60 +117,8 @@ class PdfV1GeneratorTest {
             utenlandsoppholdIPerioden = null,
             ferieuttakIPerioden = null,
             frilans = Frilans(
-                harHattOppdragForFamilie = true,
-                harHattInntektSomFosterforelder = true,
                 startdato = LocalDate.now().minusYears(3),
-                jobberFortsattSomFrilans = true,
-                oppdrag = listOf(
-                    Oppdrag(
-                        arbeidsgivernavn = "Motesorri barnehage",
-                        fraOgMed = LocalDate.now().minusYears(2),
-                        tilOgMed = null,
-                        erPagaende = true
-                    )
-                )
-            ),
-            selvstendigVirksomheter = listOf(
-                Virksomhet(
-                    naringstype = listOf(Naringstype.ANNET),
-                    fraOgMed = LocalDate.now(),
-                    tilOgMed = LocalDate.now().plusDays(10),
-                    erPagaende = false,
-                    naringsinntekt = 3623241,
-                    navnPaVirksomheten = "Kjells Møbelsnekkeri",
-                    registrertINorge = true,
-                    organisasjonsnummer = "101010",
-                    harVarigEndringAvInntektSiste4Kalenderar = false,
-                    harRegnskapsforer = false,
-                    harRevisor = true,
-                    revisor = Revisor(
-                        navn = "Kjell Revisor",
-                        telefon = "9999",
-                        kanInnhenteOpplysninger = true
-                    )
-                ),
-                Virksomhet(
-                    naringstype = listOf(Naringstype.JORDBRUK, Naringstype.DAGMAMMA),
-                    fraOgMed = LocalDate.now(),
-                    erPagaende = true,
-                    naringsinntekt = 1111,
-                    navnPaVirksomheten = "Tull Og Tøys",
-                    registrertINorge = false,
-                    registrertILand = "Bahamas",
-                    harBlittYrkesaktivSisteTreFerdigliknendeArene = true,
-                    yrkesaktivSisteTreFerdigliknedeArene = YrkesaktivSisteTreFerdigliknedeArene(LocalDate.now()),
-                    harVarigEndringAvInntektSiste4Kalenderar = true,
-                    varigEndring = VarigEndring(
-                        dato = LocalDate.now().minusDays(20),
-                        inntektEtterEndring = 234543,
-                        forklaring = "Forklaring som handler om varig endring"
-                    ),
-                    harRegnskapsforer = true,
-                    regnskapsforer = Regnskapsforer(
-                        navn = "Bjarne Regnskap",
-                        telefon = "65484578"
-                    )
-                )
+                jobberFortsattSomFrilans = true
             )
         )
     }
@@ -222,73 +170,8 @@ class PdfV1GeneratorTest {
             skalBoIUtlandetNeste12Mnd = false
         ),
         frilans: Frilans = Frilans(
-            harHattOppdragForFamilie = true,
-            harHattInntektSomFosterforelder = true,
             startdato = LocalDate.now().minusYears(3),
-            jobberFortsattSomFrilans = true,
-            oppdrag = listOf(
-                Oppdrag(
-                    arbeidsgivernavn = "Motesorri barnehage",
-                    fraOgMed = LocalDate.now().minusYears(2),
-                    tilOgMed = null,
-                    erPagaende = true
-                ),
-                Oppdrag(
-                    arbeidsgivernavn = "BariBar",
-                    fraOgMed = LocalDate.now().minusYears(1),
-                    tilOgMed = LocalDate.now(),
-                    erPagaende = false
-                ),
-                Oppdrag(
-                    arbeidsgivernavn = "TullOgTøys",
-                    fraOgMed = LocalDate.now().minusYears(3),
-                    tilOgMed = LocalDate.now(),
-                    erPagaende = false
-                )
-            )
-        ),
-        selvstendigVirksomheter: List<Virksomhet> = listOf(
-            Virksomhet(
-                naringstype = listOf(Naringstype.JORDBRUK, Naringstype.DAGMAMMA),
-                fraOgMed = LocalDate.now(),
-                erPagaende = true,
-                naringsinntekt = 1111,
-                navnPaVirksomheten = "Tull Og Tøys",
-                registrertINorge = false,
-                registrertILand = "Bahamas",
-                harBlittYrkesaktivSisteTreFerdigliknendeArene = true,
-                yrkesaktivSisteTreFerdigliknedeArene = YrkesaktivSisteTreFerdigliknedeArene(LocalDate.now()),
-                harVarigEndringAvInntektSiste4Kalenderar = true,
-                varigEndring = VarigEndring(
-                    dato = LocalDate.now().minusDays(20),
-                    inntektEtterEndring = 234543,
-                    forklaring = "Varig endring masse forklaringer"
-                ),
-                harRegnskapsforer = true,
-                regnskapsforer = Regnskapsforer(
-                    navn = "Bjarne Regnskap",
-                    telefon = "65484578"
-                )
-            ),
-            Virksomhet(
-                naringstype = listOf(Naringstype.ANNET, Naringstype.FISKER),
-                fiskerinfo = listOf(Fiskerinfo.BLAD_A, Fiskerinfo.HYRE),
-                fraOgMed = LocalDate.now(),
-                tilOgMed = LocalDate.now().plusDays(10),
-                erPagaende = false,
-                naringsinntekt = 3623241,
-                navnPaVirksomheten = "Kjells Møbelsnekkeri",
-                registrertINorge = true,
-                organisasjonsnummer = "101010",
-                harVarigEndringAvInntektSiste4Kalenderar = false,
-                harRegnskapsforer = false,
-                harRevisor = true,
-                revisor = Revisor(
-                    navn = "Kjell",
-                    telefon = "9999",
-                    kanInnhenteOpplysninger = true
-                )
-            )
+            jobberFortsattSomFrilans = true
         )
     ) = MeldingV1(
         sprak = sprak,

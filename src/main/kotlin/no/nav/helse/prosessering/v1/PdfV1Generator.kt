@@ -228,23 +228,8 @@ internal class PdfV1Generator  {
         frilans == null -> null
         else -> {
             mapOf(
-                "harHattOppdragForFamilie" to frilans.harHattOppdragForFamilie,
-                "harHattInntektSomFosterforelder" to frilans.harHattInntektSomFosterforelder,
                 "startdato" to frilans.startdato,
-                "jobberFortsattSomFrilans" to frilans.jobberFortsattSomFrilans,
-                "oppdrag" to frilans.oppdrag.somMapOppdrag()
-            )
-        }
-    }
-
-    private fun List<Oppdrag>.somMapOppdrag(): List<Map<String, Any?>> {
-        val dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy").withZone(ZoneId.of("Europe/Oslo"))
-        return map {
-            mapOf<String,Any?>(
-                "arbeidsgivernavn" to it.arbeidsgivernavn,
-                "fraOgMed" to dateFormatter.format(it.fraOgMed),
-                "tilOgMed" to it.tilOgMed?.let {dateFormatter.format(it)},
-                "erPaagaende" to it.erPagaende
+                "jobberFortsattSomFrilans" to frilans.jobberFortsattSomFrilans
             )
         }
     }
