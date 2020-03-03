@@ -1,5 +1,6 @@
 package no.nav.helse.prosessering.v1.asynkron
 
+import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
@@ -14,7 +15,7 @@ import org.apache.kafka.common.serialization.Serializer
 import org.apache.kafka.common.serialization.StringSerializer
 
 data class TopicEntry<V>(val metadata: Metadata, val data: V)
-data class Journalfort(val journalpostId: String, val søknad: JsonNode)
+data class Journalfort(@JsonProperty("journalpostId") val journalpostId: String, val søknad: JsonNode)
 data class Cleanup(val metadata: Metadata, val melding: PreprossesertMeldingV1, val journalførtMelding: Journalfort)
 
 internal data class Topic<V>(

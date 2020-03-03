@@ -1,7 +1,5 @@
 package no.nav.helse
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.typesafe.config.ConfigFactory
@@ -495,100 +493,107 @@ class PleiepengesoknadProsesseringTest {
         kafkaTestProducer.leggSoknadTilProsessering(melding)
         val forventet: String = """
 {
-  "versjon": "1.0.0",
-  "søknadId": "583a3cf8-767a-49f4-a5dd-619df2c72c7a",
-  "mottattDato": "2019-10-20T07:15:36.124Z",
-  "språk": "nb",
-  "søker": {
-    "norskIdentitetsnummer": "02119970078"
-  },
-  "perioder": {
-    "2020-01-06/2020-01-10": {}
-  },
-  "barn": {
-    "fødselsdato": null,
-    "norskIdentitetsnummer": "19066672169"
-  },
-  "bosteder": {
-    "perioder": {
-      "2019-06-15/2019-06-28": {
-        "land": "POL"
+  "data" : {
+    "journalpostId" : "9101112",
+    "søknad" : {
+      "søknadId" : "583a3cf8-767a-49f4-a5dd-619df2c72c7a",
+      "versjon" : "1.0.0",
+      "perioder" : {
+        "2020-01-06/2020-01-10" : { }
       },
-      "2019-07-01/2019-07-10": {
-        "land": "DK"
-      }
-    }
-  },
-  "utenlandsopphold": {
-    "perioder": {
-      "2020-06-15/2020-06-28": {
-        "land": "AW",
-        "årsak": "barnetInnlagtIHelseinstitusjonForNorskOffentligRegning"
-      }
-    }
-  },
-  "beredskap": {
-    "perioder": {
-      "2020-01-06/2020-01-10": {
-        "tilleggsinformasjon": "I Beredskap"
-      }
-    }
-  },
-  "nattevåk": {
-    "perioder": {
-      "2020-01-06/2020-01-10": {
-        "tilleggsinformasjon": "Har Nattevåk"
-      }
-    }
-  },
-  "tilsynsordning": {
-    "iTilsynsordning": "ja",
-    "opphold": {
-      "2020-01-06/2020-01-10": {
-        "lengde": "PT37H30M"
-      }
-    }
-  },
-  "arbeid": {
-    "arbeidstaker": [
-      {
-        "organisasjonsnummer": "917755736",
-        "norskIdentitetsnummer": null,
-        "perioder": {
-          "2020-01-06/2020-01-10": {
-            "skalJobbeProsent": 50.25
+      "mottattDato" : "2019-10-20T07:15:36.124Z",
+      "språk" : "nb",
+      "søker" : {
+        "norskIdentitetsnummer" : "02119970078"
+      },
+      "barn" : {
+        "norskIdentitetsnummer" : "19066672169",
+        "fødselsdato" : null
+      },
+      "bosteder" : {
+        "perioder" : {
+          "2020-06-15/2020-06-28" : {
+            "land" : "AW"
+          },
+          "2019-07-01/2019-07-10" : {
+            "land" : "DK"
+          },
+          "2020-07-01/2020-07-10" : {
+            "land" : "BG"
+          },
+          "2019-06-15/2019-06-28" : {
+            "land" : "POL"
           }
         }
       },
-      {
-        "organisasjonsnummer": "917755737",
-        "norskIdentitetsnummer": null,
-        "perioder": {
-          "2020-01-06/2020-01-10": {
-            "skalJobbeProsent": 20.00
+      "utenlandsopphold" : {
+        "perioder" : {
+          "2020-06-15/2020-06-28" : {
+            "land" : "AW",
+            "årsak" : "barnetInnlagtIHelseinstitusjonForNorskOffentligRegning"
           }
         }
-      }
-    ],
-    "frilanser": [
-      {
-        "perioder": {
-          "2019-10-01/2019-12-01": {},
-          "2019-12-02/2019-12-31": {}
+      },
+      "beredskap" : {
+        "perioder" : {
+          "2020-01-06/2020-01-10" : {
+            "tilleggsinformasjon" : "I Beredskap"
+          }
+        }
+      },
+      "nattevåk" : {
+        "perioder" : {
+          "2020-01-06/2020-01-10" : {
+            "tilleggsinformasjon" : "Har Nattevåk"
+          }
+        }
+      },
+      "tilsynsordning" : {
+        "iTilsynsordning" : "ja",
+        "opphold" : {
+          "2020-01-06/2020-01-10" : {
+            "lengde" : "PT37H30M"
+          }
+        }
+      },
+      "arbeid" : {
+        "arbeidstaker" : [ {
+          "norskIdentitetsnummer" : null,
+          "organisasjonsnummer" : "917755736",
+          "perioder" : {
+            "2020-01-06/2020-01-10" : {
+              "skalJobbeProsent" : 50.25
+            }
+          }
+        }, {
+          "norskIdentitetsnummer" : null,
+          "organisasjonsnummer" : "917755737",
+          "perioder" : {
+            "2020-01-06/2020-01-10" : {
+              "skalJobbeProsent" : 20.0
+            }
+          }
+        } ],
+        "selvstendigNæringsdrivende" : [ ],
+        "frilanser" : [ {
+          "perioder" : {
+            "2019-12-02/2019-12-31" : { },
+            "2019-10-01/2019-12-01" : { }
+          }
+        } ]
+      },
+      "lovbestemtFerie" : {
+        "perioder" : {
+          "2020-01-07/2020-01-08" : { },
+          "2020-01-09/2020-01-10" : { }
         }
       }
-    ]
-  },
-  "lovbestemtFerie": {
-    "perioder": {
-      "2020-01-07/2020-01-08": {},
-      "2020-01-09/2020-01-10": {}
     }
   }
 }
         """.trimIndent()
         val journalførtMelding: TopicEntry<Journalfort> = journalførtConsumer.hentJournalførtMelding(melding.soknadId)
-        val joournalførtMeldingJson = journalførtMelding.data.søknad.toString()
+        val joournalførtMeldingJson = jacksonObjectMapper().dusseldorfConfigured().writeValueAsString(journalførtMelding)
         assertNotNull(journalførtMelding)
         assertNotNull(journalførtMelding.data.journalpostId)
         JSONAssert.assertEquals(forventet, joournalførtMeldingJson, false)
