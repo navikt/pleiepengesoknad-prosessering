@@ -110,22 +110,22 @@ fun Tilsynsordning.tilK9Tilsynsordning(
     tilOgMed: LocalDate
 ): no.nav.k9.søknad.pleiepengerbarn.Tilsynsordning {
     val builder = no.nav.k9.søknad.pleiepengerbarn.Tilsynsordning.builder()
+    val tilsynsordningSvar = when (svar) {
+        "ja" -> TilsynsordningSvar.JA
+        "nei" -> TilsynsordningSvar.NEI
+        else -> throw IllegalArgumentException("Ikke gyldig tilsynsordningsvar. Forventet ja/nei, men fikk $svar")
+    }
     return when {
         this.ja != null -> {
-            val tilsynsordningSvar = when (svar) {
-                "ja" -> TilsynsordningSvar.JA
-                "nei" -> TilsynsordningSvar.NEI
-                else -> throw IllegalArgumentException("Ikke gyldig tilsynsordningsvar. Forventet ja/nei, men fikk $svar")
-            }
             builder
                 .iTilsynsordning(tilsynsordningSvar)
                 .uke(this.ja.tilK9TilsynsordningUke(fraOgMed, tilOgMed))
                 .build()
         }
         this.vetIkke != null -> {
-            builder.iTilsynsordning(TilsynsordningSvar.valueOf(svar)).build()
+            builder.iTilsynsordning(tilsynsordningSvar).build()
         }
-        else -> builder.iTilsynsordning(TilsynsordningSvar.valueOf(svar)).build()
+        else -> builder.iTilsynsordning(tilsynsordningSvar).build()
     }
 }
 
