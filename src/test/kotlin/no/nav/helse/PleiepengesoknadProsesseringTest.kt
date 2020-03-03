@@ -412,6 +412,27 @@ class PleiepengesoknadProsesseringTest {
                     )
                 )
             ),
+            selvstendigVirksomheter = listOf(
+                Virksomhet(
+                    naringstype = listOf(),
+                    fraOgMed = LocalDate.parse("2020-01-01"),
+                    erPagaende = false,
+                    naringsinntekt = 123456,
+                    navnPaVirksomheten = "Virksomehet 1",
+                    registrertINorge = true,
+                    harRegnskapsforer = true
+                ),
+                Virksomhet(
+                    naringstype = listOf(),
+                    fraOgMed = LocalDate.parse("2020-02-01"),
+                    tilOgMed = LocalDate.parse("2020-05-01"),
+                    erPagaende = false,
+                    naringsinntekt = 123456,
+                    navnPaVirksomheten = "Virksomehet 2",
+                    registrertINorge = true,
+                    harRegnskapsforer = true
+                )
+            ),
             medlemskap = Medlemskap(
                 harBoddIUtlandetSiste12Mnd = true,
                 utenlandsoppholdSiste12Mnd = listOf(
@@ -574,7 +595,12 @@ class PleiepengesoknadProsesseringTest {
             }
           }
         } ],
-        "selvstendigNæringsdrivende" : [ ],
+        "selvstendigNæringsdrivende" : [{
+            "perioder": {
+              "2020-01-01/..": {},
+              "2020-02-01/2020-05-01": {}
+            }
+        }],
         "frilanser" : [ {
           "perioder" : {
             "2019-12-02/2019-12-31" : { },
@@ -593,7 +619,8 @@ class PleiepengesoknadProsesseringTest {
 }
         """.trimIndent()
         val journalførtMelding: TopicEntry<Journalfort> = journalførtConsumer.hentJournalførtMelding(melding.soknadId)
-        val joournalførtMeldingJson = jacksonObjectMapper().dusseldorfConfigured().writeValueAsString(journalførtMelding)
+        val joournalførtMeldingJson =
+            jacksonObjectMapper().dusseldorfConfigured().writeValueAsString(journalførtMelding)
         assertNotNull(journalførtMelding)
         assertNotNull(journalførtMelding.data.journalpostId)
         JSONAssert.assertEquals(forventet, joournalførtMeldingJson, false)

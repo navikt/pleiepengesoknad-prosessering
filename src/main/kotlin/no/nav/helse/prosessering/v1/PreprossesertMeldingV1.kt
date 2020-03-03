@@ -28,7 +28,8 @@ data class PreprossesertMeldingV1(
     val nattevaak: Nattevaak?,
     val tilsynsordning: Tilsynsordning?,
     val harMedsoker: Boolean,
-    val frilans: Frilans?,
+    val frilans: Frilans? = null,
+    val selvstendigVirksomheter: List<Virksomhet>? = null,
     val harForstattRettigheterOgPlikter: Boolean,
     val harBekreftetOpplysninger: Boolean
 ) {
@@ -58,6 +59,7 @@ data class PreprossesertMeldingV1(
         tilsynsordning = melding.tilsynsordning,
         harMedsoker = melding.harMedsoker,
         frilans = melding.frilans,
+        selvstendigVirksomheter = melding.selvstendigVirksomheter,
         harForstattRettigheterOgPlikter = melding.harForstattRettigheterOgPlikter,
         harBekreftetOpplysninger = melding.harBekreftetOpplysninger,
         utenlandsoppholdIPerioden = melding.utenlandsoppholdIPerioden,

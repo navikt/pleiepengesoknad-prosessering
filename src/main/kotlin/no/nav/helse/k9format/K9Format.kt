@@ -27,6 +27,7 @@ fun PreprossesertMeldingV1.tilK9PleiepengeBarnSøknad(): JsonNode {
         .arbeid(
             arbeidsgivere.tilK9Arbeid(
                 frilans,
+                selvstendigVirksomheter,
                 Periode.builder().fraOgMed(fraOgMed).tilOgMed(tilOgMed).build()
             )
         )
@@ -177,6 +178,7 @@ fun PreprossesertSoker.tilK9Søker(): Søker = Søker.builder()
 
 fun Arbeidsgivere.tilK9Arbeid(
     frilans: Frilans?,
+    selvstendigVirksomheter: List<Virksomhet>?,
     søknadsPeriode: Periode
 ): Arbeid {
 
@@ -194,18 +196,33 @@ fun Arbeidsgivere.tilK9Arbeid(
         }.toMutableList())
 
     frilans?.let {
-        builder.frilanser(frilans.tilK9Frilanser(søknadsPeriode))
+        builder.frilanser(frilans.tilK9Frilanser())
+    }
+
+    selvstendigVirksomheter?.let {
+        builder.selvstendigNæringsdrivende(selvstendigVirksomheter.tilK9SelvstendigNæringsdrivende())
     }
 
 
     return builder.build()
 }
 
-private fun Frilans.tilK9Frilanser(søknadsPeriode: Periode): Frilanser {
+private fun List<Virksomhet>.tilK9SelvstendigNæringsdrivende(): SelvstendigNæringsdrivende {
+    val perioder = mutableMapOf<Periode, SelvstendigNæringsdrivende.SelvstendigNæringsdrivendePeriodeInfo>()
+    map {
+        perioder.put(
+            Periode.builder().fraOgMed(it.fraOgMed).tilOgMed(it.tilOgMed).build(),
+            SelvstendigNæringsdrivende.SelvstendigNæringsdrivendePeriodeInfo()
+        )
+    }
+    return SelvstendigNæringsdrivende.builder().perioder(perioder).build()
+}
+
+private fun Frilans.tilK9Frilanser(): Frilanser {
     val perioder = mutableMapOf<Periode, Frilanser.FrilanserPeriodeInfo>()
     oppdrag.forEach {
         perioder.put(
-            Periode.builder().fraOgMed(it.fraOgMed).tilOgMed(it.tilOgMed?: søknadsPeriode.tilOgMed).build(),
+            Periode.builder().fraOgMed(it.fraOgMed).tilOgMed(it.tilOgMed).build(),
             Frilanser.FrilanserPeriodeInfo()
         )
     }
