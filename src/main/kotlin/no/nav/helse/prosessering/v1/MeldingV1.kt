@@ -52,6 +52,7 @@ data class Virksomhet(
     val registrertILand: String? = null,
     val harBlittYrkesaktivSisteTreFerdigliknendeArene: Boolean? = null,
     val yrkesaktivSisteTreFerdigliknedeArene: YrkesaktivSisteTreFerdigliknedeArene? = null,
+    @JsonProperty("har_varig_endring_av_inntekt_siste_4_kalenderar")
     val harVarigEndringAvInntektSiste4Kalenderar: Boolean? = null,
     val varigEndring: VarigEndring? = null,
     val harRegnskapsforer: Boolean,
