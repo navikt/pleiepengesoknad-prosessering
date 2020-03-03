@@ -129,6 +129,50 @@ class PdfV1GeneratorTest {
                         erPagaende = true
                     )
                 )
+            ),
+            selvstendigVirksomheter = listOf(
+                Virksomhet(
+                    naringstype = listOf(Naringstype.ANNET),
+                    fraOgMed = LocalDate.now(),
+                    tilOgMed = LocalDate.now().plusDays(10),
+                    erPagaende = false,
+                    naringsinntekt = 3623241,
+                    navnPaVirksomheten = "Kjells Møbelsnekkeri",
+                    registrertINorge = true,
+                    organisasjonsnummer = "101010",
+                    harVarigEndringAvInntektSiste4Kalenderar = false,
+                    harRegnskapsforer = false,
+                    harRevisor = true,
+                    revisor = Revisor(
+                        navn = "Kjell Revisor",
+                        telefon = "9999",
+                        erNarVennFamilie = true,
+                        kanInnhenteOpplysninger = true
+                    )
+                ),
+                Virksomhet(
+                    naringstype = listOf(Naringstype.JORDBRUK, Naringstype.DAGMAMMA),
+                    fraOgMed = LocalDate.now(),
+                    erPagaende = true,
+                    naringsinntekt = 1111,
+                    navnPaVirksomheten = "Tull Og Tøys",
+                    registrertINorge = false,
+                    registrertILand = "Bahamas",
+                    harBlittYrkesaktivSisteTreFerdigliknendeArene = true,
+                    yrkesaktivSisteTreFerdigliknedeArene = YrkesaktivSisteTreFerdigliknedeArene(LocalDate.now()),
+                    harVarigEndringAvInntektSiste4Kalenderar = true,
+                    varigEndring = VarigEndring(
+                        dato = LocalDate.now().minusDays(20),
+                        inntektEtterEndring = 234543,
+                        forklaring = "Forklaring som handler om varig endring"
+                    ),
+                    harRegnskapsforer = true,
+                    regnskapsforer = Regnskapsforer(
+                        navn = "Bjarne Regnskap",
+                        telefon = "65484578",
+                        erNarVennFamilie = true
+                    )
+                )
             )
         )
     }
@@ -203,7 +247,51 @@ class PdfV1GeneratorTest {
                     tilOgMed = LocalDate.now(),
                     erPagaende = false
                 )
-
+            )
+        ),
+        selvstendigVirksomheter: List<Virksomhet> = listOf(
+            Virksomhet(
+                naringstype = listOf(Naringstype.JORDBRUK, Naringstype.DAGMAMMA),
+                fraOgMed = LocalDate.now(),
+                erPagaende = true,
+                naringsinntekt = 1111,
+                navnPaVirksomheten = "Tull Og Tøys",
+                registrertINorge = false,
+                registrertILand = "Bahamas",
+                harBlittYrkesaktivSisteTreFerdigliknendeArene = true,
+                yrkesaktivSisteTreFerdigliknedeArene = YrkesaktivSisteTreFerdigliknedeArene(LocalDate.now()),
+                harVarigEndringAvInntektSiste4Kalenderar = true,
+                varigEndring = VarigEndring(
+                    dato = LocalDate.now().minusDays(20),
+                    inntektEtterEndring = 234543,
+                    forklaring = "Varig endring masse forklaringer"
+                ),
+                harRegnskapsforer = true,
+                regnskapsforer = Regnskapsforer(
+                    navn = "Bjarne Regnskap",
+                    telefon = "65484578",
+                    erNarVennFamilie = true
+                )
+            ),
+            Virksomhet(
+                naringstype = listOf(Naringstype.ANNET, Naringstype.FISKER),
+                fiskerinfo = listOf(Fiskerinfo.BLAD_A, Fiskerinfo.HYRE),
+                fraOgMed = LocalDate.now(),
+                tilOgMed = LocalDate.now().plusDays(10),
+                erPagaende = false,
+                naringsinntekt = 3623241,
+                navnPaVirksomheten = "Kjells Møbelsnekkeri",
+                registrertINorge = true,
+                organisasjonsnummer = "101010",
+                harVarigEndringAvInntektSiste4Kalenderar = false,
+                harRegnskapsforer = false,
+                harRevisor = true,
+                revisor = Revisor(
+                    navn = "Kjell",
+                    telefon = "9999",
+                    erNarVennFamilie = true,
+                    kanInnhenteOpplysninger = true
+                )
             )
         )
     ) = MeldingV1(
@@ -236,7 +324,8 @@ class PdfV1GeneratorTest {
         beredskap = beredskap,
         utenlandsoppholdIPerioden = null,
         ferieuttakIPerioden = null,
-        frilans = frilans
+        frilans = frilans,
+        selvstendigVirksomheter = selvstendigVirksomheter
     )
 
     private fun genererOppsummeringsPdfer(writeBytes: Boolean) {
@@ -248,6 +337,7 @@ class PdfV1GeneratorTest {
             fodselsdato = fodselsdato
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
+
         id = "2-utenMedsoker"
         pdf = generator.generateSoknadOppsummeringPdf(
             melding = gyldigMelding(soknadId = id, harMedsoker = false),
@@ -611,7 +701,21 @@ class PdfV1GeneratorTest {
             barnetsNavn = barnetsNavn,
             fodselsdato = null
         )
+
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
+
+         id = "22-har-du-hatt-inntekt-som-selvstendig-næringsdrivende"
+         pdf = generator.generateSoknadOppsummeringPdf(
+            melding = gyldigMelding(
+                grad = null, soknadId = id, harMedsoker = true, organisasjoner = listOf(
+                ), barn = Barn(fodselsnummer = null, fodselsdato = null, navn = null, aktoerId = null)
+            ),
+            barnetsIdent = null,
+            barnetsNavn = barnetsNavn,
+            fodselsdato = null
+        )
+        if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
+
     }
 
     private fun pdfPath(soknadId: String) = "${System.getProperty("user.dir")}/generated-pdf-$soknadId.pdf"

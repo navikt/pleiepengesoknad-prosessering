@@ -109,7 +109,8 @@ class JournalforingsFormatTest {
                   "er_pagaende": true
                 }
               ]
-            }
+            },
+            "selvstendig_virksomheter" : []
         }
         """.trimIndent(), String(json), true)
 
@@ -188,6 +189,8 @@ class JournalforingsFormatTest {
                     erPagaende = true
                 )
             )
+        ),
+        selvstendigVirksomheter = listOf(
         )
     )
 }
