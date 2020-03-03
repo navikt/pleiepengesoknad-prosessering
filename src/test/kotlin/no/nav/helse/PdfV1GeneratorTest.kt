@@ -119,6 +119,48 @@ class PdfV1GeneratorTest {
             frilans = Frilans(
                 startdato = LocalDate.now().minusYears(3),
                 jobberFortsattSomFrilans = true
+            ),
+            selvstendigVirksomheter = listOf(
+                Virksomhet(
+                    naringstype = listOf(Naringstype.ANNET),
+                    fraOgMed = LocalDate.now(),
+                    tilOgMed = LocalDate.now().plusDays(10),
+                    erPagaende = false,
+                    naringsinntekt = 3623241,
+                    navnPaVirksomheten = "Kjells Møbelsnekkeri",
+                    registrertINorge = true,
+                    organisasjonsnummer = "101010",
+                    harVarigEndringAvInntektSiste4Kalenderar = false,
+                    harRegnskapsforer = false,
+                    harRevisor = true,
+                    revisor = Revisor(
+                        navn = "Kjell Revisor",
+                        telefon = "9999",
+                        kanInnhenteOpplysninger = true
+                    )
+                ),
+                Virksomhet(
+                    naringstype = listOf(Naringstype.JORDBRUK, Naringstype.DAGMAMMA),
+                    fraOgMed = LocalDate.now(),
+                    erPagaende = true,
+                    naringsinntekt = 1111,
+                    navnPaVirksomheten = "Tull Og Tøys",
+                    registrertINorge = false,
+                    registrertILand = "Bahamas",
+                    harBlittYrkesaktivSisteTreFerdigliknendeArene = true,
+                    yrkesaktivSisteTreFerdigliknedeArene = YrkesaktivSisteTreFerdigliknedeArene(LocalDate.now()),
+                    harVarigEndringAvInntektSiste4Kalenderar = true,
+                    varigEndring = VarigEndring(
+                        dato = LocalDate.now().minusDays(20),
+                        inntektEtterEndring = 234543,
+                        forklaring = "Forklaring som handler om varig endring"
+                    ),
+                    harRegnskapsforer = true,
+                    regnskapsforer = Regnskapsforer(
+                        navn = "Bjarne Regnskap",
+                        telefon = "65484578"
+                    )
+                )
             )
         )
     }
@@ -172,6 +214,48 @@ class PdfV1GeneratorTest {
         frilans: Frilans = Frilans(
             startdato = LocalDate.now().minusYears(3),
             jobberFortsattSomFrilans = true
+        ),
+        selvstendigVirksomheter: List<Virksomhet>? = listOf(
+            Virksomhet(
+                naringstype = listOf(Naringstype.ANNET),
+                fraOgMed = LocalDate.now(),
+                tilOgMed = LocalDate.now().plusDays(10),
+                erPagaende = false,
+                naringsinntekt = 3623241,
+                navnPaVirksomheten = "Kjells Møbelsnekkeri",
+                registrertINorge = true,
+                organisasjonsnummer = "101010",
+                harVarigEndringAvInntektSiste4Kalenderar = false,
+                harRegnskapsforer = false,
+                harRevisor = true,
+                revisor = Revisor(
+                    navn = "Kjell Revisor",
+                    telefon = "9999",
+                    kanInnhenteOpplysninger = true
+                )
+            ),
+            Virksomhet(
+                naringstype = listOf(Naringstype.JORDBRUK, Naringstype.DAGMAMMA),
+                fraOgMed = LocalDate.now(),
+                erPagaende = true,
+                naringsinntekt = 1111,
+                navnPaVirksomheten = "Tull Og Tøys",
+                registrertINorge = false,
+                registrertILand = "Bahamas",
+                harBlittYrkesaktivSisteTreFerdigliknendeArene = true,
+                yrkesaktivSisteTreFerdigliknedeArene = YrkesaktivSisteTreFerdigliknedeArene(LocalDate.now()),
+                harVarigEndringAvInntektSiste4Kalenderar = true,
+                varigEndring = VarigEndring(
+                    dato = LocalDate.now().minusDays(20),
+                    inntektEtterEndring = 234543,
+                    forklaring = "Forklaring som handler om varig endring"
+                ),
+                harRegnskapsforer = true,
+                regnskapsforer = Regnskapsforer(
+                    navn = "Bjarne Regnskap",
+                    telefon = "65484578"
+                )
+            )
         )
     ) = MeldingV1(
         sprak = sprak,
