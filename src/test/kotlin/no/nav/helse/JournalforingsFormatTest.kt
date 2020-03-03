@@ -169,6 +169,7 @@ class JournalforingsFormatTest {
         frilans = Frilans(
             startdato = LocalDate.parse("2018-02-01"),
             jobberFortsattSomFrilans = true
-        )
+        ),
+        selvstendigVirksomheter = listOf()
     )
 }
