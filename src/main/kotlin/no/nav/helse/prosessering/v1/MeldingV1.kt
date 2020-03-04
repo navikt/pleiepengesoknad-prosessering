@@ -43,7 +43,7 @@ data class Virksomhet(
     val fraOgMed: LocalDate,
     val tilOgMed: LocalDate? = null,
     val erPagaende: Boolean,
-    val naringsinntekt: Int,
+    val naringsinntekt: Int? = null,
     val navnPaVirksomheten: String,
     val organisasjonsnummer: String? = null,
     @JsonProperty("registrert_i_norge")

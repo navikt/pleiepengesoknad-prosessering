@@ -395,8 +395,9 @@
                             {{/if}}
                         {{/each}}</p>
                 {{/if}}
-
-                <p>Næringsinntekt: {{virksomhet.naringsinntekt}},-</p>
+                {{#if virksomhet.naringsinntekt}}
+                    <p>Næringsinntekt: {{virksomhet.naringsinntekt}},-</p>
+                {{/if}}
                 {{#if virksomhet.registrertINorge}}
                     <p>Registrert i Norge</p>
                     <p>Organisasjonsnummeret: {{virksomhet.organisasjonsnummer}}</p>
@@ -407,7 +408,6 @@
                 {{#if virksomhet.yrkesaktivSisteTreFerdigliknedeArene}}
                     <p>Oppgi dato for når du ble yrkesaktiv: {{virksomhet.yrkesaktivSisteTreFerdigliknedeArene}}</p>
                 {{/if}}
-
                 {{#if virksomhet.harVarigEndringAvInntektSiste4Kalenderar}}
                     <h3>Varig endring</h3>
                     <ul>
