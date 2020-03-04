@@ -385,16 +385,13 @@
                             , {{naringstype.typeDetaljert}}
                         {{/if}}
                     {{/each}}</p>
-                {{#if virksomhet.fiskerinfo}}
-                    <p>Fiskeinfo:
-                        {{# each virksomhet.fiskerinfo as |fiskerinfo|~}}
-                            {{#if @first}}
-                                {{fiskerinfo.fiskerinfoName}}
-                            {{else}}
-                                , {{fiskerinfo.fiskerinfoName}}
-                            {{/if}}
-                        {{/each}}</p>
+                <p>Fisker er på blad B?</p>
+                {{#if virksomhet.fiskerErPåPlanB}}
+                    {{>jaNeiCheckbox parameter=virksomhet.fiskerErPåPlanB}}
+                {{else}}
+                    {{>jaNeiCheckbox parameter=virksomhet.fiskerErPåPlanB}}
                 {{/if}}
+
                 {{#if virksomhet.naringsinntekt}}
                     <p>Næringsinntekt: {{virksomhet.naringsinntekt}},-</p>
                 {{/if}}
