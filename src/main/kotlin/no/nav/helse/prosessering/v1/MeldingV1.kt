@@ -38,8 +38,8 @@ data class MeldingV1 (
 
 data class Virksomhet(
     val naringstype: List<Naringstype>,
-    @JsonProperty("fiskerErPåPlanB")
-    val fiskerErPåPlanB: Boolean? = null,
+    @JsonProperty("fiskerErPåBladB")
+    val fiskerErPåBladB: Boolean? = null,
     @JsonFormat(pattern = "yyyy-MM-dd")
     val fraOgMed: LocalDate,
     val tilOgMed: LocalDate? = null,

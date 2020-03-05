@@ -156,7 +156,7 @@ internal class PdfV1Generator  {
             mapOf(
                 "navnPaVirksomheten" to it.navnPaVirksomheten,
                 "naringstype" to it.naringstype.somMapNaringstype(),
-                "fiskerErPåPlanB" to it.fiskerErPåPlanB,
+                "fiskerErPåBladB" to it.fiskerErPåBladB,
                 "fraOgMed" to it.fraOgMed,
                 "tilOgMed" to it.tilOgMed,
                 "erPagaende" to it.erPagaende,

@@ -140,7 +140,7 @@ class PdfV1GeneratorTest {
                 ),
                 Virksomhet(
                     naringstype = listOf(Naringstype.JORDBRUK, Naringstype.DAGMAMMA, Naringstype.FISKER),
-                    fiskerErPåPlanB = true,
+                    fiskerErPåBladB = true,
                     fraOgMed = LocalDate.now(),
                     erPagaende = true,
                     naringsinntekt = 1111,
@@ -218,7 +218,7 @@ class PdfV1GeneratorTest {
         selvstendigVirksomheter: List<Virksomhet>? = listOf(
             Virksomhet(
                 naringstype = listOf(Naringstype.ANNET, Naringstype.FISKER),
-                fiskerErPåPlanB = true,
+                fiskerErPåBladB = true,
                 fraOgMed = LocalDate.now(),
                 tilOgMed = LocalDate.now().plusDays(10),
                 erPagaende = false,
