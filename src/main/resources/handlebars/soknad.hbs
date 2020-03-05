@@ -384,14 +384,14 @@
                         {{else}}
                             , {{naringstype.typeDetaljert}}
                         {{/if}}
+                        {{#eq naringstype.typeDetaljert "FISKE"}}
+                            {{#if virksomhet.fiskerErPåPlanB}}
+                                (blad B)
+                            {{else}}
+                                (ikke blad B)
+                            {{/if}}
+                        {{/eq}}
                     {{/each}}</p>
-                <p>Fisker er på blad B?</p>
-                {{#if virksomhet.fiskerErPåPlanB}}
-                    {{>jaNeiCheckbox parameter=virksomhet.fiskerErPåPlanB}}
-                {{else}}
-                    {{>jaNeiCheckbox parameter=virksomhet.fiskerErPåPlanB}}
-                {{/if}}
-
                 {{#if virksomhet.naringsinntekt}}
                     <p>Næringsinntekt: {{virksomhet.naringsinntekt}},-</p>
                 {{/if}}

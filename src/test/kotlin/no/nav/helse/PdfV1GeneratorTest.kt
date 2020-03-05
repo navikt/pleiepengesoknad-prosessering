@@ -218,7 +218,7 @@ class PdfV1GeneratorTest {
         selvstendigVirksomheter: List<Virksomhet>? = listOf(
             Virksomhet(
                 naringstype = listOf(Naringstype.ANNET, Naringstype.FISKER),
-                fiskerErPåPlanB = false,
+                fiskerErPåPlanB = true,
                 fraOgMed = LocalDate.now(),
                 tilOgMed = LocalDate.now().plusDays(10),
                 erPagaende = false,
