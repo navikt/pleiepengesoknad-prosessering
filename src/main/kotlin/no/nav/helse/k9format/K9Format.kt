@@ -50,11 +50,13 @@ fun PreprossesertMeldingV1.tilK9PleiepengeBarnSøknad(): JsonNode {
     }
 
     nattevaak?.let {
+        val nattvåkBuilder = Nattevåk.NattevåkPeriodeInfo.builder()
+        it.tilleggsinformasjon?.let { nattvåkBuilder.tilleggsinformasjon(it) }
         builder.nattevåk(
             Nattevåk.builder()
                 .periode(
                     Periode.builder().fraOgMed(fraOgMed).tilOgMed(tilOgMed).build(),
-                    Nattevåk.NattevåkPeriodeInfo.builder().tilleggsinformasjon(it.tilleggsinformasjon ?: "").build()
+                    nattvåkBuilder.build()
                 )
                 .build()
         )
