@@ -61,12 +61,10 @@ class JournalforingsFormatTest {
                 "skal_bo_i_utlandet_neste_12_mnd": true,
                 "utenlandsopphold_siste_12_mnd": []
             },
-            "grad": 55,
             "har_medsoker": true,
             "samtidig_hjemme": null,
             "har_bekreftet_opplysninger" : true,
 	        "har_forstatt_rettigheter_og_plikter": true,
-            "dager_per_uke_borte_fra_jobb": 3.5,
             "tilsynsordning": {
                 "svar": "ja",
                 "ja": {
@@ -100,7 +98,10 @@ class JournalforingsFormatTest {
               "startdato": "2018-02-01",
               "jobber_fortsatt_som_frilans": true
             },
-            "selvstendig_virksomheter" : []
+            "selvstendig_virksomheter" : [],
+          "skal_bekrefte_omsorg": true,
+          "skal_passe_pa_barnet_i_hele_perioden": true,
+          "beskrivelse_omsorgsrollen": "En kort beskrivelse"
         }
         """.trimIndent(), String(json), true)
 
@@ -140,10 +141,8 @@ class JournalforingsFormatTest {
             skalBoIUtlandetNeste12Mnd = true
         ),
         harMedsoker = true,
-        grad = 55,
         harBekreftetOpplysninger = true,
         harForstattRettigheterOgPlikter = true,
-        dagerPerUkeBorteFraJobb = 3.5,
         tilsynsordning = Tilsynsordning(
             svar = "ja",
             ja = TilsynsordningJa(
@@ -170,6 +169,9 @@ class JournalforingsFormatTest {
             startdato = LocalDate.parse("2018-02-01"),
             jobberFortsattSomFrilans = true
         ),
-        selvstendigVirksomheter = listOf()
+        selvstendigVirksomheter = listOf(),
+        skalBekrefteOmsorg = true,
+        skalPassePaBarnetIHelePerioden = true,
+        beskrivelseOmsorgsRollen = "En kort beskrivelse"
     )
 }

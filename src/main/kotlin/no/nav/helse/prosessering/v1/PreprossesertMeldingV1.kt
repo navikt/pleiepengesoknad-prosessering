@@ -23,7 +23,6 @@ data class PreprossesertMeldingV1(
     val utenlandsoppholdIPerioden: UtenlandsoppholdIPerioden?,
     @JsonProperty("ferieuttak_i_perioden")
     val ferieuttakIPerioden: FerieuttakIPerioden?,
-    val grad: Int?,
     val beredskap: Beredskap?,
     val nattevaak: Nattevaak?,
     val tilsynsordning: Tilsynsordning?,
@@ -53,7 +52,6 @@ data class PreprossesertMeldingV1(
         relasjonTilBarnet = melding.relasjonTilBarnet,
         arbeidsgivere = melding.arbeidsgivere,
         medlemskap = melding.medlemskap,
-        grad = melding.grad,
         beredskap = melding.beredskap,
         nattevaak = melding.nattevaak,
         tilsynsordning = melding.tilsynsordning,

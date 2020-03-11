@@ -490,7 +490,6 @@ class PleiepengesoknadProsesseringTest {
                     Ferieuttak(LocalDate.parse("2020-01-09"), LocalDate.parse("2020-01-10"))
                 )
             ),
-            grad = null,
             harBekreftetOpplysninger = true,
             harForstattRettigheterOgPlikter = true
         )
@@ -650,7 +649,6 @@ class PleiepengesoknadProsesseringTest {
             skalBoIUtlandetNeste12Mnd = true
         ),
         harMedsoker = true,
-        grad = 70,
         harBekreftetOpplysninger = true,
         harForstattRettigheterOgPlikter = true,
         tilsynsordning = Tilsynsordning(

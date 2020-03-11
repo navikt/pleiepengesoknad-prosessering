@@ -80,8 +80,6 @@ internal class PdfV1Generator  {
                 "soknad_mottatt" to DATE_TIME_FORMATTER.format(melding.mottatt),
                 "har_medsoker" to melding.harMedsoker,
                 "samtidig_hjemme" to melding.samtidigHjemme,
-                "grad" to melding.grad,
-                "dager_per_uke_borte_fra_jobb" to melding.dagerPerUkeBorteFraJobb?.avrundetMedEnDesimal()?.formatertMedEnDesimal(),
                 "soker" to mapOf(
                     "navn" to melding.soker.formatertNavn(),
                     "fodselsnummer" to melding.soker.fodselsnummer,
@@ -131,7 +129,10 @@ internal class PdfV1Generator  {
                 "frilans" to frilans(melding.frilans),
                 "selvstendigVirksomheter" to mapOf(
                     "virksomhet" to melding.selvstendigVirksomheter?.somMapVirksomheter()
-                )
+                ),
+                "skal_bekrefte_omsorg" to melding.skalBekrefteOmsorg,
+                "skal_passe_pa_barnet_i_hele_perioden" to melding.skalPassePaBarnetIHelePerioden,
+                "beskrivelse_omsorgsrollen" to melding.beskrivelseOmsorgsRollen
             ))
             .resolver(MapValueResolver.INSTANCE)
             .build()).let { html ->
