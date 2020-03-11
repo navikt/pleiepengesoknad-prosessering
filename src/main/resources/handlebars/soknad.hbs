@@ -384,19 +384,17 @@
                         {{else}}
                             , {{naringstype.typeDetaljert}}
                         {{/if}}
-                    {{/each}}</p>
-                {{#if virksomhet.fiskerinfo}}
-                    <p>Fiskeinfo:
-                        {{# each virksomhet.fiskerinfo as |fiskerinfo|~}}
-                            {{#if @first}}
-                                {{fiskerinfo.fiskerinfoName}}
+                        {{#eq naringstype.typeDetaljert "FISKE"}}
+                            {{#if virksomhet.fiskerErPåBladB}}
+                                (blad B)
                             {{else}}
-                                , {{fiskerinfo.fiskerinfoName}}
+                                (ikke blad B)
                             {{/if}}
-                        {{/each}}</p>
+                        {{/eq}}
+                    {{/each}}</p>
+                {{#if virksomhet.naringsinntekt}}
+                    <p>Næringsinntekt: {{virksomhet.naringsinntekt}},-</p>
                 {{/if}}
-
-                <p>Næringsinntekt: {{virksomhet.naringsinntekt}},-</p>
                 {{#if virksomhet.registrertINorge}}
                     <p>Registrert i Norge</p>
                     <p>Organisasjonsnummeret: {{virksomhet.organisasjonsnummer}}</p>
@@ -407,7 +405,6 @@
                 {{#if virksomhet.yrkesaktivSisteTreFerdigliknedeArene}}
                     <p>Oppgi dato for når du ble yrkesaktiv: {{virksomhet.yrkesaktivSisteTreFerdigliknedeArene}}</p>
                 {{/if}}
-
                 {{#if virksomhet.harVarigEndringAvInntektSiste4Kalenderar}}
                     <h3>Varig endring</h3>
                     <ul>

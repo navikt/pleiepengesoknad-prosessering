@@ -125,7 +125,6 @@ class PdfV1GeneratorTest {
                     fraOgMed = LocalDate.now(),
                     tilOgMed = LocalDate.now().plusDays(10),
                     erPagaende = false,
-                    naringsinntekt = 3623241,
                     navnPaVirksomheten = "Kjells Møbelsnekkeri",
                     registrertINorge = true,
                     organisasjonsnummer = "101010",
@@ -139,7 +138,8 @@ class PdfV1GeneratorTest {
                     )
                 ),
                 Virksomhet(
-                    naringstype = listOf(Naringstype.JORDBRUK, Naringstype.DAGMAMMA),
+                    naringstype = listOf(Naringstype.JORDBRUK, Naringstype.DAGMAMMA, Naringstype.FISKER),
+                    fiskerErPåBladB = true,
                     fraOgMed = LocalDate.now(),
                     erPagaende = true,
                     naringsinntekt = 1111,
@@ -214,15 +214,20 @@ class PdfV1GeneratorTest {
         ),
         selvstendigVirksomheter: List<Virksomhet>? = listOf(
             Virksomhet(
-                naringstype = listOf(Naringstype.ANNET),
+                naringstype = listOf(Naringstype.ANNET, Naringstype.FISKER),
+                fiskerErPåBladB = true,
                 fraOgMed = LocalDate.now(),
                 tilOgMed = LocalDate.now().plusDays(10),
                 erPagaende = false,
-                naringsinntekt = 3623241,
                 navnPaVirksomheten = "Kjells Møbelsnekkeri",
                 registrertINorge = true,
                 organisasjonsnummer = "101010",
-                harVarigEndringAvInntektSiste4Kalenderar = false,
+                harVarigEndringAvInntektSiste4Kalenderar = true,
+                varigEndring = VarigEndring(
+                    dato = LocalDate.now(),
+                    inntektEtterEndring = 202020,
+                    forklaring = "ASDASDASDASDASD"
+                ),
                 harRegnskapsforer = false,
                 harRevisor = true,
                 revisor = Revisor(
@@ -235,18 +240,13 @@ class PdfV1GeneratorTest {
                 naringstype = listOf(Naringstype.JORDBRUK, Naringstype.DAGMAMMA),
                 fraOgMed = LocalDate.now(),
                 erPagaende = true,
-                naringsinntekt = 1111,
+                naringsinntekt = 100111,
                 navnPaVirksomheten = "Tull Og Tøys",
                 registrertINorge = false,
                 registrertILand = "Bahamas",
                 harBlittYrkesaktivSisteTreFerdigliknendeArene = true,
                 yrkesaktivSisteTreFerdigliknedeArene = YrkesaktivSisteTreFerdigliknedeArene(LocalDate.now()),
-                harVarigEndringAvInntektSiste4Kalenderar = true,
-                varigEndring = VarigEndring(
-                    dato = LocalDate.now().minusDays(20),
-                    inntektEtterEndring = 234543,
-                    forklaring = "Forklaring som handler om varig endring"
-                ),
+                harVarigEndringAvInntektSiste4Kalenderar = false,
                 harRegnskapsforer = true,
                 regnskapsforer = Regnskapsforer(
                     navn = "Bjarne Regnskap",
