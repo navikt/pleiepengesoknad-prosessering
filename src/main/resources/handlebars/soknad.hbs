@@ -31,13 +31,6 @@
                 {{soknad_mottatt_dag}} {{ soknad_mottatt }}
             </p>
             <br/>
-            <p>
-                <span class="nokkeldata__overskrift">Gjelder perioden</span><br/>
-                {{ periode.fra_og_med }} - {{ periode.til_og_med }}<br/>
-            {{#if bekrefterPeriodeOver8Uker}}
-                <p>Bekreftet periode over 8 uker</p>
-            {{/if}}
-            </p>
         </div>
         <div class="personinfo">
             <div class="persontekst">
@@ -66,15 +59,15 @@
                             {{/if}}
                         </p>
                         {{# if barn.id }}
-                        <p class="barnid">
+                            <p class="barnid">
                                 {{ barn.id }}
-                        </p>
+                            </p>
                         {{else}}
-                        <p class="fodselsdato">
-                            {{# if barn.fodselsdato }}
-                                {{ barn.fodselsdato }}
-                            {{/if}}
-                        </p>
+                            <p class="fodselsdato">
+                                {{# if barn.fodselsdato }}
+                                    {{ barn.fodselsdato }}
+                                {{/if}}
+                            </p>
                         {{/if}}
                     </div>
                 </div>
@@ -83,28 +76,61 @@
     </div>
 
     <!-- HJELP -->
-    <h2><span>
-               Antall søkere
-        </span></h2>
-    <ul>
-        {{# if hjelp.har_medsoker }}
-            <li>Søker har opplyst om at en medsøker skal søke for samme periode.
-            </li>
-            {{# if samtidig_hjemme }}
-                <li>
-                    Søker og medsøker skal være hjemme / på sykehus samtidig.
-                </li>
-            {{/if}}
-            {{#unless samtidig_hjemme}}
-                <li>
-                    Søker og medsøker skal <span class="highlight">ikke</span> være hjemme / på sykehus samtidig.
-                </li>
-            {{/unless}}
-        {{else}}
-            <li>Det er <span class="highlight">ikke</span> oppgitt andre medsøkere.
-            </li>
-        {{/if}}
+    <h2>
+        <span>Perioder</span>
+    </h2>
 
+    <ul>
+        <li>
+            <strong>{{ periode.fra_og_med }} - {{ periode.til_og_med }}</strong><br/>
+            <ul style="list-style-type:circle;">
+                {{#if bekrefterPeriodeOver8Uker}}
+                    <li>Søker bekrefter at søknaden gjelder for en periode på mer enn 8 uker.</li>
+                {{/if}}
+
+                {{# if hjelp.har_medsoker }}
+                    <li>
+                        Søker opplyser at en medsøker skal søke for samme periode..<br/>
+                        <ul style="list-style-type:square;">
+                            {{# if samtidig_hjemme }}
+                                <li>
+                                    Søker og medsøker skal være hjemme eller på sykehus samtidig.
+                                </li>
+                            {{/if}}
+                            {{#unless samtidig_hjemme}}
+                                <li>
+                                    Søker og medsøker skal <span class="highlight">ikke</span> være hjemme / på sykehus
+                                    samtidig.
+                                </li>
+                            {{/unless}}
+                        </ul>
+                    </li>
+
+                {{else}}
+                    <li>Det er <span class="highlight">ikke</span> oppgitt andre medsøkere.
+                    </li>
+                {{/if}}
+
+                {{# if skal_passe_pa_barnet_i_hele_perioden}}
+                    <li>
+                        Søker bekrefter å ha omsorgen for barnet i hele perioden.<br/>
+                        <ul style="list-style-type: none">
+                            {{# if beskrivelse_omsorgsrollen}}
+                                <div class="fritekst">
+                                    <p class="sporsmalstekst"><img class="lite_ikon" src="{{ image "Fritekst.png" }}"/>
+                                        Beskrivelse av omsorgsrollen:
+                                    </p>
+                                    <p class="fritekst_textarea">{{fritekst beskrivelse_omsorgsrollen}}</p>
+                                </div>
+                            {{/if}}
+                        </ul>
+                    </li>
+                {{/if}}
+            </ul>
+        </li>
+    </ul>
+
+    <ul>
         <!--{{# if hjelp.sprak }}
                 <li>Det er valgt {{hjelp.sprak}} som språk i søknaden.</li>
             {{/if}}-->
@@ -138,7 +164,7 @@
             <ul>
                 {{# each ferieuttakIPerioden.ferieuttak as |ferieuttak|~}}
                     <li>
-                       {{ferieuttak.fraOgMed}} - {{ferieuttak.tilOgMed}}
+                        {{ferieuttak.fraOgMed}} - {{ferieuttak.tilOgMed}}
                     </li>
                 {{/each}}
             </ul>
@@ -166,19 +192,19 @@
                     <li>
                         {{#if org.skal_jobbe}}
                             {{#eq org.skal_jobbe "ja"}}
-                                Skal jobbe som vanlig
+                                Søker skal jobbe som vanlig i perioden.
                             {{/eq}}
 
                             {{#eq org.skal_jobbe "nei"}}
-                                Skal ikke jobbe her i perioden
+                                Søker skal ikke jobbe her i perioden.
                             {{/eq}}
 
                             {{#eq org.skal_jobbe "redusert"}}
-                                Jobber redusert
+                                Søker skal jobbe redusert i perioden.
                             {{/eq}}
 
                             {{#eq org.skal_jobbe "vet_ikke"}}
-                                Søker vet ikke om hen skal jobbe her, men sier fra hvis det blir tilfelle.
+                                Søker vet ikke om han/hun skal jobbe her, men sier fra hvis det blir tilfelle.
                             {{/eq}}
                         {{/if}}
                     </li>
@@ -186,7 +212,8 @@
                     <li>
                         {{#if org.skal_jobbe_prosent }}
                             {{#unless org.jobber_normaltimer }}
-                                Skal jobbe {{org.skal_jobbe_prosent }}% av sin stilling. Søker får et inntektstap
+                                Skal jobbe {{org.skal_jobbe_prosent }}% av sin stilling. Søker får et
+                                inntektstap
                                 på {{org.inntektstap_prosent}}%
                             {{/unless}}
                         {{/if}}
@@ -194,8 +221,8 @@
                 <li>
                     {{#if org.skal_jobbe_prosent }}
                         {{#if org.jobber_normaltimer }}
-                            <li>Søker jobber vanligvis {{org.jobber_normaltimer }} timer i uken.</li>
-                            <li>I perioden skal hen jobbe {{org.skal_jobbe_prosent }}%. Søker får et inntektstap
+                            <li>Søker jobber vanligvis {{org.jobber_normaltimer }} timer i uken hos denne arbeidsgiveren.</li>
+                            <li>I pleiepengeperioden skal søker jobbe {{org.skal_jobbe_prosent }}%. Søker får et inntektstap
                                 på {{org.inntektstap_prosent}}%
                             </li>
                         {{/if}}
@@ -273,7 +300,8 @@
                 {{/if}}
             </p>
             <br/>
-            <p>Dette tilsvarer <span class="sporsmalstekst">{{tilsynsordning.prosent_av_normal_arbeidsuke}}%</span> av
+            <p>Dette tilsvarer <span class="sporsmalstekst">{{tilsynsordning.prosent_av_normal_arbeidsuke}}
+                %</span> av
                 en normal arbeidsuke på <span class="sporsmalstekst">37 timer og 30 minutter.</span></p>
             <br/>
             {{#if tilsynsordning.tilleggsinformasjon}}
@@ -380,7 +408,7 @@
                     {{else}}
                         pågående)
                     {{/if}}</h3>
-                    <p>Næringstype:
+                <p>Næringstype:
                     {{# each virksomhet.naringstype as |naringstype|~}}
                         {{#if @first}}
                             {{naringstype.typeDetaljert}}
@@ -406,7 +434,8 @@
                 {{/if}}
 
                 {{#if virksomhet.yrkesaktivSisteTreFerdigliknedeArene}}
-                    <p>Oppgi dato for når du ble yrkesaktiv: {{virksomhet.yrkesaktivSisteTreFerdigliknedeArene}}</p>
+                    <p>Oppgi dato for når du ble
+                        yrkesaktiv: {{virksomhet.yrkesaktivSisteTreFerdigliknedeArene}}</p>
                 {{/if}}
                 {{#if virksomhet.harVarigEndringAvInntektSiste4Kalenderar}}
                     <h3>Varig endring</h3>
@@ -432,7 +461,9 @@
                         <ul>
                             <p>Navn: {{virksomhet.revisor.navn}}</p>
                             <p>Telefon: {{virksomhet.revisor.telefon}}</p>
-                            <p class="sporsmalstekst">Gir du NAV fullmakt til å innhente opplysninger direkte fra revisor?</p>
+                            <p class="sporsmalstekst">Gir du NAV fullmakt til å innhente opplysninger direkte
+                                fra
+                                revisor?</p>
                             {{>jaNeiCheckbox parameter=virksomhet.revisor.kanInnhenteOpplysninger}}
                         </ul>
                     {{/if}}

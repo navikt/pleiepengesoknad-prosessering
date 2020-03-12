@@ -160,7 +160,11 @@ class PdfV1GeneratorTest {
                         telefon = "65484578"
                     )
                 )
-            )
+            ),
+            bekrefterPeriodeOver8Uker = true,
+            skalBekrefteOmsorg = true,
+            skalPassePaBarnetIHelePerioden = true,
+            beskrivelseOmsorgsRollen = "Jeg er far og skal passe på barnet i hele perioden."
         )
     }
 
@@ -673,7 +677,7 @@ class PdfV1GeneratorTest {
     }
 
     @Test
-    @Ignore
+    //@Ignore
     fun `opprett lesbar oppsummerings-PDF`() {
         genererOppsummeringsPdfer(true)
     }
