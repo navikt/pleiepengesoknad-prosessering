@@ -191,7 +191,7 @@ fun Arbeidsgivere.tilK9Arbeid(
                 .periode(
                     søknadsPeriode,
                     Arbeidstaker.ArbeidstakerPeriodeInfo.builder()
-                        .skalJobbeProsent(BigDecimal.valueOf(org.skalJobbeProsent ?: 0.0))
+                        .skalJobbeProsent(BigDecimal.valueOf(org.skalJobbeProsent ?: 0.0)) //TODO: Fjern ?: 0.0 når dette feltet ikke lenger er optional.
                         .build()
                 )
                 .build()
