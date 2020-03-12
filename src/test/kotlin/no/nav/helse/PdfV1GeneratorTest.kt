@@ -164,7 +164,6 @@ class PdfV1GeneratorTest {
         )
     }
 
-
     private fun gyldigMelding(
         soknadId: String,
         sprak: String? = "nb",
@@ -274,6 +273,7 @@ class PdfV1GeneratorTest {
         ),
         medlemskap = medlemskap,
         harMedsoker = harMedsoker,
+        bekrefterPeriodeOver8Uker = true,
         samtidigHjemme = samtidigHjemme,
         harForstattRettigheterOgPlikter = true,
         harBekreftetOpplysninger = true,

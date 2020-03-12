@@ -80,6 +80,7 @@ internal class PdfV1Generator  {
                 "soknad_mottatt" to DATE_TIME_FORMATTER.format(melding.mottatt),
                 "har_medsoker" to melding.harMedsoker,
                 "samtidig_hjemme" to melding.samtidigHjemme,
+                "bekrefterPeriodeOver8Uker" to melding.bekrefterPeriodeOver8Uker,
                 "soker" to mapOf(
                     "navn" to melding.soker.formatertNavn(),
                     "fodselsnummer" to melding.soker.fodselsnummer,

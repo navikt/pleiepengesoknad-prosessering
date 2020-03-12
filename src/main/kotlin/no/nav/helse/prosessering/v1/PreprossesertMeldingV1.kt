@@ -19,6 +19,8 @@ data class PreprossesertMeldingV1(
     val relasjonTilBarnet: String,
     val arbeidsgivere: Arbeidsgivere,
     val medlemskap: Medlemskap,
+    @JsonProperty("bekrefter_periode_over_8_uker")
+    val bekrefterPeriodeOver8Uker: Boolean? = null,
     @JsonProperty("utenlandsopphold_i_perioden")
     val utenlandsoppholdIPerioden: UtenlandsoppholdIPerioden?,
     @JsonProperty("ferieuttak_i_perioden")
@@ -56,6 +58,7 @@ data class PreprossesertMeldingV1(
         nattevaak = melding.nattevaak,
         tilsynsordning = melding.tilsynsordning,
         harMedsoker = melding.harMedsoker,
+        bekrefterPeriodeOver8Uker = melding.bekrefterPeriodeOver8Uker,
         frilans = melding.frilans,
         selvstendigVirksomheter = melding.selvstendigVirksomheter,
         harForstattRettigheterOgPlikter = melding.harForstattRettigheterOgPlikter,

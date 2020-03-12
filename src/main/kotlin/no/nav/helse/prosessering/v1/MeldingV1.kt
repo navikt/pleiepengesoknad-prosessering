@@ -19,6 +19,8 @@ data class MeldingV1 (
     val arbeidsgivere: Arbeidsgivere,
     var vedleggUrls : List<URI> = listOf(),
     val medlemskap: Medlemskap,
+    @JsonProperty("bekrefter_periode_over_8_uker")
+    val bekrefterPeriodeOver8Uker: Boolean? = null,
     @JsonProperty("utenlandsopphold_i_perioden")
     val utenlandsoppholdIPerioden: UtenlandsoppholdIPerioden?,
     @JsonProperty("ferieuttak_i_perioden")
@@ -39,7 +41,7 @@ data class MeldingV1 (
 
 data class Virksomhet(
     val naringstype: List<Naringstype>,
-    @JsonProperty("fiskerErPåBladB")
+    @JsonProperty("fisker_er_pa_blad_b")
     val fiskerErPåBladB: Boolean? = null,
     @JsonFormat(pattern = "yyyy-MM-dd")
     val fraOgMed: LocalDate,

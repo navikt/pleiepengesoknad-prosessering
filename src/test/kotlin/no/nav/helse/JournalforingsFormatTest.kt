@@ -63,6 +63,7 @@ class JournalforingsFormatTest {
             },
             "har_medsoker": true,
             "samtidig_hjemme": null,
+            "bekrefter_periode_over_8_uker": true,
             "har_bekreftet_opplysninger" : true,
 	        "har_forstatt_rettigheter_og_plikter": true,
             "tilsynsordning": {
@@ -126,6 +127,7 @@ class JournalforingsFormatTest {
             aktoerId = null
         ),
         relasjonTilBarnet = "Mor",
+        bekrefterPeriodeOver8Uker = true,
         arbeidsgivere = Arbeidsgivere(
             organisasjoner = listOf(
                 Organisasjon("1212", "Nei", jobberNormaltTimer = null, vetIkkeEkstrainfo = null, skalJobbe = "nei"),

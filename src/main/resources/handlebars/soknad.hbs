@@ -34,6 +34,9 @@
             <p>
                 <span class="nokkeldata__overskrift">Gjelder perioden</span><br/>
                 {{ periode.fra_og_med }} - {{ periode.til_og_med }}<br/>
+            {{#if bekrefterPeriodeOver8Uker}}
+                <p>Bekreftet periode over 8 uker</p>
+            {{/if}}
             </p>
         </div>
         <div class="personinfo">
