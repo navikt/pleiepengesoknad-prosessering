@@ -4,9 +4,9 @@ metadata:
   name: pleiepengesoknad-prosessering
   namespace: default
   labels:
-    team: {{team}}
+    team: dusseldorf
 spec:
-  image: {{ image }}:{{ tag }}
+  image: {{ image }}
   port: 8080
   liveness:
     path: isalive
