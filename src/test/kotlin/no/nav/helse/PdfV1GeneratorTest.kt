@@ -114,7 +114,14 @@ class PdfV1GeneratorTest {
                 tilleggsinformasjon = "Jeg er i beredskap\rmed\nlinje\r\nlinjeskift."
             ),
             utenlandsoppholdIPerioden = null,
-            ferieuttakIPerioden = null,
+            ferieuttakIPerioden = FerieuttakIPerioden(
+                skalTaUtFerieIPerioden = true,
+                ferieuttak = listOf(
+                    Ferieuttak(fraOgMed = LocalDate.parse("2020-01-01"), tilOgMed = LocalDate.parse("2020-01-05")),
+                    Ferieuttak(fraOgMed = LocalDate.parse("2020-01-07"), tilOgMed = LocalDate.parse("2020-01-15")),
+                    Ferieuttak(fraOgMed = LocalDate.parse("2020-02-01"), tilOgMed = LocalDate.parse("2020-02-05"))
+                )
+            ),
             frilans = Frilans(
                 startdato = LocalDate.now().minusYears(3),
                 jobberFortsattSomFrilans = true
@@ -127,7 +134,7 @@ class PdfV1GeneratorTest {
                     erPagaende = false,
                     navnPaVirksomheten = "Kjells Møbelsnekkeri",
                     registrertINorge = true,
-                    organisasjonsnummer = "101010",
+                    organisasjonsnummer = "111111",
                     harVarigEndringAvInntektSiste4Kalenderar = false,
                     harRegnskapsforer = false,
                     harRevisor = true,
@@ -666,7 +673,6 @@ class PdfV1GeneratorTest {
             fodselsdato = null
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
-
     }
 
     private fun pdfPath(soknadId: String) = "${System.getProperty("user.dir")}/generated-pdf-$soknadId.pdf"

@@ -156,22 +156,21 @@
             <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Ja
             <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Nei
         {{/if}}
-
-        <p class="sporsmalstekst">Skal du ta ut feriedager i perioden?</p>
-        {{# if ferieuttakIPerioden.skalTaUtFerieIPerioden }}
-            <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Ja
-            <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Nei
-            <ul>
-                {{# each ferieuttakIPerioden.ferieuttak as |ferieuttak|~}}
-                    <li>
-                        {{ferieuttak.fraOgMed}} - {{ferieuttak.tilOgMed}}
-                    </li>
-                {{/each}}
-            </ul>
-        {{else}}
-            <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Ja
-            <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Nei
-        {{/if}}
+    {{/if}}
+    <p class="sporsmalstekst">Skal du ta ut feriedager i perioden?</p>
+    {{# if ferieuttakIPerioden.skalTaUtFerieIPerioden }}
+        <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Ja
+        <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Nei
+        <ul>
+            {{# each ferieuttakIPerioden.ferieuttak as |ferieuttak|~}}
+                <li>
+                    {{ferieuttak.fraOgMed}} - {{ferieuttak.tilOgMed}}
+                </li>
+            {{/each}}
+        </ul>
+    {{else}}
+        <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Ja
+        <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Nei
     {{/if}}
     <h2>
         <span>
