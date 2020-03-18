@@ -21,6 +21,7 @@ import no.nav.helse.dusseldorf.ktor.health.UnHealthy
 import no.nav.helse.dusseldorf.ktor.metrics.Operation
 import no.nav.helse.dusseldorf.oauth2.client.AccessTokenClient
 import no.nav.helse.dusseldorf.oauth2.client.CachedAccessTokenClient
+import no.nav.helse.tpsproxy.TpsNavn
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.ByteArrayInputStream
@@ -59,6 +60,7 @@ class JoarkGateway(
     suspend fun journalfoer(
         aktoerId: AktoerId,
         norskIdent: String,
+        sokerNavn: TpsNavn,
         mottatt: ZonedDateTime,
         dokumenter: List<List<URI>>,
         correlationId: CorrelationId
@@ -70,6 +72,7 @@ class JoarkGateway(
             aktoerId = aktoerId.id,
             norskIdent = norskIdent,
             mottatt = mottatt,
+            sokerNavn = sokerNavn,
             dokumenter = dokumenter
         )
 
@@ -115,6 +118,7 @@ class JoarkGateway(
 private data class JoarkRequest(
     val norskIdent: String,
     val aktoerId: String,
+    val sokerNavn: TpsNavn,
     val mottatt: ZonedDateTime,
     val dokumenter: List<List<URI>>
 )

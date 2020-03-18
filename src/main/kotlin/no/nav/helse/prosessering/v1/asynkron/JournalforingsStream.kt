@@ -3,24 +3,19 @@ package no.nav.helse.prosessering.v1.asynkron
 import no.nav.helse.CorrelationId
 import no.nav.helse.aktoer.AktoerId
 import no.nav.helse.joark.JoarkGateway
-import no.nav.helse.k9format.*
+import no.nav.helse.k9format.tilK9PleiepengeBarnSøknad
 import no.nav.helse.kafka.KafkaConfig
 import no.nav.helse.kafka.ManagedKafkaStreams
 import no.nav.helse.kafka.ManagedStreamHealthy
 import no.nav.helse.kafka.ManagedStreamReady
-import no.nav.helse.prosessering.v1.*
-import no.nav.helse.prosessering.v1.Tilsynsordning
-import no.nav.k9.søknad.felles.*
-import no.nav.k9.søknad.felles.Barn
-import no.nav.k9.søknad.pleiepengerbarn.*
-import no.nav.k9.søknad.pleiepengerbarn.Beredskap
-import no.nav.k9.søknad.pleiepengerbarn.Utenlandsopphold
+import no.nav.helse.prosessering.v1.PreprossesertMeldingV1
+import no.nav.helse.prosessering.v1.PreprossesertSoker
+import no.nav.helse.tpsproxy.TpsNavn
 import org.apache.kafka.streams.StreamsBuilder
 import org.apache.kafka.streams.Topology
 import org.apache.kafka.streams.kstream.Consumed
 import org.apache.kafka.streams.kstream.Produced
 import org.slf4j.LoggerFactory
-import java.math.BigDecimal
 
 internal class JournalforingsStream(
     joarkGateway: JoarkGateway,
@@ -58,6 +53,7 @@ internal class JournalforingsStream(
                         val journaPostId = joarkGateway.journalfoer(
                             mottatt = entry.data.mottatt,
                             aktoerId = AktoerId(entry.data.soker.aktoerId),
+                            sokerNavn = entry.data.soker.tilTpsNavn(),
                             correlationId = CorrelationId(entry.metadata.correlationId),
                             dokumenter = entry.data.dokumentUrls,
                             norskIdent = entry.data.soker.fodselsnummer
@@ -81,3 +77,9 @@ internal class JournalforingsStream(
 
     internal fun stop() = stream.stop(becauseOfError = false)
 }
+
+private fun PreprossesertSoker.tilTpsNavn(): TpsNavn = TpsNavn(
+    fornavn = fornavn,
+    mellomnavn = mellomnavn,
+    etternavn = etternavn
+)
