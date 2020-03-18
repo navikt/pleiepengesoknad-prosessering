@@ -85,9 +85,9 @@ internal class TpsProxyV1Gateway(
 internal data class Ident(internal val value: String)
 
 data class TpsNavn(
-    internal val fornavn: String,
-    internal val mellomnavn: String?,
-    internal val etternavn: String
+    val fornavn: String,
+    val mellomnavn: String?,
+    val etternavn: String
 )
 
 private fun Logger.restKall(url: String) = info("Utgående kall til $url")
