@@ -1,6 +1,5 @@
 # pleiepengesoknad-prosessering
-
-[![CircleCI](https://circleci.com/gh/navikt/pleiepengesoknad-prosessering/tree/master.svg?style=svg)](https://circleci.com/gh/navikt/pleiepengesoknad-prosessering/tree/master)
+![CI / CD](https://github.com/navikt/pleiepengesoknad-prosessering/workflows/CI%20/%20CD/badge.svg)
 
 Tjeneste som prosesserer søknader om pleiepenger.
 Leser søknader fra Kafka topic `privat-pleiepengesoknad-mottatt` som legges der av [pleiepengesoknad-mottak](https://github.com/navikt/pleiepengesoknad-mottak)
