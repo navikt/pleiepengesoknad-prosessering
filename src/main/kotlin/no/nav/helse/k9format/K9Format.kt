@@ -11,6 +11,7 @@ import no.nav.k9.søknad.pleiepengerbarn.Beredskap
 import no.nav.k9.søknad.pleiepengerbarn.Utenlandsopphold
 import java.lang.IllegalArgumentException
 import java.math.BigDecimal
+import java.time.Duration
 import java.time.LocalDate
 
 fun PreprossesertMeldingV1.tilK9PleiepengeBarnSøknad(): JsonNode {
@@ -193,6 +194,7 @@ fun Arbeidsgivere.tilK9Arbeid(
                     søknadsPeriode,
                     Arbeidstaker.ArbeidstakerPeriodeInfo.builder()
                         .skalJobbeProsent(BigDecimal.valueOf(org.skalJobbeProsent ?: 0.0)) //TODO: Fjern ?: 0.0 når dette feltet ikke lenger er optional.
+                        .jobberNormaltPerUke(org.jobberNormaltTimer?.timerTilDuration()?: Duration.ofHours(37).plusMinutes(30)) // TODO: Fjern default verdi.
                         .build()
                 )
                 .build()

@@ -76,11 +76,11 @@ fun KafkaEnvironment.testConsumer() : KafkaConsumer<String, TopicEntry<Preprosse
     return consumer
 }
 
-fun KafkaEnvironment.journalføringsKonsumer(): KafkaConsumer<String, TopicEntry<Journalfort>> {
-    val consumer = KafkaConsumer<String, TopicEntry<Journalfort>>(
+fun KafkaEnvironment.journalføringsKonsumer(): KafkaConsumer<String, String> {
+    val consumer = KafkaConsumer(
         testConsumerProperties("K9FordelKonsumer"),
         StringDeserializer(),
-        JOURNALFORT.serDes
+        StringDeserializer()
     )
     consumer.subscribe(listOf(JOURNALFORT.name))
     return consumer
@@ -111,10 +111,10 @@ fun KafkaConsumer<String, TopicEntry<PreprossesertMeldingV1>>.hentPreprosessertM
     throw IllegalStateException("Fant ikke preprosessert melding for søknad $soknadId etter $maxWaitInSeconds sekunder.")
 }
 
-fun KafkaConsumer<String, TopicEntry<Journalfort>>.hentJournalførtMelding(
+fun KafkaConsumer<String, String>.hentJournalførtMelding(
     soknadId: String,
     maxWaitInSeconds: Long = 20
-): TopicEntry<Journalfort> {
+): String {
     val end = System.currentTimeMillis() + Duration.ofSeconds(maxWaitInSeconds).toMillis()
     while (System.currentTimeMillis() < end) {
         seekToBeginning(assignment())

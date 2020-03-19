@@ -1,6 +1,5 @@
 package no.nav.helse
 
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.typesafe.config.ConfigFactory
 import io.ktor.config.ApplicationConfig
@@ -14,14 +13,12 @@ import io.ktor.util.KtorExperimentalAPI
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.time.delay
 import no.nav.common.KafkaEnvironment
-import no.nav.helse.dusseldorf.ktor.jackson.dusseldorfConfigured
 import no.nav.helse.dusseldorf.ktor.testsupport.wiremock.WireMockBuilder
+import no.nav.helse.k9format.assertJournalførtFormat
 import no.nav.helse.prosessering.v1.*
-import no.nav.helse.prosessering.v1.asynkron.Journalfort
 import no.nav.helse.prosessering.v1.asynkron.TopicEntry
 import org.junit.AfterClass
 import org.junit.BeforeClass
-import org.skyscreamer.jsonassert.JSONAssert
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.net.URI
@@ -389,7 +386,7 @@ class PleiepengesoknadProsesseringTest {
             arbeidsgivere = Arbeidsgivere(
                 organisasjoner = listOf(
                     Organisasjon("917755736", "Jobb1", skalJobbeProsent = 50.25),
-                    Organisasjon("917755737", "Jobb2", skalJobbeProsent = 20.0)
+                    Organisasjon("917755737", "Jobb2", skalJobbeProsent = 20.0, jobberNormaltTimer = 3.75)
                 )
             ),
             frilans = Frilans(
@@ -495,117 +492,10 @@ class PleiepengesoknadProsesseringTest {
         )
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
-        val forventet: String = """
-{
-  "data" : {
-    "journalpostId" : "9101112",
-    "søknad" : {
-      "søknadId" : "583a3cf8-767a-49f4-a5dd-619df2c72c7a",
-      "versjon" : "1.0.0",
-      "perioder" : {
-        "2020-01-06/2020-01-10" : { }
-      },
-      "mottattDato" : "2019-10-20T07:15:36.124Z",
-      "språk" : "nb",
-      "søker" : {
-        "norskIdentitetsnummer" : "02119970078"
-      },
-      "barn" : {
-        "norskIdentitetsnummer" : "19066672169",
-        "fødselsdato" : null
-      },
-      "bosteder" : {
-        "perioder" : {
-          "2020-06-15/2020-06-28" : {
-            "land" : "AW"
-          },
-          "2019-07-01/2019-07-10" : {
-            "land" : "DK"
-          },
-          "2020-07-01/2020-07-10" : {
-            "land" : "BG"
-          },
-          "2019-06-15/2019-06-28" : {
-            "land" : "POL"
-          }
-        }
-      },
-      "utenlandsopphold" : {
-        "perioder" : {
-          "2020-06-15/2020-06-28" : {
-            "land" : "AW",
-            "årsak" : "barnetInnlagtIHelseinstitusjonForNorskOffentligRegning"
-          }
-        }
-      },
-      "beredskap" : {
-        "perioder" : {
-          "2020-01-06/2020-01-10" : {
-            "tilleggsinformasjon" : "I Beredskap"
-          }
-        }
-      },
-      "nattevåk" : {
-        "perioder" : {
-          "2020-01-06/2020-01-10" : {
-            "tilleggsinformasjon" : "Har Nattevåk"
-          }
-        }
-      },
-      "tilsynsordning" : {
-        "iTilsynsordning" : "ja",
-        "opphold" : {
-          "2020-01-06/2020-01-10" : {
-            "lengde" : "PT37H30M"
-          }
-        }
-      },
-      "arbeid" : {
-        "arbeidstaker" : [ {
-          "norskIdentitetsnummer" : null,
-          "organisasjonsnummer" : "917755736",
-          "perioder" : {
-            "2020-01-06/2020-01-10" : {
-              "skalJobbeProsent" : 50.25
-            }
-          }
-        }, {
-          "norskIdentitetsnummer" : null,
-          "organisasjonsnummer" : "917755737",
-          "perioder" : {
-            "2020-01-06/2020-01-10" : {
-              "skalJobbeProsent" : 20.0
-            }
-          }
-        } ],
-        "selvstendigNæringsdrivende" : [{
-            "perioder": {
-              "2020-01-01/..": {},
-              "2020-02-01/2020-05-01": {}
-            }
-        }],
-        "frilanser" : [ {
-          "perioder" : {
-            "2018-08-01/.." : { }
-          }
-        } ]
-      },
-      "lovbestemtFerie" : {
-        "perioder" : {
-          "2020-01-07/2020-01-08" : { },
-          "2020-01-09/2020-01-10" : { }
-        }
-      }
-    }
-  }
-}
-        """.trimIndent()
-        val journalførtMelding: TopicEntry<Journalfort> = journalførtConsumer.hentJournalførtMelding(melding.soknadId)
-        val joournalførtMeldingJson =
-            jacksonObjectMapper().dusseldorfConfigured().writeValueAsString(journalførtMelding)
-        assertNotNull(journalførtMelding)
-        assertNotNull(journalførtMelding.data.journalpostId)
-        JSONAssert.assertEquals(forventet, joournalførtMeldingJson, false)
+
+        journalførtConsumer
+            .hentJournalførtMelding(melding.soknadId)
+            .assertJournalførtFormat()
     }
 
 
