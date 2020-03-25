@@ -88,6 +88,78 @@
       ],
       "numPartitions": 3,
       "topicName": "privat-pleiepengesoknad-cleanup"
+    },
+    {
+      "configEntries": {
+        "retention.ms": -1
+      },
+      "members": [
+        {
+          "member": "srvpps-mottak",
+          "role": "PRODUCER"
+        },
+        {
+          "member": "srvpps-prosessering",
+          "role": "CONSUMER"
+        }
+      ],
+      "numPartitions": 3,
+      "topicName": "privat-pleiepengesoknad-ettersending-mottatt"
+    },
+    {
+      "configEntries": {
+        "retention.ms": -1
+      },
+      "members": [
+        {
+          "member": "srvpps-prosessering",
+          "role": "PRODUCER"
+        },
+        {
+          "member": "srvpps-prosessering",
+          "role": "CONSUMER"
+        }
+      ],
+      "numPartitions": 3,
+      "topicName": "privat-pleiepengesoknad-ettersending-preprossesert"
+    },
+    {
+      "configEntries": {
+        "retention.ms": -1
+      },
+      "members": [
+        {
+          "member": "srvpps-prosessering",
+          "role": "PRODUCER"
+        },
+        {
+          "member": "srvpps-prosessering",
+          "role": "CONSUMER"
+        },
+        {
+          "member": "srvk9-fordel",
+          "role": "CONSUMER"
+        }
+      ],
+      "numPartitions": 3,
+      "topicName": "privat-pleiepengesoknad-ettersending-journalfort"
+    },
+    {
+      "configEntries": {
+        "retention.ms": -1
+      },
+      "members": [
+        {
+          "member": "srvpps-prosessering",
+          "role": "PRODUCER"
+        },
+        {
+          "member": "srvpps-prosessering",
+          "role": "CONSUMER"
+        }
+      ],
+      "numPartitions": 3,
+      "topicName": "privat-pleiepengesoknad-ettersending-cleanup"
     }
   ]
 }
