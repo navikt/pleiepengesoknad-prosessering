@@ -10,7 +10,7 @@ import java.util.*
 
 private const val aktoerRegisterBasePath = "/aktoerregister-mock"
 private const val tpsProxyBasePath = "/tps-proxy-mock"
-private const val pleiepengerJoarkBaseUrl = "/pleiepenger-joark-mock"
+private const val k9JoarkBaseUrl = "/k9-joark-mock"
 private const val k9DokumentBasePath = "/k9-dokument-mock"
 
 fun WireMockBuilder.navnOppslagConfig() = wireMockConfiguration {
@@ -132,7 +132,7 @@ internal fun WireMockServer.stubSlettDokument(): WireMockServer {
 
 internal fun WireMockServer.stubJournalfor(responseCode: Int = 201): WireMockServer {
     WireMock.stubFor(
-        WireMock.post(WireMock.urlPathMatching(".*$pleiepengerJoarkBaseUrl.*")).willReturn(
+        WireMock.post(WireMock.urlPathMatching(".*$k9JoarkBaseUrl.*")).willReturn(
             WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody(
@@ -184,9 +184,9 @@ private fun WireMockServer.stubHealthEndpoint(
 }
 
 internal fun WireMockServer.stubK9DokumentHealth() = stubHealthEndpoint("$k9DokumentBasePath/health")
-internal fun WireMockServer.stubPleiepengerJoarkHealth() = stubHealthEndpoint("$pleiepengerJoarkBaseUrl/health")
+internal fun WireMockServer.stubPleiepengerJoarkHealth() = stubHealthEndpoint("$k9JoarkBaseUrl/health")
 
 internal fun WireMockServer.getAktoerRegisterBaseUrl() = baseUrl() + aktoerRegisterBasePath
 internal fun WireMockServer.getTpsProxyBaseUrl() = baseUrl() + tpsProxyBasePath
-internal fun WireMockServer.getPleiepengerJoarkBaseUrl() = baseUrl() + pleiepengerJoarkBaseUrl
+internal fun WireMockServer.getK9JoarkBaseUrl() = baseUrl() + k9JoarkBaseUrl
 internal fun WireMockServer.getK9DokumentBaseUrl() = baseUrl() + k9DokumentBasePath
