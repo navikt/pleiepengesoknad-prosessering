@@ -46,7 +46,6 @@ data class Virksomhet(
     @JsonFormat(pattern = "yyyy-MM-dd")
     val fraOgMed: LocalDate,
     val tilOgMed: LocalDate? = null,
-    val erPagaende: Boolean,
     val naringsinntekt: Int? = null,
     val navnPaVirksomheten: String,
     val organisasjonsnummer: String? = null,

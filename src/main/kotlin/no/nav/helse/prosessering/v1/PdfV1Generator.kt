@@ -161,7 +161,6 @@ internal class PdfV1Generator  {
                 "fiskerErPåBladB" to it.fiskerErPåBladB,
                 "fraOgMed" to it.fraOgMed,
                 "tilOgMed" to it.tilOgMed,
-                "erPagaende" to it.erPagaende,
                 "naringsinntekt" to it.naringsinntekt,
                 "registrertINorge" to it.registrertINorge,
                 "organisasjonsnummer" to it.organisasjonsnummer,
