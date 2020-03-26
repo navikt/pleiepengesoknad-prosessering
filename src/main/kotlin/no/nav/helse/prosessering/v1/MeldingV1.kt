@@ -60,10 +60,10 @@ data class Virksomhet(
 )
 
 enum class Naringstype(val detaljert: String) {
-    @JsonProperty("FISKE") FISKER("FISKE"),
-    @JsonProperty("JORDBRUK_SKOGBRUK") JORDBRUK("JORDBRUK_SKOGBRUK"),
-    @JsonProperty("ANNEN") ANNET("ANNEN"),
-    DAGMAMMA("DAGMAMMA")
+    @JsonProperty("FISKE") FISKER("Fiske"),
+    @JsonProperty("JORDBRUK_SKOGBRUK") JORDBRUK("Jordbruk/skogbruk"),
+    @JsonProperty("ANNEN") ANNET("Annen"),
+    DAGMAMMA("Dagmamma eller familiebarnehage i eget hjem")
 }
 
 data class YrkesaktivSisteTreFerdigliknedeArene(
