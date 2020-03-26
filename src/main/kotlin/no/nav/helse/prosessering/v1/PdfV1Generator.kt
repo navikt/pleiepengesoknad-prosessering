@@ -159,8 +159,8 @@ internal class PdfV1Generator  {
                 "navnPaVirksomheten" to it.navnPaVirksomheten,
                 "naringstype" to it.naringstype.somMapNaringstype(),
                 "fiskerErPåBladB" to it.fiskerErPåBladB,
-                "fraOgMed" to it.fraOgMed,
-                "tilOgMed" to it.tilOgMed,
+                "fraOgMed" to DATE_FORMATTER.format(it.fraOgMed),
+                "tilOgMed" to it.tilOgMed?.let { DATE_FORMATTER.format(it) },
                 "naringsinntekt" to it.naringsinntekt,
                 "registrertINorge" to it.registrertINorge,
                 "organisasjonsnummer" to it.organisasjonsnummer,
@@ -185,7 +185,7 @@ internal class PdfV1Generator  {
         null -> null
         else -> {
             mapOf(
-                "dato" to varigEndring.dato,
+                "dato" to DATE_FORMATTER.format(varigEndring.dato),
                 "inntektEtterEndring" to varigEndring.inntektEtterEndring,
                 "forklaring" to varigEndring.forklaring
             )
@@ -217,7 +217,7 @@ internal class PdfV1Generator  {
         frilans == null -> null
         else -> {
             mapOf(
-                "startdato" to frilans.startdato,
+                "startdato" to DATE_FORMATTER.format(frilans.startdato),
                 "jobberFortsattSomFrilans" to frilans.jobberFortsattSomFrilans
             )
         }
