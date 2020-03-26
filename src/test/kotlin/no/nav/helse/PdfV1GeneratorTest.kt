@@ -134,7 +134,6 @@ class PdfV1GeneratorTest {
                     navnPaVirksomheten = "Kjells Møbelsnekkeri",
                     registrertINorge = true,
                     organisasjonsnummer = "111111",
-                    harRevisor = true,
                     revisor = Revisor(
                         navn = "Kjell Revisor",
                         telefon = "9999",
@@ -229,7 +228,6 @@ class PdfV1GeneratorTest {
                     inntektEtterEndring = 202020,
                     forklaring = "ASDASDASDASDASD"
                 ),
-                harRevisor = true,
                 revisor = Revisor(
                     navn = "Kjell Revisor",
                     telefon = "9999",

@@ -56,7 +56,6 @@ data class Virksomhet(
     val yrkesaktivSisteTreFerdigliknedeArene: YrkesaktivSisteTreFerdigliknedeArene? = null,
     val varigEndring: VarigEndring? = null,
     val regnskapsforer: Regnskapsforer? = null,
-    val harRevisor: Boolean? = null,
     val revisor: Revisor? = null
 )
 
