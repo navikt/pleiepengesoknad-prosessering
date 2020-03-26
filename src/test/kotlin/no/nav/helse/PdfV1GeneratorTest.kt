@@ -134,7 +134,6 @@ class PdfV1GeneratorTest {
                     navnPaVirksomheten = "Kjells Møbelsnekkeri",
                     registrertINorge = true,
                     organisasjonsnummer = "111111",
-                    harVarigEndringAvInntektSiste4Kalenderar = false,
                     harRegnskapsforer = false,
                     harRevisor = true,
                     revisor = Revisor(
@@ -152,7 +151,6 @@ class PdfV1GeneratorTest {
                     registrertINorge = false,
                     registrertILand = "Bahamas",
                     yrkesaktivSisteTreFerdigliknedeArene = YrkesaktivSisteTreFerdigliknedeArene(LocalDate.now()),
-                    harVarigEndringAvInntektSiste4Kalenderar = true,
                     varigEndring = VarigEndring(
                         dato = LocalDate.now().minusDays(20),
                         inntektEtterEndring = 234543,
@@ -228,7 +226,6 @@ class PdfV1GeneratorTest {
                 navnPaVirksomheten = "Kjells Møbelsnekkeri",
                 registrertINorge = true,
                 organisasjonsnummer = "101010",
-                harVarigEndringAvInntektSiste4Kalenderar = true,
                 varigEndring = VarigEndring(
                     dato = LocalDate.now(),
                     inntektEtterEndring = 202020,
@@ -250,7 +247,6 @@ class PdfV1GeneratorTest {
                 registrertINorge = false,
                 registrertILand = "Bahamas",
                 yrkesaktivSisteTreFerdigliknedeArene = YrkesaktivSisteTreFerdigliknedeArene(LocalDate.now()),
-                harVarigEndringAvInntektSiste4Kalenderar = false,
                 harRegnskapsforer = true,
                 regnskapsforer = Regnskapsforer(
                     navn = "Bjarne Regnskap",
