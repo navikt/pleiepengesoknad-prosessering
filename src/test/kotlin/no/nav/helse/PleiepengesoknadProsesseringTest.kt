@@ -430,8 +430,7 @@ class PleiepengesoknadProsesseringTest {
                     fraOgMed = LocalDate.parse("2020-01-01"),
                     naringsinntekt = 123456,
                     navnPaVirksomheten = "Virksomehet 1",
-                    registrertINorge = true,
-                    harRegnskapsforer = true
+                    registrertINorge = true
                 ),
                 Virksomhet(
                     naringstype = listOf(),
@@ -439,8 +438,7 @@ class PleiepengesoknadProsesseringTest {
                     tilOgMed = LocalDate.parse("2020-05-01"),
                     naringsinntekt = 123456,
                     navnPaVirksomheten = "Virksomehet 2",
-                    registrertINorge = true,
-                    harRegnskapsforer = true
+                    registrertINorge = true
                 )
             ),
             medlemskap = Medlemskap(

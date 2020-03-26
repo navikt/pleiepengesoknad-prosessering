@@ -55,7 +55,6 @@ data class Virksomhet(
     val registrertILand: String? = null,
     val yrkesaktivSisteTreFerdigliknedeArene: YrkesaktivSisteTreFerdigliknedeArene? = null,
     val varigEndring: VarigEndring? = null,
-    val harRegnskapsforer: Boolean,
     val regnskapsforer: Regnskapsforer? = null,
     val harRevisor: Boolean? = null,
     val revisor: Revisor? = null
