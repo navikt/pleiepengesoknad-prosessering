@@ -151,7 +151,6 @@ class PdfV1GeneratorTest {
                     navnPaVirksomheten = "Tull Og Tøys",
                     registrertINorge = false,
                     registrertILand = "Bahamas",
-                    harBlittYrkesaktivSisteTreFerdigliknendeArene = true,
                     yrkesaktivSisteTreFerdigliknedeArene = YrkesaktivSisteTreFerdigliknedeArene(LocalDate.now()),
                     harVarigEndringAvInntektSiste4Kalenderar = true,
                     varigEndring = VarigEndring(
@@ -250,7 +249,6 @@ class PdfV1GeneratorTest {
                 navnPaVirksomheten = "Tull Og Tøys",
                 registrertINorge = false,
                 registrertILand = "Bahamas",
-                harBlittYrkesaktivSisteTreFerdigliknendeArene = true,
                 yrkesaktivSisteTreFerdigliknedeArene = YrkesaktivSisteTreFerdigliknedeArene(LocalDate.now()),
                 harVarigEndringAvInntektSiste4Kalenderar = false,
                 harRegnskapsforer = true,

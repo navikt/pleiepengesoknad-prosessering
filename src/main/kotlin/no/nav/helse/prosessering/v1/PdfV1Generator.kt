@@ -165,7 +165,6 @@ internal class PdfV1Generator  {
                 "registrertINorge" to it.registrertINorge,
                 "organisasjonsnummer" to it.organisasjonsnummer,
                 "registrertILand" to it.registrertILand,
-                "harBlittYrkesaktivSisteTreFerdigliknendeArene" to it.harBlittYrkesaktivSisteTreFerdigliknendeArene,
                 "yrkesaktivSisteTreFerdigliknedeArene" to it.yrkesaktivSisteTreFerdigliknedeArene?.oppstartsdato,
                 "harVarigEndringAvInntektSiste4Kalenderar" to it.harVarigEndringAvInntektSiste4Kalenderar,
                 "varigEndring" to varigEndring(it.varigEndring),
