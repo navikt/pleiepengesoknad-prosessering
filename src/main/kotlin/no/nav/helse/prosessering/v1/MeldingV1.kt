@@ -67,19 +67,19 @@ enum class Naringstype(val detaljert: String) {
 }
 
 data class YrkesaktivSisteTreFerdigliknedeArene(
-    val oppstartsdato: LocalDate?
+    val oppstartsdato: LocalDate
 )
 
 data class VarigEndring(
-    val dato: LocalDate? = null,
-    val inntektEtterEndring: Int? = null,
-    val forklaring: String? = null
+    val dato: LocalDate,
+    val inntektEtterEndring: Int,
+    val forklaring: String
 )
 
 data class Revisor(
     val navn: String,
     val telefon: String,
-    val kanInnhenteOpplysninger: Boolean?
+    val kanInnhenteOpplysninger: Boolean
 )
 
 data class Regnskapsforer(
