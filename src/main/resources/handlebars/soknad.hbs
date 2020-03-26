@@ -391,7 +391,8 @@
         <p class="sporsmalstekst">Har du jobbet og hatt inntekt som frilanser de siste 10 månedene?</p>
         {{>jaNeiCheckbox parameter=frilans}}
         <br/>
-        <p>Når startet du som frilanser? {{frilans.startdato}}</p>
+        <p class="sporsmalstekst">Når startet du som frilanser?</p>
+        <p>{{frilans.startdato}}</p>
         <p class="sporsmalstekst">Jobber du fortsatt som frilanser?</p>
         {{>jaNeiCheckbox parameter=frilans.jobberFortsattSomFrilans}}
     {{/if}}
