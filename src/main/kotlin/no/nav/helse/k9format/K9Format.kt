@@ -193,8 +193,8 @@ fun Arbeidsgivere.tilK9Arbeid(
                 .periode(
                     søknadsPeriode,
                     Arbeidstaker.ArbeidstakerPeriodeInfo.builder()
-                        .skalJobbeProsent(BigDecimal.valueOf(org.skalJobbeProsent ?: 0.0)) //TODO: Fjern ?: 0.0 når dette feltet ikke lenger er optional.
-                        .jobberNormaltPerUke(org.jobberNormaltTimer?.timerTilDuration()?: Duration.ofHours(37).plusMinutes(30)) // TODO: Fjern default verdi.
+                        .skalJobbeProsent(BigDecimal.valueOf(org.skalJobbeProsent))
+                        .jobberNormaltPerUke(org.jobberNormaltTimer.timerTilDuration())
                         .build()
                 )
                 .build()

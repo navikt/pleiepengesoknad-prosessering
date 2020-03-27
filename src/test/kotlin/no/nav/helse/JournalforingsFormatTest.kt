@@ -43,8 +43,8 @@ class JournalforingsFormatTest {
                     "organisasjonsnummer": "1212",
                     "navn": "Nei",
                     "skal_jobbe": "nei",
-                    "jobber_normalt_timer": null,
-                    "skal_jobbe_prosent": null,
+                    "jobber_normalt_timer": 0.0,
+                    "skal_jobbe_prosent": 0.0,
                     "vet_ikke_ekstrainfo": null,
                 },{
                     "organisasjonsnummer": "54321",
@@ -52,7 +52,7 @@ class JournalforingsFormatTest {
                     "skal_jobbe": "redusert",
                     "skal_jobbe_prosent": 22.512,
                     "vet_ikke_ekstrainfo": null,
-                    "jobber_normalt_timer": null,
+                    "jobber_normalt_timer": 0.0,
                 }]
             },
             "medlemskap": {
@@ -130,8 +130,8 @@ class JournalforingsFormatTest {
         bekrefterPeriodeOver8Uker = true,
         arbeidsgivere = Arbeidsgivere(
             organisasjoner = listOf(
-                Organisasjon("1212", "Nei", jobberNormaltTimer = null, vetIkkeEkstrainfo = null, skalJobbe = "nei"),
-                Organisasjon("54321", "Navn", skalJobbeProsent = 22.512, jobberNormaltTimer = null, vetIkkeEkstrainfo = null, skalJobbe = "redusert")
+                Organisasjon("1212", "Nei", jobberNormaltTimer = 0.0, skalJobbeProsent = 0.0, vetIkkeEkstrainfo = null, skalJobbe = "nei"),
+                Organisasjon("54321", "Navn", skalJobbeProsent = 22.512, jobberNormaltTimer = 0.0, vetIkkeEkstrainfo = null, skalJobbe = "redusert")
             )
         ),
         vedleggUrls = listOf(

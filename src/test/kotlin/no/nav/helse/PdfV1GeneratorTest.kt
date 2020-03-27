@@ -46,19 +46,22 @@ class PdfV1GeneratorTest {
                         organisasjonsnummer = "952352655",
                         navn = "Arbeidsgiver 1",
                         skalJobbe = "ja",
-                        skalJobbeProsent = 100.0
+                        skalJobbeProsent = 100.0,
+                        jobberNormaltTimer = 37.5
                     ),
                     Organisasjon(
                         organisasjonsnummer = "952352655",
                         navn = "Arbeidsgiver 2",
                         skalJobbe = "nei",
-                        skalJobbeProsent = 0.0
+                        skalJobbeProsent = 0.0,
+                        jobberNormaltTimer = 37.5
                     ),
                     Organisasjon(
                         organisasjonsnummer = "952352655",
                         navn = "Arbeidsgiver 3",
                         skalJobbe = "vet_ikke",
                         jobberNormaltTimer = 30.0,
+                        skalJobbeProsent = 50.0,
                         vetIkkeEkstrainfo = "Vondt i hode, skulker, kne og tå, kne og tå"
                     ),
                     Organisasjon(
@@ -173,19 +176,31 @@ class PdfV1GeneratorTest {
         organisasjoner: List<Organisasjon> = listOf(
             Organisasjon(
                 organisasjonsnummer = "987564785",
-                navn = "NAV"
+                navn = "NAV",
+                jobberNormaltTimer = 30.0,
+                skalJobbeProsent = 50.0,
+                skalJobbe = "redusert"
             ),
             Organisasjon(
                 organisasjonsnummer = "975124568",
-                navn = "Kiwi"
+                navn = "Kiwi",
+                jobberNormaltTimer = 30.0,
+                skalJobbeProsent = 50.0,
+                skalJobbe = "redusert"
             ),
             Organisasjon(
                 organisasjonsnummer = "952352687",
-                navn = "Bjerkheim gård"
+                navn = "Bjerkheim gård",
+                jobberNormaltTimer = 30.0,
+                skalJobbeProsent = 50.0,
+                skalJobbe = "redusert"
             ),
             Organisasjon(
                 organisasjonsnummer = "952352655",
-                navn = "Hopp i havet"
+                navn = "Hopp i havet",
+                jobberNormaltTimer = 30.0,
+                skalJobbeProsent = 50.0,
+                skalJobbe = "redusert"
             )
         ),
         barn: Barn = Barn(
@@ -418,12 +433,16 @@ class PdfV1GeneratorTest {
                     Organisasjon(
                         organisasjonsnummer = "987564785",
                         navn = "NAV",
-                        skalJobbeProsent = 22.5
+                        jobberNormaltTimer = 30.0,
+                        skalJobbeProsent = 50.0,
+                        skalJobbe = "redusert"
                     ),
                     Organisasjon(
                         organisasjonsnummer = "975124568",
                         navn = "Kiwi",
-                        skalJobbeProsent = 88.3123
+                        jobberNormaltTimer = 30.0,
+                        skalJobbeProsent = 50.0,
+                        skalJobbe = "redusert"
                     )
                 )
             ), barnetsIdent = barnetsIdent, barnetsNavn = barnetsNavn,
@@ -497,6 +516,7 @@ class PdfV1GeneratorTest {
                         navn = "Hopp i havet",
                         skalJobbe = "vet_ikke",
                         jobberNormaltTimer = 30.0,
+                        skalJobbeProsent = 0.0,
                         vetIkkeEkstrainfo = "Vondt i hode, skulker, kne og tå, kne og tå"
                     )
                 ), barn = Barn(fodselsnummer = null, fodselsdato = null, navn = null, aktoerId = null)
@@ -515,6 +535,7 @@ class PdfV1GeneratorTest {
                         organisasjonsnummer = "952352655",
                         navn = "Hopp i havet",
                         skalJobbe = "ja",
+                        jobberNormaltTimer = 30.0,
                         skalJobbeProsent = 100.0
                     )
                 ), barn = Barn(fodselsnummer = null, fodselsdato = null, navn = null, aktoerId = null)
@@ -533,6 +554,7 @@ class PdfV1GeneratorTest {
                         organisasjonsnummer = "952352655",
                         navn = "Hopp i havet",
                         skalJobbe = "nei",
+                        jobberNormaltTimer = 30.0,
                         skalJobbeProsent = 0.0
                     )
                 ), barn = Barn(fodselsnummer = null, fodselsdato = null, navn = null, aktoerId = null)
@@ -551,19 +573,22 @@ class PdfV1GeneratorTest {
                         organisasjonsnummer = "952352655",
                         navn = "Arbeidsgiver 1",
                         skalJobbe = "ja",
+                        jobberNormaltTimer = 30.0,
                         skalJobbeProsent = 100.0
                     ),
                     Organisasjon(
                         organisasjonsnummer = "952352655",
                         navn = "Arbeidsgiver 2",
                         skalJobbe = "nei",
-                        skalJobbeProsent = 0.0
+                        skalJobbeProsent = 0.0,
+                        jobberNormaltTimer = 30.0
                     ),
                     Organisasjon(
                         organisasjonsnummer = "952352655",
                         navn = "Arbeidsgiver 3",
                         skalJobbe = "vet_ikke",
                         jobberNormaltTimer = 30.0,
+                        skalJobbeProsent = 50.0,
                         vetIkkeEkstrainfo = "Vondt i hode, skulker, kne og tå, kne og tå"
                     ),
                     Organisasjon(
@@ -667,7 +692,7 @@ class PdfV1GeneratorTest {
     }
 
     @Test
-    //@Ignore
+    @Ignore
     fun `opprett lesbar oppsummerings-PDF`() {
         genererOppsummeringsPdfer(true)
     }

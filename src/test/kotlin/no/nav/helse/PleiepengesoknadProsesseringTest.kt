@@ -154,8 +154,8 @@ class PleiepengesoknadProsesseringTest {
             fodselsnummerBarn = gyldigFodselsnummerB,
             sprak = sprak,
             organisasjoner = listOf(
-                Organisasjon("917755736", "Jobb1", skalJobbeProsent = jobb1SkalJobbeProsent),
-                Organisasjon("917755737", "Jobb2", skalJobbeProsent = jobb2SkalJobberProsent)
+                Organisasjon("917755736", "Jobb1", skalJobbeProsent = jobb1SkalJobbeProsent, jobberNormaltTimer = 37.5, skalJobbe = "redusert"),
+                Organisasjon("917755737", "Jobb2", skalJobbeProsent = jobb2SkalJobberProsent, jobberNormaltTimer = 37.5, skalJobbe = "redusert")
             )
         )
 
@@ -416,8 +416,8 @@ class PleiepengesoknadProsesseringTest {
             ),
             arbeidsgivere = Arbeidsgivere(
                 organisasjoner = listOf(
-                    Organisasjon("917755736", "Jobb1", skalJobbeProsent = 50.25),
-                    Organisasjon("917755737", "Jobb2", skalJobbeProsent = 20.0, jobberNormaltTimer = 3.75)
+                    Organisasjon("917755736", "Jobb1", skalJobbeProsent = 50.25, jobberNormaltTimer = 5.0, skalJobbe = "redusert"),
+                    Organisasjon("917755737", "Jobb2", skalJobbeProsent = 20.0, jobberNormaltTimer = 3.75, skalJobbe = "redusert")
                 )
             ),
             frilans = Frilans(
@@ -535,7 +535,7 @@ class PleiepengesoknadProsesseringTest {
         aktoerIdBarn: String? = null,
         sprak: String? = null,
         organisasjoner: List<Organisasjon> = listOf(
-            Organisasjon("917755736", "Gyldig")
+            Organisasjon("917755736", "Gyldig", jobberNormaltTimer = 4.0, skalJobbeProsent = 50.0, skalJobbe = "redusert")
         )
     ): MeldingV1 = MeldingV1(
         sprak = sprak,
