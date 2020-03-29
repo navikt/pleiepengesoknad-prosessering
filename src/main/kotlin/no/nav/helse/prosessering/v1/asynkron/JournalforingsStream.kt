@@ -78,7 +78,7 @@ internal class JournalforingsStream(
     internal fun stop() = stream.stop(becauseOfError = false)
 }
 
-private fun PreprossesertSoker.tilTpsNavn(): TpsNavn = TpsNavn(
+fun PreprossesertSoker.tilTpsNavn(): TpsNavn = TpsNavn(
     fornavn = fornavn,
     mellomnavn = mellomnavn,
     etternavn = etternavn

@@ -2,6 +2,7 @@ package no.nav.helse
 
 import no.nav.helse.aktoer.Fodselsnummer
 import no.nav.helse.prosessering.v1.*
+import no.nav.helse.prosessering.v1.ettersending.Ettersending
 import org.junit.Ignore
 import java.io.File
 import java.net.URI
@@ -294,6 +295,30 @@ class PdfV1GeneratorTest {
         ferieuttakIPerioden = null,
         frilans = frilans,
         selvstendigVirksomheter = selvstendigVirksomheter
+    )
+
+    private fun gyldigEttersending() = Ettersending(
+        språk = "nb",
+        mottatt = ZonedDateTime.now(),
+        harBekreftetOpplysninger = true,
+        harForståttRettigheterOgPlikter = true,
+        søknadId = "Ettersending",
+        søker = Soker(
+            aktoerId = "123456",
+            fornavn = "Ærling",
+            mellomnavn = "Øverbø",
+            etternavn = "Ånsnes",
+            fodselsnummer = "29099012345"
+        ),
+        beskrivelse = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. " +
+                "Sed accumsan erat cursus enim aliquet, ac auctor orci consequat. " +
+                "Etiam nec tellus sapien. Nam gravida massa id sagittis ultrices.",
+        søknadstype = "Omsorgspenger",
+        vedleggUrls = listOf(
+            URI("http://localhost:8081/vedlegg1"),
+            URI("http://localhost:8081/vedlegg2"),
+            URI("http://localhost:8081/vedlegg3")
+        )
     )
 
     private fun genererOppsummeringsPdfer(writeBytes: Boolean) {
@@ -658,8 +683,8 @@ class PdfV1GeneratorTest {
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
-         id = "21-har-du-jobbet-og-hatt-inntekt-som-frilanser"
-         pdf = generator.generateSoknadOppsummeringPdf(
+        id = "21-har-du-jobbet-og-hatt-inntekt-som-frilanser"
+        pdf = generator.generateSoknadOppsummeringPdf(
             melding = gyldigMelding(
                 soknadId = id, harMedsoker = true, organisasjoner = listOf(
                 ), barn = Barn(fodselsnummer = null, fodselsdato = null, navn = null, aktoerId = null)
@@ -671,8 +696,8 @@ class PdfV1GeneratorTest {
 
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
-         id = "22-har-du-hatt-inntekt-som-selvstendig-næringsdrivende"
-         pdf = generator.generateSoknadOppsummeringPdf(
+        id = "22-har-du-hatt-inntekt-som-selvstendig-næringsdrivende"
+        pdf = generator.generateSoknadOppsummeringPdf(
             melding = gyldigMelding(
                 soknadId = id, harMedsoker = true, organisasjoner = listOf(
                 ), barn = Barn(fodselsnummer = null, fodselsdato = null, navn = null, aktoerId = null)
@@ -680,6 +705,12 @@ class PdfV1GeneratorTest {
             barnetsIdent = null,
             barnetsNavn = barnetsNavn,
             fodselsdato = null
+        )
+        if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
+
+        id = "23-komplett-ettersending"
+        pdf = generator.generateSoknadOppsummeringPdfEttersending(
+            ettersending = gyldigEttersending()
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
     }
@@ -692,7 +723,7 @@ class PdfV1GeneratorTest {
     }
 
     @Test
-    @Ignore
+    //@Ignore
     fun `opprett lesbar oppsummerings-PDF`() {
         genererOppsummeringsPdfer(true)
     }

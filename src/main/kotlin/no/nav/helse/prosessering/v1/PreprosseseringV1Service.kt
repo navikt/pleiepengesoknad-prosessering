@@ -9,6 +9,8 @@ import no.nav.helse.barn.BarnOppslag
 import no.nav.helse.dokument.DokumentService
 import no.nav.helse.prosessering.Metadata
 import no.nav.helse.prosessering.SoknadId
+import no.nav.helse.prosessering.v1.ettersending.Ettersending
+import no.nav.helse.prosessering.v1.ettersending.PreprossesertEttersending
 import no.nav.helse.tpsproxy.Ident
 import no.nav.helse.tpsproxy.TpsNavn
 import org.slf4j.LoggerFactory
@@ -104,6 +106,65 @@ internal class PreprosseseringV1Service(
         melding.reportMetrics()
         preprossesertMeldingV1.reportMetrics()
         return preprossesertMeldingV1
+    }
+
+    internal suspend fun preprosseserEttersending(
+        ettersending: Ettersending,
+        metadata: Metadata
+    ): PreprossesertEttersending {
+        val søknadId = SoknadId(ettersending.søknadId)
+        logger.info("Preprosseserer ettersending med søknadId: $søknadId")
+
+        val correlationId = CorrelationId(metadata.correlationId)
+
+        val søkerAktørId = AktoerId(ettersending.søker.aktoerId)
+
+        logger.info("Søkerens AktørID = $søkerAktørId")
+
+        logger.info("Genererer Oppsummerings-PDF for ettersending.")
+        val soknadOppsummeringPdf = pdfV1Generator.generateSoknadOppsummeringPdfEttersending(ettersending)
+        logger.info("Generering av Oppsummerings-PDF OK.")
+
+        logger.info("Mellomlagrer Oppsummerings-PDF.")
+        val soknadOppsummeringPdfUrl = dokumentService.lagreSoknadsOppsummeringPdf(
+            pdf = soknadOppsummeringPdf,
+            correlationId = correlationId,
+            aktoerId = søkerAktørId
+        )
+        logger.info("Mellomlagring av Oppsummerings-PDF OK")
+
+        logger.info("Mellomlagrer Oppsummerings-JSON")
+
+        val soknadJsonUrl = dokumentService.lagreEttersendingMelding(
+            melding = ettersending,
+            aktørId = søkerAktørId,
+            correlationId = correlationId
+        )
+        logger.info("Mellomlagrer Oppsummerings-JSON OK.")
+
+        val komplettDokumentUrls = mutableListOf(
+            listOf(
+                soknadOppsummeringPdfUrl,
+                soknadJsonUrl
+            )
+        )
+
+        if (ettersending.vedleggUrls.isNotEmpty()) {
+            logger.trace("Legger til ${ettersending.vedleggUrls.size} vedlegg URL's fra meldingen som dokument.")
+            ettersending.vedleggUrls.forEach { komplettDokumentUrls.add(listOf(it)) }
+        }
+
+        logger.info("Totalt ${komplettDokumentUrls.size} dokumentbolker.")
+
+
+        val preprossesertEttersending = PreprossesertEttersending(
+            melding = ettersending,
+            dokumentUrls = komplettDokumentUrls.toList(),
+            sokerAktoerId = søkerAktørId
+        )
+        //melding.reportMetrics() //TODO report metrics
+        //preprossesertMeldingV1.reportMetrics()
+        return preprossesertEttersending
     }
 
     /**
