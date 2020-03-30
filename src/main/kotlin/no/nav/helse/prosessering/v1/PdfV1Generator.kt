@@ -164,22 +164,22 @@ internal class PdfV1Generator  {
             Context
                 .newBuilder(
                     mapOf(
-                        "soknad_id" to ettersending.søknadId,
+                        "soknad_id" to ettersending.soknadId,
                         "soknad_mottatt_dag" to ettersending.mottatt.withZoneSameInstant(ZONE_ID).norskDag(),
                         "soknad_mottatt" to DATE_TIME_FORMATTER.format(ettersending.mottatt),
                         "søker" to mapOf(
-                            "navn" to ettersending.søker.formatertNavn(),
-                            "fødselsnummer" to ettersending.søker.fodselsnummer
+                            "navn" to ettersending.soker.formatertNavn(),
+                            "fødselsnummer" to ettersending.soker.fodselsnummer
                         ),
                         "beskrivelse" to ettersending.beskrivelse,
                         "antall_vedlegg" to ettersending.vedleggUrls.size,
-                        "søknadstype" to ettersending.søknadstype,
+                        "søknadstype" to ettersending.soknadstype,
                         "samtykke" to mapOf(
-                            "harForståttRettigheterOgPlikter" to ettersending.harForståttRettigheterOgPlikter,
+                            "harForståttRettigheterOgPlikter" to ettersending.harForstattRettigheterOgPlikter,
                             "harBekreftetOpplysninger" to ettersending.harBekreftetOpplysninger
                         ),
                         "hjelp" to mapOf(
-                            "språk" to ettersending.språk.sprakTilTekst()
+                            "språk" to ettersending.sprak.sprakTilTekst()
                         )
                     )
                 )

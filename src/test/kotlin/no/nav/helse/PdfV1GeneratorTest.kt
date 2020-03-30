@@ -3,7 +3,6 @@ package no.nav.helse
 import no.nav.helse.aktoer.Fodselsnummer
 import no.nav.helse.prosessering.v1.*
 import no.nav.helse.prosessering.v1.ettersending.Ettersending
-import org.junit.Ignore
 import java.io.File
 import java.net.URI
 import java.time.Duration
@@ -298,12 +297,12 @@ class PdfV1GeneratorTest {
     )
 
     private fun gyldigEttersending() = Ettersending(
-        språk = "nb",
+        sprak = "nb",
         mottatt = ZonedDateTime.now(),
         harBekreftetOpplysninger = true,
-        harForståttRettigheterOgPlikter = true,
-        søknadId = "Ettersending",
-        søker = Soker(
+        harForstattRettigheterOgPlikter = true,
+        soknadId = "Ettersending",
+        soker = Soker(
             aktoerId = "123456",
             fornavn = "Ærling",
             mellomnavn = "Øverbø",
@@ -313,7 +312,7 @@ class PdfV1GeneratorTest {
         beskrivelse = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. " +
                 "Sed accumsan erat cursus enim aliquet, ac auctor orci consequat. " +
                 "Etiam nec tellus sapien. Nam gravida massa id sagittis ultrices.",
-        søknadstype = "Omsorgspenger",
+        soknadstype = "Omsorgspenger",
         vedleggUrls = listOf(
             URI("http://localhost:8081/vedlegg1"),
             URI("http://localhost:8081/vedlegg2"),

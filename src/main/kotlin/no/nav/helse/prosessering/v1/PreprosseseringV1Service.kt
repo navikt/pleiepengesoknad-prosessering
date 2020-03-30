@@ -112,12 +112,12 @@ internal class PreprosseseringV1Service(
         ettersending: Ettersending,
         metadata: Metadata
     ): PreprossesertEttersending {
-        val søknadId = SoknadId(ettersending.søknadId)
+        val søknadId = SoknadId(ettersending.soknadId)
         logger.info("Preprosseserer ettersending med søknadId: $søknadId")
 
         val correlationId = CorrelationId(metadata.correlationId)
 
-        val søkerAktørId = AktoerId(ettersending.søker.aktoerId)
+        val søkerAktørId = AktoerId(ettersending.soker.aktoerId)
 
         logger.info("Søkerens AktørID = $søkerAktørId")
 

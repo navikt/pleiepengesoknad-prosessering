@@ -16,12 +16,12 @@ class EttersendingUtils {
         private val gyldigFodselsnummerA = "02119970078"
 
         internal val default = Ettersending(
-            søknadId = UUID.randomUUID().toString(),
+            soknadId = UUID.randomUUID().toString(),
             mottatt = ZonedDateTime.now(),
-            språk = "no",
-            søknadstype = "omsorgspenger",
+            sprak = "no",
+            soknadstype = "omsorgspenger",
             beskrivelse = "Beskrivelse av ettersending",
-            søker = Soker(
+            soker = Soker(
                 aktoerId = "123456",
                 fodselsnummer = gyldigFodselsnummerA,
                 fornavn = "Ola",
@@ -32,7 +32,7 @@ class EttersendingUtils {
                 URI("http://localhost:8080/vedlegg/2"),
                 URI("http://localhost:8080/vedlegg/3")
             ),
-            harForståttRettigheterOgPlikter = true,
+            harForstattRettigheterOgPlikter = true,
             harBekreftetOpplysninger = true
         )
     }

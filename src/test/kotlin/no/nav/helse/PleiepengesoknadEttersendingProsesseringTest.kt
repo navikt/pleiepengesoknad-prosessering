@@ -129,7 +129,7 @@ class PleiepengesoknadEttersendingProsesseringTest {
         kafkaTestProducer.leggEttersendingTilProsessering(melding)
 
         kafkaTestConsumer
-            .hentJournalførtEttersending(melding.søknadId)
+            .hentJournalførtEttersending(melding.soknadId)
             .assertEttersendingJournalførtFormat()
     }
 
@@ -147,7 +147,7 @@ class PleiepengesoknadEttersendingProsesseringTest {
         wireMockServer.stubJournalfor(201) // Simulerer journalføring fungerer igjen
         restartEngine()
         kafkaTestConsumer
-            .hentJournalførtEttersending(melding.søknadId)
+            .hentJournalførtEttersending(melding.soknadId)
             .assertEttersendingJournalførtFormat()
     }
 

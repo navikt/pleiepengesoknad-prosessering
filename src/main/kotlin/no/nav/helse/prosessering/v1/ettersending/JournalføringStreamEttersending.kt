@@ -58,9 +58,9 @@ internal class JournalføringStreamEttersending(
                         logger.info("Journalfører dokumenter for ettersending: {}", dokumenter)
                         val journaPostId = joarkGateway.journalførEttersending(
                             mottatt = entry.data.mottatt,
-                            aktørId = AktoerId(entry.data.søker.aktoerId),
-                            sokerNavn = entry.data.søker.tilTpsNavn(),
-                            norskIdent = entry.data.søker.fodselsnummer,
+                            aktørId = AktoerId(entry.data.soker.aktoerId),
+                            sokerNavn = entry.data.soker.tilTpsNavn(),
+                            norskIdent = entry.data.soker.fodselsnummer,
                             correlationId = CorrelationId(entry.metadata.correlationId),
                             dokumenter = dokumenter
                         )
@@ -86,9 +86,9 @@ internal class JournalføringStreamEttersending(
 }
 
 private fun PreprossesertEttersending.tilK9Ettersendelse(): Ettersendelse = Ettersendelse.builder() //TODO:Legge til egen søknad for ettersending
-    .søknadId(SøknadId.of(søknadId))
+    .søknadId(SøknadId.of(soknadId))
     .mottattDato(mottatt)
-    .søker(søker.tilK9Søker())
+    .søker(soker.tilK9Søker())
     .ytelse(Ytelse.OMSORGSPENGER)
     .build()
 

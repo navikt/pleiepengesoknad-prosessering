@@ -6,29 +6,29 @@ import java.net.URI
 import java.time.ZonedDateTime
 
 data class PreprossesertEttersending(
-    val språk: String?,
-    val søknadId: String,
+    val sprak: String?,
+    val soknadId: String,
     val dokumentUrls: List<List<URI>>,
     val mottatt: ZonedDateTime,
-    val søker: PreprossesertSoker,
+    val soker: PreprossesertSoker,
     val harForstattRettigheterOgPlikter: Boolean,
     val harBekreftetOpplysninger: Boolean,
     val beskrivelse: String,
-    val søknadstype: String
+    val soknadstype: String
     ) {
     internal constructor(
         melding: Ettersending,
         dokumentUrls: List<List<URI>>,
         sokerAktoerId: AktoerId
     ) : this(
-        språk = melding.språk,
-        søknadId = melding.søknadId,
+        sprak = melding.sprak,
+        soknadId = melding.soknadId,
         dokumentUrls = dokumentUrls,
         mottatt = melding.mottatt,
-        søker = PreprossesertSoker(melding.søker, sokerAktoerId),
+        soker = PreprossesertSoker(melding.soker, sokerAktoerId),
         beskrivelse = melding.beskrivelse,
-        søknadstype = melding.søknadstype,
-        harForstattRettigheterOgPlikter = melding.harForståttRettigheterOgPlikter,
+        soknadstype = melding.soknadstype,
+        harForstattRettigheterOgPlikter = melding.harForstattRettigheterOgPlikter,
         harBekreftetOpplysninger = melding.harBekreftetOpplysninger
     )
 }

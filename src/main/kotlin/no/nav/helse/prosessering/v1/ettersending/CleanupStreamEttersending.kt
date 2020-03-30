@@ -48,7 +48,7 @@ internal class CleanupStreamEttersending(
                         logger.info("Sletter ettersending dokumenter.")
                         dokumentService.slettDokumeter(
                             urlBolks = entry.data.melding.dokumentUrls,
-                            aktørId = AktoerId(entry.data.melding.søker.aktoerId),
+                            aktørId = AktoerId(entry.data.melding.soker.aktoerId),
                             correlationId = CorrelationId(entry.metadata.correlationId)
                         )
                         logger.info("Dokumenter slettet.")

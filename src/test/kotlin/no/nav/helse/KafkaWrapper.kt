@@ -194,7 +194,7 @@ fun KafkaProducer<String, TopicEntry<Ettersending>>.leggEttersendingTilProsesser
     send(
         ProducerRecord(
             Topics.ETTERSENDING_MOTTATT.name,
-            ettersending.søknadId,
+            ettersending.soknadId,
             TopicEntry(
                 metadata = Metadata(
                     version = 1,

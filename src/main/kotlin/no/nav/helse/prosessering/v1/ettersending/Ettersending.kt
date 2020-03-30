@@ -6,14 +6,14 @@ import java.net.URI
 import java.time.ZonedDateTime
 
 data class Ettersending(
-    val søker : Soker,
-    val søknadId: String,
+    val soker : Soker,
+    val soknadId: String,
     val mottatt: ZonedDateTime,
-    val språk: String,
+    val sprak: String,
     @JsonProperty("vedlegg_urls")
     val vedleggUrls: List<URI>,
-    val harForståttRettigheterOgPlikter: Boolean,
+    val harForstattRettigheterOgPlikter: Boolean,
     val harBekreftetOpplysninger: Boolean,
     val beskrivelse: String,
-    val søknadstype: String
+    val soknadstype: String
 )
