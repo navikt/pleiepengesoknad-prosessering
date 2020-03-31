@@ -16,6 +16,10 @@
         {
           "member": "E157419",
           "role": "MANAGER"
+        },
+        {
+          "member": "F154868",
+          "role": "MANAGER"
         }
       ],
       "numPartitions": 3,
@@ -36,6 +40,10 @@
         },
         {
           "member": "E157419",
+          "role": "MANAGER"
+        },
+        {
+          "member": "F154868",
           "role": "MANAGER"
         }
       ],
@@ -62,6 +70,10 @@
         {
           "member": "E157419",
           "role": "MANAGER"
+        },
+        {
+          "member": "F154868",
+          "role": "MANAGER"
         }
       ],
       "numPartitions": 3,
@@ -82,6 +94,10 @@
         },
         {
           "member": "E157419",
+          "role": "MANAGER"
+        },
+        {
+          "member": "F154868",
           "role": "MANAGER"
         }
       ],
@@ -104,6 +120,10 @@
         {
           "member": "E157419",
           "role": "MANAGER"
+        },
+        {
+          "member": "F154868",
+          "role": "MANAGER"
         }
       ],
       "numPartitions": 3,
@@ -124,6 +144,10 @@
         },
         {
           "member": "E157419",
+          "role": "MANAGER"
+        },
+        {
+          "member": "F154868",
           "role": "MANAGER"
         }
       ],
@@ -146,6 +170,10 @@
         {
           "member": "E157419",
           "role": "MANAGER"
+        },
+        {
+          "member": "F154868",
+          "role": "MANAGER"
         }
       ],
       "numPartitions": 3,
@@ -166,6 +194,10 @@
         },
         {
           "member": "E157419",
+          "role": "MANAGER"
+        },
+        {
+          "member": "F154868",
           "role": "MANAGER"
         }
       ],
