@@ -165,31 +165,6 @@
           "role": "CONSUMER"
         },
         {
-          "member": "srvk9-fordel",
-          "role": "CONSUMER"
-        },
-        {
-          "member": "E157419",
-          "role": "MANAGER"
-        }
-      ],
-      "numPartitions": 3,
-      "topicName": "privat-k9-digital-ettersendelse-journalfort"
-    },
-    {
-      "configEntries": {
-        "retention.ms": -1
-      },
-      "members": [
-        {
-          "member": "srvpps-prosessering",
-          "role": "PRODUCER"
-        },
-        {
-          "member": "srvpps-prosessering",
-          "role": "CONSUMER"
-        },
-        {
           "member": "E157419",
           "role": "MANAGER"
         }
