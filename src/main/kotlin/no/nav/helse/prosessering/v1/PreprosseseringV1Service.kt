@@ -64,7 +64,8 @@ internal class PreprosseseringV1Service(
         val soknadOppsummeringPdfUrl = dokumentService.lagreSoknadsOppsummeringPdf(
             pdf = soknadOppsummeringPdf,
             correlationId = correlationId,
-            aktoerId = sokerAktoerId
+            aktoerId = sokerAktoerId,
+            dokumentbeskrivelse = "Søknad om pleiepenger"
         )
 
         logger.trace("Mellomlagring av Oppsummerings-PDF OK")
@@ -129,7 +130,8 @@ internal class PreprosseseringV1Service(
         val soknadOppsummeringPdfUrl = dokumentService.lagreSoknadsOppsummeringPdf(
             pdf = soknadOppsummeringPdf,
             correlationId = correlationId,
-            aktoerId = søkerAktørId
+            aktoerId = søkerAktørId,
+            dokumentbeskrivelse = "Ettersendelse pleiepenger"
         )
         logger.info("Mellomlagring av Oppsummerings-PDF OK")
 

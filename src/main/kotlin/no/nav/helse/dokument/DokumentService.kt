@@ -28,13 +28,14 @@ class DokumentService(
     internal suspend fun lagreSoknadsOppsummeringPdf(
         pdf : ByteArray,
         aktoerId: AktoerId,
-        correlationId: CorrelationId
+        correlationId: CorrelationId,
+        dokumentbeskrivelse: String
     ) : URI {
         return lagreDokument(
             dokument = DokumentGateway.Dokument(
                 content = pdf,
                 contentType = "application/pdf",
-                title = "Søknad om pleiepenger"
+                title = dokumentbeskrivelse
             ),
             aktoerId = aktoerId,
             correlationId = correlationId
