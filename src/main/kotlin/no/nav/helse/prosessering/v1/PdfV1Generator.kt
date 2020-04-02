@@ -80,8 +80,7 @@ internal class PdfV1Generator  {
                 "soknad_mottatt" to DATE_TIME_FORMATTER.format(melding.mottatt),
                 "har_medsoker" to melding.harMedsoker,
                 "samtidig_hjemme" to melding.samtidigHjemme,
-                "grad" to melding.grad,
-                "dager_per_uke_borte_fra_jobb" to melding.dagerPerUkeBorteFraJobb?.avrundetMedEnDesimal()?.formatertMedEnDesimal(),
+                "bekrefterPeriodeOver8Uker" to melding.bekrefterPeriodeOver8Uker,
                 "soker" to mapOf(
                     "navn" to melding.soker.formatertNavn(),
                     "fodselsnummer" to melding.soker.fodselsnummer,
@@ -128,7 +127,13 @@ internal class PdfV1Generator  {
                     "skalTaUtFerieIPerioden" to melding.ferieuttakIPerioden?.skalTaUtFerieIPerioden,
                     "ferieuttak" to melding.ferieuttakIPerioden?.ferieuttak?.somMapFerieuttak()
                 ),
-                "frilans" to frilans(melding.frilans)
+                "frilans" to frilans(melding.frilans),
+                "selvstendigVirksomheter" to mapOf(
+                    "virksomhet" to melding.selvstendigVirksomheter?.somMapVirksomheter()
+                ),
+                "skal_bekrefte_omsorg" to melding.skalBekrefteOmsorg,
+                "skal_passe_pa_barnet_i_hele_perioden" to melding.skalPassePaBarnetIHelePerioden,
+                "beskrivelse_omsorgsrollen" to melding.beskrivelseOmsorgsRollen
             ))
             .resolver(MapValueResolver.INSTANCE)
             .build()).let { html ->
@@ -148,27 +153,72 @@ internal class PdfV1Generator  {
         }
     }
 
-    private fun frilans(frilans: Frilans?) = when {
-        frilans == null -> null
-        else -> {
+    private fun List<Virksomhet>.somMapVirksomheter(): List<Map<String, Any?>> {
+        return map {
             mapOf(
-                "harHattOppdragForFamilie" to frilans.harHattOppdragForFamilie,
-                "harHattInntektSomFosterforelder" to frilans.harHattInntektSomFosterforelder,
-                "startdato" to frilans.startdato,
-                "jobberFortsattSomFrilans" to frilans.jobberFortsattSomFrilans,
-                "oppdrag" to frilans.oppdrag.somMapOppdrag()
+                "navnPaVirksomheten" to it.navnPaVirksomheten,
+                "naringstype" to it.naringstype.somMapNaringstype(),
+                "fiskerErPåBladB" to it.fiskerErPåBladB,
+                "fraOgMed" to DATE_FORMATTER.format(it.fraOgMed),
+                "tilOgMed" to it.tilOgMed?.let { DATE_FORMATTER.format(it) },
+                "naringsinntekt" to it.naringsinntekt,
+                "registrertINorge" to it.registrertINorge,
+                "organisasjonsnummer" to it.organisasjonsnummer,
+                "registrertILand" to it.registrertILand,
+                "yrkesaktivSisteTreFerdigliknedeArene" to it.yrkesaktivSisteTreFerdigliknedeArene?.oppstartsdato,
+                "varigEndring" to varigEndring(it.varigEndring),
+                "regnskapsforer" to regnskapsforer(it.regnskapsforer),
+                "revisor" to revisor(it.revisor)
             )
         }
     }
 
-    private fun List<Oppdrag>.somMapOppdrag(): List<Map<String, Any?>> {
-        val dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy").withZone(ZoneId.of("Europe/Oslo"))
+    private fun List<Naringstype>.somMapNaringstype(): List<Map<String, Any?>> {
         return map {
-            mapOf<String,Any?>(
-                "arbeidsgivernavn" to it.arbeidsgivernavn,
-                "fraOgMed" to dateFormatter.format(it.fraOgMed),
-                "tilOgMed" to it.tilOgMed?.let {dateFormatter.format(it)},
-                "erPaagaende" to it.erPagaende
+            mapOf(
+                "typeDetaljert" to it.detaljert
+            )
+        }
+    }
+
+    private fun varigEndring(varigEndring: VarigEndring?) = when (varigEndring) {
+        null -> null
+        else -> {
+            mapOf(
+                "dato" to DATE_FORMATTER.format(varigEndring.dato),
+                "inntektEtterEndring" to varigEndring.inntektEtterEndring,
+                "forklaring" to varigEndring.forklaring
+            )
+        }
+    }
+
+    private fun revisor(revisor: Revisor?) = when (revisor) {
+        null -> null
+        else -> {
+            mapOf(
+                "navn" to revisor.navn,
+                "telefon" to revisor.telefon,
+                "kanInnhenteOpplysninger" to revisor.kanInnhenteOpplysninger
+            )
+        }
+    }
+
+    private fun regnskapsforer(regnskapsforer: Regnskapsforer?) = when (regnskapsforer) {
+        null -> null
+        else -> {
+            mapOf(
+                "navn" to regnskapsforer.navn,
+                "telefon" to regnskapsforer.telefon
+            )
+        }
+    }
+
+    private fun frilans(frilans: Frilans?) = when {
+        frilans == null -> null
+        else -> {
+            mapOf(
+                "startdato" to DATE_FORMATTER.format(frilans.startdato),
+                "jobberFortsattSomFrilans" to frilans.jobberFortsattSomFrilans
             )
         }
     }

@@ -3,11 +3,14 @@ package no.nav.helse.prosessering.v1.asynkron
 import no.nav.helse.CorrelationId
 import no.nav.helse.aktoer.AktoerId
 import no.nav.helse.joark.JoarkGateway
+import no.nav.helse.k9format.tilK9PleiepengeBarnSøknad
 import no.nav.helse.kafka.KafkaConfig
 import no.nav.helse.kafka.ManagedKafkaStreams
 import no.nav.helse.kafka.ManagedStreamHealthy
 import no.nav.helse.kafka.ManagedStreamReady
 import no.nav.helse.prosessering.v1.PreprossesertMeldingV1
+import no.nav.helse.prosessering.v1.PreprossesertSoker
+import no.nav.helse.tpsproxy.TpsNavn
 import org.apache.kafka.streams.StreamsBuilder
 import org.apache.kafka.streams.Topology
 import org.apache.kafka.streams.kstream.Consumed
@@ -33,35 +36,50 @@ internal class JournalforingsStream(
         private const val NAME = "JournalforingV1"
         private val logger = LoggerFactory.getLogger("no.nav.$NAME.topology")
 
-        private fun topology(joarkGateway: JoarkGateway) : Topology {
+        private fun topology(joarkGateway: JoarkGateway): Topology {
             val builder = StreamsBuilder()
-            val fromTopic = Topics.PREPROSSESERT
-            val toTopic = Topics.JOURNALFORT
+            val fraPreprossesert: Topic<TopicEntry<PreprossesertMeldingV1>> = Topics.PREPROSSESERT
+            val tilCleanup: Topic<TopicEntry<Cleanup>> = Topics.CLEANUP
 
             builder
-                .stream<String, TopicEntry<PreprossesertMeldingV1>>(fromTopic.name, Consumed.with(fromTopic.keySerde, fromTopic.valueSerde))
+                .stream<String, TopicEntry<PreprossesertMeldingV1>>(
+                    fraPreprossesert.name,
+                    Consumed.with(fraPreprossesert.keySerde, fraPreprossesert.valueSerde)
+                )
                 .filter { _, entry -> 1 == entry.metadata.version }
-                .mapValues { soknadId, entry  ->
+                .mapValues { soknadId, entry ->
                     process(NAME, soknadId, entry) {
                         logger.info("Journalfører dokumenter.")
                         val journaPostId = joarkGateway.journalfoer(
                             mottatt = entry.data.mottatt,
                             aktoerId = AktoerId(entry.data.soker.aktoerId),
+                            sokerNavn = entry.data.soker.tilTpsNavn(),
                             correlationId = CorrelationId(entry.metadata.correlationId),
                             dokumenter = entry.data.dokumentUrls,
                             norskIdent = entry.data.soker.fodselsnummer
                         )
                         logger.info("Dokumenter journalført med ID = ${journaPostId.journalPostId}.")
-                        Journalfort(
-                            journalPostId = journaPostId.journalPostId,
-                            melding = entry.data
+                        val journalfort = Journalfort(
+                            journalpostId = journaPostId.journalPostId,
+                            søknad = entry.data.tilK9PleiepengeBarnSøknad()
+                        )
+                        Cleanup(
+                            metadata = entry.metadata,
+                            melding = entry.data,
+                            journalførtMelding = journalfort
                         )
                     }
                 }
-                .to(toTopic.name, Produced.with(toTopic.keySerde, toTopic.valueSerde))
+                .to(tilCleanup.name, Produced.with(tilCleanup.keySerde, tilCleanup.valueSerde))
             return builder.build()
         }
     }
 
     internal fun stop() = stream.stop(becauseOfError = false)
 }
+
+private fun PreprossesertSoker.tilTpsNavn(): TpsNavn = TpsNavn(
+    fornavn = fornavn,
+    mellomnavn = mellomnavn,
+    etternavn = etternavn
+)

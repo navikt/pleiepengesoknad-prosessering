@@ -14,8 +14,8 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.time.delay
 import no.nav.common.KafkaEnvironment
 import no.nav.helse.dusseldorf.ktor.testsupport.wiremock.WireMockBuilder
+import no.nav.helse.k9format.assertJournalførtFormat
 import no.nav.helse.prosessering.v1.*
-import no.nav.helse.prosessering.v1.asynkron.OppgaveOpprettet
 import no.nav.helse.prosessering.v1.asynkron.TopicEntry
 import org.junit.AfterClass
 import org.junit.BeforeClass
@@ -47,15 +47,14 @@ class PleiepengesoknadProsesseringTest {
             .build()
             .stubK9DokumentHealth()
             .stubPleiepengerJoarkHealth()
-            .stubPleiepengerOppgaveHealth()
             .stubJournalfor()
-            .stubOpprettOppgave()
             .stubLagreDokument()
             .stubSlettDokument()
             .stubAktoerRegister("29099012345", "123456")
 
         private val kafkaEnvironment = KafkaWrapper.bootstrap()
         private val kafkaTestConsumer = kafkaEnvironment.testConsumer()
+        private val journalførtConsumer = kafkaEnvironment.journalføringsKonsumer()
         private val kafkaTestProducer = kafkaEnvironment.testProducer()
 
         // Se https://github.com/navikt/dusseldorf-ktor#f%C3%B8dselsnummer
@@ -138,7 +137,9 @@ class PleiepengesoknadProsesseringTest {
         )
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
-        kafkaTestConsumer.hentOpprettetOppgave(melding.soknadId)
+        journalførtConsumer
+            .hentJournalførtMelding(melding.soknadId)
+            .assertJournalførtFormat()
     }
 
     @Test
@@ -153,21 +154,25 @@ class PleiepengesoknadProsesseringTest {
             fodselsnummerBarn = gyldigFodselsnummerB,
             sprak = sprak,
             organisasjoner = listOf(
-                Organisasjon("917755736", "Jobb1", skalJobbeProsent = jobb1SkalJobbeProsent),
-                Organisasjon("917755737", "Jobb2", skalJobbeProsent = jobb2SkalJobberProsent)
+                Organisasjon("917755736", "Jobb1", skalJobbeProsent = jobb1SkalJobbeProsent, jobberNormaltTimer = 37.5, skalJobbe = "redusert"),
+                Organisasjon("917755737", "Jobb2", skalJobbeProsent = jobb2SkalJobberProsent, jobberNormaltTimer = 37.5, skalJobbe = "redusert")
             )
         )
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
-        val oppgaveOpprettet = kafkaTestConsumer.hentOpprettetOppgave(melding.soknadId).data
-        assertEquals(sprak, oppgaveOpprettet.melding.sprak)
-        assertEquals(2, oppgaveOpprettet.melding.arbeidsgivere.organisasjoner.size)
-        val jobb1 = oppgaveOpprettet.melding.arbeidsgivere.organisasjoner.firstOrNull { it.navn == "Jobb1" }
-        val jobb2 = oppgaveOpprettet.melding.arbeidsgivere.organisasjoner.firstOrNull { it.navn == "Jobb2" }
+        val preprossesertMelding = kafkaTestConsumer.hentPreprosessertMelding(melding.soknadId).data
+        assertEquals(sprak, preprossesertMelding.sprak)
+        assertEquals(2, preprossesertMelding.arbeidsgivere.organisasjoner.size)
+        val jobb1 = preprossesertMelding.arbeidsgivere.organisasjoner.firstOrNull { it.navn == "Jobb1" }
+        val jobb2 = preprossesertMelding.arbeidsgivere.organisasjoner.firstOrNull { it.navn == "Jobb2" }
         assertNotNull(jobb1)
         assertNotNull(jobb2)
         assertEquals(jobb1SkalJobbeProsent, jobb1.skalJobbeProsent)
         assertEquals(jobb2SkalJobberProsent, jobb2.skalJobbeProsent)
+
+        journalførtConsumer
+            .hentJournalførtMelding(melding.soknadId)
+            .assertJournalførtFormat()
     }
 
     @Test
@@ -185,8 +190,9 @@ class PleiepengesoknadProsesseringTest {
 
         wireMockServer.stubJournalfor(201) // Simulerer journalføring fungerer igjen
         restartEngine()
-        kafkaTestConsumer.hentOpprettetOppgave(melding.soknadId)
-    }
+        journalførtConsumer
+            .hentJournalførtMelding(melding.soknadId)
+            .assertJournalførtFormat()    }
 
     private fun readyGir200HealthGir503() {
         with(engine) {
@@ -207,8 +213,9 @@ class PleiepengesoknadProsesseringTest {
         )
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
-        kafkaTestConsumer.hentOpprettetOppgave(melding.soknadId)
-    }
+        journalførtConsumer
+            .hentJournalførtMelding(melding.soknadId)
+            .assertJournalførtFormat()    }
 
     @Test
     fun `Melding lagt til prosessering selv om sletting av vedlegg feiler`() {
@@ -220,8 +227,9 @@ class PleiepengesoknadProsesseringTest {
         )
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
-        kafkaTestConsumer.hentOpprettetOppgave(melding.soknadId)
-    }
+        journalførtConsumer
+            .hentJournalførtMelding(melding.soknadId)
+            .assertJournalførtFormat()    }
 
     @Test
     fun `Bruk barnets dnummer id til å slå opp i tps-proxy dersom navnet mangler`() {
@@ -235,9 +243,12 @@ class PleiepengesoknadProsesseringTest {
         )
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
-        val hentOpprettetOppgave: TopicEntry<OppgaveOpprettet> =
-            kafkaTestConsumer.hentOpprettetOppgave(melding.soknadId)
-        assertEquals("KLØKTIG BLUNKENDE SUPERKONSOLL", hentOpprettetOppgave.data.melding.barn.navn)
+        val preprosessertMelding: TopicEntry<PreprossesertMeldingV1> =
+            kafkaTestConsumer.hentPreprosessertMelding(melding.soknadId)
+        assertEquals("KLØKTIG BLUNKENDE SUPERKONSOLL", preprosessertMelding.data.barn.navn)
+        journalførtConsumer
+            .hentJournalførtMelding(melding.soknadId)
+            .assertJournalførtFormat()
     }
 
     @Test
@@ -252,9 +263,12 @@ class PleiepengesoknadProsesseringTest {
         )
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
-        val hentOpprettetOppgave: TopicEntry<OppgaveOpprettet> =
-            kafkaTestConsumer.hentOpprettetOppgave(melding.soknadId)
-        assertEquals("KLØKTIG SUPERKONSOLL", hentOpprettetOppgave.data.melding.barn.navn)
+        val preprosessertMelding: TopicEntry<PreprossesertMeldingV1> =
+            kafkaTestConsumer.hentPreprosessertMelding(melding.soknadId)
+        assertEquals("KLØKTIG SUPERKONSOLL", preprosessertMelding.data.barn.navn)
+        journalførtConsumer
+            .hentJournalførtMelding(melding.soknadId)
+            .assertJournalførtFormat()
     }
 
 
@@ -268,8 +282,9 @@ class PleiepengesoknadProsesseringTest {
         wireMockServer.stubAktoerRegisterGetAktoerIdNotFound(gyldigFodselsnummerC)
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
-        kafkaTestConsumer.hentOpprettetOppgave(melding.soknadId)
-    }
+        journalførtConsumer
+            .hentJournalførtMelding(melding.soknadId)
+            .assertJournalførtFormat()    }
 
     @Test
     fun `Bruk barnets fødselsnummer til å slå opp i tps-proxy dersom navnet mangler`() {
@@ -281,9 +296,12 @@ class PleiepengesoknadProsesseringTest {
         )
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
-        val hentOpprettetOppgave: TopicEntry<OppgaveOpprettet> =
-            kafkaTestConsumer.hentOpprettetOppgave(melding.soknadId)
-        assertEquals("KLØKTIG BLUNKENDE SUPERKONSOLL", hentOpprettetOppgave.data.melding.barn.navn)
+        val preprosessertMelding: TopicEntry<PreprossesertMeldingV1> =
+            kafkaTestConsumer.hentPreprosessertMelding(melding.soknadId)
+        assertEquals("KLØKTIG BLUNKENDE SUPERKONSOLL", preprosessertMelding.data.barn.navn)
+        journalførtConsumer
+            .hentJournalførtMelding(melding.soknadId)
+            .assertJournalførtFormat()
     }
 
     @Test
@@ -299,9 +317,12 @@ class PleiepengesoknadProsesseringTest {
         )
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
-        val hentOpprettetOppgave: TopicEntry<OppgaveOpprettet> =
-            kafkaTestConsumer.hentOpprettetOppgave(melding.soknadId)
-        assertEquals("KLØKTIG BLUNKENDE SUPERKONSOLL", hentOpprettetOppgave.data.melding.barn.navn)
+        val preprosessertMelding: TopicEntry<PreprossesertMeldingV1> =
+            kafkaTestConsumer.hentPreprosessertMelding(melding.soknadId)
+        assertEquals("KLØKTIG BLUNKENDE SUPERKONSOLL", preprosessertMelding.data.barn.navn)
+        journalførtConsumer
+            .hentJournalførtMelding(melding.soknadId)
+            .assertJournalførtFormat()
     }
 
     @Test
@@ -318,9 +339,12 @@ class PleiepengesoknadProsesseringTest {
         )
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
-        val hentOpprettetOppgave: TopicEntry<OppgaveOpprettet> =
-            kafkaTestConsumer.hentOpprettetOppgave(melding.soknadId)
-        assertEquals(forventetFodselsNummer, hentOpprettetOppgave.data.melding.barn.fodselsnummer)
+        val preprosessertMelding: TopicEntry<PreprossesertMeldingV1> =
+            kafkaTestConsumer.hentPreprosessertMelding(melding.soknadId)
+        assertEquals(forventetFodselsNummer, preprosessertMelding.data.barn.fodselsnummer)
+        journalførtConsumer
+            .hentJournalførtMelding(melding.soknadId)
+            .assertJournalførtFormat()
     }
 
     @Test
@@ -336,9 +360,12 @@ class PleiepengesoknadProsesseringTest {
         )
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
-        val hentOpprettetOppgave: TopicEntry<OppgaveOpprettet> =
-            kafkaTestConsumer.hentOpprettetOppgave(melding.soknadId)
-        assertEquals(forventetFodselsNummer, hentOpprettetOppgave.data.melding.barn.fodselsnummer)
+        val preprosessertMelding: TopicEntry<PreprossesertMeldingV1> =
+            kafkaTestConsumer.hentPreprosessertMelding(melding.soknadId)
+        assertEquals(forventetFodselsNummer, preprosessertMelding.data.barn.fodselsnummer)
+        journalførtConsumer
+            .hentJournalførtMelding(melding.soknadId)
+            .assertJournalførtFormat()
     }
 
     @Test
@@ -354,10 +381,150 @@ class PleiepengesoknadProsesseringTest {
         )
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
-        val hentOpprettetOppgave: TopicEntry<OppgaveOpprettet> =
-            kafkaTestConsumer.hentOpprettetOppgave(melding.soknadId)
-        assertEquals(LocalDate.now(), hentOpprettetOppgave.data.melding.barn.fodselsdato)
+        val preprosesssertMelding: TopicEntry<PreprossesertMeldingV1> =
+            kafkaTestConsumer.hentPreprosessertMelding(melding.soknadId)
+        assertEquals(LocalDate.now(), preprosesssertMelding.data.barn.fodselsdato)
+        journalførtConsumer
+            .hentJournalførtMelding(melding.soknadId)
+            .assertJournalførtFormat()
     }
+
+    @Test
+    fun `Forvent korrekt format på melding sendt på journalført topic`() {
+        wireMockServer.stubAktoerRegister(gyldigFodselsnummerB, "666")
+
+        val melding = MeldingV1(
+            sprak = "nb",
+            soknadId = "583a3cf8-767a-49f4-a5dd-619df2c72c7a",
+            mottatt = ZonedDateTime.parse("2019-10-20T07:15:36.124Z"),
+            fraOgMed = LocalDate.parse("2020-01-06"),
+            tilOgMed = LocalDate.parse("2020-01-10"),
+            soker = Soker(
+                aktoerId = "123456",
+                fodselsnummer = gyldigFodselsnummerA,
+                fornavn = "Ola",
+                mellomnavn = "Mellomnavn",
+                etternavn = "Nordmann"
+            ),
+            relasjonTilBarnet = "far",
+            harMedsoker = false,
+            barn = Barn(
+                navn = "Bjarne",
+                fodselsnummer = gyldigFodselsnummerB,
+                fodselsdato = null,
+                aktoerId = "666"
+            ),
+            arbeidsgivere = Arbeidsgivere(
+                organisasjoner = listOf(
+                    Organisasjon("917755736", "Jobb1", skalJobbeProsent = 50.25, jobberNormaltTimer = 5.0, skalJobbe = "redusert"),
+                    Organisasjon("917755737", "Jobb2", skalJobbeProsent = 20.0, jobberNormaltTimer = 3.75, skalJobbe = "redusert")
+                )
+            ),
+            frilans = Frilans(
+                startdato = LocalDate.parse("2018-08-01"),
+                jobberFortsattSomFrilans = true
+            ),
+            selvstendigVirksomheter = listOf(
+                Virksomhet(
+                    naringstype = listOf(),
+                    fraOgMed = LocalDate.parse("2020-01-01"),
+                    naringsinntekt = 123456,
+                    navnPaVirksomheten = "Virksomehet 1",
+                    registrertINorge = true
+                ),
+                Virksomhet(
+                    naringstype = listOf(),
+                    fraOgMed = LocalDate.parse("2020-02-01"),
+                    tilOgMed = LocalDate.parse("2020-05-01"),
+                    naringsinntekt = 123456,
+                    navnPaVirksomheten = "Virksomehet 2",
+                    registrertINorge = true
+                )
+            ),
+            medlemskap = Medlemskap(
+                harBoddIUtlandetSiste12Mnd = true,
+                utenlandsoppholdSiste12Mnd = listOf(
+                    Bosted(
+                        fraOgMed = LocalDate.parse("2019-06-15"),
+                        tilOgMed = LocalDate.parse("2019-06-28"),
+                        landkode = "POL",
+                        landnavn = "Polen"
+                    ),
+                    Bosted(
+                        fraOgMed = LocalDate.parse("2019-07-01"),
+                        tilOgMed = LocalDate.parse("2019-07-10"),
+                        landkode = "DK",
+                        landnavn = "Danmark"
+                    )
+                ),
+                skalBoIUtlandetNeste12Mnd = true,
+                utenlandsoppholdNeste12Mnd = listOf(
+                    Bosted(
+                        fraOgMed = LocalDate.parse("2020-06-15"),
+                        tilOgMed = LocalDate.parse("2020-06-28"),
+                        landkode = "AW",
+                        landnavn = "Aruba"
+                    ),
+                    Bosted(
+                        fraOgMed = LocalDate.parse("2020-07-01"),
+                        tilOgMed = LocalDate.parse("2020-07-10"),
+                        landkode = "BG",
+                        landnavn = "Bulgaria"
+                    )
+                )
+            ),
+            utenlandsoppholdIPerioden = UtenlandsoppholdIPerioden(
+                skalOppholdeSegIUtlandetIPerioden = true,
+                opphold = listOf(
+                    Utenlandsopphold(
+                        fraOgMed = LocalDate.parse("2020-06-15"),
+                        tilOgMed = LocalDate.parse("2020-06-28"),
+                        landkode = "AW",
+                        landnavn = "Aruba",
+                        arsak = Arsak.BARNET_INNLAGT_I_HELSEINSTITUSJON_FOR_NORSK_OFFENTLIG_REGNING, //barnetInnlagtIHelseinstitusjonForNorskOffentligRegning
+                        erBarnetInnlagt = true,
+                        erUtenforEos = false
+                    )
+                )
+            ),
+            beredskap = Beredskap(
+                beredskap = true,
+                tilleggsinformasjon = "I Beredskap"
+            ),
+            nattevaak = Nattevaak(
+                harNattevaak = true,
+                tilleggsinformasjon = "Har Nattevåk"
+            ),
+            tilsynsordning = Tilsynsordning(
+                svar = "ja",
+                ja = TilsynsordningJa(
+                    mandag = Duration.parse("PT7H30M"),
+                    tirsdag = Duration.parse("PT7H30M"),
+                    onsdag = Duration.parse("PT7H30M"),
+                    torsdag = Duration.parse("PT7H30M"),
+                    fredag = Duration.parse("PT7H30M"),
+                    tilleggsinformasjon = "Annet."
+                ),
+                vetIkke = null
+            ),
+            ferieuttakIPerioden = FerieuttakIPerioden(
+                skalTaUtFerieIPerioden = true,
+                ferieuttak = listOf(
+                    Ferieuttak(LocalDate.parse("2020-01-07"), LocalDate.parse("2020-01-08")),
+                    Ferieuttak(LocalDate.parse("2020-01-09"), LocalDate.parse("2020-01-10"))
+                )
+            ),
+            harBekreftetOpplysninger = true,
+            harForstattRettigheterOgPlikter = true
+        )
+
+        kafkaTestProducer.leggSoknadTilProsessering(melding)
+
+        journalførtConsumer
+            .hentJournalførtMelding(melding.soknadId)
+            .assertJournalførtFormat()
+    }
+
 
     private fun gyldigMelding(
         fodselsnummerSoker: String,
@@ -368,7 +535,7 @@ class PleiepengesoknadProsesseringTest {
         aktoerIdBarn: String? = null,
         sprak: String? = null,
         organisasjoner: List<Organisasjon> = listOf(
-            Organisasjon("917755736", "Gyldig")
+            Organisasjon("917755736", "Gyldig", jobberNormaltTimer = 4.0, skalJobbeProsent = 50.0, skalJobbe = "redusert")
         )
     ): MeldingV1 = MeldingV1(
         sprak = sprak,
@@ -399,7 +566,6 @@ class PleiepengesoknadProsesseringTest {
             skalBoIUtlandetNeste12Mnd = true
         ),
         harMedsoker = true,
-        grad = 70,
         harBekreftetOpplysninger = true,
         harForstattRettigheterOgPlikter = true,
         tilsynsordning = Tilsynsordning(
@@ -428,18 +594,8 @@ class PleiepengesoknadProsesseringTest {
         ),
         ferieuttakIPerioden = FerieuttakIPerioden(skalTaUtFerieIPerioden = false, ferieuttak = listOf()),
         frilans = Frilans(
-            harHattOppdragForFamilie = true,
-            harHattInntektSomFosterforelder = true,
             startdato = LocalDate.now().minusYears(3),
-            jobberFortsattSomFrilans = true,
-            oppdrag = listOf(
-                Oppdrag(
-                    arbeidsgivernavn = "Montesorri barnehage",
-                    fraOgMed = LocalDate.now().minusYears(2),
-                    tilOgMed = null,
-                    erPagaende = true
-                )
-            )
+            jobberFortsattSomFrilans = true
         )
     )
 

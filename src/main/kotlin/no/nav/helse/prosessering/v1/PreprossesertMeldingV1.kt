@@ -19,12 +19,18 @@ data class PreprossesertMeldingV1(
     val relasjonTilBarnet: String,
     val arbeidsgivere: Arbeidsgivere,
     val medlemskap: Medlemskap,
+    @JsonProperty("bekrefter_periode_over_8_uker")
+    val bekrefterPeriodeOver8Uker: Boolean? = null,
     @JsonProperty("utenlandsopphold_i_perioden")
     val utenlandsoppholdIPerioden: UtenlandsoppholdIPerioden?,
     @JsonProperty("ferieuttak_i_perioden")
     val ferieuttakIPerioden: FerieuttakIPerioden?,
-    val grad: Int?,
+    val beredskap: Beredskap?,
+    val nattevaak: Nattevaak?,
+    val tilsynsordning: Tilsynsordning?,
     val harMedsoker: Boolean,
+    val frilans: Frilans? = null,
+    val selvstendigVirksomheter: List<Virksomhet>? = null,
     val harForstattRettigheterOgPlikter: Boolean,
     val harBekreftetOpplysninger: Boolean
 ) {
@@ -48,8 +54,13 @@ data class PreprossesertMeldingV1(
         relasjonTilBarnet = melding.relasjonTilBarnet,
         arbeidsgivere = melding.arbeidsgivere,
         medlemskap = melding.medlemskap,
-        grad = melding.grad,
+        beredskap = melding.beredskap,
+        nattevaak = melding.nattevaak,
+        tilsynsordning = melding.tilsynsordning,
         harMedsoker = melding.harMedsoker,
+        bekrefterPeriodeOver8Uker = melding.bekrefterPeriodeOver8Uker,
+        frilans = melding.frilans,
+        selvstendigVirksomheter = melding.selvstendigVirksomheter,
         harForstattRettigheterOgPlikter = melding.harForstattRettigheterOgPlikter,
         harBekreftetOpplysninger = melding.harBekreftetOpplysninger,
         utenlandsoppholdIPerioden = melding.utenlandsoppholdIPerioden,

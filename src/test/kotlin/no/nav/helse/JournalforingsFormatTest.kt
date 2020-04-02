@@ -43,8 +43,8 @@ class JournalforingsFormatTest {
                     "organisasjonsnummer": "1212",
                     "navn": "Nei",
                     "skal_jobbe": "nei",
-                    "jobber_normalt_timer": null,
-                    "skal_jobbe_prosent": null,
+                    "jobber_normalt_timer": 0.0,
+                    "skal_jobbe_prosent": 0.0,
                     "vet_ikke_ekstrainfo": null,
                 },{
                     "organisasjonsnummer": "54321",
@@ -52,7 +52,7 @@ class JournalforingsFormatTest {
                     "skal_jobbe": "redusert",
                     "skal_jobbe_prosent": 22.512,
                     "vet_ikke_ekstrainfo": null,
-                    "jobber_normalt_timer": null,
+                    "jobber_normalt_timer": 0.0,
                 }]
             },
             "medlemskap": {
@@ -61,12 +61,11 @@ class JournalforingsFormatTest {
                 "skal_bo_i_utlandet_neste_12_mnd": true,
                 "utenlandsopphold_siste_12_mnd": []
             },
-            "grad": 55,
             "har_medsoker": true,
             "samtidig_hjemme": null,
+            "bekrefter_periode_over_8_uker": true,
             "har_bekreftet_opplysninger" : true,
 	        "har_forstatt_rettigheter_og_plikter": true,
-            "dager_per_uke_borte_fra_jobb": 3.5,
             "tilsynsordning": {
                 "svar": "ja",
                 "ja": {
@@ -97,19 +96,13 @@ class JournalforingsFormatTest {
             ]
           },
             "frilans": {
-              "har_hatt_oppdrag_for_familie": true,
-              "har_hatt_inntekt_som_fosterforelder": true,
               "startdato": "2018-02-01",
-              "jobber_fortsatt_som_frilans": true,
-              "oppdrag": [
-                {
-                  "arbeidsgivernavn": "Montesorri barnehage",
-                  "fra_og_med": "2019-02-01",
-                  "til_og_med": null,
-                  "er_pagaende": true
-                }
-              ]
-            }
+              "jobber_fortsatt_som_frilans": true
+            },
+            "selvstendig_virksomheter" : [],
+          "skal_bekrefte_omsorg": true,
+          "skal_passe_pa_barnet_i_hele_perioden": true,
+          "beskrivelse_omsorgsrollen": "En kort beskrivelse"
         }
         """.trimIndent(), String(json), true)
 
@@ -134,10 +127,11 @@ class JournalforingsFormatTest {
             aktoerId = null
         ),
         relasjonTilBarnet = "Mor",
+        bekrefterPeriodeOver8Uker = true,
         arbeidsgivere = Arbeidsgivere(
             organisasjoner = listOf(
-                Organisasjon("1212", "Nei", jobberNormaltTimer = null, vetIkkeEkstrainfo = null, skalJobbe = "nei"),
-                Organisasjon("54321", "Navn", skalJobbeProsent = 22.512, jobberNormaltTimer = null, vetIkkeEkstrainfo = null, skalJobbe = "redusert")
+                Organisasjon("1212", "Nei", jobberNormaltTimer = 0.0, skalJobbeProsent = 0.0, vetIkkeEkstrainfo = null, skalJobbe = "nei"),
+                Organisasjon("54321", "Navn", skalJobbeProsent = 22.512, jobberNormaltTimer = 0.0, vetIkkeEkstrainfo = null, skalJobbe = "redusert")
             )
         ),
         vedleggUrls = listOf(
@@ -149,10 +143,8 @@ class JournalforingsFormatTest {
             skalBoIUtlandetNeste12Mnd = true
         ),
         harMedsoker = true,
-        grad = 55,
         harBekreftetOpplysninger = true,
         harForstattRettigheterOgPlikter = true,
-        dagerPerUkeBorteFraJobb = 3.5,
         tilsynsordning = Tilsynsordning(
             svar = "ja",
             ja = TilsynsordningJa(
@@ -176,18 +168,12 @@ class JournalforingsFormatTest {
         utenlandsoppholdIPerioden = UtenlandsoppholdIPerioden(skalOppholdeSegIUtlandetIPerioden = false, opphold = listOf()),
         ferieuttakIPerioden = FerieuttakIPerioden(skalTaUtFerieIPerioden = false, ferieuttak = listOf()),
         frilans = Frilans(
-            harHattOppdragForFamilie = true,
-            harHattInntektSomFosterforelder = true,
             startdato = LocalDate.parse("2018-02-01"),
-            jobberFortsattSomFrilans = true,
-            oppdrag = listOf(
-                Oppdrag(
-                    arbeidsgivernavn = "Montesorri barnehage",
-                    fraOgMed = LocalDate.parse("2019-02-01"),
-                    tilOgMed = null,
-                    erPagaende = true
-                )
-            )
-        )
+            jobberFortsattSomFrilans = true
+        ),
+        selvstendigVirksomheter = listOf(),
+        skalBekrefteOmsorg = true,
+        skalPassePaBarnetIHelePerioden = true,
+        beskrivelseOmsorgsRollen = "En kort beskrivelse"
     )
 }

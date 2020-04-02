@@ -38,7 +38,7 @@ jobs:
 
   build-code-and-push-docker:
     name: Build code and push docker image
-    if: startsWith(github.ref, 'refs/heads/dev-') || startsWith(github.ref, 'refs/heads/master') || github.event.deployment.payload.triggered # Build and push docker if branch is either master or dev-*
+    if: startsWith(github.ref, 'refs/heads/dev-') ||startsWith(github.ref, 'refs/heads/master') # Build and push docker if branch is either master or dev-*
     needs: test
     runs-on: ubuntu-latest
     steps:
@@ -56,7 +56,7 @@ jobs:
         with:
           java-version: 11
       - name: Build JAR
-        run: ./gradlew clean shadowjar # Creates a combined JAR of project and runTime dependencies.
+        run: ./gradlew shadowJar # Creates a combined JAR of project and runTime dependencies.
       - name: Build and publish Docker image
         run: |
           docker build --tag ${IMAGE} .

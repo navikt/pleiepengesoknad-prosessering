@@ -1,5 +1,7 @@
 package no.nav.helse.prosessering.v1.asynkron
 
+import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
@@ -13,8 +15,8 @@ import org.apache.kafka.common.serialization.Serializer
 import org.apache.kafka.common.serialization.StringSerializer
 
 data class TopicEntry<V>(val metadata: Metadata, val data: V)
-internal data class Journalfort(val journalPostId: String, val melding: PreprossesertMeldingV1)
-data class OppgaveOpprettet(val journalPostId: String, val oppgaveId: String, val melding: PreprossesertMeldingV1)
+data class Journalfort(@JsonProperty("journalpostId") val journalpostId: String, val søknad: JsonNode)
+data class Cleanup(val metadata: Metadata, val melding: PreprossesertMeldingV1, val journalførtMelding: Journalfort)
 
 internal data class Topic<V>(
     val name: String,
@@ -38,9 +40,9 @@ internal object Topics {
         name = "privat-pleiepengesoknad-journalfort",
         serDes = JournalfortSerDes()
     )
-    val OPPGAVE_OPPRETTET = Topic(
-        name = "privat-pleiepengesoknad-oppgaveOpprettet",
-        serDes = OppgaveOpprettetSerDes()
+    val CLEANUP = Topic(
+        name = "privat-pleiepengesoknad-cleanup",
+        serDes = CleanupSerDes()
     )
 }
 
@@ -77,8 +79,8 @@ private class JournalfortSerDes: SerDes<TopicEntry<Journalfort>>() {
         }
     }
 }
-private class OppgaveOpprettetSerDes: SerDes<TopicEntry<OppgaveOpprettet>>() {
-    override fun deserialize(topic: String?, data: ByteArray?): TopicEntry<OppgaveOpprettet>? {
+private class CleanupSerDes: SerDes<TopicEntry<Cleanup>>() {
+    override fun deserialize(topic: String?, data: ByteArray?): TopicEntry<Cleanup>? {
         return data?.let {
             objectMapper.readValue(it)
         }

@@ -10,6 +10,7 @@ import no.nav.helse.kafka.ManagedStreamReady
 import org.apache.kafka.streams.StreamsBuilder
 import org.apache.kafka.streams.Topology
 import org.apache.kafka.streams.kstream.Consumed
+import org.apache.kafka.streams.kstream.Produced
 import org.slf4j.LoggerFactory
 
 internal class CleanupStream(
@@ -30,24 +31,31 @@ internal class CleanupStream(
         private const val NAME = "CleanupV1"
         private val logger = LoggerFactory.getLogger("no.nav.$NAME.topology")
 
-        private fun topology(dokumentService: DokumentService) : Topology {
+        private fun topology(dokumentService: DokumentService): Topology {
             val builder = StreamsBuilder()
-            val fromTopic = Topics.OPPGAVE_OPPRETTET
+            val fraCleanup: Topic<TopicEntry<Cleanup>> = Topics.CLEANUP
+            val tilJournalfort: Topic<TopicEntry<Journalfort>> = Topics.JOURNALFORT
 
             builder
-                .stream<String, TopicEntry<OppgaveOpprettet>>(fromTopic.name, Consumed.with(fromTopic.keySerde, fromTopic.valueSerde))
-                .filter { _, entry -> 1 == entry.metadata.version }
-                .foreach { soknadId, entry  -> try {
+                .stream<String, TopicEntry<Cleanup>>(
+                    fraCleanup.name, Consumed.with(fraCleanup.keySerde, fraCleanup.valueSerde)
+                )
+                .filter {_, entry -> 1 == entry.metadata.version }
+                .mapValues { soknadId, entry ->
                     process(NAME, soknadId, entry) {
                         logger.info("Sletter dokumenter.")
+
                         dokumentService.slettDokumeter(
                             urlBolks = entry.data.melding.dokumentUrls,
-                            aktoerId = AktoerId(entry.data.melding.soker.aktoerId),
+                            aktørId = AktoerId(entry.data.melding.soker.aktoerId),
                             correlationId = CorrelationId(entry.metadata.correlationId)
                         )
                         logger.info("Dokumenter slettet.")
+                        logger.info("Videresender journalført melding")
+                        entry.data.journalførtMelding
                     }
-                } catch (ignore: Throwable) {} }
+                }
+                .to(tilJournalfort.name, Produced.with(tilJournalfort.keySerde, tilJournalfort.valueSerde))
             return builder.build()
         }
     }

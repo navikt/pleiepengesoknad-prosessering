@@ -31,7 +31,6 @@ import no.nav.helse.dusseldorf.ktor.health.HealthService
 import no.nav.helse.dusseldorf.ktor.jackson.dusseldorfConfigured
 import no.nav.helse.dusseldorf.ktor.metrics.MetricsRoute
 import no.nav.helse.joark.JoarkGateway
-import no.nav.helse.oppgave.OppgaveGateway
 import no.nav.helse.prosessering.v1.PdfV1Generator
 import no.nav.helse.prosessering.v1.PreprosseseringV1Service
 import no.nav.helse.prosessering.v1.asynkron.AsynkronProsesseringV1Service
@@ -87,22 +86,15 @@ fun Application.pleiepengesoknadProsessering() {
         barnOppslag = BarnOppslag(tpsProxyV1Gateway)
     )
     val joarkGateway = JoarkGateway(
-        baseUrl = configuration.getPleiepengerJoarkBaseUrl(),
+        baseUrl = configuration.getk9JoarkBaseUrl(),
         accessTokenClient = accessTokenClientResolver.joarkAccessTokenClient(),
         journalforeScopes = configuration.getJournalforeScopes()
-    )
-
-    val oppgaveGateway = OppgaveGateway(
-        baseUrl = configuration.getPleiepengerOppgaveBaseUrl(),
-        accessTokenClient = accessTokenClientResolver.oppgaveAccessTokenClient(),
-        oppretteOppgaveScopes = configuration.getOppretteOppgaveScopes()
     )
 
     val asynkronProsesseringV1Service = AsynkronProsesseringV1Service(
         kafkaConfig = configuration.getKafkaConfig(),
         preprosseseringV1Service = preprosseseringV1Service,
         joarkGateway = joarkGateway,
-        oppgaveGateway = oppgaveGateway,
         dokumentService = dokumentService
     )
 
@@ -128,17 +120,13 @@ fun Application.pleiepengesoknadProsessering() {
                 healthChecks = mutableSetOf(
                     dokumentGateway,
                     joarkGateway,
-                    oppgaveGateway,
                     aktoerGateway,
                     HttpRequestHealthCheck(
                         mapOf(
                             Url.healthURL(configuration.getK9DokumentBaseUrl()) to HttpRequestHealthConfig(
                                 expectedStatus = HttpStatusCode.OK
                             ),
-                            Url.healthURL(configuration.getPleiepengerJoarkBaseUrl()) to HttpRequestHealthConfig(
-                                expectedStatus = HttpStatusCode.OK
-                            ),
-                            Url.healthURL(configuration.getPleiepengerOppgaveBaseUrl()) to HttpRequestHealthConfig(
+                            Url.healthURL(configuration.getk9JoarkBaseUrl()) to HttpRequestHealthConfig(
                                 expectedStatus = HttpStatusCode.OK
                             )
                         )

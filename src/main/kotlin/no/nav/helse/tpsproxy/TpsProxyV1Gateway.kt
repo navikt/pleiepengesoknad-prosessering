@@ -65,7 +65,9 @@ internal class TpsProxyV1Gateway(
             result.fold(
                 { success -> JSONObject(success) },
                 { error ->
-                    logger.error("Error response = '${error.response.body().asString("text/plain")}' fra '${request.url}'")
+                    logger.error(
+                        "Error response = '${error.response.body().asString("text/plain")}' fra '${request.url}'"
+                    )
                     logger.error(error.toString())
                     throw IllegalStateException("Feil ved henting av navn.")
                 }
@@ -82,10 +84,10 @@ internal class TpsProxyV1Gateway(
 
 internal data class Ident(internal val value: String)
 
-internal data class TpsNavn(
-    internal val fornavn: String,
-    internal val mellomnavn: String?,
-    internal val etternavn: String
+data class TpsNavn(
+    val fornavn: String,
+    val mellomnavn: String?,
+    val etternavn: String
 )
 
 private fun Logger.restKall(url: String) = info("Utgående kall til $url")

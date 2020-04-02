@@ -40,7 +40,6 @@ internal class AccessTokenClientResolver(
         keyIdProvider = FromCertificateHexThumbprint(azureV2Client.certificateHexThumbprint)
     )
 
-    internal fun oppgaveAccessTokenClient() = azureV2AccessTokenClient
     internal fun dokumentAccessTokenClient() = azureV2AccessTokenClient
     internal fun joarkAccessTokenClient() = azureV2AccessTokenClient
     internal fun aktoerRegisterAccessTokenClient() = naisStsAccessTokenClient

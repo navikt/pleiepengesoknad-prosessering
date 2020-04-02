@@ -19,20 +19,72 @@ data class MeldingV1 (
     val arbeidsgivere: Arbeidsgivere,
     var vedleggUrls : List<URI> = listOf(),
     val medlemskap: Medlemskap,
+    @JsonProperty("bekrefter_periode_over_8_uker")
+    val bekrefterPeriodeOver8Uker: Boolean? = null,
     @JsonProperty("utenlandsopphold_i_perioden")
     val utenlandsoppholdIPerioden: UtenlandsoppholdIPerioden?,
     @JsonProperty("ferieuttak_i_perioden")
     val ferieuttakIPerioden: FerieuttakIPerioden?,
-    val grad : Int?,
     val harMedsoker : Boolean,
     val samtidigHjemme: Boolean? = null,
     val harForstattRettigheterOgPlikter : Boolean,
     val harBekreftetOpplysninger : Boolean,
-    val dagerPerUkeBorteFraJobb: Double? = null,
     val tilsynsordning: Tilsynsordning?,
     val beredskap: Beredskap?,
     val nattevaak: Nattevaak?,
-    val frilans: Frilans?
+    val frilans: Frilans?,
+    val selvstendigVirksomheter: List<Virksomhet>? = null,
+    @JsonProperty("skal_bekrefte_omsorg") val skalBekrefteOmsorg: Boolean? = null, // TODO: Fjern optional når prodsatt.
+    @JsonProperty("skal_passe_pa_barnet_i_hele_perioden") val skalPassePaBarnetIHelePerioden: Boolean? = null, // TODO: Fjern optional når prodsatt.
+    @JsonProperty("beskrivelse_omsorgsrollen") val beskrivelseOmsorgsRollen: String? = null // TODO: Fjern optional når prodsatt.
+)
+
+data class Virksomhet(
+    val naringstype: List<Naringstype>,
+    @JsonProperty("fisker_er_pa_blad_b")
+    val fiskerErPåBladB: Boolean? = null,
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    val fraOgMed: LocalDate,
+    val tilOgMed: LocalDate? = null,
+    val naringsinntekt: Int? = null,
+    val navnPaVirksomheten: String,
+    val organisasjonsnummer: String? = null,
+    @JsonProperty("registrert_i_norge")
+    val registrertINorge: Boolean,
+    @JsonProperty("registrert_i_land")
+    val registrertILand: String? = null,
+    val yrkesaktivSisteTreFerdigliknedeArene: YrkesaktivSisteTreFerdigliknedeArene? = null,
+    val varigEndring: VarigEndring? = null,
+    val regnskapsforer: Regnskapsforer? = null,
+    val revisor: Revisor? = null
+)
+
+enum class Naringstype(val detaljert: String) {
+    @JsonProperty("FISKE") FISKER("Fiske"),
+    @JsonProperty("JORDBRUK_SKOGBRUK") JORDBRUK("Jordbruk/skogbruk"),
+    @JsonProperty("ANNEN") ANNET("Annen"),
+    DAGMAMMA("Dagmamma eller familiebarnehage i eget hjem")
+}
+
+data class YrkesaktivSisteTreFerdigliknedeArene(
+    val oppstartsdato: LocalDate
+)
+
+data class VarigEndring(
+    val dato: LocalDate,
+    val inntektEtterEndring: Int,
+    val forklaring: String
+)
+
+data class Revisor(
+    val navn: String,
+    val telefon: String,
+    val kanInnhenteOpplysninger: Boolean
+)
+
+data class Regnskapsforer(
+    val navn: String,
+    val telefon: String
 )
 
 data class Soker(
@@ -66,9 +118,9 @@ data class Arbeidsgivere(
 data class Organisasjon(
     val organisasjonsnummer: String,
     val navn: String?,
-    val skalJobbe: String? = null,
-    val jobberNormaltTimer: Double? = null,
-    val skalJobbeProsent: Double?  = null,
+    val skalJobbe: String,
+    val jobberNormaltTimer: Double,
+    val skalJobbeProsent: Double,
     val vetIkkeEkstrainfo: String? = null
 )
 
@@ -120,20 +172,10 @@ data class Nattevaak(
     }
 }
 
-data class Oppdrag(
-    val arbeidsgivernavn: String,
-    val fraOgMed: LocalDate,
-    val tilOgMed: LocalDate? = null,
-    val erPagaende: Boolean
-)
-
 data class Frilans(
-    val harHattOppdragForFamilie: Boolean,
-    val harHattInntektSomFosterforelder: Boolean,
     @JsonFormat(pattern = "yyyy-MM-dd")
     val startdato: LocalDate,
-    val jobberFortsattSomFrilans: Boolean,
-    val oppdrag: List<Oppdrag>
+    val jobberFortsattSomFrilans: Boolean
 )
 
 data class Beredskap(
