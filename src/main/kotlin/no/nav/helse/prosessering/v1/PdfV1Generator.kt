@@ -378,11 +378,3 @@ private fun String.sprakTilTekst() = when (this.toLowerCase()) {
     "nn" -> "nynorsk"
     else -> this
 }
-
-private fun List<URI>.somMapVedleggUrls(): List<Map<String, Any?>> {
-    return map {
-        mapOf(
-            "path" to it.path
-        )
-    }
-}
