@@ -60,10 +60,6 @@
           "role": "PRODUCER"
         },
         {
-          "member": "srvpps-prosessering",
-          "role": "CONSUMER"
-        },
-        {
           "member": "srvk9-fordel",
           "role": "CONSUMER"
         },
@@ -78,31 +74,6 @@
       ],
       "numPartitions": 3,
       "topicName": "privat-pleiepengesoknad-journalfort"
-    },
-    {
-      "configEntries": {
-        "retention.ms": -1
-      },
-      "members": [
-        {
-          "member": "srvpps-prosessering",
-          "role": "PRODUCER"
-        },
-        {
-          "member": "srvpps-prosessering",
-          "role": "CONSUMER"
-        },
-        {
-          "member": "E157419",
-          "role": "MANAGER"
-        },
-        {
-          "member": "F154868",
-          "role": "MANAGER"
-        }
-      ],
-      "numPartitions": 3,
-      "topicName": "privat-pleiepengesoknad-oppgaveOpprettet"
     },
     {
       "configEntries": {
