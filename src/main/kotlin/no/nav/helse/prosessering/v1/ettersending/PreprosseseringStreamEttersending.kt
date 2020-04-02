@@ -55,6 +55,5 @@ internal class PreprosseseringStreamEttersending(
             return builder.build()
         }
     }
-
     internal fun stop() = stream.stop(becauseOfError = false)
 }
