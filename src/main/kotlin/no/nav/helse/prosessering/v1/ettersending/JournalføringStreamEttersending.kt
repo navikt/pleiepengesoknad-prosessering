@@ -88,7 +88,7 @@ internal class JournalføringStreamEttersending(
 private fun PreprossesertEttersending.tilK9Ettersendelse(): Ettersendelse = Ettersendelse.builder()
     .mottattDato(mottatt)
     .søker(soker.tilK9Søker())
-    .ytelse(Ytelse.OMSORGSPENGER)
+    .ytelse(Ytelse.PLEIEPENGER_SYKT_BARN)
     .build()
 
 private fun PreprossesertSoker.tilK9Søker(): Søker = Søker.builder()
