@@ -33,7 +33,8 @@ class EttersendingUtils {
                 URI("http://localhost:8080/vedlegg/3")
             ),
             harForstattRettigheterOgPlikter = true,
-            harBekreftetOpplysninger = true
+            harBekreftetOpplysninger = true,
+            titler = listOf("Tittel vedlegg")
         )
     }
 

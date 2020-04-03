@@ -15,5 +15,6 @@ data class Ettersending(
     val harForstattRettigheterOgPlikter: Boolean,
     val harBekreftetOpplysninger: Boolean,
     val beskrivelse: String,
-    val soknadstype: String
+    val soknadstype: String,
+    val titler: List<String>
 )

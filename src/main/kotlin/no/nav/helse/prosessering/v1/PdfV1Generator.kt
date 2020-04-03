@@ -178,6 +178,9 @@ internal class PdfV1Generator  {
                             "harForståttRettigheterOgPlikter" to ettersending.harForstattRettigheterOgPlikter,
                             "harBekreftetOpplysninger" to ettersending.harBekreftetOpplysninger
                         ),
+                        "titler" to mapOf(
+                            "vedlegg" to ettersending.titler?.somMapTitler()
+                        ),
                         "hjelp" to mapOf(
                             "språk" to ettersending.sprak.sprakTilTekst()
                         )
@@ -218,6 +221,14 @@ internal class PdfV1Generator  {
                 "varigEndring" to varigEndring(it.varigEndring),
                 "regnskapsforer" to regnskapsforer(it.regnskapsforer),
                 "revisor" to revisor(it.revisor)
+            )
+        }
+    }
+
+    private fun List<String>.somMapTitler(): List<Map<String, Any?>> {
+        return map {
+            mapOf(
+                "tittel" to it
             )
         }
     }

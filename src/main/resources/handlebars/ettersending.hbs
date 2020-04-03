@@ -44,11 +44,15 @@
         <p class="sporsmalstekst"><img class="lite_ikon" src="{{ image "Fritekst.png" }}"/>Beskrivelse:</p>
         <p class="fritekst_textarea">{{beskrivelse}}</p>
     </div>
-    <p><b>Antall vedlegg:</b> {{antall_vedlegg}}</p>
+
+    <h2><span>Dokumenter</span></h2>
+    <ul>
+        {{#each titler.vedlegg as |vedlegg|}}
+            <li><p>{{vedlegg.tittel}}</p></li>
+        {{/each}}
+    </ul>
 
     <!-- SAMTYKKE -->
-    <br/>
-    <br/>
     <h2><span>Samtykke</span></h2>
 
     <p class="sporsmalstekst">Har forstått rettigheter og plikter?</p>

@@ -318,7 +318,8 @@ class PdfV1GeneratorTest {
             URI("http://localhost:8081/vedlegg1"),
             URI("http://localhost:8081/vedlegg2"),
             URI("http://localhost:8081/vedlegg3")
-        )
+        ),
+        titler = listOf("vedlegg1","vedlegg2", "vedlegg3")
     )
 
     private fun genererOppsummeringsPdfer(writeBytes: Boolean) {
@@ -723,7 +724,7 @@ class PdfV1GeneratorTest {
     }
 
     @Test
-    @Ignore
+    //@Ignore
     fun `opprett lesbar oppsummerings-PDF`() {
         genererOppsummeringsPdfer(true)
     }
