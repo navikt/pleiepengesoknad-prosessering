@@ -11,6 +11,7 @@ import no.nav.helse.prosessering.Metadata
 import no.nav.helse.prosessering.SoknadId
 import no.nav.helse.prosessering.v1.ettersending.Ettersending
 import no.nav.helse.prosessering.v1.ettersending.PreprossesertEttersending
+import no.nav.helse.prosessering.v1.ettersending.reportMetrics
 import no.nav.helse.tpsproxy.Ident
 import no.nav.helse.tpsproxy.TpsNavn
 import org.slf4j.LoggerFactory
@@ -164,8 +165,8 @@ internal class PreprosseseringV1Service(
             dokumentUrls = komplettDokumentUrls.toList(),
             sokerAktoerId = søkerAktørId
         )
-        //melding.reportMetrics() //TODO report metrics
-        //preprossesertMeldingV1.reportMetrics()
+
+        preprossesertEttersending.reportMetrics()
         return preprossesertEttersending
     }
 
