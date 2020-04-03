@@ -85,8 +85,7 @@ internal class JournalføringStreamEttersending(
     internal fun stop() = stream.stop(becauseOfError = false)
 }
 
-private fun PreprossesertEttersending.tilK9Ettersendelse(): Ettersendelse = Ettersendelse.builder() //TODO:Legge til egen søknad for ettersending
-    .søknadId(SøknadId.of(soknadId))
+private fun PreprossesertEttersending.tilK9Ettersendelse(): Ettersendelse = Ettersendelse.builder()
     .mottattDato(mottatt)
     .søker(soker.tilK9Søker())
     .ytelse(Ytelse.OMSORGSPENGER)
