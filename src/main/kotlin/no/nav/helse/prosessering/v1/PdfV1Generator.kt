@@ -217,7 +217,7 @@ internal class PdfV1Generator  {
                 "registrertINorge" to it.registrertINorge,
                 "organisasjonsnummer" to it.organisasjonsnummer,
                 "registrertILand" to it.registrertILand,
-                "yrkesaktivSisteTreFerdigliknedeArene" to it.yrkesaktivSisteTreFerdigliknedeArene?.oppstartsdato,
+                "yrkesaktivSisteTreFerdigliknedeArene" to it.yrkesaktivSisteTreFerdigliknedeArene?.let { DATE_FORMATTER.format(it.oppstartsdato) },
                 "varigEndring" to varigEndring(it.varigEndring),
                 "regnskapsforer" to regnskapsforer(it.regnskapsforer),
                 "revisor" to revisor(it.revisor)
