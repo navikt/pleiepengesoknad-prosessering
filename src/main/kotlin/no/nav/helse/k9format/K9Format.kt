@@ -92,18 +92,24 @@ private fun FerieuttakIPerioden.tilK9LovbestemtFerie(): LovbestemtFerie {
 
 fun Medlemskap.tilK9bosteder(): Bosteder {
     val perioder = mutableMapOf<Periode, Bosteder.BostedPeriodeInfo>()
-    utenlandsoppholdNeste12Mnd.forEach {
-        perioder.put(
-            Periode.builder().fraOgMed(it.fraOgMed).tilOgMed(it.tilOgMed).build(),
-            Bosteder.BostedPeriodeInfo.builder().land(Landkode.of(it.landkode)).build()
-        )
-    }
+
+    val utenlandsoppholdSiste12MndTilOgMed = mutableSetOf<LocalDate>()
+
     utenlandsoppholdSiste12Mnd.forEach {
-        perioder.put(
-            Periode.builder().fraOgMed(it.fraOgMed).tilOgMed(it.tilOgMed).build(),
+        utenlandsoppholdSiste12MndTilOgMed.add(it.tilOgMed)
+        val periode = Periode.builder().fraOgMed(it.fraOgMed).tilOgMed(it.tilOgMed).build()
+        perioder[periode] =
             Bosteder.BostedPeriodeInfo.builder().land(Landkode.of(it.landkode)).build()
-        )
     }
+
+    utenlandsoppholdNeste12Mnd.forEach {
+        val fraOgMed = if (utenlandsoppholdSiste12MndTilOgMed.contains(it.fraOgMed)) it.fraOgMed.plusDays(1) else it.fraOgMed
+        val tilOgMed = if (it.fraOgMed == it.tilOgMed) fraOgMed else it.tilOgMed
+        val periode = Periode.builder().fraOgMed(fraOgMed).tilOgMed(tilOgMed).build()
+        perioder[periode] =
+            Bosteder.BostedPeriodeInfo.builder().land(Landkode.of(it.landkode)).build()
+    }
+
     return Bosteder.builder()
         .perioder(perioder)
         .build()
