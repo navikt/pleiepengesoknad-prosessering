@@ -83,7 +83,7 @@
     <ul>
         <li>
             <strong>{{ periode.fra_og_med }} - {{ periode.til_og_med }}</strong><br/>
-            <ul>
+            <ul style="list-style-type:circle;">
                 {{#if bekrefterPeriodeOver8Uker}}
                     <li>Søker bekrefter at søknaden gjelder for en periode på mer enn 8 uker.</li>
                 {{/if}}
@@ -91,7 +91,7 @@
                 {{# if hjelp.har_medsoker }}
                     <li>
                         Søker opplyser at en medsøker skal søke for samme periode..<br/>
-                        <ul>
+                        <ul style="list-style-type:square;">
                             {{# if samtidig_hjemme }}
                                 <li>
                                     Søker og medsøker skal være hjemme eller på sykehus samtidig.

@@ -91,7 +91,7 @@ data class Soker(
     val aktoerId: String,
     val fodselsnummer: String,
     val fornavn: String,
-    val mellomnavn: String?,
+    val mellomnavn: String? = null,
     val etternavn: String
 ) {
     override fun toString(): String {

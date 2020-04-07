@@ -154,8 +154,20 @@ class PleiepengesoknadProsesseringTest {
             fodselsnummerBarn = gyldigFodselsnummerB,
             sprak = sprak,
             organisasjoner = listOf(
-                Organisasjon("917755736", "Jobb1", skalJobbeProsent = jobb1SkalJobbeProsent, jobberNormaltTimer = 37.5, skalJobbe = "redusert"),
-                Organisasjon("917755737", "Jobb2", skalJobbeProsent = jobb2SkalJobberProsent, jobberNormaltTimer = 37.5, skalJobbe = "redusert")
+                Organisasjon(
+                    "917755736",
+                    "Jobb1",
+                    skalJobbeProsent = jobb1SkalJobbeProsent,
+                    jobberNormaltTimer = 37.5,
+                    skalJobbe = "redusert"
+                ),
+                Organisasjon(
+                    "917755737",
+                    "Jobb2",
+                    skalJobbeProsent = jobb2SkalJobberProsent,
+                    jobberNormaltTimer = 37.5,
+                    skalJobbe = "redusert"
+                )
             )
         )
 
@@ -192,7 +204,8 @@ class PleiepengesoknadProsesseringTest {
         restartEngine()
         journalførtConsumer
             .hentJournalførtMelding(melding.soknadId)
-            .assertJournalførtFormat()    }
+            .assertJournalførtFormat()
+    }
 
     private fun readyGir200HealthGir503() {
         with(engine) {
@@ -215,7 +228,8 @@ class PleiepengesoknadProsesseringTest {
         kafkaTestProducer.leggSoknadTilProsessering(melding)
         journalførtConsumer
             .hentJournalførtMelding(melding.soknadId)
-            .assertJournalførtFormat()    }
+            .assertJournalførtFormat()
+    }
 
     @Test
     fun `Melding lagt til prosessering selv om sletting av vedlegg feiler`() {
@@ -229,7 +243,8 @@ class PleiepengesoknadProsesseringTest {
         kafkaTestProducer.leggSoknadTilProsessering(melding)
         journalførtConsumer
             .hentJournalførtMelding(melding.soknadId)
-            .assertJournalførtFormat()    }
+            .assertJournalførtFormat()
+    }
 
     @Test
     fun `Bruk barnets dnummer id til å slå opp i tps-proxy dersom navnet mangler`() {
@@ -284,7 +299,8 @@ class PleiepengesoknadProsesseringTest {
         kafkaTestProducer.leggSoknadTilProsessering(melding)
         journalførtConsumer
             .hentJournalførtMelding(melding.soknadId)
-            .assertJournalførtFormat()    }
+            .assertJournalførtFormat()
+    }
 
     @Test
     fun `Bruk barnets fødselsnummer til å slå opp i tps-proxy dersom navnet mangler`() {
@@ -416,8 +432,20 @@ class PleiepengesoknadProsesseringTest {
             ),
             arbeidsgivere = Arbeidsgivere(
                 organisasjoner = listOf(
-                    Organisasjon("917755736", "Jobb1", skalJobbeProsent = 50.25, jobberNormaltTimer = 5.0, skalJobbe = "redusert"),
-                    Organisasjon("917755737", "Jobb2", skalJobbeProsent = 20.0, jobberNormaltTimer = 3.75, skalJobbe = "redusert")
+                    Organisasjon(
+                        "917755736",
+                        "Jobb1",
+                        skalJobbeProsent = 50.25,
+                        jobberNormaltTimer = 5.0,
+                        skalJobbe = "redusert"
+                    ),
+                    Organisasjon(
+                        "917755737",
+                        "Jobb2",
+                        skalJobbeProsent = 20.0,
+                        jobberNormaltTimer = 3.75,
+                        skalJobbe = "redusert"
+                    )
                 )
             ),
             frilans = Frilans(
@@ -535,7 +563,13 @@ class PleiepengesoknadProsesseringTest {
         aktoerIdBarn: String? = null,
         sprak: String? = null,
         organisasjoner: List<Organisasjon> = listOf(
-            Organisasjon("917755736", "Gyldig", jobberNormaltTimer = 4.0, skalJobbeProsent = 50.0, skalJobbe = "redusert")
+            Organisasjon(
+                "917755736",
+                "Gyldig",
+                jobberNormaltTimer = 4.0,
+                skalJobbeProsent = 50.0,
+                skalJobbe = "redusert"
+            )
         )
     ): MeldingV1 = MeldingV1(
         sprak = sprak,
