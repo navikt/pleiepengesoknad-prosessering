@@ -46,7 +46,6 @@ class JoarkGateway(
     private val objectMapper = configuredObjectMapper()
     private val cachedAccessTokenClient = CachedAccessTokenClient(accessTokenClient)
 
-
     override suspend fun check(): Result {
         return try {
             accessTokenClient.getAccessToken(journalforeScopes)
