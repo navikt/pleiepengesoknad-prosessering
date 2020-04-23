@@ -33,7 +33,6 @@ dependencies {
     compile ("org.jetbrains.kotlinx:kotlinx-coroutines-slf4j:$kotlinxCoroutinesVersion")
 
     compile ( "no.nav.k9:soknad-pleiepenger-barn:$k9FormatVersion")
-    compile ( "no.nav.k9:ettersendelse:$k9FormatVersion")
     
     // Client
     compile ( "no.nav.helse:dusseldorf-ktor-client:$dusseldorfKtorVersion")
