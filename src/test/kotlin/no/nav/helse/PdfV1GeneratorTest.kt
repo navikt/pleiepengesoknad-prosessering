@@ -2,7 +2,6 @@ package no.nav.helse
 
 import no.nav.helse.aktoer.Fodselsnummer
 import no.nav.helse.prosessering.v1.*
-import no.nav.helse.prosessering.v1.ettersending.Ettersending
 import org.junit.Ignore
 import java.io.File
 import java.net.URI
@@ -295,31 +294,6 @@ class PdfV1GeneratorTest {
         ferieuttakIPerioden = null,
         frilans = frilans,
         selvstendigVirksomheter = selvstendigVirksomheter
-    )
-
-    private fun gyldigEttersending() = Ettersending(
-        sprak = "nb",
-        mottatt = ZonedDateTime.now(),
-        harBekreftetOpplysninger = true,
-        harForstattRettigheterOgPlikter = true,
-        soknadId = "Ettersending",
-        soker = Soker(
-            aktoerId = "123456",
-            fornavn = "Ærling",
-            mellomnavn = "Øverbø",
-            etternavn = "Ånsnes",
-            fodselsnummer = "29099012345"
-        ),
-        beskrivelse = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. " +
-                "Sed accumsan erat cursus enim aliquet, ac auctor orci consequat. " +
-                "Etiam nec tellus sapien. Nam gravida massa id sagittis ultrices.",
-        soknadstype = "Omsorgspenger",
-        vedleggUrls = listOf(
-            URI("http://localhost:8081/vedlegg1"),
-            URI("http://localhost:8081/vedlegg2"),
-            URI("http://localhost:8081/vedlegg3")
-        ),
-        titler = listOf("vedlegg1","vedlegg2", "vedlegg3")
     )
 
     private fun genererOppsummeringsPdfer(writeBytes: Boolean) {
@@ -706,12 +680,6 @@ class PdfV1GeneratorTest {
             barnetsIdent = null,
             barnetsNavn = barnetsNavn,
             fodselsdato = null
-        )
-        if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
-
-        id = "23-komplett-ettersending"
-        pdf = generator.generateSoknadOppsummeringPdfEttersending(
-            ettersending = gyldigEttersending()
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
     }
