@@ -46,7 +46,6 @@ class JoarkGateway(
     private val objectMapper = configuredObjectMapper()
     private val cachedAccessTokenClient = CachedAccessTokenClient(accessTokenClient)
 
-
     override suspend fun check(): Result {
         return try {
             accessTokenClient.getAccessToken(journalforeScopes)
@@ -99,54 +98,6 @@ class JoarkGateway(
 
         return result.fold(
             { success -> objectMapper.readValue(success)},
-            { error ->
-                logger.error("Error response = '${error.response.body().asString("text/plain")}' fra '${request.url}'")
-                logger.error(error.toString())
-                throw HttpError(response.statusCode, "Feil ved jorunalføring.")
-            }
-        )
-    }
-
-    suspend fun journalførEttersending(
-        aktørId: AktoerId,
-        norskIdent: String,
-        sokerNavn: TpsNavn,
-        mottatt: ZonedDateTime,
-        dokumenter: List<List<URI>>,
-        correlationId: CorrelationId
-    ): JournalPostId {
-
-        val authorizationHeader = cachedAccessTokenClient.getAccessToken(journalforeScopes).asAuthoriationHeader()
-
-        val joarkRequest = JoarkRequest(
-            aktoerId = aktørId.id,
-            norskIdent = norskIdent,
-            mottatt = mottatt,
-            dokumenter = dokumenter,
-            sokerNavn = sokerNavn
-        )
-
-        val body = objectMapper.writeValueAsBytes(joarkRequest)
-        val contentStream = { ByteArrayInputStream(body) }
-
-        val httpRequest = completeUrl
-            .httpPost()
-            .body(contentStream)
-            .header(
-                HttpHeaders.XCorrelationId to correlationId.value,
-                HttpHeaders.Authorization to authorizationHeader,
-                HttpHeaders.ContentType to "application/json",
-                HttpHeaders.Accept to "application/json"
-            )
-
-        val (request, response, result) = Operation.monitored(
-            app = "pleiepengesoknad-prosessering",
-            operation = JOURNALFORING_OPERATION,
-            resultResolver = { 201 == it.second.statusCode }
-        ) { httpRequest.awaitStringResponseResult() }
-
-        return result.fold(
-            { success -> objectMapper.readValue(success) },
             { error ->
                 logger.error("Error response = '${error.response.body().asString("text/plain")}' fra '${request.url}'")
                 logger.error(error.toString())

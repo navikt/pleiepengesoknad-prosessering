@@ -8,14 +8,9 @@ import no.nav.helse.prosessering.v1.PreprossesertMeldingV1
 import no.nav.helse.prosessering.v1.asynkron.TopicEntry
 import no.nav.helse.prosessering.v1.asynkron.Topics
 import no.nav.helse.prosessering.v1.asynkron.Topics.CLEANUP
-import no.nav.helse.prosessering.v1.asynkron.Topics.ETTERSENDING_CLEANUP
-import no.nav.helse.prosessering.v1.asynkron.Topics.ETTERSENDING_JOURNALFORT
-import no.nav.helse.prosessering.v1.asynkron.Topics.ETTERSENDING_MOTTATT
-import no.nav.helse.prosessering.v1.asynkron.Topics.ETTERSENDING_PREPROSSESERT
 import no.nav.helse.prosessering.v1.asynkron.Topics.JOURNALFORT
 import no.nav.helse.prosessering.v1.asynkron.Topics.MOTTATT
 import no.nav.helse.prosessering.v1.asynkron.Topics.PREPROSSESERT
-import no.nav.helse.prosessering.v1.ettersending.Ettersending
 import org.apache.kafka.clients.CommonClientConfigs
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.clients.consumer.KafkaConsumer
@@ -42,11 +37,7 @@ object KafkaWrapper {
                 MOTTATT.name,
                 PREPROSSESERT.name,
                 JOURNALFORT.name,
-                CLEANUP.name,
-                ETTERSENDING_MOTTATT.name,
-                ETTERSENDING_PREPROSSESERT.name,
-                ETTERSENDING_JOURNALFORT.name,
-                ETTERSENDING_CLEANUP.name
+                CLEANUP.name
             )
         )
         return kafkaEnvironment
@@ -94,26 +85,10 @@ fun KafkaEnvironment.journalføringsKonsumer(): KafkaConsumer<String, String> {
     return consumer
 }
 
-fun KafkaEnvironment.ettersendingJournalføringsKonsumer(): KafkaConsumer<String, String> {
-    val consumer = KafkaConsumer(
-        testConsumerProperties("K9FordelEttersendelseKonsumer"),
-        StringDeserializer(),
-        StringDeserializer()
-    )
-    consumer.subscribe(listOf(ETTERSENDING_JOURNALFORT.name))
-    return consumer
-}
-
 fun KafkaEnvironment.testProducer() = KafkaProducer(
     testProducerProperties(),
     Topics.MOTTATT.keySerializer,
     Topics.MOTTATT.serDes
-)
-
-fun KafkaEnvironment.testEttersendingProducer() = KafkaProducer(
-    testProducerProperties(),
-    Topics.ETTERSENDING_MOTTATT.keySerializer,
-    Topics.ETTERSENDING_MOTTATT.serDes
 )
 
 fun KafkaConsumer<String, TopicEntry<PreprossesertMeldingV1>>.hentPreprosessertMelding(
@@ -154,25 +129,6 @@ fun KafkaConsumer<String, String>.hentJournalførtMelding(
     throw IllegalStateException("Fant ikke journalført melding for søknad $soknadId etter $maxWaitInSeconds sekunder.")
 }
 
-fun KafkaConsumer<String, String>.hentJournalførtEttersending(
-    soknadId: String,
-    maxWaitInSeconds: Long = 20
-): String {
-    val end = System.currentTimeMillis() + Duration.ofSeconds(maxWaitInSeconds).toMillis()
-    while (System.currentTimeMillis() < end) {
-        seekToBeginning(assignment())
-        val entries = poll(Duration.ofSeconds(1))
-            .records(ETTERSENDING_JOURNALFORT.name)
-            .filter { it.key() == soknadId }
-
-        if (entries.isNotEmpty()) {
-            assertEquals(1, entries.size)
-            return entries.first().value()
-        }
-    }
-    throw IllegalStateException("Fant ikke journalført ettersending med søknadId $soknadId etter $maxWaitInSeconds sekunder.")
-}
-
 fun KafkaProducer<String, TopicEntry<MeldingV1>>.leggSoknadTilProsessering(soknad: MeldingV1) {
     send(
         ProducerRecord(
@@ -185,23 +141,6 @@ fun KafkaProducer<String, TopicEntry<MeldingV1>>.leggSoknadTilProsessering(sokna
                     requestId =  UUID.randomUUID().toString()
                 ),
                 data = soknad
-            )
-        )
-    ).get()
-}
-
-fun KafkaProducer<String, TopicEntry<Ettersending>>.leggEttersendingTilProsessering(ettersending: Ettersending) {
-    send(
-        ProducerRecord(
-            Topics.ETTERSENDING_MOTTATT.name,
-            ettersending.soknadId,
-            TopicEntry(
-                metadata = Metadata(
-                    version = 1,
-                    correlationId = UUID.randomUUID().toString(),
-                    requestId =  UUID.randomUUID().toString()
-                ),
-                data = ettersending
             )
         )
     ).get()

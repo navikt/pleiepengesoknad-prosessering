@@ -9,7 +9,6 @@ import com.openhtmltopdf.outputdevice.helper.BaseRendererBuilder
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder
 import no.nav.helse.aktoer.NorskIdent
 import no.nav.helse.dusseldorf.ktor.core.fromResources
-import no.nav.helse.prosessering.v1.ettersending.Ettersending
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.net.URI
@@ -22,7 +21,6 @@ internal class PdfV1Generator  {
     private companion object {
         private const val ROOT = "handlebars"
         private const val SOKNAD = "soknad"
-        private const val ETTERSENDING = "ettersending"
 
         private val REGULAR_FONT = "$ROOT/fonts/SourceSansPro-Regular.ttf".fromResources().readBytes()
         private val BOLD_FONT = "$ROOT/fonts/SourceSansPro-Bold.ttf".fromResources().readBytes()
@@ -50,7 +48,6 @@ internal class PdfV1Generator  {
         }
 
         private val soknadTemplate = handlebars.compile(SOKNAD)
-        private val soknadEttersendingTemplate = handlebars.compile(ETTERSENDING)
 
         private val ZONE_ID = ZoneId.of("Europe/Oslo")
         private val DATE_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy").withZone(ZONE_ID)
@@ -157,54 +154,6 @@ internal class PdfV1Generator  {
         }
     }
 
-    internal fun generateSoknadOppsummeringPdfEttersending(
-        ettersending: Ettersending
-    ): ByteArray {
-        soknadEttersendingTemplate.apply(
-            Context
-                .newBuilder(
-                    mapOf(
-                        "soknad_id" to ettersending.soknadId,
-                        "soknad_mottatt_dag" to ettersending.mottatt.withZoneSameInstant(ZONE_ID).norskDag(),
-                        "soknad_mottatt" to DATE_TIME_FORMATTER.format(ettersending.mottatt),
-                        "søker" to mapOf(
-                            "navn" to ettersending.soker.formatertNavn(),
-                            "fødselsnummer" to ettersending.soker.fodselsnummer
-                        ),
-                        "beskrivelse" to ettersending.beskrivelse,
-                        "antall_vedlegg" to ettersending.vedleggUrls.size,
-                        "søknadstype" to ettersending.soknadstype,
-                        "samtykke" to mapOf(
-                            "harForståttRettigheterOgPlikter" to ettersending.harForstattRettigheterOgPlikter,
-                            "harBekreftetOpplysninger" to ettersending.harBekreftetOpplysninger
-                        ),
-                        "titler" to mapOf(
-                            "vedlegg" to ettersending.titler?.somMapTitler()
-                        ),
-                        "hjelp" to mapOf(
-                            "språk" to ettersending.sprak.sprakTilTekst()
-                        )
-                    )
-                )
-                .resolver(MapValueResolver.INSTANCE)
-                .build()
-        ).let { html ->
-            val outputStream = ByteArrayOutputStream()
-
-            PdfRendererBuilder()
-                .useFastMode()
-                .withHtmlContent(html, "")
-                .medFonter()
-                .toStream(outputStream)
-                .buildPdfRenderer()
-                .createPDF()
-
-            return outputStream.use {
-                it.toByteArray()
-            }
-        }
-    }
-
     private fun List<Virksomhet>.somMapVirksomheter(): List<Map<String, Any?>> {
         return map {
             mapOf(
@@ -221,14 +170,6 @@ internal class PdfV1Generator  {
                 "varigEndring" to varigEndring(it.varigEndring),
                 "regnskapsforer" to regnskapsforer(it.regnskapsforer),
                 "revisor" to revisor(it.revisor)
-            )
-        }
-    }
-
-    private fun List<String>.somMapTitler(): List<Map<String, Any?>> {
-        return map {
-            mapOf(
-                "tittel" to it
             )
         }
     }
