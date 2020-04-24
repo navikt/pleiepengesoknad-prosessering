@@ -131,10 +131,10 @@ class PdfV1GeneratorTest {
             ),
             selvstendigVirksomheter = listOf(
                 Virksomhet(
-                    naringstype = listOf(Naringstype.ANNET),
+                    næringstyper = listOf(Næringstyper.ANNEN),
                     fraOgMed = LocalDate.now(),
                     tilOgMed = LocalDate.now().plusDays(10),
-                    navnPaVirksomheten = "Kjells Møbelsnekkeri",
+                    navnPåVirksomheten = "Kjells Møbelsnekkeri",
                     registrertINorge = true,
                     organisasjonsnummer = "111111",
                     revisor = Revisor(
@@ -144,20 +144,20 @@ class PdfV1GeneratorTest {
                     )
                 ),
                 Virksomhet(
-                    naringstype = listOf(Naringstype.JORDBRUK, Naringstype.DAGMAMMA, Naringstype.FISKER),
+                    næringstyper = listOf(Næringstyper.JORDBRUK_SKOGBRUK, Næringstyper.DAGMAMMA, Næringstyper.FISKE),
                     fiskerErPåBladB = true,
                     fraOgMed = LocalDate.now(),
-                    naringsinntekt = 1111,
-                    navnPaVirksomheten = "Tull Og Tøys",
+                    næringsinntekt = 1111,
+                    navnPåVirksomheten = "Tull Og Tøys",
                     registrertINorge = false,
                     registrertILand = "Bahamas",
-                    yrkesaktivSisteTreFerdigliknedeArene = YrkesaktivSisteTreFerdigliknedeArene(LocalDate.now()),
+                    yrkesaktivSisteTreFerdigliknedeÅrene = YrkesaktivSisteTreFerdigliknedeÅrene(LocalDate.now()),
                     varigEndring = VarigEndring(
                         dato = LocalDate.now().minusDays(20),
                         inntektEtterEndring = 234543,
                         forklaring = "Forklaring som handler om varig endring"
                     ),
-                    regnskapsforer = Regnskapsforer(
+                    regnskapsfører = Regnskapsfører(
                         navn = "Bjarne Regnskap",
                         telefon = "65484578"
                     )
@@ -231,11 +231,11 @@ class PdfV1GeneratorTest {
         ),
         selvstendigVirksomheter: List<Virksomhet>? = listOf(
             Virksomhet(
-                naringstype = listOf(Naringstype.ANNET, Naringstype.FISKER),
+                næringstyper = listOf(Næringstyper.ANNEN, Næringstyper.FISKE),
                 fiskerErPåBladB = true,
                 fraOgMed = LocalDate.now(),
                 tilOgMed = LocalDate.now().plusDays(10),
-                navnPaVirksomheten = "Kjells Møbelsnekkeri",
+                navnPåVirksomheten = "Kjells Møbelsnekkeri",
                 registrertINorge = true,
                 organisasjonsnummer = "101010",
                 varigEndring = VarigEndring(
@@ -250,14 +250,14 @@ class PdfV1GeneratorTest {
                 )
             ),
             Virksomhet(
-                naringstype = listOf(Naringstype.JORDBRUK, Naringstype.DAGMAMMA),
+                næringstyper = listOf(Næringstyper.JORDBRUK_SKOGBRUK, Næringstyper.DAGMAMMA),
                 fraOgMed = LocalDate.now(),
-                naringsinntekt = 100111,
-                navnPaVirksomheten = "Tull Og Tøys",
+                næringsinntekt = 100111,
+                navnPåVirksomheten = "Tull Og Tøys",
                 registrertINorge = false,
                 registrertILand = "Bahamas",
-                yrkesaktivSisteTreFerdigliknedeArene = YrkesaktivSisteTreFerdigliknedeArene(LocalDate.now()),
-                regnskapsforer = Regnskapsforer(
+                yrkesaktivSisteTreFerdigliknedeÅrene = YrkesaktivSisteTreFerdigliknedeÅrene(LocalDate.now()),
+                regnskapsfører = Regnskapsfører(
                     navn = "Bjarne Regnskap",
                     telefon = "65484578"
                 )

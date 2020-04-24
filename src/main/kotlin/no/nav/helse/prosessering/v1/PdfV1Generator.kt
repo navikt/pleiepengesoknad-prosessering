@@ -1,5 +1,7 @@
 package no.nav.helse.prosessering.v1
 
+import com.fasterxml.jackson.core.type.TypeReference
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.github.jknack.handlebars.Context
 import com.github.jknack.handlebars.Handlebars
 import com.github.jknack.handlebars.Helper
@@ -8,17 +10,21 @@ import com.github.jknack.handlebars.io.ClassPathTemplateLoader
 import com.openhtmltopdf.outputdevice.helper.BaseRendererBuilder
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder
 import no.nav.helse.aktoer.NorskIdent
+import no.nav.helse.omsorgspengerKonfiguert
 import no.nav.helse.dusseldorf.ktor.core.fromResources
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
-import java.net.URI
+import java.time.Duration
 import java.time.LocalDate
 import java.time.ZoneId
+import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
 
 internal class PdfV1Generator  {
     private companion object {
+        private val mapper = jacksonObjectMapper().omsorgspengerKonfiguert()
+
         private const val ROOT = "handlebars"
         private const val SOKNAD = "soknad"
 
@@ -42,6 +48,21 @@ internal class PdfV1Generator  {
                         .replace(Regex("\\r\\n|[\\n\\r]"), "<br/>")
                     Handlebars.SafeString(text)
                 }
+            })
+            registerHelper("enumNæringstyper", Helper<String> { context, options ->
+                Næringstyper.valueOf(context).beskrivelse
+            })
+            registerHelper("dato", Helper<String> { context, _ ->
+                DATE_FORMATTER.format(LocalDate.parse(context))
+            })
+            registerHelper("storForbokstav", Helper<String> { context, _ ->
+                context.capitalize()
+            })
+            registerHelper("tidspunkt", Helper<String> { context, _ ->
+                DATE_TIME_FORMATTER.format(ZonedDateTime.parse(context))
+            })
+            registerHelper("varighet", Helper<String> { context, _ ->
+                Duration.parse(context).tilString()
             })
 
             infiniteLoops(true)
@@ -76,6 +97,7 @@ internal class PdfV1Generator  {
     ) : ByteArray {
         soknadTemplate.apply(Context
             .newBuilder(mapOf(
+                "søknad" to melding.somMap(),
                 "soknad_id" to melding.soknadId,
                 "soknad_mottatt_dag" to melding.mottatt.withZoneSameInstant(ZONE_ID).norskDag(),
                 "soknad_mottatt" to DATE_TIME_FORMATTER.format(melding.mottatt),
@@ -128,10 +150,6 @@ internal class PdfV1Generator  {
                     "skalTaUtFerieIPerioden" to melding.ferieuttakIPerioden?.skalTaUtFerieIPerioden,
                     "ferieuttak" to melding.ferieuttakIPerioden?.ferieuttak?.somMapFerieuttak()
                 ),
-                "frilans" to frilans(melding.frilans),
-                "selvstendigVirksomheter" to mapOf(
-                    "virksomhet" to melding.selvstendigVirksomheter?.somMapVirksomheter()
-                ),
                 "skal_bekrefte_omsorg" to melding.skalBekrefteOmsorg,
                 "skal_passe_pa_barnet_i_hele_perioden" to melding.skalPassePaBarnetIHelePerioden,
                 "beskrivelse_omsorgsrollen" to melding.beskrivelseOmsorgsRollen
@@ -151,76 +169,6 @@ internal class PdfV1Generator  {
             return outputStream.use {
                 it.toByteArray()
             }
-        }
-    }
-
-    private fun List<Virksomhet>.somMapVirksomheter(): List<Map<String, Any?>> {
-        return map {
-            mapOf(
-                "navnPaVirksomheten" to it.navnPaVirksomheten,
-                "naringstype" to it.naringstype.somMapNaringstype(),
-                "fiskerErPåBladB" to it.fiskerErPåBladB,
-                "fraOgMed" to DATE_FORMATTER.format(it.fraOgMed),
-                "tilOgMed" to it.tilOgMed?.let { DATE_FORMATTER.format(it) },
-                "naringsinntekt" to it.naringsinntekt,
-                "registrertINorge" to it.registrertINorge,
-                "organisasjonsnummer" to it.organisasjonsnummer,
-                "registrertILand" to it.registrertILand,
-                "yrkesaktivSisteTreFerdigliknedeArene" to it.yrkesaktivSisteTreFerdigliknedeArene?.let { DATE_FORMATTER.format(it.oppstartsdato) },
-                "varigEndring" to varigEndring(it.varigEndring),
-                "regnskapsforer" to regnskapsforer(it.regnskapsforer),
-                "revisor" to revisor(it.revisor)
-            )
-        }
-    }
-
-    private fun List<Naringstype>.somMapNaringstype(): List<Map<String, Any?>> {
-        return map {
-            mapOf(
-                "typeDetaljert" to it.detaljert
-            )
-        }
-    }
-
-    private fun varigEndring(varigEndring: VarigEndring?) = when (varigEndring) {
-        null -> null
-        else -> {
-            mapOf(
-                "dato" to DATE_FORMATTER.format(varigEndring.dato),
-                "inntektEtterEndring" to varigEndring.inntektEtterEndring,
-                "forklaring" to varigEndring.forklaring
-            )
-        }
-    }
-
-    private fun revisor(revisor: Revisor?) = when (revisor) {
-        null -> null
-        else -> {
-            mapOf(
-                "navn" to revisor.navn,
-                "telefon" to revisor.telefon,
-                "kanInnhenteOpplysninger" to revisor.kanInnhenteOpplysninger
-            )
-        }
-    }
-
-    private fun regnskapsforer(regnskapsforer: Regnskapsforer?) = when (regnskapsforer) {
-        null -> null
-        else -> {
-            mapOf(
-                "navn" to regnskapsforer.navn,
-                "telefon" to regnskapsforer.telefon
-            )
-        }
-    }
-
-    private fun frilans(frilans: Frilans?) = when {
-        frilans == null -> null
-        else -> {
-            mapOf(
-                "startdato" to DATE_FORMATTER.format(frilans.startdato),
-                "jobberFortsattSomFrilans" to frilans.jobberFortsattSomFrilans
-            )
         }
     }
 
@@ -271,6 +219,12 @@ internal class PdfV1Generator  {
         useFont({ ByteArrayInputStream(REGULAR_FONT) }, "Source Sans Pro", 400, BaseRendererBuilder.FontStyle.NORMAL, false)
         .useFont({ ByteArrayInputStream(BOLD_FONT) }, "Source Sans Pro", 700, BaseRendererBuilder.FontStyle.NORMAL, false)
         .useFont({ ByteArrayInputStream(ITALIC_FONT) }, "Source Sans Pro", 400, BaseRendererBuilder.FontStyle.ITALIC, false)
+
+    private fun MeldingV1.somMap() = mapper.convertValue(
+        this,
+        object :
+            TypeReference<MutableMap<String, Any?>>() {}
+    )
 }
 
 private fun List<Organisasjon>.somMap() = map {
@@ -323,6 +277,11 @@ private fun List<Ferieuttak>.somMapFerieuttak(): List<Map<String, Any?>> {
 }
 
 private fun List<Organisasjon>.erAktuelleArbeidsgivere() = any { it.skalJobbeProsent != null }
+
+private fun Duration.tilString(): String = when (this.toMinutesPart()) {
+    0 -> "${this.toHoursPart()} timer"
+    else -> "${this.toHoursPart()} timer og ${this.toMinutesPart()} minutter"
+}
 
 private fun Soker.formatertNavn() = if (mellomnavn != null) "$fornavn $mellomnavn $etternavn" else "$fornavn $etternavn"
 private fun String.sprakTilTekst() = when (this.toLowerCase()) {
