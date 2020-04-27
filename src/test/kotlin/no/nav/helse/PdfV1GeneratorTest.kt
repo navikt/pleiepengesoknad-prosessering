@@ -150,7 +150,10 @@ class PdfV1GeneratorTest {
                     næringsinntekt = 1111,
                     navnPåVirksomheten = "Tull Og Tøys",
                     registrertINorge = false,
-                    registrertILand = "Bahamas",
+                    registrertIUtlandet = Land(
+                        landkode = "DEU",
+                        landnavn = "Tyskland"
+                    ),
                     yrkesaktivSisteTreFerdigliknedeÅrene = YrkesaktivSisteTreFerdigliknedeÅrene(LocalDate.now()),
                     varigEndring = VarigEndring(
                         dato = LocalDate.now().minusDays(20),
@@ -231,11 +234,11 @@ class PdfV1GeneratorTest {
         ),
         selvstendigVirksomheter: List<Virksomhet>? = listOf(
             Virksomhet(
-                næringstyper = listOf(Næringstyper.ANNEN, Næringstyper.FISKE),
+                næringstyper = listOf(Næringstyper.ANNEN, Næringstyper.FISKE, Næringstyper.JORDBRUK_SKOGBRUK, Næringstyper.DAGMAMMA),
                 fiskerErPåBladB = true,
                 fraOgMed = LocalDate.now(),
                 tilOgMed = LocalDate.now().plusDays(10),
-                navnPåVirksomheten = "Kjells Møbelsnekkeri",
+                navnPåVirksomheten = "Kjells Møbelsnekkeriiii",
                 registrertINorge = true,
                 organisasjonsnummer = "101010",
                 varigEndring = VarigEndring(
@@ -255,7 +258,10 @@ class PdfV1GeneratorTest {
                 næringsinntekt = 100111,
                 navnPåVirksomheten = "Tull Og Tøys",
                 registrertINorge = false,
-                registrertILand = "Bahamas",
+                registrertIUtlandet = Land(
+                    landnavn = "Tyskland",
+                    landkode = "DEU"
+                ),
                 yrkesaktivSisteTreFerdigliknedeÅrene = YrkesaktivSisteTreFerdigliknedeÅrene(LocalDate.now()),
                 regnskapsfører = Regnskapsfører(
                     navn = "Bjarne Regnskap",
@@ -297,7 +303,7 @@ class PdfV1GeneratorTest {
     )
 
     private fun genererOppsummeringsPdfer(writeBytes: Boolean) {
-        var id = "1-full-søknad"
+        /*var id = "1-full-søknad"
         var pdf = generator.generateSoknadOppsummeringPdf(
             melding = fullGyldigMelding(soknadsId = id),
             barnetsIdent = barnetsIdent,
@@ -669,10 +675,10 @@ class PdfV1GeneratorTest {
             fodselsdato = null
         )
 
-        if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
+        if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)*/
 
-        id = "22-har-du-hatt-inntekt-som-selvstendig-næringsdrivende"
-        pdf = generator.generateSoknadOppsummeringPdf(
+        var id = "22-har-du-hatt-inntekt-som-selvstendig-næringsdrivende"
+        var pdf = generator.generateSoknadOppsummeringPdf(
             melding = gyldigMelding(
                 soknadId = id, harMedsoker = true, organisasjoner = listOf(
                 ), barn = Barn(fodselsnummer = null, fodselsdato = null, navn = null, aktoerId = null)
@@ -692,7 +698,7 @@ class PdfV1GeneratorTest {
     }
 
     @Test
-    @Ignore
+    //@Ignore
     fun `opprett lesbar oppsummerings-PDF`() {
         genererOppsummeringsPdfer(true)
     }

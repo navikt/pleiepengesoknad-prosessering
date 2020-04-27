@@ -427,11 +427,11 @@
             {{#if virksomhet.næringsinntekt}}
                 <p>Næringsinntekt: {{virksomhet.næringsinntekt}},-</p>
             {{/if}}
-            {{#if virksomhet.registrertINorge}}
+            {{#if virksomhet.registrert_i_norge}}
                 <p>Registrert i Norge</p>
                 <p>Organisasjonsnummeret: {{virksomhet.organisasjonsnummer}}</p>
             {{else}}
-                <p>Registrert i land: {{virksomhet.registrertILand}}</p>
+                <p>Registrert i land: {{virksomhet.registrert_i_utlandet.landnavn}} ({{virksomhet.registrert_i_utlandet.landkode}})</p>
             {{/if}}
 
             {{#if virksomhet.yrkesaktivSisteTreFerdigliknedeÅrene}}

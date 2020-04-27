@@ -458,7 +458,8 @@ class PleiepengesoknadProsesseringTest {
                     fraOgMed = LocalDate.parse("2020-01-01"),
                     næringsinntekt = 123456,
                     navnPåVirksomheten = "Virksomehet 1",
-                    registrertINorge = true
+                    registrertINorge = true,
+                    organisasjonsnummer = "12345"
                 ),
                 Virksomhet(
                     næringstyper = listOf(),
@@ -466,7 +467,11 @@ class PleiepengesoknadProsesseringTest {
                     tilOgMed = LocalDate.parse("2020-05-01"),
                     næringsinntekt = 123456,
                     navnPåVirksomheten = "Virksomehet 2",
-                    registrertINorge = true
+                    registrertINorge = false,
+                    registrertIUtlandet = Land(
+                        landkode = "DEU",
+                        landnavn = "Tyskland"
+                    )
                 )
             ),
             medlemskap = Medlemskap(

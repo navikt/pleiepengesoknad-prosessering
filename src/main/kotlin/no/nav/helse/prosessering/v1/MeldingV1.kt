@@ -52,13 +52,15 @@ data class Virksomhet(
     val organisasjonsnummer: String? = null,
     @JsonProperty("registrert_i_norge")
     val registrertINorge: Boolean,
-    @JsonProperty("registrert_i_land")
-    val registrertILand: String? = null,
+    @JsonProperty("registrert_i_utlandet")
+    val registrertIUtlandet: Land? = null,
     val yrkesaktivSisteTreFerdigliknedeÅrene: YrkesaktivSisteTreFerdigliknedeÅrene? = null,
     val varigEndring: VarigEndring? = null,
     val regnskapsfører: Regnskapsfører? = null,
     val revisor: Revisor? = null
 )
+
+data class Land(val landkode: String, val landnavn: String)
 
 enum class Næringstyper(val beskrivelse: String) {
     FISKE("Fiske"),
