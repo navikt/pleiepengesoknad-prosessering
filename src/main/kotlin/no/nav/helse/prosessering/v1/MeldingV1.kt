@@ -41,7 +41,7 @@ data class MeldingV1 (
 
 data class Virksomhet(
     val næringstyper: List<Næringstyper>,
-    @JsonProperty("fiskerErPaBladB")
+    @JsonProperty("fiskerErPåBladB")
     val fiskerErPåBladB: Boolean? = null,
     @JsonFormat(pattern = "yyyy-MM-dd")
     @JsonProperty("fraOgMed")
@@ -57,6 +57,7 @@ data class Virksomhet(
     val registrertINorge: Boolean,
     @JsonProperty("registrertIUtlandet")
     val registrertIUtlandet: Land? = null,
+    @JsonProperty("yrkesaktivSisteTreFerdigliknedeÅrene")
     val yrkesaktivSisteTreFerdigliknedeÅrene: YrkesaktivSisteTreFerdigliknedeÅrene? = null,
     val varigEndring: VarigEndring? = null,
     val regnskapsfører: Regnskapsfører? = null,
