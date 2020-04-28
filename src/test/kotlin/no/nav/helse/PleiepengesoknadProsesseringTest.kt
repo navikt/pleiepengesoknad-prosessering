@@ -131,10 +131,8 @@ class PleiepengesoknadProsesseringTest {
 
     @Test
     fun `Gylding melding blir prosessert`() {
-        val melding = gyldigMelding(
-            fodselsnummerSoker = gyldigFodselsnummerA,
-            fodselsnummerBarn = gyldigFodselsnummerB
-        )
+
+        val melding = SøknadUtils.defaultSøknad
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
         journalførtConsumer
@@ -149,24 +147,24 @@ class PleiepengesoknadProsesseringTest {
         val jobb1SkalJobbeProsent = 50.422
         val jobb2SkalJobberProsent = 12.111
 
-        val melding = gyldigMelding(
-            fodselsnummerSoker = gyldigFodselsnummerA,
-            fodselsnummerBarn = gyldigFodselsnummerB,
+        val melding = SøknadUtils.defaultSøknad.copy(
             sprak = sprak,
-            organisasjoner = listOf(
-                Organisasjon(
-                    "917755736",
-                    "Jobb1",
-                    skalJobbeProsent = jobb1SkalJobbeProsent,
-                    jobberNormaltTimer = 37.5,
-                    skalJobbe = "redusert"
-                ),
-                Organisasjon(
-                    "917755737",
-                    "Jobb2",
-                    skalJobbeProsent = jobb2SkalJobberProsent,
-                    jobberNormaltTimer = 37.5,
-                    skalJobbe = "redusert"
+            arbeidsgivere = Arbeidsgivere(
+                organisasjoner = listOf(
+                    Organisasjon(
+                        "917755736",
+                        "Jobb1",
+                        skalJobbeProsent = jobb1SkalJobbeProsent,
+                        jobberNormaltTimer = 37.5,
+                        skalJobbe = "redusert"
+                    ),
+                    Organisasjon(
+                        "917755737",
+                        "Jobb2",
+                        skalJobbeProsent = jobb2SkalJobberProsent,
+                        jobberNormaltTimer = 37.5,
+                        skalJobbe = "redusert"
+                    )
                 )
             )
         )
@@ -189,10 +187,7 @@ class PleiepengesoknadProsesseringTest {
 
     @Test
     fun `En feilprosessert melding vil bli prosessert etter at tjenesten restartes`() {
-        val melding = gyldigMelding(
-            fodselsnummerSoker = gyldigFodselsnummerA,
-            fodselsnummerBarn = gyldigFodselsnummerB
-        )
+        val melding = SøknadUtils.defaultSøknad
 
         wireMockServer.stubJournalfor(500) // Simulerer feil ved journalføring
 
@@ -220,10 +215,7 @@ class PleiepengesoknadProsesseringTest {
 
     @Test
     fun `Melding som gjeder søker med D-nummer`() {
-        val melding = gyldigMelding(
-            fodselsnummerSoker = dNummerA,
-            fodselsnummerBarn = gyldigFodselsnummerB
-        )
+        val melding = SøknadUtils.defaultSøknad
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
         journalførtConsumer
@@ -233,11 +225,9 @@ class PleiepengesoknadProsesseringTest {
 
     @Test
     fun `Melding lagt til prosessering selv om sletting av vedlegg feiler`() {
-        val melding = gyldigMelding(
-            fodselsnummerSoker = gyldigFodselsnummerA,
-            fodselsnummerBarn = gyldigFodselsnummerB,
-            barnetsNavn = "kari",
-            vedleggUrl = URI("http://localhost:8080/jeg-skal-feile/1")
+        val melding = SøknadUtils.defaultSøknad.copy(
+            soknadId = UUID.randomUUID().toString(),
+            vedleggUrls = listOf(URI("http://localhost:8080/jeg-skal-feile/1"))
         )
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
@@ -251,10 +241,10 @@ class PleiepengesoknadProsesseringTest {
         wireMockServer.stubAktoerRegister(dNummerA, "56789")
         wireMockServer.stubTpsProxyGetNavn("KLØKTIG", "BLUNKENDE", "SUPERKONSOLL")
 
-        val melding = gyldigMelding(
-            fodselsnummerSoker = gyldigFodselsnummerA,
-            fodselsnummerBarn = dNummerA,
-            barnetsNavn = null
+        val defaultBarn = SøknadUtils.defaultSøknad.barn
+        val melding = SøknadUtils.defaultSøknad.copy(
+            soknadId = UUID.randomUUID().toString(),
+            barn = defaultBarn.copy(fodselsnummer = dNummerA, navn = null)
         )
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
@@ -271,10 +261,10 @@ class PleiepengesoknadProsesseringTest {
         wireMockServer.stubAktoerRegister(dNummerA, "56789")
         wireMockServer.stubTpsProxyGetNavn("KLØKTIG", null, "SUPERKONSOLL")
 
-        val melding = gyldigMelding(
-            fodselsnummerSoker = gyldigFodselsnummerA,
-            fodselsnummerBarn = dNummerA,
-            barnetsNavn = null
+        val defaultBarn = SøknadUtils.defaultSøknad.barn
+        val melding = SøknadUtils.defaultSøknad.copy(
+            soknadId = UUID.randomUUID().toString(),
+            barn = defaultBarn.copy(fodselsnummer = dNummerA, navn = null)
         )
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
@@ -289,9 +279,8 @@ class PleiepengesoknadProsesseringTest {
 
     @Test
     fun `Melding lagt til prosessering selv om oppslag paa aktoer ID for barn feiler`() {
-        val melding = gyldigMelding(
-            fodselsnummerSoker = gyldigFodselsnummerA,
-            fodselsnummerBarn = gyldigFodselsnummerC
+        val melding = SøknadUtils.defaultSøknad.copy(
+            soknadId = UUID.randomUUID().toString()
         )
 
         wireMockServer.stubAktoerRegisterGetAktoerIdNotFound(gyldigFodselsnummerC)
@@ -305,10 +294,10 @@ class PleiepengesoknadProsesseringTest {
     @Test
     fun `Bruk barnets fødselsnummer til å slå opp i tps-proxy dersom navnet mangler`() {
         wireMockServer.stubTpsProxyGetNavn("KLØKTIG", "BLUNKENDE", "SUPERKONSOLL")
-        val melding = gyldigMelding(
-            fodselsnummerSoker = gyldigFodselsnummerC,
-            fodselsnummerBarn = gyldigFodselsnummerB,
-            barnetsNavn = null
+        val defaultBarn = SøknadUtils.defaultSøknad.barn
+        val melding = SøknadUtils.defaultSøknad.copy(
+            soknadId = UUID.randomUUID().toString(),
+            barn = defaultBarn.copy(navn = null)
         )
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
@@ -325,11 +314,10 @@ class PleiepengesoknadProsesseringTest {
         wireMockServer.stubAktoerRegister(dNummerA, "56789")
         wireMockServer.stubTpsProxyGetNavn("KLØKTIG", "BLUNKENDE", "SUPERKONSOLL")
 
-        val melding = gyldigMelding(
-            fodselsnummerSoker = gyldigFodselsnummerA,
-            fodselsnummerBarn = null,
-            barnetsNavn = null,
-            aktoerIdBarn = "56789"
+        val defaultBarn = SøknadUtils.defaultSøknad.barn
+        val melding = SøknadUtils.defaultSøknad.copy(
+            soknadId = UUID.randomUUID().toString(),
+            barn = defaultBarn.copy(fodselsnummer = null, navn = null, aktoerId = "56789")
         )
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
@@ -347,11 +335,10 @@ class PleiepengesoknadProsesseringTest {
 
         val forventetFodselsNummer = gyldigFodselsnummerB
 
-        val melding = gyldigMelding(
-            fodselsnummerSoker = gyldigFodselsnummerA,
-            fodselsnummerBarn = forventetFodselsNummer,
-            barnetsNavn = null,
-            aktoerIdBarn = "56789"
+        val defaultBarn = SøknadUtils.defaultSøknad.barn
+        val melding = SøknadUtils.defaultSøknad.copy(
+            soknadId = UUID.randomUUID().toString(),
+            barn = defaultBarn.copy(fodselsnummer = forventetFodselsNummer, navn = null, aktoerId = "56789")
         )
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
@@ -368,11 +355,10 @@ class PleiepengesoknadProsesseringTest {
         wireMockServer.stubAktoerRegister(gyldigFodselsnummerB, "666")
         val forventetFodselsNummer = gyldigFodselsnummerB
 
-        val melding = gyldigMelding(
-            fodselsnummerSoker = gyldigFodselsnummerA,
-            fodselsnummerBarn = null,
-            barnetsNavn = null,
-            aktoerIdBarn = "666"
+        val defaultBarn = SøknadUtils.defaultSøknad.barn
+        val melding = SøknadUtils.defaultSøknad.copy(
+            soknadId = UUID.randomUUID().toString(),
+            barn = defaultBarn.copy(fodselsnummer = forventetFodselsNummer, navn = null, aktoerId = "666")
         )
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
@@ -388,12 +374,10 @@ class PleiepengesoknadProsesseringTest {
     fun `Forvent barnets fødselsdato`() {
         wireMockServer.stubAktoerRegister(gyldigFodselsnummerB, "666")
 
-        val melding = gyldigMelding(
-            fodselsnummerSoker = gyldigFodselsnummerA,
-            fodselsnummerBarn = null,
-            fodselsdatoBarn = LocalDate.now(),
-            barnetsNavn = null,
-            aktoerIdBarn = "666"
+        val defaultBarn = SøknadUtils.defaultSøknad.barn
+        val melding = SøknadUtils.defaultSøknad.copy(
+            soknadId = UUID.randomUUID().toString(),
+            barn = defaultBarn.copy(fodselsdato = LocalDate.now(), navn = null, aktoerId = "666")
         )
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
@@ -553,85 +537,124 @@ class PleiepengesoknadProsesseringTest {
             .assertJournalførtFormat()
     }
 
-
-    private fun gyldigMelding(
-        fodselsnummerSoker: String,
-        fodselsnummerBarn: String?,
-        vedleggUrl: URI = URI("${wireMockServer.getK9DokumentBaseUrl()}/v1/dokument/${UUID.randomUUID()}"),
-        barnetsNavn: String? = "kari",
-        fodselsdatoBarn: LocalDate? = LocalDate.now(),
-        aktoerIdBarn: String? = null,
-        sprak: String? = null,
-        organisasjoner: List<Organisasjon> = listOf(
-            Organisasjon(
-                "917755736",
-                "Gyldig",
-                jobberNormaltTimer = 4.0,
-                skalJobbeProsent = 50.0,
-                skalJobbe = "redusert"
+    @Test
+    fun `tilsynsordning ja`() {
+        val melding = SøknadUtils.defaultSøknad.copy(
+            soknadId = UUID.randomUUID().toString(),
+            tilsynsordning = Tilsynsordning(
+                svar = "ja",
+                ja = TilsynsordningJa(
+                    mandag = Duration.ofHours(5),
+                    tirsdag = Duration.ofHours(4),
+                    onsdag = Duration.ofHours(3).plusMinutes(45),
+                    torsdag = Duration.ofHours(2),
+                    fredag = Duration.ofHours(1).plusMinutes(30),
+                    tilleggsinformasjon = "Litt tilleggsinformasjon."
+                ),
+                vetIkke = null
             )
         )
-    ): MeldingV1 = MeldingV1(
-        sprak = sprak,
-        soknadId = UUID.randomUUID().toString(),
-        mottatt = ZonedDateTime.now(),
-        fraOgMed = LocalDate.now(),
-        tilOgMed = LocalDate.now().plusWeeks(1),
-        soker = Soker(
-            aktoerId = "123456",
-            fodselsnummer = fodselsnummerSoker,
-            etternavn = "Nordmann",
-            mellomnavn = "Mellomnavn",
-            fornavn = "Ola"
-        ),
-        barn = Barn(
-            navn = barnetsNavn,
-            fodselsnummer = fodselsnummerBarn,
-            fodselsdato = fodselsdatoBarn,
-            aktoerId = aktoerIdBarn
-        ),
-        relasjonTilBarnet = "Mor",
-        arbeidsgivere = Arbeidsgivere(
-            organisasjoner = organisasjoner
-        ),
-        vedleggUrls = listOf(vedleggUrl),
-        medlemskap = Medlemskap(
-            harBoddIUtlandetSiste12Mnd = true,
-            skalBoIUtlandetNeste12Mnd = true
-        ),
-        harMedsoker = true,
-        harBekreftetOpplysninger = true,
-        harForstattRettigheterOgPlikter = true,
-        tilsynsordning = Tilsynsordning(
-            svar = "ja",
-            ja = TilsynsordningJa(
-                mandag = Duration.ofHours(5),
-                tirsdag = Duration.ofHours(4),
-                onsdag = Duration.ofHours(3).plusMinutes(45),
-                torsdag = Duration.ofHours(2),
-                fredag = Duration.ofHours(1).plusMinutes(30),
-                tilleggsinformasjon = "Litt tilleggsinformasjon."
-            ),
-            vetIkke = null
-        ),
-        beredskap = Beredskap(
-            beredskap = true,
-            tilleggsinformasjon = "I Beredskap"
-        ),
-        nattevaak = Nattevaak(
-            harNattevaak = true,
-            tilleggsinformasjon = "Har Nattevåk"
-        ),
-        utenlandsoppholdIPerioden = UtenlandsoppholdIPerioden(
-            skalOppholdeSegIUtlandetIPerioden = false,
-            opphold = listOf()
-        ),
-        ferieuttakIPerioden = FerieuttakIPerioden(skalTaUtFerieIPerioden = false, ferieuttak = listOf()),
-        frilans = Frilans(
-            startdato = LocalDate.now().minusYears(3),
-            jobberFortsattSomFrilans = true
+
+        kafkaTestProducer.leggSoknadTilProsessering(melding)
+
+        journalførtConsumer
+            .hentJournalførtMelding(melding.soknadId)
+            .assertJournalførtFormat()
+    }
+
+    @Test
+    fun `tilsynsordning nei`() {
+        val melding = SøknadUtils.defaultSøknad.copy(
+            soknadId = UUID.randomUUID().toString(),
+            tilsynsordning = Tilsynsordning(
+                svar = "nei",
+                ja = null,
+                vetIkke = null
+            )
         )
-    )
+
+        kafkaTestProducer.leggSoknadTilProsessering(melding)
+
+        journalførtConsumer
+            .hentJournalførtMelding(melding.soknadId)
+            .assertJournalførtFormat()
+    }
+
+    @Test
+    fun `tilsynsordning vet_ikke`() {
+        val melding = SøknadUtils.defaultSøknad.copy(
+            soknadId = UUID.randomUUID().toString(),
+            tilsynsordning = Tilsynsordning(
+                svar = "vet_ikke",
+                ja = null,
+                vetIkke = TilsynsordningVetIkke(
+                    svar = "vet ikke",
+                    annet = "annet"
+                )
+            )
+        )
+
+        kafkaTestProducer.leggSoknadTilProsessering(melding)
+
+        journalførtConsumer
+            .hentJournalførtMelding(melding.soknadId)
+            .assertJournalførtFormat()
+    }
+
+    @Test
+    fun `tilsynsordning vet_ikke uten annet felt satt`() {
+        val melding = SøknadUtils.defaultSøknad.copy(
+            soknadId = UUID.randomUUID().toString(),
+            tilsynsordning = Tilsynsordning(
+                svar = "vet_ikke",
+                ja = null,
+                vetIkke = TilsynsordningVetIkke(
+                    svar = "hva som helst?"
+                )
+            )
+        )
+
+        kafkaTestProducer.leggSoknadTilProsessering(melding)
+
+        journalførtConsumer
+            .hentJournalførtMelding(melding.soknadId)
+            .assertJournalførtFormat()
+    }
+
+    @Test
+    fun `tilsynsordning vet_ikke med annet felt satt`() {
+        val melding = SøknadUtils.defaultSøknad.copy(
+            soknadId = UUID.randomUUID().toString(),
+            tilsynsordning = Tilsynsordning(
+                svar = "vet_ikke",
+                ja = null,
+                vetIkke = TilsynsordningVetIkke(
+                    svar = "hva som helst?",
+                    annet = "annet grunn"
+                )
+            )
+        )
+
+        kafkaTestProducer.leggSoknadTilProsessering(melding)
+
+        journalførtConsumer
+            .hentJournalførtMelding(melding.soknadId)
+            .assertJournalførtFormat()
+    }
+
+    @Test
+    fun `Søknad uten tilsynsordning satt`() {
+        val melding = SøknadUtils.defaultSøknad.copy(
+            soknadId = UUID.randomUUID().toString(),
+            tilsynsordning = null
+        )
+
+        kafkaTestProducer.leggSoknadTilProsessering(melding)
+
+        journalførtConsumer
+            .hentJournalførtMelding(melding.soknadId)
+            .assertJournalførtFormat()
+    }
 
     private fun ventPaaAtRetryMekanismeIStreamProsessering() = runBlocking { delay(Duration.ofSeconds(30)) }
 }

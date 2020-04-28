@@ -63,9 +63,11 @@ fun PreprossesertMeldingV1.tilK9PleiepengeBarnSøknad(): JsonNode {
         )
     }
 
-    tilsynsordning?.let {
-        builder.tilsynsordning(tilsynsordning.tilK9Tilsynsordning(fraOgMed, tilOgMed))
-    }
+    if (tilsynsordning != null) builder.tilsynsordning(tilsynsordning.tilK9Tilsynsordning(fraOgMed, tilOgMed))
+    else builder.tilsynsordning(
+        no.nav.k9.søknad.pleiepengerbarn.Tilsynsordning.builder().iTilsynsordning(TilsynsordningSvar.NEI).build()
+    )
+
 
     ferieuttakIPerioden?.let {
         if (ferieuttakIPerioden.skalTaUtFerieIPerioden) {
@@ -103,7 +105,8 @@ fun Medlemskap.tilK9bosteder(): Bosteder {
     }
 
     utenlandsoppholdNeste12Mnd.forEach {
-        val fraOgMed = if (utenlandsoppholdSiste12MndTilOgMed.contains(it.fraOgMed)) it.fraOgMed.plusDays(1) else it.fraOgMed
+        val fraOgMed =
+            if (utenlandsoppholdSiste12MndTilOgMed.contains(it.fraOgMed)) it.fraOgMed.plusDays(1) else it.fraOgMed
         val tilOgMed = if (it.fraOgMed == it.tilOgMed) fraOgMed else it.tilOgMed
         val periode = Periode.builder().fraOgMed(fraOgMed).tilOgMed(tilOgMed).build()
         perioder[periode] =
@@ -177,7 +180,8 @@ fun UtenlandsoppholdIPerioden.tilK9Utenlandsopphold(): Utenlandsopphold? {
 
 fun PreprossesertBarn.tilK9Barn(): Barn {
     return when {
-        !fodselsnummer.isNullOrBlank() -> Barn.builder().norskIdentitetsnummer(NorskIdentitetsnummer.of(fodselsnummer)).build()
+        !fodselsnummer.isNullOrBlank() -> Barn.builder().norskIdentitetsnummer(NorskIdentitetsnummer.of(fodselsnummer))
+            .build()
         else -> Barn.builder().fødselsdato(fodselsdato).build()
     }
 }
