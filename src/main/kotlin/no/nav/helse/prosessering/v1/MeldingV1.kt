@@ -50,6 +50,7 @@ data class Virksomhet(
     @JsonProperty("tilOgMed")
     val tilOgMed: LocalDate? = null,
     val næringsinntekt: Int? = null,
+    @JsonProperty("navnPåVirksomheten")
     val navnPåVirksomheten: String,
     val organisasjonsnummer: String? = null,
     @JsonProperty("registrertINorge")
