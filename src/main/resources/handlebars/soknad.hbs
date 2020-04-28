@@ -386,94 +386,94 @@
     {{/if}}
 
     <!-- FRILANS -->
-    {{# if frilans }}
+    {{# if søknad.frilans }}
         <h2><span>Frilans</span></h2>
-        <p class="sporsmalstekst">Har du jobbet og hatt inntekt som frilanser de siste 4 ukene?</p>
-        {{>jaNeiCheckbox parameter=frilans}}
-        <br/>
         <p class="sporsmalstekst">Når startet du som frilanser?</p>
-        <p>{{frilans.startdato}}</p>
+        <p>{{#dato søknad.frilans.startdato}}{{/dato}}</p>
+
+        <p class="sporsmalstekst">Har du jobbet og hatt inntekt som frilanser de siste 4 uker?</p>
+        {{>jaNeiCheckbox parameter=søknad.frilans}}  <br/> <br/>
+
         <p class="sporsmalstekst">Jobber du fortsatt som frilanser?</p>
-        {{>jaNeiCheckbox parameter=frilans.jobberFortsattSomFrilans}}
+        {{>jaNeiCheckbox parameter=søknad.frilans.jobberFortsattSomFrilans}}
     {{/if}}
 
     <!-- SELVSTENDIG NÆRINGSDRIVENDE -->
-    {{#if selvstendigVirksomheter.virksomhet}}
+    {{#if søknad.selvstendigVirksomheter}}
         <h2><span>Selvstendig næringsdrivende</span></h2>
-        {{# each selvstendigVirksomheter.virksomhet as |virksomhet|~}}
-            <ul>
-                <h3>{{virksomhet.navnPaVirksomheten}} ({{virksomhet.fraOgMed}} -
-                    {{#if virksomhet.tilOgMed}}
-                        {{virksomhet.tilOgMed}})
-                    {{else}}
-                        pågående)
-                    {{/if}}</h3>
-                <p>Næringstype:
-                    {{# each virksomhet.naringstype as |naringstype|~}}
-                        {{#if @first}}
-                            {{naringstype.typeDetaljert}}
-                        {{else}}
-                            , {{naringstype.typeDetaljert}}
-                        {{/if}}
-                        {{#eq naringstype.typeDetaljert "Fiske"}}
-                            {{#if virksomhet.fiskerErPåBladB}}
-                                (blad B)
-                            {{else}}
-                                (ikke blad B)
-                            {{/if}}
-                        {{/eq}}
-                    {{/each}}</p>
-                {{#if virksomhet.naringsinntekt}}
-                    <p>Næringsinntekt: {{virksomhet.naringsinntekt}},-</p>
-                {{/if}}
-                {{#if virksomhet.registrertINorge}}
-                    <p>Registrert i Norge</p>
-                    <p>Organisasjonsnummeret: {{virksomhet.organisasjonsnummer}}</p>
-                {{else}}
-                    <p>Registrert i land: {{virksomhet.registrertILand}}</p>
-                {{/if}}
+        {{# each søknad.selvstendigVirksomheter as |virksomhet|~}}
 
-                {{#if virksomhet.yrkesaktivSisteTreFerdigliknedeArene}}
-                    <p>Oppgi dato for når du ble
-                        yrkesaktiv: {{virksomhet.yrkesaktivSisteTreFerdigliknedeArene}}</p>
-                {{/if}}
-                {{#if virksomhet.varigEndring}}
-                    <h3>Varig endring</h3>
-                    <ul>
-                        <p>Dato for endring: {{virksomhet.varigEndring.dato}}</p>
-                        <p>Næringsinntekten etter endringen: {{virksomhet.varigEndring.inntektEtterEndring}}</p>
-                        <div class="fritekst">
-                            <p class="sporsmalstekst"><img class="lite_ikon" src="{{ image "Fritekst.png" }}"/>Søkers
-                                forklaring:</p>
-                            <p class="fritekst_textarea">{{virksomhet.varigEndring.forklaring}}</p>
-                        </div>
-                    </ul>
-                {{/if}}
-                {{#if virksomhet.regnskapsforer}}
-                    <h3>Regnskapsfører:</h3>
-                    <ul>
-                        <p>Navn: {{virksomhet.regnskapsforer.navn}}</p>
-                        <p>Telefon: {{virksomhet.regnskapsforer.telefon}}</p>
-                    </ul>
+            <h3>{{virksomhet.navnPåVirksomheten}} ({{#dato virksomhet.fraOgMed}}{{/dato}} -
+                {{#if virksomhet.tilOgMed}}
+                    {{#dato virksomhet.tilOgMed}}{{/dato}})
                 {{else}}
-                    {{#if virksomhet.revisor}}
-                        <h3>Revisor:</h3>
-                        <ul>
-                            <p>Navn: {{virksomhet.revisor.navn}}</p>
-                            <p>Telefon: {{virksomhet.revisor.telefon}}</p>
-                            <p class="sporsmalstekst">Gir du NAV fullmakt til å innhente opplysninger direkte
-                                fra
-                                revisor?</p>
-                            {{>jaNeiCheckbox parameter=virksomhet.revisor.kanInnhenteOpplysninger}}
-                        </ul>
+                    pågående)
+                {{/if}}</h3>
+            <p>Næringstype:
+                {{# each virksomhet.næringstyper as |næringstype|~}}
+                    {{#if @first}}
+                        {{#enumNæringstyper næringstype}}{{/enumNæringstyper}}
+                    {{else}}
+                        , {{#enumNæringstyper næringstype}}{{/enumNæringstyper}}
                     {{/if}}
+                    {{#eq næringstype "FISKE"}}
+                        {{#if virksomhet.fiskerErPåBladB}}
+                            (blad B)
+                        {{else}}
+                            (ikke blad B)
+                        {{/if}}
+                    {{/eq}}
+                {{/each}}</p>
+            {{#if virksomhet.næringsinntekt}}
+                <p>Næringsinntekt: {{virksomhet.næringsinntekt}},-</p>
+            {{/if}}
+            {{#if virksomhet.registrertINorge}}
+                <p>Registrert i Norge</p>
+                <p>Organisasjonsnummeret: {{virksomhet.organisasjonsnummer}}</p>
+            {{else}}
+                <p>Registrert i land: {{virksomhet.registrertIUtlandet.landnavn}} ({{virksomhet.registrertIUtlandet.landkode}})</p>
+            {{/if}}
+
+            {{#if virksomhet.yrkesaktivSisteTreFerdigliknedeÅrene}}
+                <p>Oppgi dato for når du ble
+                    yrkesaktiv: {{#dato virksomhet.yrkesaktivSisteTreFerdigliknedeÅrene.oppstartsdato}}{{/dato}}</p>
+            {{/if}}
+            {{#if virksomhet.varigEndring}}
+                <h3>Varig endring</h3>
+                <ul>
+                    <p>Dato for endring: {{#dato virksomhet.varigEndring.dato}}{{/dato}}</p>
+                    <p>Næringsinntekten etter endringen: {{virksomhet.varigEndring.inntektEtterEndring}}</p>
+                    <div class="fritekst">
+                        <p class="sporsmalstekst"><img class="lite_ikon" src="{{ image "Fritekst.png" }}"/>Søkers
+                            forklaring:</p>
+                        <p class="fritekst_textarea">{{virksomhet.varigEndring.forklaring}}</p>
+                    </div>
+                </ul>
+            {{/if}}
+            {{#if virksomhet.regnskapsfører}}
+                <h3>Regnskapsfører:</h3>
+                <ul>
+                    <p>Navn: {{virksomhet.regnskapsfører.navn}}</p>
+                    <p>Telefon: {{virksomhet.regnskapsfører.telefon}}</p>
+                </ul>
+            {{else}}
+                {{#if virksomhet.revisor}}
+                    <h3>Revisor:</h3>
+                    <ul>
+                        <p>Navn: {{virksomhet.revisor.navn}}</p>
+                        <p>Telefon: {{virksomhet.revisor.telefon}}</p>
+                        <p class="sporsmalstekst">
+                            Gir du NAV fullmakt til å innhente opplysninger direkte fra revisor?
+                        </p>
+                        {{>jaNeiCheckbox parameter=virksomhet.revisor.kanInnhenteOpplysninger}}
+                    </ul>
                 {{/if}}
-                {{#if @last}}
-                    <!--Setter ikke <hr/> på siste linje -->
-                {{else}}
-                    <hr/>
-                {{/if}}
-            </ul>
+            {{/if}}
+            {{#if @last}}
+                <!--Setter ikke <hr/> på siste linje -->
+            {{else}}
+                <hr/>
+            {{/if}}
         {{/each}}
     {{/if}}
 

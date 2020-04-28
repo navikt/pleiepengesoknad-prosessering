@@ -40,33 +40,41 @@ data class MeldingV1 (
 )
 
 data class Virksomhet(
-    val naringstype: List<Naringstype>,
-    @JsonProperty("fisker_er_pa_blad_b")
+    val næringstyper: List<Næringstyper>,
+    @JsonProperty("fiskerErPåBladB")
     val fiskerErPåBladB: Boolean? = null,
     @JsonFormat(pattern = "yyyy-MM-dd")
+    @JsonProperty("fraOgMed")
     val fraOgMed: LocalDate,
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    @JsonProperty("tilOgMed")
     val tilOgMed: LocalDate? = null,
-    val naringsinntekt: Int? = null,
-    val navnPaVirksomheten: String,
+    val næringsinntekt: Int? = null,
+    @JsonProperty("navnPåVirksomheten")
+    val navnPåVirksomheten: String,
     val organisasjonsnummer: String? = null,
-    @JsonProperty("registrert_i_norge")
+    @JsonProperty("registrertINorge")
     val registrertINorge: Boolean,
-    @JsonProperty("registrert_i_land")
-    val registrertILand: String? = null,
-    val yrkesaktivSisteTreFerdigliknedeArene: YrkesaktivSisteTreFerdigliknedeArene? = null,
+    @JsonProperty("registrertIUtlandet")
+    val registrertIUtlandet: Land? = null,
+    @JsonProperty("yrkesaktivSisteTreFerdigliknedeÅrene")
+    val yrkesaktivSisteTreFerdigliknedeÅrene: YrkesaktivSisteTreFerdigliknedeÅrene? = null,
+    @JsonProperty("varigEndring")
     val varigEndring: VarigEndring? = null,
-    val regnskapsforer: Regnskapsforer? = null,
+    val regnskapsfører: Regnskapsfører? = null,
     val revisor: Revisor? = null
 )
 
-enum class Naringstype(val detaljert: String) {
-    @JsonProperty("FISKE") FISKER("Fiske"),
-    @JsonProperty("JORDBRUK_SKOGBRUK") JORDBRUK("Jordbruk/skogbruk"),
-    @JsonProperty("ANNEN") ANNET("Annen"),
-    DAGMAMMA("Dagmamma eller familiebarnehage i eget hjem")
+data class Land(val landkode: String, val landnavn: String)
+
+enum class Næringstyper(val beskrivelse: String) {
+    FISKE("Fiske"),
+    JORDBRUK_SKOGBRUK("Jordbruk/skogbruk"),
+    DAGMAMMA("Dagmamma eller familiebarnehage i eget hjem"),
+    ANNEN("Annen");
 }
 
-data class YrkesaktivSisteTreFerdigliknedeArene(
+data class YrkesaktivSisteTreFerdigliknedeÅrene(
     val oppstartsdato: LocalDate
 )
 
@@ -82,7 +90,7 @@ data class Revisor(
     val kanInnhenteOpplysninger: Boolean
 )
 
-data class Regnskapsforer(
+data class Regnskapsfører(
     val navn: String,
     val telefon: String
 )

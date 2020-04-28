@@ -441,19 +441,24 @@ class PleiepengesoknadProsesseringTest {
             ),
             selvstendigVirksomheter = listOf(
                 Virksomhet(
-                    naringstype = listOf(),
+                    næringstyper = listOf(),
                     fraOgMed = LocalDate.parse("2020-01-01"),
-                    naringsinntekt = 123456,
-                    navnPaVirksomheten = "Virksomehet 1",
-                    registrertINorge = true
+                    næringsinntekt = 123456,
+                    navnPåVirksomheten = "Virksomehet 1",
+                    registrertINorge = true,
+                    organisasjonsnummer = "12345"
                 ),
                 Virksomhet(
-                    naringstype = listOf(),
+                    næringstyper = listOf(),
                     fraOgMed = LocalDate.parse("2020-02-01"),
                     tilOgMed = LocalDate.parse("2020-05-01"),
-                    naringsinntekt = 123456,
-                    navnPaVirksomheten = "Virksomehet 2",
-                    registrertINorge = true
+                    næringsinntekt = 123456,
+                    navnPåVirksomheten = "Virksomehet 2",
+                    registrertINorge = false,
+                    registrertIUtlandet = Land(
+                        landkode = "DEU",
+                        landnavn = "Tyskland"
+                    )
                 )
             ),
             medlemskap = Medlemskap(
