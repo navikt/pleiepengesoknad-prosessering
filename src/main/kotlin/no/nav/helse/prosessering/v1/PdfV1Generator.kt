@@ -10,8 +10,8 @@ import com.github.jknack.handlebars.io.ClassPathTemplateLoader
 import com.openhtmltopdf.outputdevice.helper.BaseRendererBuilder
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder
 import no.nav.helse.aktoer.NorskIdent
-import no.nav.helse.omsorgspengerKonfiguert
 import no.nav.helse.dusseldorf.ktor.core.fromResources
+import no.nav.helse.pleiepengerKonfiguert
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.time.Duration
@@ -23,7 +23,7 @@ import java.util.*
 
 internal class PdfV1Generator  {
     private companion object {
-        private val mapper = jacksonObjectMapper().omsorgspengerKonfiguert()
+        private val mapper = jacksonObjectMapper().pleiepengerKonfiguert()
 
         private const val ROOT = "handlebars"
         private const val SOKNAD = "soknad"

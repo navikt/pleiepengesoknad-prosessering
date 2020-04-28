@@ -53,7 +53,6 @@ fun Application.pleiepengesoknadProsessering() {
     install(ContentNegotiation) {
         jackson {
             dusseldorfConfigured().configure(SerializationFeature.WRITE_DURATIONS_AS_TIMESTAMPS, false)
-
         }
     }
 
@@ -141,6 +140,6 @@ fun Application.pleiepengesoknadProsessering() {
 
 private fun Url.Companion.healthURL(baseUrl: URI) = Url.buildURL(baseUrl = baseUrl, pathParts = listOf("health"))
 
-internal fun ObjectMapper.omsorgspengerKonfiguert() = dusseldorfConfigured()
+internal fun ObjectMapper.pleiepengerKonfiguert() = dusseldorfConfigured()
     .setPropertyNamingStrategy(PropertyNamingStrategy.LOWER_CAMEL_CASE)
     .configure(SerializationFeature.WRITE_DURATIONS_AS_TIMESTAMPS, false)
