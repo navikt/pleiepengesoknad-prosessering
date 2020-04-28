@@ -59,6 +59,7 @@ data class Virksomhet(
     val registrertIUtlandet: Land? = null,
     @JsonProperty("yrkesaktivSisteTreFerdigliknedeÅrene")
     val yrkesaktivSisteTreFerdigliknedeÅrene: YrkesaktivSisteTreFerdigliknedeÅrene? = null,
+    @JsonProperty("varigEndring")
     val varigEndring: VarigEndring? = null,
     val regnskapsfører: Regnskapsfører? = null,
     val revisor: Revisor? = null
