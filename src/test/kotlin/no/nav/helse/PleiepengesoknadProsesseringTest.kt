@@ -132,7 +132,9 @@ class PleiepengesoknadProsesseringTest {
     @Test
     fun `Gylding melding blir prosessert`() {
 
-        val melding = SøknadUtils.defaultSøknad
+        val melding = SøknadUtils.defaultSøknad.copy(
+            soknadId = UUID.randomUUID().toString()
+        )
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
         journalførtConsumer
@@ -148,6 +150,7 @@ class PleiepengesoknadProsesseringTest {
         val jobb2SkalJobberProsent = 12.111
 
         val melding = SøknadUtils.defaultSøknad.copy(
+            soknadId = UUID.randomUUID().toString(),
             sprak = sprak,
             arbeidsgivere = Arbeidsgivere(
                 organisasjoner = listOf(
