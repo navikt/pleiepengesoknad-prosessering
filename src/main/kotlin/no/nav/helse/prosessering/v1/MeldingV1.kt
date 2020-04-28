@@ -41,18 +41,20 @@ data class MeldingV1 (
 
 data class Virksomhet(
     val næringstyper: List<Næringstyper>,
-    @JsonProperty("fisker_er_pa_blad_b")
+    @JsonProperty("fiskerErPaBladB")
     val fiskerErPåBladB: Boolean? = null,
     @JsonFormat(pattern = "yyyy-MM-dd")
+    @JsonProperty("fraOgMed")
     val fraOgMed: LocalDate,
     @JsonFormat(pattern = "yyyy-MM-dd")
+    @JsonProperty("tilOgMed")
     val tilOgMed: LocalDate? = null,
     val næringsinntekt: Int? = null,
     val navnPåVirksomheten: String,
     val organisasjonsnummer: String? = null,
-    @JsonProperty("registrert_i_norge")
+    @JsonProperty("registrertINorge")
     val registrertINorge: Boolean,
-    @JsonProperty("registrert_i_utlandet")
+    @JsonProperty("registrertIUtlandet")
     val registrertIUtlandet: Land? = null,
     val yrkesaktivSisteTreFerdigliknedeÅrene: YrkesaktivSisteTreFerdigliknedeÅrene? = null,
     val varigEndring: VarigEndring? = null,
