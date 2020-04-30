@@ -41,7 +41,7 @@ internal fun MeldingV1.reportMetrics() {
         false -> beredskapCounter.labels("beredskap", "nei").inc()
     }
 
-    when (nattevaak?.harNattevaak) {
+    when (nattevåk?.harNattevåk) {
         true  -> nattevaakCounter.labels("nattevåk", "ja").inc()
         false -> nattevaakCounter.labels("nattevåk", "nei").inc()
     }

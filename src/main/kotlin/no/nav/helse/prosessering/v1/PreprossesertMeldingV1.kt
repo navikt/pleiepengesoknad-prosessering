@@ -8,8 +8,8 @@ import java.time.LocalDate
 import java.time.ZonedDateTime
 
 data class PreprossesertMeldingV1(
-    val sprak: String?,
-    val soknadId: String,
+    val språk: String?,
+    val søknadId: String,
     val dokumentUrls: List<List<URI>>,
     val mottatt: ZonedDateTime,
     val fraOgMed: LocalDate,
@@ -19,11 +19,8 @@ data class PreprossesertMeldingV1(
     val relasjonTilBarnet: String,
     val arbeidsgivere: Arbeidsgivere,
     val medlemskap: Medlemskap,
-    @JsonProperty("bekrefter_periode_over_8_uker")
     val bekrefterPeriodeOver8Uker: Boolean? = null,
-    @JsonProperty("utenlandsopphold_i_perioden")
     val utenlandsoppholdIPerioden: UtenlandsoppholdIPerioden?,
-    @JsonProperty("ferieuttak_i_perioden")
     val ferieuttakIPerioden: FerieuttakIPerioden?,
     val beredskap: Beredskap?,
     val nattevaak: Nattevaak?,
@@ -43,21 +40,21 @@ data class PreprossesertMeldingV1(
         barnetsNorskeIdent: NorskIdent?,
         barnetsFødselsdato: LocalDate?
     ) : this(
-        sprak = melding.sprak,
-        soknadId = melding.soknadId,
+        språk = melding.språk,
+        søknadId = melding.søknadId,
         dokumentUrls = dokumentUrls,
         mottatt = melding.mottatt,
         fraOgMed = melding.fraOgMed,
         tilOgMed = melding.tilOgMed,
-        soker = PreprossesertSoker(melding.soker, sokerAktoerId),
+        soker = PreprossesertSoker(melding.søker, sokerAktoerId),
         barn = PreprossesertBarn(melding.barn, barnetsNavn, barnetsNorskeIdent, barnAktoerId, barnetsFødselsdato),
         relasjonTilBarnet = melding.relasjonTilBarnet,
         arbeidsgivere = melding.arbeidsgivere,
         medlemskap = melding.medlemskap,
         beredskap = melding.beredskap,
-        nattevaak = melding.nattevaak,
+        nattevaak = melding.nattevåk,
         tilsynsordning = melding.tilsynsordning,
-        harMedsoker = melding.harMedsoker,
+        harMedsoker = melding.harMedsøker,
         bekrefterPeriodeOver8Uker = melding.bekrefterPeriodeOver8Uker,
         frilans = melding.frilans,
         selvstendigVirksomheter = melding.selvstendigVirksomheter,
@@ -75,8 +72,8 @@ data class PreprossesertSoker(
     val etternavn: String,
     val aktoerId: String
 ) {
-    internal constructor(soker: Soker, aktoerId: AktoerId) : this(
-        fodselsnummer = soker.fodselsnummer,
+    internal constructor(soker: Søker, aktoerId: AktoerId) : this(
+        fodselsnummer = soker.fødselsnummer,
         fornavn = soker.fornavn,
         mellomnavn = soker.mellomnavn,
         etternavn = soker.etternavn,
@@ -98,7 +95,7 @@ data class PreprossesertBarn(
         aktoerId: AktoerId?,
         fødselsdato: LocalDate?
     ) : this(
-        fodselsnummer = barn.fodselsnummer ?: barnetsNorskeIdent?.getValue(),
+        fodselsnummer = barn.fødselsnummer ?: barnetsNorskeIdent?.getValue(),
         navn = barnetsNavn,
         fodselsdato = fødselsdato,
         aktoerId = aktoerId?.id

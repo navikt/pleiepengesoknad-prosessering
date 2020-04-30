@@ -52,7 +52,9 @@ fun Application.pleiepengesoknadProsessering() {
 
     install(ContentNegotiation) {
         jackson {
-            dusseldorfConfigured().configure(SerializationFeature.WRITE_DURATIONS_AS_TIMESTAMPS, false)
+            dusseldorfConfigured()
+                .configure(SerializationFeature.WRITE_DURATIONS_AS_TIMESTAMPS, false)
+                .setPropertyNamingStrategy(PropertyNamingStrategy.LOWER_CAMEL_CASE)
         }
     }
 

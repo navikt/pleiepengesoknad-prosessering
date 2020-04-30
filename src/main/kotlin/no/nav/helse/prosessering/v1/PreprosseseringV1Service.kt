@@ -28,19 +28,19 @@ internal class PreprosseseringV1Service(
         melding: MeldingV1,
         metadata: Metadata
     ): PreprossesertMeldingV1 {
-        val soknadId = SoknadId(melding.soknadId)
+        val soknadId = SoknadId(melding.søknadId)
         logger.info("Preprosseserer $soknadId")
 
         val correlationId = CorrelationId(metadata.correlationId)
 
-        val sokerAktoerId = AktoerId(melding.soker.aktoerId)
+        val sokerAktoerId = AktoerId(melding.søker.aktørId)
 
         logger.info("Søkerens AktørID = $sokerAktoerId")
 
         logger.trace("Henter AktørID for barnet.")
         val barnAktoerId: AktoerId? = when {
-            melding.barn.aktoerId.isNullOrBlank() -> hentBarnetsAktoerId(barn = melding.barn, correlationId = correlationId)
-            else -> AktoerId(melding.barn.aktoerId)
+            melding.barn.aktørId.isNullOrBlank() -> hentBarnetsAktoerId(barn = melding.barn, correlationId = correlationId)
+            else -> AktoerId(melding.barn.aktørId)
         }
         logger.info("Barnets AktørID = $barnAktoerId")
 
@@ -50,7 +50,7 @@ internal class PreprosseseringV1Service(
         }
 
         val barnetsNavn: String? = slaaOppBarnetsNavn(melding.barn, barnetsIdent = barnetsIdent, correlationId = correlationId)
-        val barnetsFødselsdato = melding.barn.fodselsdato
+        val barnetsFødselsdato = melding.barn.fødselsdato
 
         logger.trace("Genererer Oppsummerings-PDF av søknaden.")
 
@@ -154,8 +154,8 @@ internal class PreprosseseringV1Service(
     ): AktoerId? {
         return try {
             when {
-                !barn.fodselsnummer.isNullOrBlank() -> aktoerService.getAktorId(
-                    ident = barn.fodselsnummer.tilNorskIdent(),
+                !barn.fødselsnummer.isNullOrBlank() -> aktoerService.getAktorId(
+                    ident = barn.fødselsnummer.tilNorskIdent(),
                     correlationId = correlationId
                 )
                 else -> null

@@ -15,23 +15,23 @@ internal object SøknadUtils {
     private const val GYLDIG_ORGNR = "917755736"
 
     internal val defaultSøknad = MeldingV1(
-        sprak = "nb",
-        soknadId = UUID.randomUUID().toString(),
+        språk = "nb",
+        søknadId = UUID.randomUUID().toString(),
         mottatt = ZonedDateTime.now(),
         fraOgMed = LocalDate.now(),
         tilOgMed = LocalDate.now().plusWeeks(1),
-        soker = Soker(
-            aktoerId = "123456",
-            fodselsnummer = "02119970078",
+        søker = Søker(
+            aktørId = "123456",
+            fødselsnummer = "02119970078",
             etternavn = "Nordmann",
             mellomnavn = "Mellomnavn",
             fornavn = "Ola"
         ),
         barn = Barn(
             navn = "Ole Dole",
-            fodselsnummer = "19066672169",
-            fodselsdato = LocalDate.now().minusYears(10),
-            aktoerId = "123456"
+            fødselsnummer = "19066672169",
+            fødselsdato = LocalDate.now().minusYears(10),
+            aktørId = "123456"
         ),
         relasjonTilBarnet = "Mor",
         arbeidsgivere = Arbeidsgivere(
@@ -50,7 +50,7 @@ internal object SøknadUtils {
             harBoddIUtlandetSiste12Mnd = true,
             skalBoIUtlandetNeste12Mnd = true
         ),
-        harMedsoker = true,
+        harMedsøker = true,
         harBekreftetOpplysninger = true,
         harForstattRettigheterOgPlikter = true,
         tilsynsordning = Tilsynsordning(
@@ -69,8 +69,8 @@ internal object SøknadUtils {
             beredskap = true,
             tilleggsinformasjon = "I Beredskap"
         ),
-        nattevaak = Nattevaak(
-            harNattevaak = true,
+        nattevåk = Nattevaak(
+            harNattevåk = true,
             tilleggsinformasjon = "Har Nattevåk"
         ),
         utenlandsoppholdIPerioden = UtenlandsoppholdIPerioden(

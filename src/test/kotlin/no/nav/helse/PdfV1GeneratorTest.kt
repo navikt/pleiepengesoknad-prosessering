@@ -16,28 +16,28 @@ class PdfV1GeneratorTest {
         private val generator = PdfV1Generator()
         private val barnetsIdent = Fodselsnummer("02119970078")
         private val barnetsNavn = "Ole Dole"
-        private val fodselsdato = LocalDate.now().minusDays(10)
+        private val fødselsdato = LocalDate.now().minusDays(10)
     }
 
     private fun fullGyldigMelding(soknadsId: String): MeldingV1 {
         return MeldingV1(
-            sprak = "nb",
-            soknadId = soknadsId,
+            språk = "nb",
+            søknadId = soknadsId,
             mottatt = ZonedDateTime.now(),
             fraOgMed = LocalDate.now().plusDays(6),
             tilOgMed = LocalDate.now().plusDays(35),
-            soker = Soker(
-                aktoerId = "123456",
+            søker = Søker(
+                aktørId = "123456",
                 fornavn = "Ærling",
                 mellomnavn = "Øverbø",
                 etternavn = "Ånsnes",
-                fodselsnummer = "29099012345"
+                fødselsnummer = "29099012345"
             ),
             barn = Barn(
-                fodselsnummer = barnetsIdent.getValue(),
-                aktoerId = "123456",
+                fødselsnummer = barnetsIdent.getValue(),
+                aktørId = "123456",
                 navn = barnetsNavn,
-                fodselsdato = null
+                fødselsdato = null
             ),
             relasjonTilBarnet = "Mor",
             arbeidsgivere = Arbeidsgivere(
@@ -89,7 +89,7 @@ class PdfV1GeneratorTest {
                 ),
                 skalBoIUtlandetNeste12Mnd = false
             ),
-            harMedsoker = true,
+            harMedsøker = true,
             samtidigHjemme = true,
             harForstattRettigheterOgPlikter = true,
             harBekreftetOpplysninger = true,
@@ -108,8 +108,8 @@ class PdfV1GeneratorTest {
                     annet = "Jeg har ingen anelse om dette\rmed\nlinje\r\nlinjeskift."
                 )
             ),
-            nattevaak = Nattevaak(
-                harNattevaak = true,
+            nattevåk = Nattevaak(
+                harNattevåk = true,
                 tilleggsinformasjon = "Har nattevåk"
             ),
             beredskap = Beredskap(
@@ -208,11 +208,11 @@ class PdfV1GeneratorTest {
         ),
         barn: Barn = Barn(
             navn = "Børge Øverbø Ånsnes",
-            fodselsnummer = null,
-            fodselsdato = null,
-            aktoerId = null
+            fødselsnummer = null,
+            fødselsdato = null,
+            aktørId = null
         ),
-        harMedsoker: Boolean = true,
+        harMedsøker: Boolean = true,
         samtidigHjemme: Boolean? = false,
         tilsynsordning: Tilsynsordning? = null,
         beredskap: Beredskap? = null,
@@ -270,17 +270,17 @@ class PdfV1GeneratorTest {
             )
         )
     ) = MeldingV1(
-        sprak = sprak,
-        soknadId = soknadId,
+        språk = sprak,
+        søknadId = soknadId,
         mottatt = ZonedDateTime.now(),
         fraOgMed = LocalDate.now().plusDays(6),
         tilOgMed = LocalDate.now().plusDays(35),
-        soker = Soker(
-            aktoerId = "123456",
+        søker = Søker(
+            aktørId = "123456",
             fornavn = "Ærling",
             mellomnavn = "Øverbø",
             etternavn = "Ånsnes",
-            fodselsnummer = "29099012345"
+            fødselsnummer = "29099012345"
         ),
         barn = barn,
         relasjonTilBarnet = "Onkel & Nærstående ' <> \" {}",
@@ -288,13 +288,13 @@ class PdfV1GeneratorTest {
             organisasjoner = organisasjoner
         ),
         medlemskap = medlemskap,
-        harMedsoker = harMedsoker,
+        harMedsøker = harMedsøker,
         bekrefterPeriodeOver8Uker = true,
         samtidigHjemme = samtidigHjemme,
         harForstattRettigheterOgPlikter = true,
         harBekreftetOpplysninger = true,
         tilsynsordning = tilsynsordning,
-        nattevaak = nattevaak,
+        nattevåk = nattevaak,
         beredskap = beredskap,
         utenlandsoppholdIPerioden = null,
         ferieuttakIPerioden = null,
@@ -308,16 +308,16 @@ class PdfV1GeneratorTest {
             melding = fullGyldigMelding(soknadsId = id),
             barnetsIdent = barnetsIdent,
             barnetsNavn = barnetsNavn,
-            fodselsdato = fodselsdato
+            fødselsdato = fødselsdato
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
         id = "2-utenMedsoker"
         pdf = generator.generateSoknadOppsummeringPdf(
-            melding = gyldigMelding(soknadId = id, harMedsoker = false),
+            melding = gyldigMelding(soknadId = id, harMedsøker = false),
             barnetsIdent = barnetsIdent,
             barnetsNavn = barnetsNavn,
-            fodselsdato = fodselsdato
+            fødselsdato = fødselsdato
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
@@ -325,13 +325,13 @@ class PdfV1GeneratorTest {
         pdf = generator.generateSoknadOppsummeringPdf(
             melding = gyldigMelding(
                 soknadId = id,
-                harMedsoker = true,
+                harMedsøker = true,
                 samtidigHjemme = true,
-                barn = Barn(fodselsnummer = null, fodselsdato = null, navn = null, aktoerId = null)
+                barn = Barn(fødselsnummer = null, fødselsdato = null, navn = null, aktørId = null)
             ),
             barnetsIdent = barnetsIdent,
             barnetsNavn = barnetsNavn,
-            fodselsdato = fodselsdato
+            fødselsdato = fødselsdato
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
@@ -339,31 +339,31 @@ class PdfV1GeneratorTest {
         pdf = generator.generateSoknadOppsummeringPdf(
             melding = gyldigMelding(
                 soknadId = id,
-                harMedsoker = true,
+                harMedsøker = true,
                 samtidigHjemme = false,
-                barn = Barn(fodselsnummer = null, fodselsdato = null, navn = null, aktoerId = null)
+                barn = Barn(fødselsnummer = null, fødselsdato = null, navn = null, aktørId = null)
             ),
             barnetsIdent = barnetsIdent,
             barnetsNavn = barnetsNavn,
-            fodselsdato = fodselsdato
+            fødselsdato = fødselsdato
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
         id = "5-utenSprak"
         pdf = generator.generateSoknadOppsummeringPdf(
-            melding = gyldigMelding(soknadId = id, harMedsoker = false, sprak = null),
+            melding = gyldigMelding(soknadId = id, harMedsøker = false, sprak = null),
             barnetsIdent = barnetsIdent,
             barnetsNavn = barnetsNavn,
-            fodselsdato = fodselsdato
+            fødselsdato = fødselsdato
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
         id = "6-utenArbeidsgivere"
         pdf = generator.generateSoknadOppsummeringPdf(
-            melding = gyldigMelding(soknadId = id, harMedsoker = false, organisasjoner = listOf()),
+            melding = gyldigMelding(soknadId = id, harMedsøker = false, organisasjoner = listOf()),
             barnetsIdent = barnetsIdent,
             barnetsNavn = barnetsNavn,
-            fodselsdato = fodselsdato
+            fødselsdato = fødselsdato
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
@@ -371,13 +371,13 @@ class PdfV1GeneratorTest {
         pdf = generator.generateSoknadOppsummeringPdf(
             melding = gyldigMelding(
                 soknadId = id,
-                harMedsoker = false,
+                harMedsøker = false,
                 organisasjoner = listOf(),
-                barn = Barn(fodselsnummer = null, fodselsdato = null, navn = null, aktoerId = null)
+                barn = Barn(fødselsnummer = null, fødselsdato = null, navn = null, aktørId = null)
             ),
             barnetsIdent = barnetsIdent,
             barnetsNavn = barnetsNavn,
-            fodselsdato = fodselsdato
+            fødselsdato = fødselsdato
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
@@ -385,13 +385,13 @@ class PdfV1GeneratorTest {
         pdf = generator.generateSoknadOppsummeringPdf(
             melding = gyldigMelding(
                 soknadId = id,
-                harMedsoker = false,
+                harMedsøker = false,
                 organisasjoner = listOf(),
-                barn = Barn(fodselsnummer = null, fodselsdato = null, navn = null, aktoerId = null)
+                barn = Barn(fødselsnummer = null, fødselsdato = null, navn = null, aktørId = null)
             ),
             barnetsIdent = barnetsIdent,
             barnetsNavn = barnetsNavn,
-            fodselsdato = fodselsdato
+            fødselsdato = fødselsdato
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
@@ -399,13 +399,13 @@ class PdfV1GeneratorTest {
         pdf = generator.generateSoknadOppsummeringPdf(
             melding = gyldigMelding(
                 soknadId = id,
-                harMedsoker = false,
+                harMedsøker = false,
                 organisasjoner = listOf(),
-                barn = Barn(fodselsnummer = null, fodselsdato = null, navn = null, aktoerId = null)
+                barn = Barn(fødselsnummer = null, fødselsdato = null, navn = null, aktørId = null)
             ),
             barnetsIdent = barnetsIdent,
             barnetsNavn = barnetsNavn,
-            fodselsdato = fodselsdato
+            fødselsdato = fødselsdato
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
@@ -413,8 +413,8 @@ class PdfV1GeneratorTest {
         pdf = generator.generateSoknadOppsummeringPdf(
             melding = gyldigMelding(
                 soknadId = id,
-                harMedsoker = false,
-                barn = Barn(fodselsnummer = null, fodselsdato = null, navn = null, aktoerId = null),
+                harMedsøker = false,
+                barn = Barn(fødselsnummer = null, fødselsdato = null, navn = null, aktørId = null),
                 tilsynsordning = Tilsynsordning(
                     svar = "ja",
                     ja = TilsynsordningJa(
@@ -432,7 +432,7 @@ class PdfV1GeneratorTest {
                     tilleggsinformasjon = "Jeg er i beredskap\rmed\nlinje\r\nlinjeskift."
                 ),
                 nattevaak = Nattevaak(
-                    harNattevaak = false,
+                    harNattevåk = false,
                     tilleggsinformasjon = null
                 ),
                 organisasjoner = listOf(
@@ -452,7 +452,7 @@ class PdfV1GeneratorTest {
                     )
                 )
             ), barnetsIdent = barnetsIdent, barnetsNavn = barnetsNavn,
-            fodselsdato = fodselsdato
+            fødselsdato = fødselsdato
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
@@ -460,9 +460,9 @@ class PdfV1GeneratorTest {
         pdf = generator.generateSoknadOppsummeringPdf(
             melding = gyldigMelding(
                 soknadId = id,
-                harMedsoker = false,
+                harMedsøker = false,
                 organisasjoner = listOf(),
-                barn = Barn(fodselsnummer = null, fodselsdato = null, navn = null, aktoerId = null),
+                barn = Barn(fødselsnummer = null, fødselsdato = null, navn = null, aktørId = null),
                 tilsynsordning = Tilsynsordning(
                     svar = "vet_ikke",
                     ja = null,
@@ -472,7 +472,7 @@ class PdfV1GeneratorTest {
                     )
                 )
             ), barnetsIdent = barnetsIdent, barnetsNavn = barnetsNavn,
-            fodselsdato = fodselsdato
+            fødselsdato = fødselsdato
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
@@ -481,23 +481,23 @@ class PdfV1GeneratorTest {
         pdf = generator.generateSoknadOppsummeringPdf(
             melding = gyldigMelding(
                 soknadId = id,
-                harMedsoker = false,
+                harMedsøker = false,
                 organisasjoner = listOf(),
-                barn = Barn(fodselsnummer = null, fodselsdato = null, navn = null, aktoerId = null),
+                barn = Barn(fødselsnummer = null, fødselsdato = null, navn = null, aktørId = null),
                 tilsynsordning = Tilsynsordning(
                     svar = "nei",
                     ja = null,
                     vetIkke = null
                 )
             ), barnetsIdent = barnetsIdent, barnetsNavn = barnetsNavn,
-            fodselsdato = fodselsdato
+            fødselsdato = fødselsdato
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
         id = "13-skalJobbeRedusert"
         pdf = generator.generateSoknadOppsummeringPdf(
             melding = gyldigMelding(
-                soknadId = id, harMedsoker = true, organisasjoner = listOf(
+                soknadId = id, harMedsøker = true, organisasjoner = listOf(
                     Organisasjon(
                         organisasjonsnummer = "952352655",
                         navn = "Hopp i havet",
@@ -505,18 +505,18 @@ class PdfV1GeneratorTest {
                         jobberNormaltTimer = 30.0,
                         skalJobbeProsent = 50.0
                     )
-                ), barn = Barn(fodselsnummer = null, fodselsdato = null, navn = null, aktoerId = null)
+                ), barn = Barn(fødselsnummer = null, fødselsdato = null, navn = null, aktørId = null)
             ),
             barnetsIdent = barnetsIdent,
             barnetsNavn = barnetsNavn,
-            fodselsdato = fodselsdato
+            fødselsdato = fødselsdato
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
         id = "14-skalJobbeVetIkke"
         pdf = generator.generateSoknadOppsummeringPdf(
             melding = gyldigMelding(
-                soknadId = id, harMedsoker = true, samtidigHjemme = true, organisasjoner = listOf(
+                soknadId = id, harMedsøker = true, samtidigHjemme = true, organisasjoner = listOf(
                     Organisasjon(
                         organisasjonsnummer = "952352655",
                         navn = "Hopp i havet",
@@ -525,18 +525,18 @@ class PdfV1GeneratorTest {
                         skalJobbeProsent = 0.0,
                         vetIkkeEkstrainfo = "Vondt i hode, skulker, kne og tå, kne og tå"
                     )
-                ), barn = Barn(fodselsnummer = null, fodselsdato = null, navn = null, aktoerId = null)
+                ), barn = Barn(fødselsnummer = null, fødselsdato = null, navn = null, aktørId = null)
             ),
             barnetsIdent = barnetsIdent,
             barnetsNavn = barnetsNavn,
-            fodselsdato = fodselsdato
+            fødselsdato = fødselsdato
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
         id = "15-skalJobbeJa"
         pdf = generator.generateSoknadOppsummeringPdf(
             melding = gyldigMelding(
-                soknadId = id, harMedsoker = true, organisasjoner = listOf(
+                soknadId = id, harMedsøker = true, organisasjoner = listOf(
                     Organisasjon(
                         organisasjonsnummer = "952352655",
                         navn = "Hopp i havet",
@@ -544,18 +544,18 @@ class PdfV1GeneratorTest {
                         jobberNormaltTimer = 30.0,
                         skalJobbeProsent = 100.0
                     )
-                ), barn = Barn(fodselsnummer = null, fodselsdato = null, navn = null, aktoerId = null)
+                ), barn = Barn(fødselsnummer = null, fødselsdato = null, navn = null, aktørId = null)
             ),
             barnetsIdent = barnetsIdent,
             barnetsNavn = barnetsNavn,
-            fodselsdato = fodselsdato
+            fødselsdato = fødselsdato
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
         id = "16-skalJobbeNei"
         pdf = generator.generateSoknadOppsummeringPdf(
             melding = gyldigMelding(
-                soknadId = id, harMedsoker = true, organisasjoner = listOf(
+                soknadId = id, harMedsøker = true, organisasjoner = listOf(
                     Organisasjon(
                         organisasjonsnummer = "952352655",
                         navn = "Hopp i havet",
@@ -563,18 +563,18 @@ class PdfV1GeneratorTest {
                         jobberNormaltTimer = 30.0,
                         skalJobbeProsent = 0.0
                     )
-                ), barn = Barn(fodselsnummer = null, fodselsdato = null, navn = null, aktoerId = null)
+                ), barn = Barn(fødselsnummer = null, fødselsdato = null, navn = null, aktørId = null)
             ),
             barnetsIdent = barnetsIdent,
             barnetsNavn = barnetsNavn,
-            fodselsdato = fodselsdato
+            fødselsdato = fødselsdato
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
         id = "17-flereArbeidsgivereSkalJobbeJaNeiVetIkkeRedusert"
         pdf = generator.generateSoknadOppsummeringPdf(
             melding = gyldigMelding(
-                soknadId = id, harMedsoker = true, organisasjoner = listOf(
+                soknadId = id, harMedsøker = true, organisasjoner = listOf(
                     Organisasjon(
                         organisasjonsnummer = "952352655",
                         navn = "Arbeidsgiver 1",
@@ -604,11 +604,11 @@ class PdfV1GeneratorTest {
                         jobberNormaltTimer = 30.0,
                         skalJobbeProsent = 50.0
                     )
-                ), barn = Barn(fodselsnummer = null, fodselsdato = null, navn = null, aktoerId = null)
+                ), barn = Barn(fødselsnummer = null, fødselsdato = null, navn = null, aktørId = null)
             ),
             barnetsIdent = barnetsIdent,
             barnetsNavn = barnetsNavn,
-            fodselsdato = fodselsdato
+            fødselsdato = fødselsdato
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
@@ -635,19 +635,19 @@ class PdfV1GeneratorTest {
             ),
             barnetsIdent = barnetsIdent,
             barnetsNavn = barnetsNavn,
-            fodselsdato = null
+            fødselsdato = null
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
         id = "19-barnHarIkkeIdBareFødselsdato"
         pdf = generator.generateSoknadOppsummeringPdf(
             melding = gyldigMelding(
-                soknadId = id, harMedsoker = true, organisasjoner = listOf(
-                ), barn = Barn(fodselsnummer = null, fodselsdato = LocalDate.now(), navn = null, aktoerId = null)
+                soknadId = id, harMedsøker = true, organisasjoner = listOf(
+                ), barn = Barn(fødselsnummer = null, fødselsdato = LocalDate.now(), navn = null, aktørId = null)
             ),
             barnetsIdent = barnetsIdent,
             barnetsNavn = barnetsNavn,
-            fodselsdato = fodselsdato
+            fødselsdato = fødselsdato
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
@@ -655,24 +655,24 @@ class PdfV1GeneratorTest {
         id = "20-barnManglerIdOgFødselsdato"
         pdf = generator.generateSoknadOppsummeringPdf(
             melding = gyldigMelding(
-                soknadId = id, harMedsoker = true, organisasjoner = listOf(
-                ), barn = Barn(fodselsnummer = null, fodselsdato = null, navn = null, aktoerId = null)
+                soknadId = id, harMedsøker = true, organisasjoner = listOf(
+                ), barn = Barn(fødselsnummer = null, fødselsdato = null, navn = null, aktørId = null)
             ),
             barnetsIdent = null,
             barnetsNavn = barnetsNavn,
-            fodselsdato = null
+            fødselsdato = null
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
         id = "21-har-du-jobbet-og-hatt-inntekt-som-frilanser"
         pdf = generator.generateSoknadOppsummeringPdf(
             melding = gyldigMelding(
-                soknadId = id, harMedsoker = true, organisasjoner = listOf(
-                ), barn = Barn(fodselsnummer = null, fodselsdato = null, navn = null, aktoerId = null)
+                soknadId = id, harMedsøker = true, organisasjoner = listOf(
+                ), barn = Barn(fødselsnummer = null, fødselsdato = null, navn = null, aktørId = null)
             ),
             barnetsIdent = null,
             barnetsNavn = barnetsNavn,
-            fodselsdato = null
+            fødselsdato = null
         )
 
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
@@ -680,12 +680,12 @@ class PdfV1GeneratorTest {
         id = "22-har-du-hatt-inntekt-som-selvstendig-næringsdrivende"
         pdf = generator.generateSoknadOppsummeringPdf(
             melding = gyldigMelding(
-                soknadId = id, harMedsoker = true, organisasjoner = listOf(
-                ), barn = Barn(fodselsnummer = null, fodselsdato = null, navn = null, aktoerId = null)
+                soknadId = id, harMedsøker = true, organisasjoner = listOf(
+                ), barn = Barn(fødselsnummer = null, fødselsdato = null, navn = null, aktørId = null)
             ),
             barnetsIdent = null,
             barnetsNavn = barnetsNavn,
-            fodselsdato = null
+            fødselsdato = null
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
     }

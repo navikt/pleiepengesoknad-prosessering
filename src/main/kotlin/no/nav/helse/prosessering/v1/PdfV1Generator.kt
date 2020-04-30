@@ -92,26 +92,26 @@ internal class PdfV1Generator  {
     internal fun generateSoknadOppsummeringPdf(
         melding: MeldingV1,
         barnetsIdent: NorskIdent?,
-        fodselsdato: LocalDate?,
+        fødselsdato: LocalDate?,
         barnetsNavn: String?
     ) : ByteArray {
         soknadTemplate.apply(Context
             .newBuilder(mapOf(
                 "søknad" to melding.somMap(),
-                "soknad_id" to melding.soknadId,
+                "soknad_id" to melding.søknadId,
                 "soknad_mottatt_dag" to melding.mottatt.withZoneSameInstant(ZONE_ID).norskDag(),
                 "soknad_mottatt" to DATE_TIME_FORMATTER.format(melding.mottatt),
-                "har_medsoker" to melding.harMedsoker,
+                "har_medsoker" to melding.harMedsøker,
                 "samtidig_hjemme" to melding.samtidigHjemme,
                 "bekrefterPeriodeOver8Uker" to melding.bekrefterPeriodeOver8Uker,
                 "soker" to mapOf(
-                    "navn" to melding.soker.formatertNavn(),
-                    "fodselsnummer" to melding.soker.fodselsnummer,
+                    "navn" to melding.søker.formatertNavn(),
+                    "fodselsnummer" to melding.søker.fødselsnummer,
                     "relasjon_til_barnet" to melding.relasjonTilBarnet
                 ),
                 "barn" to mapOf(
                     "navn" to barnetsNavn,
-                    "fodselsdato" to fodselsdato?.format(DATE_FORMATTER),
+                    "fodselsdato" to fødselsdato?.format(DATE_FORMATTER),
                     "id" to barnetsIdent?.getValue()
                 ),
                 "periode" to mapOf(
@@ -135,12 +135,12 @@ internal class PdfV1Generator  {
                     "har_bekreftet_opplysninger" to melding.harBekreftetOpplysninger
                 ),
                 "hjelp" to mapOf(
-                    "har_medsoker" to melding.harMedsoker,
+                    "har_medsoker" to melding.harMedsøker,
                     "ingen_arbeidsgivere" to melding.arbeidsgivere.organisasjoner.isEmpty(),
-                    "sprak" to melding.sprak?.sprakTilTekst()
+                    "sprak" to melding.språk?.sprakTilTekst()
                 ),
                 "tilsynsordning" to tilsynsordning(melding.tilsynsordning),
-                "nattevaak" to nattevåk(melding.nattevaak),
+                "nattevaak" to nattevåk(melding.nattevåk),
                 "beredskap" to beredskap(melding.beredskap),
                 "utenlandsoppholdIPerioden" to mapOf(
                     "skalOppholdeSegIUtlandetIPerioden" to melding.utenlandsoppholdIPerioden?.skalOppholdeSegIUtlandetIPerioden,
@@ -176,7 +176,7 @@ internal class PdfV1Generator  {
         nattevaak == null -> null
         else -> {
             mapOf(
-                "har_nattevaak" to nattevaak.harNattevaak,
+                "har_nattevaak" to nattevaak.harNattevåk,
                 "tilleggsinformasjon" to nattevaak.tilleggsinformasjon
             )
         }
@@ -283,7 +283,7 @@ private fun Duration.tilString(): String = when (this.toMinutesPart()) {
     else -> "${this.toHoursPart()} timer og ${this.toMinutesPart()} minutter"
 }
 
-private fun Soker.formatertNavn() = if (mellomnavn != null) "$fornavn $mellomnavn $etternavn" else "$fornavn $etternavn"
+private fun Søker.formatertNavn() = if (mellomnavn != null) "$fornavn $mellomnavn $etternavn" else "$fornavn $etternavn"
 private fun String.sprakTilTekst() = when (this.toLowerCase()) {
     "nb" -> "bokmål"
     "nn" -> "nynorsk"

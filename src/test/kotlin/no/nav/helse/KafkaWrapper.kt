@@ -133,7 +133,7 @@ fun KafkaProducer<String, TopicEntry<MeldingV1>>.leggSoknadTilProsessering(sokna
     send(
         ProducerRecord(
             Topics.MOTTATT.name,
-            soknad.soknadId,
+            soknad.søknadId,
             TopicEntry(
                 metadata = Metadata(
                     version = 1,

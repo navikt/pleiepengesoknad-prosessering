@@ -6,6 +6,7 @@ import no.nav.helse.prosessering.v1.Tilsynsordning
 import no.nav.k9.søknad.JsonUtils.getObjectMapper
 import no.nav.k9.søknad.felles.*
 import no.nav.k9.søknad.felles.Barn
+import no.nav.k9.søknad.felles.Søker
 import no.nav.k9.søknad.pleiepengerbarn.*
 import no.nav.k9.søknad.pleiepengerbarn.Beredskap
 import no.nav.k9.søknad.pleiepengerbarn.Utenlandsopphold
@@ -15,13 +16,13 @@ import java.time.Duration
 import java.time.LocalDate
 
 fun PreprossesertMeldingV1.tilK9PleiepengeBarnSøknad(): JsonNode {
-    val språk = when (sprak) {
+    val språk = when (språk) {
         "nb" -> Språk.NORSK_BOKMÅL
         "nn" -> Språk.NORSK_NYNORSK
         else -> Språk.NORSK_BOKMÅL
     }
     val builder = PleiepengerBarnSøknad.builder()
-        .søknadId(SøknadId.of(soknadId))
+        .søknadId(SøknadId.of(søknadId))
         .mottattDato(mottatt)
         .språk(språk)
         .søker(soker.tilK9Søker())
