@@ -91,7 +91,7 @@ class PdfV1GeneratorTest {
             ),
             harMedsøker = true,
             samtidigHjemme = true,
-            harForstattRettigheterOgPlikter = true,
+            harForståttRettigheterOgPlikter = true,
             harBekreftetOpplysninger = true,
             tilsynsordning = Tilsynsordning(
                 svar = "ja",
@@ -169,7 +169,7 @@ class PdfV1GeneratorTest {
             bekrefterPeriodeOver8Uker = true,
             skalBekrefteOmsorg = true,
             skalPassePaBarnetIHelePerioden = true,
-            beskrivelseOmsorgsRollen = "Jeg er far og skal passe på barnet i hele perioden."
+            beskrivelseOmsorgsrollen = "Jeg er far og skal passe på barnet i hele perioden."
         )
     }
 
@@ -291,7 +291,7 @@ class PdfV1GeneratorTest {
         harMedsøker = harMedsøker,
         bekrefterPeriodeOver8Uker = true,
         samtidigHjemme = samtidigHjemme,
-        harForstattRettigheterOgPlikter = true,
+        harForståttRettigheterOgPlikter = true,
         harBekreftetOpplysninger = true,
         tilsynsordning = tilsynsordning,
         nattevåk = nattevaak,

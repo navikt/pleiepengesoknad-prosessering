@@ -501,7 +501,7 @@ class PleiepengesoknadProsesseringTest {
                         tilOgMed = LocalDate.parse("2020-06-28"),
                         landkode = "AW",
                         landnavn = "Aruba",
-                        arsak = Arsak.BARNET_INNLAGT_I_HELSEINSTITUSJON_FOR_NORSK_OFFENTLIG_REGNING, //barnetInnlagtIHelseinstitusjonForNorskOffentligRegning
+                        årsak = Årsak.BARNET_INNLAGT_I_HELSEINSTITUSJON_FOR_NORSK_OFFENTLIG_REGNING, //barnetInnlagtIHelseinstitusjonForNorskOffentligRegning
                         erBarnetInnlagt = true,
                         erUtenforEos = false
                     )
@@ -535,7 +535,7 @@ class PleiepengesoknadProsesseringTest {
                 )
             ),
             harBekreftetOpplysninger = true,
-            harForstattRettigheterOgPlikter = true
+            harForståttRettigheterOgPlikter = true
         )
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)

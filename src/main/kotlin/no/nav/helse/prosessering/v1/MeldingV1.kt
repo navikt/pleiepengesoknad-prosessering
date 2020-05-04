@@ -12,24 +12,21 @@ data class MeldingV1 (
     @JsonAlias("sprak") val språk: String? = null,
     @JsonAlias("soknad_id") val søknadId: String,
     val mottatt: ZonedDateTime,
-    val fraOgMed : LocalDate,
-    val tilOgMed : LocalDate,
-    val søker : Søker,
+    @JsonAlias("fra_og_med") val fraOgMed : LocalDate,
+    @JsonAlias("til_og_med") val tilOgMed : LocalDate,
+    @JsonAlias("soker") val søker : Søker,
     val barn : Barn,
-    val relasjonTilBarnet : String,
+    @JsonAlias("relasjon_til_barnet") val relasjonTilBarnet : String,
     val arbeidsgivere: Arbeidsgivere,
-    var vedleggUrls : List<URI> = listOf(),
+    @JsonAlias("vedlegg_urls") var vedleggUrls : List<URI> = listOf(),
     val medlemskap: Medlemskap,
-    @JsonAlias("bekrefter_periode_over_8_uker")
-    val bekrefterPeriodeOver8Uker: Boolean? = null,
-    @JsonAlias("utenlandsopphold_i_perioden")
-    val utenlandsoppholdIPerioden: UtenlandsoppholdIPerioden?,
-    @JsonAlias("ferieuttak_i_perioden")
-    val ferieuttakIPerioden: FerieuttakIPerioden?,
-    @JsonAlias("harMedsoker") val harMedsøker : Boolean,
-    val samtidigHjemme: Boolean? = null,
-    val harForstattRettigheterOgPlikter : Boolean,
-    val harBekreftetOpplysninger : Boolean,
+    @JsonAlias("bekrefter_periode_over_8_uker") val bekrefterPeriodeOver8Uker: Boolean? = null,
+    @JsonAlias("utenlandsopphold_i_perioden") val utenlandsoppholdIPerioden: UtenlandsoppholdIPerioden?,
+    @JsonAlias("ferieuttak_i_perioden") val ferieuttakIPerioden: FerieuttakIPerioden?,
+    @JsonAlias("har_medsoker") val harMedsøker : Boolean,
+    @JsonAlias("samtidig_hjemme") val samtidigHjemme: Boolean? = null,
+    @JsonAlias("har_forstatt_rettigheter_og_plikter") val harForståttRettigheterOgPlikter : Boolean,
+    @JsonAlias("har_bekreftet_opplysninger") val harBekreftetOpplysninger : Boolean,
     val tilsynsordning: Tilsynsordning?,
     val beredskap: Beredskap?,
     @JsonAlias("nattevaak") val nattevåk: Nattevaak?,
@@ -37,7 +34,7 @@ data class MeldingV1 (
     @JsonAlias("selvstendig_virksomheter") val selvstendigVirksomheter: List<Virksomhet>? = null,
     @JsonAlias("skal_bekrefte_omsorg") val skalBekrefteOmsorg: Boolean? = null, // TODO: Fjern optional når prodsatt.
     @JsonAlias("skal_passe_pa_barnet_i_hele_perioden") val skalPassePaBarnetIHelePerioden: Boolean? = null, // TODO: Fjern optional når prodsatt.
-    @JsonAlias("beskrivelse_omsorgsrollen") val beskrivelseOmsorgsRollen: String? = null // TODO: Fjern optional når prodsatt.
+    @JsonAlias("beskrivelse_omsorgsrollen") val beskrivelseOmsorgsrollen: String? = null // TODO: Fjern optional når prodsatt.
 )
 
 data class Virksomhet(
@@ -127,10 +124,10 @@ data class Arbeidsgivere(
 data class Organisasjon(
     val organisasjonsnummer: String,
     val navn: String?,
-    val skalJobbe: String,
-    val jobberNormaltTimer: Double,
-    val skalJobbeProsent: Double,
-    val vetIkkeEkstrainfo: String? = null
+    @JsonAlias("skal_jobbe") val skalJobbe: String,
+    @JsonAlias("jobber_normalt_timer") val jobberNormaltTimer: Double,
+    @JsonAlias("skal_jobbe_prosent")val skalJobbeProsent: Double,
+    @JsonAlias("vet_ikke_ekstrainfo") val vetIkkeEkstrainfo: String? = null
 )
 
 data class Medlemskap(
@@ -198,8 +195,8 @@ data class Beredskap(
 }
 
 data class Bosted(
-    @JsonFormat(pattern = "yyyy-MM-dd") val fraOgMed: LocalDate,
-    @JsonFormat(pattern = "yyyy-MM-dd") val tilOgMed: LocalDate,
+    @JsonFormat(pattern = "yyyy-MM-dd") @JsonAlias("fra_og_med") val fraOgMed: LocalDate,
+    @JsonFormat(pattern = "yyyy-MM-dd") @JsonAlias("til_og_med") val tilOgMed: LocalDate,
     val landkode: String,
     val landnavn: String
 ) {
@@ -209,34 +206,32 @@ data class Bosted(
 }
 
 data class Utenlandsopphold(
-    @JsonFormat(pattern = "yyyy-MM-dd") val fraOgMed: LocalDate,
-    @JsonFormat(pattern = "yyyy-MM-dd") val tilOgMed: LocalDate,
+    @JsonFormat(pattern = "yyyy-MM-dd") @JsonAlias("fra_og_med") val fraOgMed: LocalDate,
+    @JsonFormat(pattern = "yyyy-MM-dd") @JsonAlias("til_og_med") val tilOgMed: LocalDate,
     val landkode: String,
     val landnavn: String,
-    val erUtenforEos: Boolean?,
-    val erBarnetInnlagt: Boolean?,
-    val arsak: Arsak?
+    @JsonAlias("er_utenfor_eos") val erUtenforEos: Boolean?,
+    @JsonAlias("er_barnet_innlagt") val erBarnetInnlagt: Boolean?,
+    @JsonAlias("arsak") val årsak: Årsak?
 ) {
     override fun toString(): String {
-        return "Utenlandsopphold(fraOgMed=$fraOgMed, tilOgMed=$tilOgMed, landkode='$landkode', landnavn='$landnavn', erUtenforEos=$erUtenforEos, erBarnetInnlagt=$erBarnetInnlagt, arsak=$arsak)"
+        return "Utenlandsopphold(fraOgMed=$fraOgMed, tilOgMed=$tilOgMed, landkode='$landkode', landnavn='$landnavn', erUtenforEos=$erUtenforEos, erBarnetInnlagt=$erBarnetInnlagt, årsak=$årsak)"
     }
 }
 
-enum class Arsak {
+enum class Årsak {
     BARNET_INNLAGT_I_HELSEINSTITUSJON_FOR_NORSK_OFFENTLIG_REGNING,
     BARNET_INNLAGT_I_HELSEINSTITUSJON_DEKKET_ETTER_AVTALE_MED_ET_ANNET_LAND_OM_TRYGD,
     ANNET,
 }
 
 data class UtenlandsoppholdIPerioden(
-    @JsonAlias("skal_oppholde_seg_i_utlandet_i_perioden")
-    val skalOppholdeSegIUtlandetIPerioden: Boolean? = null,
+    @JsonAlias("skal_oppholde_seg_i_utlandet_i_perioden") val skalOppholdeSegIUtlandetIPerioden: Boolean? = null,
     val opphold: List<Utenlandsopphold> = listOf()
 )
 
 data class FerieuttakIPerioden(
-    @JsonAlias("skal_ta_ut_ferie_i_periode")
-    val skalTaUtFerieIPerioden: Boolean,
+    @JsonAlias("skal_ta_ut_ferie_i_periode") val skalTaUtFerieIPerioden: Boolean,
     val ferieuttak: List<Ferieuttak>
 ) {
     override fun toString(): String {
@@ -245,8 +240,8 @@ data class FerieuttakIPerioden(
 }
 
 data class Ferieuttak(
-    @JsonFormat(pattern = "yyyy-MM-dd") val fraOgMed: LocalDate,
-    @JsonFormat(pattern = "yyyy-MM-dd") val tilOgMed: LocalDate
+    @JsonFormat(pattern = "yyyy-MM-dd") @JsonAlias("fra_og_med") val fraOgMed: LocalDate,
+    @JsonFormat(pattern = "yyyy-MM-dd") @JsonAlias("til_og_med") val tilOgMed: LocalDate
 ) {
     override fun toString(): String {
         return "Ferieuttak(fraOgMed=$fraOgMed, tilOgMed=$tilOgMed)"

@@ -131,7 +131,7 @@ internal class PdfV1Generator  {
                     "utenlandsopphold_neste_12_mnd" to melding.medlemskap.utenlandsoppholdNeste12Mnd.somMapBosted()
                 ),
                 "samtykke" to mapOf(
-                    "har_forstatt_rettigheter_og_plikter" to melding.harForstattRettigheterOgPlikter,
+                    "har_forstatt_rettigheter_og_plikter" to melding.harForståttRettigheterOgPlikter,
                     "har_bekreftet_opplysninger" to melding.harBekreftetOpplysninger
                 ),
                 "hjelp" to mapOf(
@@ -152,7 +152,7 @@ internal class PdfV1Generator  {
                 ),
                 "skal_bekrefte_omsorg" to melding.skalBekrefteOmsorg,
                 "skal_passe_pa_barnet_i_hele_perioden" to melding.skalPassePaBarnetIHelePerioden,
-                "beskrivelse_omsorgsrollen" to melding.beskrivelseOmsorgsRollen
+                "beskrivelse_omsorgsrollen" to melding.beskrivelseOmsorgsrollen
             ))
             .resolver(MapValueResolver.INSTANCE)
             .build()).let { html ->

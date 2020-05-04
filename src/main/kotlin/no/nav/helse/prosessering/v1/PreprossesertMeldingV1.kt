@@ -58,7 +58,7 @@ data class PreprossesertMeldingV1(
         bekrefterPeriodeOver8Uker = melding.bekrefterPeriodeOver8Uker,
         frilans = melding.frilans,
         selvstendigVirksomheter = melding.selvstendigVirksomheter,
-        harForstattRettigheterOgPlikter = melding.harForstattRettigheterOgPlikter,
+        harForstattRettigheterOgPlikter = melding.harForståttRettigheterOgPlikter,
         harBekreftetOpplysninger = melding.harBekreftetOpplysninger,
         utenlandsoppholdIPerioden = melding.utenlandsoppholdIPerioden,
         ferieuttakIPerioden = melding.ferieuttakIPerioden

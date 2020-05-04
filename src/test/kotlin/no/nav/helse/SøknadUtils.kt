@@ -52,7 +52,7 @@ internal object SøknadUtils {
         ),
         harMedsøker = true,
         harBekreftetOpplysninger = true,
-        harForstattRettigheterOgPlikter = true,
+        harForståttRettigheterOgPlikter = true,
         tilsynsordning = Tilsynsordning(
             svar = "ja",
             ja = TilsynsordningJa(

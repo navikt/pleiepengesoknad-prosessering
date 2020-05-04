@@ -68,7 +68,7 @@ class JournalforingsFormatTest {
             "samtidigHjemme": null,
             "bekrefterPeriodeOver8Uker": true,
             "harBekreftetOpplysninger" : true,
-	        "harForstattRettigheterOgPlikter": true,
+	        "harForståttRettigheterOgPlikter": true,
             "tilsynsordning": {
                 "svar": "ja",
                 "ja": {
@@ -105,7 +105,7 @@ class JournalforingsFormatTest {
             "selvstendigVirksomheter" : [],
           "skalBekrefteOmsorg": true,
           "skalPassePaBarnetIHelePerioden": true,
-          "beskrivelseOmsorgsRollen": "En kort beskrivelse"
+          "beskrivelseOmsorgsrollen": "En kort beskrivelse"
         }
         """.trimIndent(), String(json), true)
 
@@ -147,7 +147,7 @@ class JournalforingsFormatTest {
         ),
         harMedsøker = true,
         harBekreftetOpplysninger = true,
-        harForstattRettigheterOgPlikter = true,
+        harForståttRettigheterOgPlikter = true,
         tilsynsordning = Tilsynsordning(
             svar = "ja",
             ja = TilsynsordningJa(
@@ -177,6 +177,6 @@ class JournalforingsFormatTest {
         selvstendigVirksomheter = listOf(),
         skalBekrefteOmsorg = true,
         skalPassePaBarnetIHelePerioden = true,
-        beskrivelseOmsorgsRollen = "En kort beskrivelse"
+        beskrivelseOmsorgsrollen = "En kort beskrivelse"
     )
 }
