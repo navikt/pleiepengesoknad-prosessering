@@ -144,7 +144,7 @@ class PleiepengesoknadProsesseringTest {
 
     @Test
     fun `Gyldig melding med snake_case blir prosessert`(){
-
+        //TODO:
     }
 
     @Test
