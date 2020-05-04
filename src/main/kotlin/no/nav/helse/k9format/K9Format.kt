@@ -9,6 +9,7 @@ import no.nav.k9.søknad.felles.Barn
 import no.nav.k9.søknad.felles.Søker
 import no.nav.k9.søknad.pleiepengerbarn.*
 import no.nav.k9.søknad.pleiepengerbarn.Beredskap
+import no.nav.k9.søknad.pleiepengerbarn.Nattevåk
 import no.nav.k9.søknad.pleiepengerbarn.Utenlandsopphold
 import java.lang.IllegalArgumentException
 import java.math.BigDecimal
@@ -25,7 +26,7 @@ fun PreprossesertMeldingV1.tilK9PleiepengeBarnSøknad(): JsonNode {
         .søknadId(SøknadId.of(søknadId))
         .mottattDato(mottatt)
         .språk(språk)
-        .søker(soker.tilK9Søker())
+        .søker(søker.tilK9Søker())
         .arbeid(
             arbeidsgivere.tilK9Arbeid(
                 frilans,
@@ -51,7 +52,7 @@ fun PreprossesertMeldingV1.tilK9PleiepengeBarnSøknad(): JsonNode {
         builder.utenlandsopphold(utenlandsoppholdIPerioden.tilK9Utenlandsopphold())
     }
 
-    nattevaak?.let {
+    nattevåk?.let {
         val nattvåkBuilder = Nattevåk.NattevåkPeriodeInfo.builder()
         it.tilleggsinformasjon?.let { nattvåkBuilder.tilleggsinformasjon(it) }
         builder.nattevåk(
@@ -181,14 +182,14 @@ fun UtenlandsoppholdIPerioden.tilK9Utenlandsopphold(): Utenlandsopphold? {
 
 fun PreprossesertBarn.tilK9Barn(): Barn {
     return when {
-        !fodselsnummer.isNullOrBlank() -> Barn.builder().norskIdentitetsnummer(NorskIdentitetsnummer.of(fodselsnummer))
+        !fødselsnummer.isNullOrBlank() -> Barn.builder().norskIdentitetsnummer(NorskIdentitetsnummer.of(fødselsnummer))
             .build()
-        else -> Barn.builder().fødselsdato(fodselsdato).build()
+        else -> Barn.builder().fødselsdato(fødselsdato).build()
     }
 }
 
-fun PreprossesertSoker.tilK9Søker(): Søker = Søker.builder()
-    .norskIdentitetsnummer(NorskIdentitetsnummer.of(fodselsnummer))
+fun PreprossesertSøker.tilK9Søker(): Søker = Søker.builder()
+    .norskIdentitetsnummer(NorskIdentitetsnummer.of(fødselsnummer))
     .build()
 
 fun Arbeidsgivere.tilK9Arbeid(

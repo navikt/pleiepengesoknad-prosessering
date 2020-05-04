@@ -172,7 +172,7 @@ internal class PdfV1Generator  {
         }
     }
 
-    private fun nattevåk(nattevaak: Nattevaak?) = when {
+    private fun nattevåk(nattevaak: Nattevåk?) = when {
         nattevaak == null -> null
         else -> {
             mapOf(

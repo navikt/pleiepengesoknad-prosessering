@@ -164,7 +164,7 @@ class JournalforingsFormatTest {
             beredskap = true,
             tilleggsinformasjon = "I Beredskap"
         ),
-        nattevåk = Nattevaak(
+        nattevåk = Nattevåk(
             harNattevåk = true,
             tilleggsinformasjon = "Har Nattevåk"
         ),

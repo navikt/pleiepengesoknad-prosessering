@@ -29,7 +29,7 @@ data class MeldingV1 (
     @JsonAlias("har_bekreftet_opplysninger") val harBekreftetOpplysninger : Boolean,
     val tilsynsordning: Tilsynsordning?,
     val beredskap: Beredskap?,
-    @JsonAlias("nattevaak") val nattevåk: Nattevaak?,
+    @JsonAlias("nattevaak") val nattevåk: Nattevåk?,
     val frilans: Frilans?,
     @JsonAlias("selvstendig_virksomheter") val selvstendigVirksomheter: List<Virksomhet>? = null,
     @JsonAlias("skal_bekrefte_omsorg") val skalBekrefteOmsorg: Boolean? = null, // TODO: Fjern optional når prodsatt.
@@ -39,25 +39,17 @@ data class MeldingV1 (
 
 data class Virksomhet(
     val næringstyper: List<Næringstyper>,
-    @JsonAlias("fiskerErPåBladB")
     val fiskerErPåBladB: Boolean? = null,
     @JsonFormat(pattern = "yyyy-MM-dd")
-    @JsonAlias("fraOgMed")
     val fraOgMed: LocalDate,
     @JsonFormat(pattern = "yyyy-MM-dd")
-    @JsonAlias("tilOgMed")
     val tilOgMed: LocalDate? = null,
     val næringsinntekt: Int? = null,
-    @JsonAlias("navnPåVirksomheten")
     val navnPåVirksomheten: String,
     val organisasjonsnummer: String? = null,
-    @JsonAlias("registrertINorge")
     val registrertINorge: Boolean,
-    @JsonAlias("registrertIUtlandet")
     val registrertIUtlandet: Land? = null,
-    @JsonAlias("yrkesaktivSisteTreFerdigliknedeÅrene")
     val yrkesaktivSisteTreFerdigliknedeÅrene: YrkesaktivSisteTreFerdigliknedeÅrene? = null,
-    @JsonAlias("varigEndring")
     val varigEndring: VarigEndring? = null,
     val regnskapsfører: Regnskapsfører? = null,
     val revisor: Revisor? = null
@@ -94,14 +86,14 @@ data class Regnskapsfører(
 )
 
 data class Søker(
-    @JsonAlias("aktoerId") val aktørId: String,
+    @JsonAlias("aktoer_id") val aktørId: String,
     @JsonAlias("fodselsnummer")val fødselsnummer: String,
     val fornavn: String,
     val mellomnavn: String? = null,
     val etternavn: String
 ) {
     override fun toString(): String {
-        return "Soker(aktoerId='${aktørId}Id', fornavn='$fornavn', mellomnavn=$mellomnavn, etternavn='$etternavn')"
+        return "Soker(aktoerId='${aktørId}', fornavn='$fornavn', mellomnavn=$mellomnavn, etternavn='$etternavn')"
     }
 }
 
@@ -110,7 +102,7 @@ data class Barn(
     val navn : String?,
     @JsonFormat(pattern = "yyyy-MM-dd")
     @JsonAlias("fodselsdato") val fødselsdato: LocalDate?,
-    @JsonAlias("aktoerId") val aktørId: String?
+    @JsonAlias("aktoer_id") val aktørId: String?
 ) {
     override fun toString(): String {
         return "Barn(navn=$navn, aktoerId=$aktørId, fodselsdato=$fødselsdato)"
@@ -169,8 +161,8 @@ data class Tilsynsordning(
     @JsonAlias("vet_ikke") val vetIkke: TilsynsordningVetIkke?
 )
 
-data class Nattevaak(
-    @JsonAlias("harNattevaak") val harNattevåk: Boolean,
+data class Nattevåk(
+    @JsonAlias("har_nattevaak") val harNattevåk: Boolean,
     val tilleggsinformasjon: String?
 ) {
     override fun toString(): String {
@@ -210,12 +202,12 @@ data class Utenlandsopphold(
     @JsonFormat(pattern = "yyyy-MM-dd") @JsonAlias("til_og_med") val tilOgMed: LocalDate,
     val landkode: String,
     val landnavn: String,
-    @JsonAlias("er_utenfor_eos") val erUtenforEos: Boolean?,
+    @JsonAlias("er_utenfor_eos") val erUtenforEøs: Boolean?,
     @JsonAlias("er_barnet_innlagt") val erBarnetInnlagt: Boolean?,
     @JsonAlias("arsak") val årsak: Årsak?
 ) {
     override fun toString(): String {
-        return "Utenlandsopphold(fraOgMed=$fraOgMed, tilOgMed=$tilOgMed, landkode='$landkode', landnavn='$landnavn', erUtenforEos=$erUtenforEos, erBarnetInnlagt=$erBarnetInnlagt, årsak=$årsak)"
+        return "Utenlandsopphold(fraOgMed=$fraOgMed, tilOgMed=$tilOgMed, landkode='$landkode', landnavn='$landnavn', erUtenforEøs=$erUtenforEøs, erBarnetInnlagt=$erBarnetInnlagt, årsak=$årsak)"
     }
 }
 

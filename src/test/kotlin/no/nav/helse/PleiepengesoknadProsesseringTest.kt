@@ -143,6 +143,11 @@ class PleiepengesoknadProsesseringTest {
     }
 
     @Test
+    fun `Gyldig melding med snake_case blir prosessert`(){
+
+    }
+
+    @Test
     fun `Melding med språk og skal jobbe prosent blir prosessert`() {
 
         val språk = "nn"
@@ -279,7 +284,6 @@ class PleiepengesoknadProsesseringTest {
             .assertJournalførtFormat()
     }
 
-
     @Test
     fun `Melding lagt til prosessering selv om oppslag paa aktoer ID for barn feiler`() {
         val melding = SøknadUtils.defaultSøknad.copy(
@@ -347,7 +351,7 @@ class PleiepengesoknadProsesseringTest {
         kafkaTestProducer.leggSoknadTilProsessering(melding)
         val preprosessertMelding: TopicEntry<PreprossesertMeldingV1> =
             kafkaTestConsumer.hentPreprosessertMelding(melding.søknadId)
-        assertEquals(forventetFodselsNummer, preprosessertMelding.data.barn.fodselsnummer)
+        assertEquals(forventetFodselsNummer, preprosessertMelding.data.barn.fødselsnummer)
         journalførtConsumer
             .hentJournalførtMelding(melding.søknadId)
             .assertJournalførtFormat()
@@ -367,7 +371,7 @@ class PleiepengesoknadProsesseringTest {
         kafkaTestProducer.leggSoknadTilProsessering(melding)
         val preprosessertMelding: TopicEntry<PreprossesertMeldingV1> =
             kafkaTestConsumer.hentPreprosessertMelding(melding.søknadId)
-        assertEquals(forventetFodselsNummer, preprosessertMelding.data.barn.fodselsnummer)
+        assertEquals(forventetFodselsNummer, preprosessertMelding.data.barn.fødselsnummer)
         journalførtConsumer
             .hentJournalførtMelding(melding.søknadId)
             .assertJournalførtFormat()
@@ -386,7 +390,7 @@ class PleiepengesoknadProsesseringTest {
         kafkaTestProducer.leggSoknadTilProsessering(melding)
         val preprosesssertMelding: TopicEntry<PreprossesertMeldingV1> =
             kafkaTestConsumer.hentPreprosessertMelding(melding.søknadId)
-        assertEquals(LocalDate.now(), preprosesssertMelding.data.barn.fodselsdato)
+        assertEquals(LocalDate.now(), preprosesssertMelding.data.barn.fødselsdato)
         journalførtConsumer
             .hentJournalførtMelding(melding.søknadId)
             .assertJournalførtFormat()
@@ -503,7 +507,7 @@ class PleiepengesoknadProsesseringTest {
                         landnavn = "Aruba",
                         årsak = Årsak.BARNET_INNLAGT_I_HELSEINSTITUSJON_FOR_NORSK_OFFENTLIG_REGNING, //barnetInnlagtIHelseinstitusjonForNorskOffentligRegning
                         erBarnetInnlagt = true,
-                        erUtenforEos = false
+                        erUtenforEøs = false
                     )
                 )
             ),
@@ -511,7 +515,7 @@ class PleiepengesoknadProsesseringTest {
                 beredskap = true,
                 tilleggsinformasjon = "I Beredskap"
             ),
-            nattevåk = Nattevaak(
+            nattevåk = Nattevåk(
                 harNattevåk = true,
                 tilleggsinformasjon = "Har Nattevåk"
             ),

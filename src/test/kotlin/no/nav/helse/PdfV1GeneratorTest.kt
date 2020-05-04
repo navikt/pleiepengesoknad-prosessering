@@ -108,7 +108,7 @@ class PdfV1GeneratorTest {
                     annet = "Jeg har ingen anelse om dette\rmed\nlinje\r\nlinjeskift."
                 )
             ),
-            nattevåk = Nattevaak(
+            nattevåk = Nattevåk(
                 harNattevåk = true,
                 tilleggsinformasjon = "Har nattevåk"
             ),
@@ -216,7 +216,7 @@ class PdfV1GeneratorTest {
         samtidigHjemme: Boolean? = false,
         tilsynsordning: Tilsynsordning? = null,
         beredskap: Beredskap? = null,
-        nattevaak: Nattevaak? = null,
+        nattevaak: Nattevåk? = null,
         medlemskap: Medlemskap = Medlemskap(
             harBoddIUtlandetSiste12Mnd = true,
             utenlandsoppholdSiste12Mnd = listOf(
@@ -431,7 +431,7 @@ class PdfV1GeneratorTest {
                     beredskap = true,
                     tilleggsinformasjon = "Jeg er i beredskap\rmed\nlinje\r\nlinjeskift."
                 ),
-                nattevaak = Nattevaak(
+                nattevaak = Nattevåk(
                     harNattevåk = false,
                     tilleggsinformasjon = null
                 ),

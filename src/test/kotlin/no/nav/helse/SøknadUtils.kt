@@ -69,7 +69,7 @@ internal object SøknadUtils {
             beredskap = true,
             tilleggsinformasjon = "I Beredskap"
         ),
-        nattevåk = Nattevaak(
+        nattevåk = Nattevåk(
             harNattevåk = true,
             tilleggsinformasjon = "Har Nattevåk"
         ),
