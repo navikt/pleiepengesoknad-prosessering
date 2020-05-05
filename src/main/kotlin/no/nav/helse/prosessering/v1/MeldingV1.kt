@@ -86,7 +86,7 @@ data class Regnskapsfører(
 )
 
 data class Søker(
-    @JsonAlias("aktoer_id") val aktørId: String,
+    @JsonAlias("aktoer_id", "aktør_id") val aktørId: String,
     @JsonAlias("fodselsnummer")val fødselsnummer: String,
     val fornavn: String,
     val mellomnavn: String? = null,
