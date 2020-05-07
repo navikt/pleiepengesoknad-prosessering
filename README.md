@@ -14,6 +14,14 @@ Leser søknader fra Kafka topic `privat-pleiepengesoknad-mottatt` som legges der
 Ved feil i en av streamene som håndterer prosesseringen vil streamen stoppe, og tjenesten gi 503 response på liveness etter 15 minutter.
 Når tjenenesten restarter vil den forsøke å prosessere søknaden på ny og fortsette slik frem til den lykkes.
 
+## Alarmer
+Vi bruker [nais-alerts](https://doc.nais.io/observability/alerts) for å sette opp alarmer. Disse finner man konfigurert i [nais/alerts.yml](nais/alerts.yml).
+For å oppdatere alarmene etter at det er fjernet/lagt til alarm, kan man kjøre følgende kommandoer.
+```shell script
+kubectl config use-context prod-fss
+kubectl apply -f nais/alerts.yml
+```
+
 ## Henvendelser
 Spørsmål knyttet til koden eller prosjektet kan stilles som issues her på GitHub.
 
