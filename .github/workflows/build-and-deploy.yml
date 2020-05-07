@@ -8,6 +8,8 @@ on:
       - 'LICENCE'
       - 'CODEOWNERS'
       - 'kafka/oneshot.json'
+      - 'nais/alerterator.yml'
+      - '.github/workflows/apply-alerts.yml'
     branches:
 
 env:
@@ -74,7 +76,8 @@ jobs:
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: dev-fss
-          RESOURCE: nais/dev-fss.yml
+          RESOURCE: nais/naiserator.yml
+          VARS: nais/dev-fss.json
 
   deploy-prod-fss:
     name: Deploy to prod-fss
@@ -87,4 +90,5 @@ jobs:
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: prod-fss
-          RESOURCE: nais/prod-fss.yml
+          RESOURCE: nais/naiserator.yml
+          VARS: nais/prod-fss.json
