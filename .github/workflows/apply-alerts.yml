@@ -26,7 +26,6 @@ jobs:
   deploy-prod-fss:
     name: Deploy to prod-fss
     if: startsWith(github.ref, 'refs/heads/master')  # If the branch is master
-    needs: build-code-and-push-docker # Depends on build-code-and-push-docker job
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
