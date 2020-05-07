@@ -297,7 +297,14 @@ class PdfV1GeneratorTest {
         nattevåk = nattevaak,
         beredskap = beredskap,
         utenlandsoppholdIPerioden = null,
-        ferieuttakIPerioden = null,
+        ferieuttakIPerioden = FerieuttakIPerioden(
+            skalTaUtFerieIPerioden = true,
+            ferieuttak = listOf(
+                Ferieuttak(fraOgMed = LocalDate.parse("2020-01-01"), tilOgMed = LocalDate.parse("2020-01-05")),
+                Ferieuttak(fraOgMed = LocalDate.parse("2020-01-07"), tilOgMed = LocalDate.parse("2020-01-15")),
+                Ferieuttak(fraOgMed = LocalDate.parse("2020-02-01"), tilOgMed = LocalDate.parse("2020-02-05"))
+            )
+        ),
         frilans = frilans,
         selvstendigVirksomheter = selvstendigVirksomheter
     )
