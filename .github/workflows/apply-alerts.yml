@@ -1,5 +1,5 @@
 # This workflow trigger on push to any branch.
-name: CI / CD
+name: Alerts
 on:
   push:
     paths:
@@ -9,13 +9,7 @@ on:
       - 'master'
       - 'dev-**'
 
-env:
-  IMAGE: docker.pkg.github.com/${{ github.repository }}/pleiepengesoknad-prosessering:${{ github.sha }}
-  GITHUB_USERNAME: x-access-token
-  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
 jobs:
-
   deploy-dev-fss:
     name: Deploy to dev-fss
     if: startsWith(github.ref, 'refs/heads/dev-') || startsWith(github.ref, 'refs/heads/master') # Deploy if branch is either master or dev-*
