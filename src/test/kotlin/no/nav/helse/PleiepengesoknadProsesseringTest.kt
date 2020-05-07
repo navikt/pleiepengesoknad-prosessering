@@ -597,10 +597,10 @@ class PleiepengesoknadProsesseringTest {
         val melding = SøknadUtils.defaultSøknad.copy(
             søknadId = UUID.randomUUID().toString(),
             tilsynsordning = Tilsynsordning(
-                svar = "vet_ikke",
+                svar = "vetIkke",
                 ja = null,
                 vetIkke = TilsynsordningVetIkke(
-                    svar = "vet ikke",
+                    svar = "vetIkke",
                     annet = "annet"
                 )
             )
@@ -618,7 +618,7 @@ class PleiepengesoknadProsesseringTest {
         val melding = SøknadUtils.defaultSøknad.copy(
             søknadId = UUID.randomUUID().toString(),
             tilsynsordning = Tilsynsordning(
-                svar = "vet_ikke",
+                svar = "vetIkke",
                 ja = null,
                 vetIkke = TilsynsordningVetIkke(
                     svar = "hva som helst?"
@@ -638,7 +638,7 @@ class PleiepengesoknadProsesseringTest {
         val melding = SøknadUtils.defaultSøknad.copy(
             søknadId = UUID.randomUUID().toString(),
             tilsynsordning = Tilsynsordning(
-                svar = "vet_ikke",
+                svar = "vetIkke",
                 ja = null,
                 vetIkke = TilsynsordningVetIkke(
                     svar = "hva som helst?",
