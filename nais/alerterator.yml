@@ -1,0 +1,29 @@
+apiVersion: nais.io/v1
+kind: Alert
+metadata:
+  name: {{app}}-alerts
+  labels:
+    team: {{team}}
+  namespace: {{namespace}}
+spec:
+  receivers:
+    slack:
+      channel: {{slack-channel}}
+      prependText: '<!here> | '
+  alerts:
+    - alert: {{app}} nede
+      expr: up{app="{{app}}", job="kubernetes-pods"} == 0
+      for: 2m
+      description: "App \{{ $labels.app }} er nede i namespace \{{ $labels.kubernetes_namespace }}"
+      action: "`kubectl describe pod \{{ $labels.kubernetes_pod_name }} -n \{{ $labels.kubernetes_namespace }}` for events, og `kubectl logs \{{ $labels.kubernetes_pod_name }} -n \{{ $labels.kubernetes_namespace }}` for logger"
+
+    - alert: høy feilrate i logger i {{app}}
+      expr: (100 * sum by (log_app, log_namespace) (rate(logd_messages_total{log_app="{{app}}",log_level=~"Warning|Error"}[3m])) / sum by (log_app, log_namespace) (rate(logd_messages_total{log_app="{{app}}"}[3m]))) > 10
+      for: 3m
+      action: "Sjekk loggene til app \{{ $labels.log_app }} i namespace \{{ $labels.log_namespace }}, for å se hvorfor det er så mye feil"
+
+    - alert: {{app}} feiler
+      expr: stream_status{app="{{app}}"} > 0
+      for: 1m
+      description: "\{{ $labels.stream }}-stream feiler. Sjekk loggene for å se hvorfor."
+      action: "`kubectl logs \{{ $labels.kubernetes_pod_name }} -n \{{ $labels.kubernetes_namespace }}`"

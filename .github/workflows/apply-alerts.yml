@@ -1,0 +1,37 @@
+# This workflow trigger on push to any branch.
+name: Alerts
+on:
+  push:
+    paths:
+      - 'nais/alerterator.yml'
+      - '.github/workflows/apply-alerts.yml'
+    branches:
+      - 'master'
+      - 'dev-**'
+
+jobs:
+  deploy-dev-fss:
+    name: Deploy to dev-fss
+    if: startsWith(github.ref, 'refs/heads/dev-') || startsWith(github.ref, 'refs/heads/master') # Deploy if branch is either master or dev-*
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: nais/deploy/actions/deploy@v1
+        env:
+          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
+          CLUSTER: dev-fss
+          RESOURCE: nais/alerterator.yml
+          VARS: nais/dev-fss.json
+
+  deploy-prod-fss:
+    name: Deploy to prod-fss
+    if: startsWith(github.ref, 'refs/heads/master')  # If the branch is master
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: nais/deploy/actions/deploy@v1
+        env:
+          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
+          CLUSTER: prod-fss
+          RESOURCE: nais/alerterator.yml
+          VARS: nais/prod-fss.json
