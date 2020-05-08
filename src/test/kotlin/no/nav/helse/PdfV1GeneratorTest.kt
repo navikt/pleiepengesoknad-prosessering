@@ -59,7 +59,7 @@ class PdfV1GeneratorTest {
                     Organisasjon(
                         organisasjonsnummer = "952352655",
                         navn = "Arbeidsgiver 3",
-                        skalJobbe = "vet_ikke",
+                        skalJobbe = "vetIkke",
                         jobberNormaltTimer = 30.0,
                         skalJobbeProsent = 50.0,
                         vetIkkeEkstrainfo = "Vondt i hode, skulker, kne og tå, kne og tå"
@@ -448,7 +448,7 @@ class PdfV1GeneratorTest {
                         navn = "NAV",
                         jobberNormaltTimer = 30.0,
                         skalJobbeProsent = 50.0,
-                        skalJobbe = "redusert"
+                        skalJobbe = "vetIkke"
                     ),
                     Organisasjon(
                         organisasjonsnummer = "975124568",
