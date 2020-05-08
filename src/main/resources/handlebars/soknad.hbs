@@ -90,7 +90,7 @@
 
                 {{# if hjelp.har_medsoker }}
                     <li>
-                        Søker opplyser at en medsøker skal søke for samme periode..<br/>
+                        Søker opplyser at en medsøker skal søke for samme periode.<br/>
                         <ul style="list-style-type:square;">
                             {{# if samtidig_hjemme }}
                                 <li>
@@ -403,11 +403,11 @@
         <h2><span>Selvstendig næringsdrivende</span></h2>
         {{# each søknad.selvstendigVirksomheter as |virksomhet|~}}
 
-            <h3>{{virksomhet.navnPåVirksomheten}} ({{#dato virksomhet.fraOgMed}}{{/dato}} -
+            <h3>{{virksomhet.navnPåVirksomheten}} (startet {{#dato virksomhet.fraOgMed}}{{/dato}},
                 {{#if virksomhet.tilOgMed}}
-                    {{#dato virksomhet.tilOgMed}}{{/dato}})
+                    avsluttet {{#dato virksomhet.tilOgMed}}{{/dato}})
                 {{else}}
-                    pågående)
+                    er pågående)
                 {{/if}}</h3>
             <p>Næringstype:
                 {{# each virksomhet.næringstyper as |næringstype|~}}
