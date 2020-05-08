@@ -471,7 +471,7 @@ class PdfV1GeneratorTest {
                 organisasjoner = listOf(),
                 barn = Barn(fødselsnummer = null, fødselsdato = null, navn = null, aktørId = null),
                 tilsynsordning = Tilsynsordning(
-                    svar = "vet_ikke",
+                    svar = "vetIkke",
                     ja = null,
                     vetIkke = TilsynsordningVetIkke(
                         svar = "annet",
@@ -527,7 +527,7 @@ class PdfV1GeneratorTest {
                     Organisasjon(
                         organisasjonsnummer = "952352655",
                         navn = "Hopp i havet",
-                        skalJobbe = "vet_ikke",
+                        skalJobbe = "vetIkke",
                         jobberNormaltTimer = 30.0,
                         skalJobbeProsent = 0.0,
                         vetIkkeEkstrainfo = "Vondt i hode, skulker, kne og tå, kne og tå"
@@ -599,7 +599,7 @@ class PdfV1GeneratorTest {
                     Organisasjon(
                         organisasjonsnummer = "952352655",
                         navn = "Arbeidsgiver 3",
-                        skalJobbe = "vet_ikke",
+                        skalJobbe = "vetIkke",
                         jobberNormaltTimer = 30.0,
                         skalJobbeProsent = 50.0,
                         vetIkkeEkstrainfo = "Vondt i hode, skulker, kne og tå, kne og tå"
@@ -705,7 +705,7 @@ class PdfV1GeneratorTest {
     }
 
     @Test
-    @Ignore
+    //@Ignore
     fun `opprett lesbar oppsummerings-PDF`() {
         genererOppsummeringsPdfer(true)
     }

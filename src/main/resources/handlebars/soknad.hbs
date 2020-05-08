@@ -254,7 +254,7 @@
             <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Nei
             <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Usikker
         {{/eq}}
-        {{#eq tilsynsordning.tilsynsordning_svar "vet_ikke" }}
+        {{#eq tilsynsordning.tilsynsordning_svar "vetIkke" }}
             <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Ja
             <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Nei
             <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Usikker
@@ -313,15 +313,15 @@
         {{/eq}}
 
         <!-- Vet ikke -->
-        {{#eq tilsynsordning.tilsynsordning_svar "vet_ikke" }}
+        {{#eq tilsynsordning.tilsynsordning_svar "vetIkke" }}
             <hr/>
             <!-- Sjekkbokser -->
-            {{#eq tilsynsordning.svar "er_sporadisk" }}
+            {{#eq tilsynsordning.svar "erSporadisk" }}
                 <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Er sporadisk
                 <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Er ikke laget en plan
                 <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Annet
             {{/eq}}
-            {{#eq tilsynsordning.svar "er_ikke_laget_en_plan" }}
+            {{#eq tilsynsordning.svar "erIkkeLagetEnPlan" }}
                 <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Er sporadisk
                 <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Er ikke laget en plan
                 <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Annet

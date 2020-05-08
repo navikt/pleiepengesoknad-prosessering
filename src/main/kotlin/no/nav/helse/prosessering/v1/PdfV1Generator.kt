@@ -204,8 +204,8 @@ internal class PdfV1Generator  {
             "tilleggsinformasjon" to tilsynsordning.ja?.tilleggsinformasjon,
             "prosent_av_normal_arbeidsuke" to tilsynsordning.ja?.prosentAvNormalArbeidsuke()?.formatertMedEnDesimal()
         )
-        "vet_ikke" == tilsynsordning.svar -> mapOf(
-            "tilsynsordning_svar" to "vet_ikke",
+        "vetIkke" == tilsynsordning.svar -> mapOf(
+            "tilsynsordning_svar" to "vetIkke",
             "svar" to tilsynsordning.vetIkke?.svar,
             "annet" to tilsynsordning.vetIkke?.annet
         )
