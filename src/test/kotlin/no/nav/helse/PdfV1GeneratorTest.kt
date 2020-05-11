@@ -268,11 +268,13 @@ class PdfV1GeneratorTest {
                     telefon = "65484578"
                 )
             )
-        )
+        ),
+        vedleggUrls: List<URI> = listOf()
     ) = MeldingV1(
         språk = sprak,
         søknadId = soknadId,
         mottatt = ZonedDateTime.now(),
+        vedleggUrls = vedleggUrls,
         fraOgMed = LocalDate.now().plusDays(6),
         tilOgMed = LocalDate.now().plusDays(35),
         søker = Søker(
@@ -310,6 +312,7 @@ class PdfV1GeneratorTest {
     )
 
     private fun genererOppsummeringsPdfer(writeBytes: Boolean) {
+/*
         var id = "1-full-søknad"
         var pdf = generator.generateSoknadOppsummeringPdf(
             melding = fullGyldigMelding(soknadsId = id),
@@ -695,6 +698,21 @@ class PdfV1GeneratorTest {
             fødselsdato = null
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
+*/
+
+        var id = "23-har-lastet-opp-vedlegg"
+        var pdf = generator.generateSoknadOppsummeringPdf(
+            melding = gyldigMelding(
+                soknadId = id, harMedsøker = true, organisasjoner = listOf(
+                ), barn = Barn(fødselsnummer = null, fødselsdato = null, navn = null, aktørId = null),
+                vedleggUrls = listOf(URI("noe"))
+            ),
+            barnetsIdent = null,
+            barnetsNavn = barnetsNavn,
+            fødselsdato = null
+        )
+        if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
+
     }
 
     private fun pdfPath(soknadId: String) = "${System.getProperty("user.dir")}/generated-pdf-$soknadId.pdf"
@@ -705,7 +723,7 @@ class PdfV1GeneratorTest {
     }
 
     @Test
-    //@Ignore
+    @Ignore
     fun `opprett lesbar oppsummerings-PDF`() {
         genererOppsummeringsPdfer(true)
     }

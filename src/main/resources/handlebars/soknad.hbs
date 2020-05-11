@@ -172,10 +172,21 @@
         <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Ja
         <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Nei
     {{/if}}
+    <!-- Info om har ikke lastet opp vedlegg -->
+    {{#if harIkkeVedlegg}}
+    <h2>
+        <span>
+            Legeerklæring
+        </span>
+    </h2>
+    <p>Ingen vedlegg er lastet opp.</p>
+    {{/if}}
+
     <h2>
         <span>
            Arbeidsforhold
-        </span></h2>
+        </span>
+    </h2>
     <!-- ARBEIDSGIVERE -->
     {{# if hjelp.ingen_arbeidsgivere }}
         <ul>

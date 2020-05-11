@@ -102,6 +102,7 @@ internal class PdfV1Generator  {
                 "soknad_mottatt_dag" to melding.mottatt.withZoneSameInstant(ZONE_ID).norskDag(),
                 "soknad_mottatt" to DATE_TIME_FORMATTER.format(melding.mottatt),
                 "har_medsoker" to melding.harMedsøker,
+                "harIkkeVedlegg" to melding.sjekkOmHarIkkeVedlegg(),
                 "samtidig_hjemme" to melding.samtidigHjemme,
                 "bekrefterPeriodeOver8Uker" to melding.bekrefterPeriodeOver8Uker,
                 "soker" to mapOf(
@@ -284,8 +285,11 @@ private fun Duration.tilString(): String = when (this.toMinutesPart()) {
 }
 
 private fun Søker.formatertNavn() = if (mellomnavn != null) "$fornavn $mellomnavn $etternavn" else "$fornavn $etternavn"
+
 private fun String.sprakTilTekst() = when (this.toLowerCase()) {
     "nb" -> "bokmål"
     "nn" -> "nynorsk"
     else -> this
 }
+
+private fun MeldingV1.sjekkOmHarIkkeVedlegg() : Boolean = !vedleggUrls.isNotEmpty()
