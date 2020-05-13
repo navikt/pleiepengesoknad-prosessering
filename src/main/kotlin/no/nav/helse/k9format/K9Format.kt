@@ -129,6 +129,7 @@ fun Tilsynsordning.tilK9Tilsynsordning(
         "ja" -> TilsynsordningSvar.JA
         "nei" -> TilsynsordningSvar.NEI
         "vetIkke" -> TilsynsordningSvar.VET_IKKE
+        "vet_ikke" -> TilsynsordningSvar.VET_IKKE
         else -> throw IllegalArgumentException("Ikke gyldig tilsynsordningsvar. Forventet ja/nei, men fikk $svar")
     }
     return when {
