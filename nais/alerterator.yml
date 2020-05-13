@@ -9,7 +9,7 @@ spec:
   receivers:
     slack:
       channel: {{slack-channel}}
-      prependText: '<!here> | '
+      prependText: "{{{slack-notify-type}}}"
   alerts:
     - alert: {{app}} nede
       expr: up{app="{{app}}", job="kubernetes-pods"} == 0
