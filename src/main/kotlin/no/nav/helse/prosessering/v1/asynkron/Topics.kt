@@ -2,10 +2,9 @@ package no.nav.helse.prosessering.v1.asynkron
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.databind.JsonNode
-import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
-import no.nav.helse.dusseldorf.ktor.jackson.dusseldorfConfigured
+import no.nav.helse.pleiepengerKonfiguert
 import no.nav.helse.prosessering.Metadata
 import no.nav.helse.prosessering.v1.MeldingV1
 import no.nav.helse.prosessering.v1.PreprossesertMeldingV1
@@ -47,9 +46,8 @@ internal object Topics {
 }
 
 internal abstract class SerDes<V> : Serializer<V>, Deserializer<V> {
-    protected val objectMapper = jacksonObjectMapper()
-        .dusseldorfConfigured()
-        .configure(SerializationFeature.WRITE_DURATIONS_AS_TIMESTAMPS, false)
+    protected val objectMapper = jacksonObjectMapper().pleiepengerKonfiguert()
+
     override fun serialize(topic: String?, data: V): ByteArray? {
         return data?.let {
             objectMapper.writeValueAsBytes(it)

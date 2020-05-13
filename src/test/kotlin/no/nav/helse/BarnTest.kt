@@ -42,10 +42,10 @@ class BarnTest {
         val ar = fodselsdato.year.toString().substring(2,4)
         val fodselsnummer = "$dag$maned${ar}12345"
         return PreprossesertBarn(
-            fodselsnummer = fodselsnummer,
-            fodselsdato = null,
+            fødselsnummer = fodselsnummer,
+            fødselsdato = null,
             navn = null,
-            aktoerId = null
+            aktørId = null
         )
     }
 }

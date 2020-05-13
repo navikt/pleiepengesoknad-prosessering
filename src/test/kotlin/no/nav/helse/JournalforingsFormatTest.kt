@@ -17,55 +17,58 @@ class JournalforingsFormatTest {
     fun `Soknaden journalfoeres som JSON uten vedlegg`() {
         val soknadId = UUID.randomUUID().toString()
         val json = JournalforingsFormat.somJson(melding(soknadId))
+        println(String(json))
         JSONAssert.assertEquals("""
         {
-            "sprak": null,
-            "soknad_id": "$soknadId",
+            "språk": null,
+            "søknadId": "$soknadId",
             "mottatt": "2018-01-02T03:04:05.000000006Z",
-            "fra_og_med": "2018-01-01",
-            "til_og_med": "2018-02-02",
-            "soker": {
-                "aktoer_id": "123456",
-                "fodselsnummer": "1212",
+            "fraOgMed": "2018-01-01",
+            "tilOgMed": "2018-02-02",
+            "vedleggUrls": [
+                "http://localhost:8080/1234", "http://localhost:8080/12345"],
+            "søker": {
+                "aktørId": "123456",
+                "fødselsnummer": "1212",
                 "fornavn": "Ola",
                 "mellomnavn": "Mellomnavn",
                 "etternavn": "Nordmann"
             },
             "barn": {
-                "fodselsnummer": "2323",
+                "fødselsnummer": "2323",
                 "navn": "Kari",
-                "fodselsdato": null,
-                "aktoer_id": null
+                "fødselsdato": null,
+                "aktørId": null
             },
-            "relasjon_til_barnet": "Mor",
+            "relasjonTilBarnet": "Mor",
             "arbeidsgivere": {
                 "organisasjoner": [{
                     "organisasjonsnummer": "1212",
                     "navn": "Nei",
-                    "skal_jobbe": "nei",
-                    "jobber_normalt_timer": 0.0,
-                    "skal_jobbe_prosent": 0.0,
-                    "vet_ikke_ekstrainfo": null,
+                    "skalJobbe": "nei",
+                    "jobberNormaltTimer": 0.0,
+                    "skalJobbeProsent": 0.0,
+                    "vetIkkeEkstrainfo": null,
                 },{
                     "organisasjonsnummer": "54321",
                     "navn": "Navn",
-                    "skal_jobbe": "redusert",
-                    "skal_jobbe_prosent": 22.512,
-                    "vet_ikke_ekstrainfo": null,
-                    "jobber_normalt_timer": 0.0,
+                    "skalJobbe": "redusert",
+                    "skalJobbeProsent": 22.512,
+                    "vetIkkeEkstrainfo": null,
+                    "jobberNormaltTimer": 0.0,
                 }]
             },
             "medlemskap": {
-                "har_bodd_i_utlandet_siste_12_mnd": true,
-                "utenlandsopphold_neste_12_mnd": [],
-                "skal_bo_i_utlandet_neste_12_mnd": true,
-                "utenlandsopphold_siste_12_mnd": []
+                "harBoddIUtlandetSiste12Mnd": true,
+                "utenlandsoppholdNeste12Mnd": [],
+                "skalBoIUtlandetNeste12Mnd": true,
+                "utenlandsoppholdSiste12Mnd": []
             },
-            "har_medsoker": true,
-            "samtidig_hjemme": null,
-            "bekrefter_periode_over_8_uker": true,
-            "har_bekreftet_opplysninger" : true,
-	        "har_forstatt_rettigheter_og_plikter": true,
+            "harMedsøker": true,
+            "samtidigHjemme": null,
+            "bekrefterPeriodeOver8Uker": true,
+            "harBekreftetOpplysninger" : true,
+	        "harForståttRettigheterOgPlikter": true,
             "tilsynsordning": {
                 "svar": "ja",
                 "ja": {
@@ -76,55 +79,55 @@ class JournalforingsFormatTest {
                     "fredag": "PT1H30M",
                     "tilleggsinformasjon": "Litt tilleggsinformasjon."
                 },
-                "vet_ikke": null
+                "vetIkke": null
             },
             "beredskap": {
-                "i_beredskap": true,
+                "beredskap": true,
                 "tilleggsinformasjon": "I Beredskap",
             },
-            "nattevaak": {
-                "har_nattevaak": true,
+            "nattevåk": {
+                "harNattevåk": true,
                 "tilleggsinformasjon": "Har Nattevåk"
             },
-             "utenlandsopphold_i_perioden": {
-                "skal_oppholde_seg_i_utlandet_i_perioden": false,
+             "utenlandsoppholdIPerioden": {
+                "skalOppholdeSegIUtlandetIPerioden": false,
                 "opphold": []
             },
-          "ferieuttak_i_perioden": {
-            "skal_ta_ut_ferie_i_periode": false,
+          "ferieuttakIPerioden": {
+            "skalTaUtFerieIPerioden": false,
             "ferieuttak": [
             ]
           },
             "frilans": {
               "startdato": "2018-02-01",
-              "jobber_fortsatt_som_frilans": true
+              "jobberFortsattSomFrilans": true
             },
-            "selvstendig_virksomheter" : [],
-          "skal_bekrefte_omsorg": true,
-          "skal_passe_pa_barnet_i_hele_perioden": true,
-          "beskrivelse_omsorgsrollen": "En kort beskrivelse"
+            "selvstendigVirksomheter" : [],
+          "skalBekrefteOmsorg": true,
+          "skalPassePaBarnetIHelePerioden": true,
+          "beskrivelseOmsorgsrollen": "En kort beskrivelse"
         }
         """.trimIndent(), String(json), true)
 
     }
 
     private fun melding(soknadId: String) : MeldingV1 = MeldingV1(
-        soknadId = soknadId,
+        søknadId = soknadId,
         mottatt = ZonedDateTime.of(2018,1,2,3,4,5,6, ZoneId.of("UTC")),
         fraOgMed = LocalDate.parse("2018-01-01"),
         tilOgMed = LocalDate.parse("2018-02-02"),
-        soker = Soker(
-            aktoerId = "123456",
-            fodselsnummer = "1212",
+        søker = Søker(
+            aktørId = "123456",
+            fødselsnummer = "1212",
             etternavn = "Nordmann",
             mellomnavn = "Mellomnavn",
             fornavn = "Ola"
         ),
         barn = Barn(
             navn = "Kari",
-            fodselsnummer = "2323",
-            fodselsdato = null,
-            aktoerId = null
+            fødselsnummer = "2323",
+            fødselsdato = null,
+            aktørId = null
         ),
         relasjonTilBarnet = "Mor",
         bekrefterPeriodeOver8Uker = true,
@@ -142,9 +145,9 @@ class JournalforingsFormatTest {
             harBoddIUtlandetSiste12Mnd = true,
             skalBoIUtlandetNeste12Mnd = true
         ),
-        harMedsoker = true,
+        harMedsøker = true,
         harBekreftetOpplysninger = true,
-        harForstattRettigheterOgPlikter = true,
+        harForståttRettigheterOgPlikter = true,
         tilsynsordning = Tilsynsordning(
             svar = "ja",
             ja = TilsynsordningJa(
@@ -161,8 +164,8 @@ class JournalforingsFormatTest {
             beredskap = true,
             tilleggsinformasjon = "I Beredskap"
         ),
-        nattevaak = Nattevaak(
-            harNattevaak = true,
+        nattevåk = Nattevåk(
+            harNattevåk = true,
             tilleggsinformasjon = "Har Nattevåk"
         ),
         utenlandsoppholdIPerioden = UtenlandsoppholdIPerioden(skalOppholdeSegIUtlandetIPerioden = false, opphold = listOf()),
@@ -174,6 +177,6 @@ class JournalforingsFormatTest {
         selvstendigVirksomheter = listOf(),
         skalBekrefteOmsorg = true,
         skalPassePaBarnetIHelePerioden = true,
-        beskrivelseOmsorgsRollen = "En kort beskrivelse"
+        beskrivelseOmsorgsrollen = "En kort beskrivelse"
     )
 }

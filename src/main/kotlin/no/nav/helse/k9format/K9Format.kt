@@ -6,8 +6,10 @@ import no.nav.helse.prosessering.v1.Tilsynsordning
 import no.nav.k9.søknad.JsonUtils.getObjectMapper
 import no.nav.k9.søknad.felles.*
 import no.nav.k9.søknad.felles.Barn
+import no.nav.k9.søknad.felles.Søker
 import no.nav.k9.søknad.pleiepengerbarn.*
 import no.nav.k9.søknad.pleiepengerbarn.Beredskap
+import no.nav.k9.søknad.pleiepengerbarn.Nattevåk
 import no.nav.k9.søknad.pleiepengerbarn.Utenlandsopphold
 import java.lang.IllegalArgumentException
 import java.math.BigDecimal
@@ -15,16 +17,16 @@ import java.time.Duration
 import java.time.LocalDate
 
 fun PreprossesertMeldingV1.tilK9PleiepengeBarnSøknad(): JsonNode {
-    val språk = when (sprak) {
+    val språk = when (språk) {
         "nb" -> Språk.NORSK_BOKMÅL
         "nn" -> Språk.NORSK_NYNORSK
         else -> Språk.NORSK_BOKMÅL
     }
     val builder = PleiepengerBarnSøknad.builder()
-        .søknadId(SøknadId.of(soknadId))
+        .søknadId(SøknadId.of(søknadId))
         .mottattDato(mottatt)
         .språk(språk)
-        .søker(soker.tilK9Søker())
+        .søker(søker.tilK9Søker())
         .arbeid(
             arbeidsgivere.tilK9Arbeid(
                 frilans,
@@ -50,7 +52,7 @@ fun PreprossesertMeldingV1.tilK9PleiepengeBarnSøknad(): JsonNode {
         builder.utenlandsopphold(utenlandsoppholdIPerioden.tilK9Utenlandsopphold())
     }
 
-    nattevaak?.let {
+    nattevåk?.let {
         val nattvåkBuilder = Nattevåk.NattevåkPeriodeInfo.builder()
         it.tilleggsinformasjon?.let { nattvåkBuilder.tilleggsinformasjon(it) }
         builder.nattevåk(
@@ -126,7 +128,7 @@ fun Tilsynsordning.tilK9Tilsynsordning(
     val tilsynsordningSvar = when (svar) {
         "ja" -> TilsynsordningSvar.JA
         "nei" -> TilsynsordningSvar.NEI
-        "vet_ikke" -> TilsynsordningSvar.VET_IKKE
+        "vetIkke" -> TilsynsordningSvar.VET_IKKE
         else -> throw IllegalArgumentException("Ikke gyldig tilsynsordningsvar. Forventet ja/nei, men fikk $svar")
     }
     return when {
@@ -159,9 +161,9 @@ fun TilsynsordningJa.tilK9TilsynsordningUke(fraOgMed: LocalDate, tilOgMed: Local
 fun UtenlandsoppholdIPerioden.tilK9Utenlandsopphold(): Utenlandsopphold? {
     val perioder = mutableMapOf<Periode, Utenlandsopphold.UtenlandsoppholdPeriodeInfo>()
     opphold.forEach {
-        val årsak = when (it.arsak) {
-            Arsak.BARNET_INNLAGT_I_HELSEINSTITUSJON_FOR_NORSK_OFFENTLIG_REGNING -> Utenlandsopphold.UtenlandsoppholdÅrsak.BARNET_INNLAGT_I_HELSEINSTITUSJON_FOR_NORSK_OFFENTLIG_REGNING
-            Arsak.BARNET_INNLAGT_I_HELSEINSTITUSJON_DEKKET_ETTER_AVTALE_MED_ET_ANNET_LAND_OM_TRYGD -> Utenlandsopphold.UtenlandsoppholdÅrsak.BARNET_INNLAGT_I_HELSEINSTITUSJON_DEKKET_ETTER_AVTALE_MED_ET_ANNET_LAND_OM_TRYGD
+        val årsak = when (it.årsak) {
+            Årsak.BARNET_INNLAGT_I_HELSEINSTITUSJON_FOR_NORSK_OFFENTLIG_REGNING -> Utenlandsopphold.UtenlandsoppholdÅrsak.BARNET_INNLAGT_I_HELSEINSTITUSJON_FOR_NORSK_OFFENTLIG_REGNING
+            Årsak.BARNET_INNLAGT_I_HELSEINSTITUSJON_DEKKET_ETTER_AVTALE_MED_ET_ANNET_LAND_OM_TRYGD -> Utenlandsopphold.UtenlandsoppholdÅrsak.BARNET_INNLAGT_I_HELSEINSTITUSJON_DEKKET_ETTER_AVTALE_MED_ET_ANNET_LAND_OM_TRYGD
             else -> null
         }
 
@@ -180,14 +182,14 @@ fun UtenlandsoppholdIPerioden.tilK9Utenlandsopphold(): Utenlandsopphold? {
 
 fun PreprossesertBarn.tilK9Barn(): Barn {
     return when {
-        !fodselsnummer.isNullOrBlank() -> Barn.builder().norskIdentitetsnummer(NorskIdentitetsnummer.of(fodselsnummer))
+        !fødselsnummer.isNullOrBlank() -> Barn.builder().norskIdentitetsnummer(NorskIdentitetsnummer.of(fødselsnummer))
             .build()
-        else -> Barn.builder().fødselsdato(fodselsdato).build()
+        else -> Barn.builder().fødselsdato(fødselsdato).build()
     }
 }
 
-fun PreprossesertSoker.tilK9Søker(): Søker = Søker.builder()
-    .norskIdentitetsnummer(NorskIdentitetsnummer.of(fodselsnummer))
+fun PreprossesertSøker.tilK9Søker(): Søker = Søker.builder()
+    .norskIdentitetsnummer(NorskIdentitetsnummer.of(fødselsnummer))
     .build()
 
 fun Arbeidsgivere.tilK9Arbeid(

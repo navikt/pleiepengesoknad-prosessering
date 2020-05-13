@@ -133,25 +133,30 @@ class PleiepengesoknadProsesseringTest {
     fun `Gylding melding blir prosessert`() {
 
         val melding = SøknadUtils.defaultSøknad.copy(
-            soknadId = UUID.randomUUID().toString()
+            søknadId = UUID.randomUUID().toString()
         )
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
         journalførtConsumer
-            .hentJournalførtMelding(melding.soknadId)
+            .hentJournalførtMelding(melding.søknadId)
             .assertJournalførtFormat()
+    }
+
+    @Test
+    fun `Gyldig melding med snake_case blir prosessert`(){
+        //TODO:
     }
 
     @Test
     fun `Melding med språk og skal jobbe prosent blir prosessert`() {
 
-        val sprak = "nn"
+        val språk = "nn"
         val jobb1SkalJobbeProsent = 50.422
         val jobb2SkalJobberProsent = 12.111
 
         val melding = SøknadUtils.defaultSøknad.copy(
-            soknadId = UUID.randomUUID().toString(),
-            sprak = sprak,
+            søknadId = UUID.randomUUID().toString(),
+            språk = språk,
             arbeidsgivere = Arbeidsgivere(
                 organisasjoner = listOf(
                     Organisasjon(
@@ -173,8 +178,8 @@ class PleiepengesoknadProsesseringTest {
         )
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
-        val preprossesertMelding = kafkaTestConsumer.hentPreprosessertMelding(melding.soknadId).data
-        assertEquals(sprak, preprossesertMelding.sprak)
+        val preprossesertMelding = kafkaTestConsumer.hentPreprosessertMelding(melding.søknadId).data
+        assertEquals(språk, preprossesertMelding.språk)
         assertEquals(2, preprossesertMelding.arbeidsgivere.organisasjoner.size)
         val jobb1 = preprossesertMelding.arbeidsgivere.organisasjoner.firstOrNull { it.navn == "Jobb1" }
         val jobb2 = preprossesertMelding.arbeidsgivere.organisasjoner.firstOrNull { it.navn == "Jobb2" }
@@ -184,7 +189,7 @@ class PleiepengesoknadProsesseringTest {
         assertEquals(jobb2SkalJobberProsent, jobb2.skalJobbeProsent)
 
         journalførtConsumer
-            .hentJournalførtMelding(melding.soknadId)
+            .hentJournalførtMelding(melding.søknadId)
             .assertJournalførtFormat()
     }
 
@@ -201,7 +206,7 @@ class PleiepengesoknadProsesseringTest {
         wireMockServer.stubJournalfor(201) // Simulerer journalføring fungerer igjen
         restartEngine()
         journalførtConsumer
-            .hentJournalførtMelding(melding.soknadId)
+            .hentJournalførtMelding(melding.søknadId)
             .assertJournalførtFormat()
     }
 
@@ -222,20 +227,20 @@ class PleiepengesoknadProsesseringTest {
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
         journalførtConsumer
-            .hentJournalførtMelding(melding.soknadId)
+            .hentJournalførtMelding(melding.søknadId)
             .assertJournalførtFormat()
     }
 
     @Test
     fun `Melding lagt til prosessering selv om sletting av vedlegg feiler`() {
         val melding = SøknadUtils.defaultSøknad.copy(
-            soknadId = UUID.randomUUID().toString(),
+            søknadId = UUID.randomUUID().toString(),
             vedleggUrls = listOf(URI("http://localhost:8080/jeg-skal-feile/1"))
         )
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
         journalførtConsumer
-            .hentJournalførtMelding(melding.soknadId)
+            .hentJournalførtMelding(melding.søknadId)
             .assertJournalførtFormat()
     }
 
@@ -246,16 +251,16 @@ class PleiepengesoknadProsesseringTest {
 
         val defaultBarn = SøknadUtils.defaultSøknad.barn
         val melding = SøknadUtils.defaultSøknad.copy(
-            soknadId = UUID.randomUUID().toString(),
-            barn = defaultBarn.copy(fodselsnummer = dNummerA, navn = null)
+            søknadId = UUID.randomUUID().toString(),
+            barn = defaultBarn.copy(fødselsnummer = dNummerA, navn = null)
         )
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
         val preprosessertMelding: TopicEntry<PreprossesertMeldingV1> =
-            kafkaTestConsumer.hentPreprosessertMelding(melding.soknadId)
+            kafkaTestConsumer.hentPreprosessertMelding(melding.søknadId)
         assertEquals("KLØKTIG BLUNKENDE SUPERKONSOLL", preprosessertMelding.data.barn.navn)
         journalførtConsumer
-            .hentJournalførtMelding(melding.soknadId)
+            .hentJournalførtMelding(melding.søknadId)
             .assertJournalførtFormat()
     }
 
@@ -266,31 +271,30 @@ class PleiepengesoknadProsesseringTest {
 
         val defaultBarn = SøknadUtils.defaultSøknad.barn
         val melding = SøknadUtils.defaultSøknad.copy(
-            soknadId = UUID.randomUUID().toString(),
-            barn = defaultBarn.copy(fodselsnummer = dNummerA, navn = null)
+            søknadId = UUID.randomUUID().toString(),
+            barn = defaultBarn.copy(fødselsnummer = dNummerA, navn = null)
         )
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
         val preprosessertMelding: TopicEntry<PreprossesertMeldingV1> =
-            kafkaTestConsumer.hentPreprosessertMelding(melding.soknadId)
+            kafkaTestConsumer.hentPreprosessertMelding(melding.søknadId)
         assertEquals("KLØKTIG SUPERKONSOLL", preprosessertMelding.data.barn.navn)
         journalførtConsumer
-            .hentJournalførtMelding(melding.soknadId)
+            .hentJournalførtMelding(melding.søknadId)
             .assertJournalførtFormat()
     }
-
 
     @Test
     fun `Melding lagt til prosessering selv om oppslag paa aktoer ID for barn feiler`() {
         val melding = SøknadUtils.defaultSøknad.copy(
-            soknadId = UUID.randomUUID().toString()
+            søknadId = UUID.randomUUID().toString()
         )
 
         wireMockServer.stubAktoerRegisterGetAktoerIdNotFound(gyldigFodselsnummerC)
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
         journalførtConsumer
-            .hentJournalførtMelding(melding.soknadId)
+            .hentJournalførtMelding(melding.søknadId)
             .assertJournalførtFormat()
     }
 
@@ -299,16 +303,16 @@ class PleiepengesoknadProsesseringTest {
         wireMockServer.stubTpsProxyGetNavn("KLØKTIG", "BLUNKENDE", "SUPERKONSOLL")
         val defaultBarn = SøknadUtils.defaultSøknad.barn
         val melding = SøknadUtils.defaultSøknad.copy(
-            soknadId = UUID.randomUUID().toString(),
+            søknadId = UUID.randomUUID().toString(),
             barn = defaultBarn.copy(navn = null)
         )
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
         val preprosessertMelding: TopicEntry<PreprossesertMeldingV1> =
-            kafkaTestConsumer.hentPreprosessertMelding(melding.soknadId)
+            kafkaTestConsumer.hentPreprosessertMelding(melding.søknadId)
         assertEquals("KLØKTIG BLUNKENDE SUPERKONSOLL", preprosessertMelding.data.barn.navn)
         journalførtConsumer
-            .hentJournalførtMelding(melding.soknadId)
+            .hentJournalførtMelding(melding.søknadId)
             .assertJournalførtFormat()
     }
 
@@ -319,16 +323,16 @@ class PleiepengesoknadProsesseringTest {
 
         val defaultBarn = SøknadUtils.defaultSøknad.barn
         val melding = SøknadUtils.defaultSøknad.copy(
-            soknadId = UUID.randomUUID().toString(),
-            barn = defaultBarn.copy(fodselsnummer = null, navn = null, aktoerId = "56789")
+            søknadId = UUID.randomUUID().toString(),
+            barn = defaultBarn.copy(fødselsnummer = null, navn = null, aktørId = "56789")
         )
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
         val preprosessertMelding: TopicEntry<PreprossesertMeldingV1> =
-            kafkaTestConsumer.hentPreprosessertMelding(melding.soknadId)
+            kafkaTestConsumer.hentPreprosessertMelding(melding.søknadId)
         assertEquals("KLØKTIG BLUNKENDE SUPERKONSOLL", preprosessertMelding.data.barn.navn)
         journalførtConsumer
-            .hentJournalførtMelding(melding.soknadId)
+            .hentJournalførtMelding(melding.søknadId)
             .assertJournalførtFormat()
     }
 
@@ -340,16 +344,16 @@ class PleiepengesoknadProsesseringTest {
 
         val defaultBarn = SøknadUtils.defaultSøknad.barn
         val melding = SøknadUtils.defaultSøknad.copy(
-            soknadId = UUID.randomUUID().toString(),
-            barn = defaultBarn.copy(fodselsnummer = forventetFodselsNummer, navn = null, aktoerId = "56789")
+            søknadId = UUID.randomUUID().toString(),
+            barn = defaultBarn.copy(fødselsnummer = forventetFodselsNummer, navn = null, aktørId = "56789")
         )
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
         val preprosessertMelding: TopicEntry<PreprossesertMeldingV1> =
-            kafkaTestConsumer.hentPreprosessertMelding(melding.soknadId)
-        assertEquals(forventetFodselsNummer, preprosessertMelding.data.barn.fodselsnummer)
+            kafkaTestConsumer.hentPreprosessertMelding(melding.søknadId)
+        assertEquals(forventetFodselsNummer, preprosessertMelding.data.barn.fødselsnummer)
         journalførtConsumer
-            .hentJournalførtMelding(melding.soknadId)
+            .hentJournalførtMelding(melding.søknadId)
             .assertJournalførtFormat()
     }
 
@@ -360,16 +364,16 @@ class PleiepengesoknadProsesseringTest {
 
         val defaultBarn = SøknadUtils.defaultSøknad.barn
         val melding = SøknadUtils.defaultSøknad.copy(
-            soknadId = UUID.randomUUID().toString(),
-            barn = defaultBarn.copy(fodselsnummer = forventetFodselsNummer, navn = null, aktoerId = "666")
+            søknadId = UUID.randomUUID().toString(),
+            barn = defaultBarn.copy(fødselsnummer = forventetFodselsNummer, navn = null, aktørId = "666")
         )
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
         val preprosessertMelding: TopicEntry<PreprossesertMeldingV1> =
-            kafkaTestConsumer.hentPreprosessertMelding(melding.soknadId)
-        assertEquals(forventetFodselsNummer, preprosessertMelding.data.barn.fodselsnummer)
+            kafkaTestConsumer.hentPreprosessertMelding(melding.søknadId)
+        assertEquals(forventetFodselsNummer, preprosessertMelding.data.barn.fødselsnummer)
         journalførtConsumer
-            .hentJournalførtMelding(melding.soknadId)
+            .hentJournalførtMelding(melding.søknadId)
             .assertJournalførtFormat()
     }
 
@@ -379,16 +383,16 @@ class PleiepengesoknadProsesseringTest {
 
         val defaultBarn = SøknadUtils.defaultSøknad.barn
         val melding = SøknadUtils.defaultSøknad.copy(
-            soknadId = UUID.randomUUID().toString(),
-            barn = defaultBarn.copy(fodselsdato = LocalDate.now(), navn = null, aktoerId = "666")
+            søknadId = UUID.randomUUID().toString(),
+            barn = defaultBarn.copy(fødselsdato = LocalDate.now(), navn = null, aktørId = "666")
         )
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
         val preprosesssertMelding: TopicEntry<PreprossesertMeldingV1> =
-            kafkaTestConsumer.hentPreprosessertMelding(melding.soknadId)
-        assertEquals(LocalDate.now(), preprosesssertMelding.data.barn.fodselsdato)
+            kafkaTestConsumer.hentPreprosessertMelding(melding.søknadId)
+        assertEquals(LocalDate.now(), preprosesssertMelding.data.barn.fødselsdato)
         journalførtConsumer
-            .hentJournalførtMelding(melding.soknadId)
+            .hentJournalførtMelding(melding.søknadId)
             .assertJournalførtFormat()
     }
 
@@ -397,25 +401,25 @@ class PleiepengesoknadProsesseringTest {
         wireMockServer.stubAktoerRegister(gyldigFodselsnummerB, "666")
 
         val melding = MeldingV1(
-            sprak = "nb",
-            soknadId = "583a3cf8-767a-49f4-a5dd-619df2c72c7a",
+            språk = "nb",
+            søknadId = "583a3cf8-767a-49f4-a5dd-619df2c72c7a",
             mottatt = ZonedDateTime.parse("2019-10-20T07:15:36.124Z"),
             fraOgMed = LocalDate.parse("2020-01-06"),
             tilOgMed = LocalDate.parse("2020-01-10"),
-            soker = Soker(
-                aktoerId = "123456",
-                fodselsnummer = gyldigFodselsnummerA,
+            søker = Søker(
+                aktørId = "123456",
+                fødselsnummer = gyldigFodselsnummerA,
                 fornavn = "Ola",
                 mellomnavn = "Mellomnavn",
                 etternavn = "Nordmann"
             ),
             relasjonTilBarnet = "far",
-            harMedsoker = false,
+            harMedsøker = false,
             barn = Barn(
                 navn = "Bjarne",
-                fodselsnummer = gyldigFodselsnummerB,
-                fodselsdato = null,
-                aktoerId = "666"
+                fødselsnummer = gyldigFodselsnummerB,
+                fødselsdato = null,
+                aktørId = "666"
             ),
             arbeidsgivere = Arbeidsgivere(
                 organisasjoner = listOf(
@@ -501,9 +505,9 @@ class PleiepengesoknadProsesseringTest {
                         tilOgMed = LocalDate.parse("2020-06-28"),
                         landkode = "AW",
                         landnavn = "Aruba",
-                        arsak = Arsak.BARNET_INNLAGT_I_HELSEINSTITUSJON_FOR_NORSK_OFFENTLIG_REGNING, //barnetInnlagtIHelseinstitusjonForNorskOffentligRegning
+                        årsak = Årsak.BARNET_INNLAGT_I_HELSEINSTITUSJON_FOR_NORSK_OFFENTLIG_REGNING, //barnetInnlagtIHelseinstitusjonForNorskOffentligRegning
                         erBarnetInnlagt = true,
-                        erUtenforEos = false
+                        erUtenforEøs = false
                     )
                 )
             ),
@@ -511,8 +515,8 @@ class PleiepengesoknadProsesseringTest {
                 beredskap = true,
                 tilleggsinformasjon = "I Beredskap"
             ),
-            nattevaak = Nattevaak(
-                harNattevaak = true,
+            nattevåk = Nattevåk(
+                harNattevåk = true,
                 tilleggsinformasjon = "Har Nattevåk"
             ),
             tilsynsordning = Tilsynsordning(
@@ -535,20 +539,20 @@ class PleiepengesoknadProsesseringTest {
                 )
             ),
             harBekreftetOpplysninger = true,
-            harForstattRettigheterOgPlikter = true
+            harForståttRettigheterOgPlikter = true
         )
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
 
         journalførtConsumer
-            .hentJournalførtMelding(melding.soknadId)
+            .hentJournalførtMelding(melding.søknadId)
             .assertJournalførtFormat()
     }
 
     @Test
     fun `tilsynsordning ja`() {
         val melding = SøknadUtils.defaultSøknad.copy(
-            soknadId = UUID.randomUUID().toString(),
+            søknadId = UUID.randomUUID().toString(),
             tilsynsordning = Tilsynsordning(
                 svar = "ja",
                 ja = TilsynsordningJa(
@@ -566,14 +570,14 @@ class PleiepengesoknadProsesseringTest {
         kafkaTestProducer.leggSoknadTilProsessering(melding)
 
         journalførtConsumer
-            .hentJournalførtMelding(melding.soknadId)
+            .hentJournalførtMelding(melding.søknadId)
             .assertJournalførtFormat()
     }
 
     @Test
     fun `tilsynsordning nei`() {
         val melding = SøknadUtils.defaultSøknad.copy(
-            soknadId = UUID.randomUUID().toString(),
+            søknadId = UUID.randomUUID().toString(),
             tilsynsordning = Tilsynsordning(
                 svar = "nei",
                 ja = null,
@@ -584,19 +588,19 @@ class PleiepengesoknadProsesseringTest {
         kafkaTestProducer.leggSoknadTilProsessering(melding)
 
         journalførtConsumer
-            .hentJournalførtMelding(melding.soknadId)
+            .hentJournalførtMelding(melding.søknadId)
             .assertJournalførtFormat()
     }
 
     @Test
     fun `tilsynsordning vet_ikke`() {
         val melding = SøknadUtils.defaultSøknad.copy(
-            soknadId = UUID.randomUUID().toString(),
+            søknadId = UUID.randomUUID().toString(),
             tilsynsordning = Tilsynsordning(
-                svar = "vet_ikke",
+                svar = "vetIkke",
                 ja = null,
                 vetIkke = TilsynsordningVetIkke(
-                    svar = "vet ikke",
+                    svar = "vetIkke",
                     annet = "annet"
                 )
             )
@@ -605,16 +609,16 @@ class PleiepengesoknadProsesseringTest {
         kafkaTestProducer.leggSoknadTilProsessering(melding)
 
         journalførtConsumer
-            .hentJournalførtMelding(melding.soknadId)
+            .hentJournalførtMelding(melding.søknadId)
             .assertJournalførtFormat()
     }
 
     @Test
     fun `tilsynsordning vet_ikke uten annet felt satt`() {
         val melding = SøknadUtils.defaultSøknad.copy(
-            soknadId = UUID.randomUUID().toString(),
+            søknadId = UUID.randomUUID().toString(),
             tilsynsordning = Tilsynsordning(
-                svar = "vet_ikke",
+                svar = "vetIkke",
                 ja = null,
                 vetIkke = TilsynsordningVetIkke(
                     svar = "hva som helst?"
@@ -625,16 +629,16 @@ class PleiepengesoknadProsesseringTest {
         kafkaTestProducer.leggSoknadTilProsessering(melding)
 
         journalførtConsumer
-            .hentJournalførtMelding(melding.soknadId)
+            .hentJournalførtMelding(melding.søknadId)
             .assertJournalførtFormat()
     }
 
     @Test
     fun `tilsynsordning vet_ikke med annet felt satt`() {
         val melding = SøknadUtils.defaultSøknad.copy(
-            soknadId = UUID.randomUUID().toString(),
+            søknadId = UUID.randomUUID().toString(),
             tilsynsordning = Tilsynsordning(
-                svar = "vet_ikke",
+                svar = "vetIkke",
                 ja = null,
                 vetIkke = TilsynsordningVetIkke(
                     svar = "hva som helst?",
@@ -646,21 +650,21 @@ class PleiepengesoknadProsesseringTest {
         kafkaTestProducer.leggSoknadTilProsessering(melding)
 
         journalførtConsumer
-            .hentJournalførtMelding(melding.soknadId)
+            .hentJournalførtMelding(melding.søknadId)
             .assertJournalførtFormat()
     }
 
     @Test
     fun `Søknad uten tilsynsordning satt`() {
         val melding = SøknadUtils.defaultSøknad.copy(
-            soknadId = UUID.randomUUID().toString(),
+            søknadId = UUID.randomUUID().toString(),
             tilsynsordning = null
         )
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
 
         journalførtConsumer
-            .hentJournalførtMelding(melding.soknadId)
+            .hentJournalførtMelding(melding.søknadId)
             .assertJournalførtFormat()
     }
 

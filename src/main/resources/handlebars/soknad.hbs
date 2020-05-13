@@ -90,7 +90,7 @@
 
                 {{# if hjelp.har_medsoker }}
                     <li>
-                        Søker opplyser at en medsøker skal søke for samme periode..<br/>
+                        Søker opplyser at en medsøker skal søke for samme periode.<br/>
                         <ul style="list-style-type:square;">
                             {{# if samtidig_hjemme }}
                                 <li>
@@ -157,7 +157,7 @@
             <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Nei
         {{/if}}
     {{/if}}
-    <!--<p class="sporsmalstekst">Skal du ta ut feriedager i perioden?</p> TODO: Fjern kommentar ved lansering av feriedager.
+    <p class="sporsmalstekst">Skal du ta ut feriedager i perioden?</p>
     {{# if ferieuttakIPerioden.skalTaUtFerieIPerioden }}
         <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Ja
         <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Nei
@@ -171,11 +171,12 @@
     {{else}}
         <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Ja
         <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Nei
-    {{/if}}-->
+    {{/if}}
     <h2>
         <span>
            Arbeidsforhold
-        </span></h2>
+        </span>
+    </h2>
     <!-- ARBEIDSGIVERE -->
     {{# if hjelp.ingen_arbeidsgivere }}
         <ul>
@@ -202,7 +203,7 @@
                                 Søker skal jobbe redusert i perioden.
                             {{/eq}}
 
-                            {{#eq org.skal_jobbe "vet_ikke"}}
+                            {{#eq org.skal_jobbe "vetIkke"}}
                                 Søker vet ikke om han/hun skal jobbe her, men sier fra hvis det blir tilfelle.
                             {{/eq}}
                         {{/if}}
@@ -254,7 +255,7 @@
             <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Nei
             <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Usikker
         {{/eq}}
-        {{#eq tilsynsordning.tilsynsordning_svar "vet_ikke" }}
+        {{#eq tilsynsordning.tilsynsordning_svar "vetIkke" }}
             <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Ja
             <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Nei
             <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Usikker
@@ -313,15 +314,15 @@
         {{/eq}}
 
         <!-- Vet ikke -->
-        {{#eq tilsynsordning.tilsynsordning_svar "vet_ikke" }}
+        {{#eq tilsynsordning.tilsynsordning_svar "vetIkke" }}
             <hr/>
             <!-- Sjekkbokser -->
-            {{#eq tilsynsordning.svar "er_sporadisk" }}
+            {{#eq tilsynsordning.svar "erSporadisk" }}
                 <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Er sporadisk
                 <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Er ikke laget en plan
                 <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Annet
             {{/eq}}
-            {{#eq tilsynsordning.svar "er_ikke_laget_en_plan" }}
+            {{#eq tilsynsordning.svar "erIkkeLagetEnPlan" }}
                 <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Er sporadisk
                 <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Er ikke laget en plan
                 <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Annet
@@ -403,11 +404,11 @@
         <h2><span>Selvstendig næringsdrivende</span></h2>
         {{# each søknad.selvstendigVirksomheter as |virksomhet|~}}
 
-            <h3>{{virksomhet.navnPåVirksomheten}} ({{#dato virksomhet.fraOgMed}}{{/dato}} -
+            <h3>{{virksomhet.navnPåVirksomheten}} (startet {{#dato virksomhet.fraOgMed}}{{/dato}},
                 {{#if virksomhet.tilOgMed}}
-                    {{#dato virksomhet.tilOgMed}}{{/dato}})
+                    avsluttet {{#dato virksomhet.tilOgMed}}{{/dato}})
                 {{else}}
-                    pågående)
+                    er pågående)
                 {{/if}}</h3>
             <p>Næringstype:
                 {{# each virksomhet.næringstyper as |næringstype|~}}
@@ -506,7 +507,15 @@
     {{else}}
         {{> jaNeiCheckbox parameter=false}}
     {{/if}}
-
+    <!-- Info om har ikke lastet opp vedlegg -->
+    {{#if harIkkeVedlegg}}
+        <h2>
+        <span>
+            Legeerklæring
+        </span>
+        </h2>
+        <p>Ingen vedlegg er lastet opp.</p>
+    {{/if}}
     <!-- SAMTYKKE -->
     <br/>
     <br/>

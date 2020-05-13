@@ -9,7 +9,7 @@ import no.nav.helse.kafka.ManagedKafkaStreams
 import no.nav.helse.kafka.ManagedStreamHealthy
 import no.nav.helse.kafka.ManagedStreamReady
 import no.nav.helse.prosessering.v1.PreprossesertMeldingV1
-import no.nav.helse.prosessering.v1.PreprossesertSoker
+import no.nav.helse.prosessering.v1.PreprossesertSøker
 import no.nav.helse.tpsproxy.TpsNavn
 import org.apache.kafka.streams.StreamsBuilder
 import org.apache.kafka.streams.Topology
@@ -52,11 +52,11 @@ internal class JournalforingsStream(
                         logger.info("Journalfører dokumenter.")
                         val journaPostId = joarkGateway.journalfoer(
                             mottatt = entry.data.mottatt,
-                            aktoerId = AktoerId(entry.data.soker.aktoerId),
-                            sokerNavn = entry.data.soker.tilTpsNavn(),
+                            aktoerId = AktoerId(entry.data.søker.aktørId),
+                            sokerNavn = entry.data.søker.tilTpsNavn(),
                             correlationId = CorrelationId(entry.metadata.correlationId),
                             dokumenter = entry.data.dokumentUrls,
-                            norskIdent = entry.data.soker.fodselsnummer
+                            norskIdent = entry.data.søker.fødselsnummer
                         )
                         logger.info("Dokumenter journalført med ID = ${journaPostId.journalPostId}.")
                         val journalfort = Journalfort(
@@ -78,7 +78,7 @@ internal class JournalforingsStream(
     internal fun stop() = stream.stop(becauseOfError = false)
 }
 
-fun PreprossesertSoker.tilTpsNavn(): TpsNavn = TpsNavn(
+fun PreprossesertSøker.tilTpsNavn(): TpsNavn = TpsNavn(
     fornavn = fornavn,
     mellomnavn = mellomnavn,
     etternavn = etternavn

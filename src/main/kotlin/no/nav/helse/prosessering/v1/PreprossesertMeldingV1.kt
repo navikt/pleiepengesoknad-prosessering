@@ -1,6 +1,6 @@
 package no.nav.helse.prosessering.v1
 
-import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.annotation.JsonAlias
 import no.nav.helse.aktoer.AktoerId
 import no.nav.helse.aktoer.NorskIdent
 import java.net.URI
@@ -8,31 +8,28 @@ import java.time.LocalDate
 import java.time.ZonedDateTime
 
 data class PreprossesertMeldingV1(
-    val sprak: String?,
-    val soknadId: String,
-    val dokumentUrls: List<List<URI>>,
+    @JsonAlias("sprak") val språk: String?,
+    @JsonAlias("soknad_id") val søknadId: String,
+    @JsonAlias("dokument_urls") val dokumentUrls: List<List<URI>>,
     val mottatt: ZonedDateTime,
-    val fraOgMed: LocalDate,
-    val tilOgMed: LocalDate,
-    val soker: PreprossesertSoker,
+    @JsonAlias("fra_og_med") val fraOgMed: LocalDate,
+    @JsonAlias("til_og_med") val tilOgMed: LocalDate,
+    @JsonAlias("soker") val søker: PreprossesertSøker,
     val barn: PreprossesertBarn,
-    val relasjonTilBarnet: String,
+    @JsonAlias("relasjon_til_barnet") val relasjonTilBarnet: String,
     val arbeidsgivere: Arbeidsgivere,
     val medlemskap: Medlemskap,
-    @JsonProperty("bekrefter_periode_over_8_uker")
-    val bekrefterPeriodeOver8Uker: Boolean? = null,
-    @JsonProperty("utenlandsopphold_i_perioden")
-    val utenlandsoppholdIPerioden: UtenlandsoppholdIPerioden?,
-    @JsonProperty("ferieuttak_i_perioden")
-    val ferieuttakIPerioden: FerieuttakIPerioden?,
+    @JsonAlias("bekrefter_periode_over_8_uker") val bekrefterPeriodeOver8Uker: Boolean? = null,
+    @JsonAlias("utenlandsopphold_i_perioden") val utenlandsoppholdIPerioden: UtenlandsoppholdIPerioden?,
+    @JsonAlias("ferieuttak_i_perioden") val ferieuttakIPerioden: FerieuttakIPerioden?,
     val beredskap: Beredskap?,
-    val nattevaak: Nattevaak?,
+    @JsonAlias("nattevaak") val nattevåk: Nattevåk?,
     val tilsynsordning: Tilsynsordning?,
-    val harMedsoker: Boolean,
+    @JsonAlias("har_medsoker") val harMedsøker: Boolean,
     val frilans: Frilans? = null,
-    val selvstendigVirksomheter: List<Virksomhet>? = null,
-    val harForstattRettigheterOgPlikter: Boolean,
-    val harBekreftetOpplysninger: Boolean
+    @JsonAlias("selvstendig_virksomheter") val selvstendigVirksomheter: List<Virksomhet>? = null,
+    @JsonAlias("har_forstatt_rettigheter_og_plikter") val harForstattRettigheterOgPlikter: Boolean,
+    @JsonAlias("har_bekreftet_opplysninger") val harBekreftetOpplysninger: Boolean
 ) {
     internal constructor(
         melding: MeldingV1,
@@ -43,52 +40,52 @@ data class PreprossesertMeldingV1(
         barnetsNorskeIdent: NorskIdent?,
         barnetsFødselsdato: LocalDate?
     ) : this(
-        sprak = melding.sprak,
-        soknadId = melding.soknadId,
+        språk = melding.språk,
+        søknadId = melding.søknadId,
         dokumentUrls = dokumentUrls,
         mottatt = melding.mottatt,
         fraOgMed = melding.fraOgMed,
         tilOgMed = melding.tilOgMed,
-        soker = PreprossesertSoker(melding.soker, sokerAktoerId),
+        søker = PreprossesertSøker(melding.søker, sokerAktoerId),
         barn = PreprossesertBarn(melding.barn, barnetsNavn, barnetsNorskeIdent, barnAktoerId, barnetsFødselsdato),
         relasjonTilBarnet = melding.relasjonTilBarnet,
         arbeidsgivere = melding.arbeidsgivere,
         medlemskap = melding.medlemskap,
         beredskap = melding.beredskap,
-        nattevaak = melding.nattevaak,
+        nattevåk = melding.nattevåk,
         tilsynsordning = melding.tilsynsordning,
-        harMedsoker = melding.harMedsoker,
+        harMedsøker = melding.harMedsøker,
         bekrefterPeriodeOver8Uker = melding.bekrefterPeriodeOver8Uker,
         frilans = melding.frilans,
         selvstendigVirksomheter = melding.selvstendigVirksomheter,
-        harForstattRettigheterOgPlikter = melding.harForstattRettigheterOgPlikter,
+        harForstattRettigheterOgPlikter = melding.harForståttRettigheterOgPlikter,
         harBekreftetOpplysninger = melding.harBekreftetOpplysninger,
         utenlandsoppholdIPerioden = melding.utenlandsoppholdIPerioden,
         ferieuttakIPerioden = melding.ferieuttakIPerioden
     )
 }
 
-data class PreprossesertSoker(
-    val fodselsnummer: String,
+data class PreprossesertSøker(
+    @JsonAlias("fodselsnummer") val fødselsnummer: String,
     val fornavn: String,
     val mellomnavn: String?,
     val etternavn: String,
-    val aktoerId: String
+    @JsonAlias("aktoer_id") val aktørId: String
 ) {
-    internal constructor(soker: Soker, aktoerId: AktoerId) : this(
-        fodselsnummer = soker.fodselsnummer,
+    internal constructor(soker: Søker, aktoerId: AktoerId) : this(
+        fødselsnummer = soker.fødselsnummer,
         fornavn = soker.fornavn,
         mellomnavn = soker.mellomnavn,
         etternavn = soker.etternavn,
-        aktoerId = aktoerId.id
+        aktørId = aktoerId.id
     )
 }
 
 data class PreprossesertBarn(
-    val fodselsnummer: String?,
+    @JsonAlias("fodselsnummer") val fødselsnummer: String?,
     val navn: String?,
-    val fodselsdato: LocalDate?,
-    val aktoerId: String?
+    @JsonAlias("fodselsdato") val fødselsdato: LocalDate?,
+    @JsonAlias("aktoer_id") val aktørId: String?
 ) {
 
     internal constructor(
@@ -98,13 +95,13 @@ data class PreprossesertBarn(
         aktoerId: AktoerId?,
         fødselsdato: LocalDate?
     ) : this(
-        fodselsnummer = barn.fodselsnummer ?: barnetsNorskeIdent?.getValue(),
+        fødselsnummer = barn.fødselsnummer ?: barnetsNorskeIdent?.getValue(),
         navn = barnetsNavn,
-        fodselsdato = fødselsdato,
-        aktoerId = aktoerId?.id
+        fødselsdato = fødselsdato,
+        aktørId = aktoerId?.id
     )
 
     override fun toString(): String {
-        return "PreprossesertBarn(navn=$navn, aktoerId=$aktoerId, fodselsdato=$fodselsdato)"
+        return "PreprossesertBarn(navn=$navn, aktoerId=$aktørId, fodselsdato=$fødselsdato)"
     }
 }
