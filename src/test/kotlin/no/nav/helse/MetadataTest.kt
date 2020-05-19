@@ -24,24 +24,6 @@ internal class MetadataTest {
     }
 
     @Test
-    internal fun `Deserialisering og serialisering fra snake_case`() {
-        val json = """
-            {
-                "version": 1,
-                "correlation_id": "foo",
-                "request_id": "bar"
-            }
-        """.trimIndent()
-
-        val metadata: Metadata = mapper.readValue(json)
-        assertEquals(1, metadata.version)
-        assertEquals("foo", metadata.correlationId)
-        assertEquals("bar", metadata.requestId)
-
-        JSONAssert.assertEquals(reserialisert, mapper.writeValueAsString(metadata), true)
-    }
-
-    @Test
     internal fun `Deserialisering og serialisering fra camelCase`() {
         val metadata: Metadata = mapper.readValue(reserialisert)
         assertEquals(1, metadata.version)
