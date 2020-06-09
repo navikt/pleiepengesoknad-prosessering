@@ -304,9 +304,9 @@ class PdfV1GeneratorTest {
                 Utenlandsopphold(
                     fraOgMed = LocalDate.parse("2020-01-01"),
                     tilOgMed = LocalDate.parse("2020-01-10"),
-                    landnavn = "Bahamas",
-                    landkode = "BHS",
-                    erUtenforEøs = true,
+                    landnavn = "Tyskland",
+                    landkode = "DEU",
+                    erUtenforEøs = false,
                     erBarnetInnlagt = true,
                     perioderBarnetErInnlagt = listOf(
                         Periode(
@@ -316,13 +316,9 @@ class PdfV1GeneratorTest {
                         Periode(
                             fraOgMed = LocalDate.parse("2020-01-03"),
                             tilOgMed = LocalDate.parse("2020-01-04")
-                        ),
-                        Periode(
-                            fraOgMed = LocalDate.parse("2020-01-05"),
-                            tilOgMed = LocalDate.parse("2020-01-05")
                         )
                     ),
-                    årsak = Årsak.ANNET
+                    årsak = Årsak.BARNET_INNLAGT_I_HELSEINSTITUSJON_FOR_NORSK_OFFENTLIG_REGNING
                 ),
                 Utenlandsopphold(
                     fraOgMed = LocalDate.parse("2020-01-01"),

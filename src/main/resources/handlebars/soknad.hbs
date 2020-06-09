@@ -148,10 +148,12 @@
             <ul>
                 {{# each utenlandsoppholdIPerioden.opphold as |opphold|~}}
                     <li>
-                        <p>{{opphold.landnavn}}({{opphold.landkode}}) ({{opphold.fraOgMed}} - {{opphold.tilOgMed}})
-                            {{#if opphold.erUtenforEØS}} (Utenfor EØS) {{/if}}</p>
+                        <p>{{opphold.landnavn}}
+                            {{#if opphold.erUtenforEØS}} (utenfor EØS) {{/if}}
+                            : {{opphold.fraOgMed}} - {{opphold.tilOgMed}})
+                            </p>
 
-                        <p><b>Var barnet innlagt?</b></p> {{>jaNeiCheckbox parameter=opphold.erBarnetInnlagt}}
+                        <p><b>Barn innlagt?</b></p> {{>jaNeiCheckbox parameter=opphold.erBarnetInnlagt}}
                         {{#if opphold.erBarnetInnlagt}}
                             <p><b>Årsak:</b> {{opphold.årsak}}</p>
                             <p><b>Perioder:</b></p>
