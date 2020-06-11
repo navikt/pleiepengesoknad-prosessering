@@ -49,7 +49,7 @@ internal class PdfV1Generator  {
                     Handlebars.SafeString(text)
                 }
             })
-            registerHelper("enumNæringstyper", Helper<String> { context, options ->
+            registerHelper("enumNæringstyper", Helper<String> { context, _ ->
                 Næringstyper.valueOf(context).beskrivelse
             })
             registerHelper("dato", Helper<String> { context, _ ->
@@ -267,7 +267,7 @@ private fun List<Utenlandsopphold>.somMapUtenlandsopphold(): List<Map<String, An
             "erUtenforEØS" to it.erUtenforEøs,
             "erBarnetInnlagt" to it.erBarnetInnlagt,
             "perioderBarnetErInnlagt" to it.perioderBarnetErInnlagt.somMapPerioder(),
-            "årsak" to it.årsak
+            "årsak" to it.årsak?.beskrivelse
         )
     }
 }

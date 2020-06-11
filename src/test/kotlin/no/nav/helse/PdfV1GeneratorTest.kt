@@ -304,9 +304,9 @@ class PdfV1GeneratorTest {
                 Utenlandsopphold(
                     fraOgMed = LocalDate.parse("2020-01-01"),
                     tilOgMed = LocalDate.parse("2020-01-10"),
-                    landnavn = "Tyskland",
-                    landkode = "DEU",
-                    erUtenforEøs = false,
+                    landnavn = "Bahamas",
+                    landkode = "BAH",
+                    erUtenforEøs = true,
                     erBarnetInnlagt = true,
                     perioderBarnetErInnlagt = listOf(
                         Periode(
@@ -323,9 +323,9 @@ class PdfV1GeneratorTest {
                 Utenlandsopphold(
                     fraOgMed = LocalDate.parse("2020-01-01"),
                     tilOgMed = LocalDate.parse("2020-01-10"),
-                    landnavn = "Bahamas",
+                    landnavn = "Svergie",
                     landkode = "BHS",
-                    erUtenforEøs = true,
+                    erUtenforEøs = false,
                     erBarnetInnlagt = true,
                     perioderBarnetErInnlagt = listOf(
                         Periode(
@@ -768,7 +768,7 @@ class PdfV1GeneratorTest {
     }
 
     @Test
-    //@Ignore
+    @Ignore
     fun `opprett lesbar oppsummerings-PDF`() {
         genererOppsummeringsPdfer(true)
     }
