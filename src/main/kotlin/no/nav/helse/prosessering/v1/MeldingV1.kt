@@ -219,7 +219,7 @@ data class Periode(
 enum class Årsak(val beskrivelse: String) {
     BARNET_INNLAGT_I_HELSEINSTITUSJON_FOR_NORSK_OFFENTLIG_REGNING("Barnet innlagt i helseinstitusjon for norsk offentlig regning"),
     BARNET_INNLAGT_I_HELSEINSTITUSJON_DEKKET_ETTER_AVTALE_MED_ET_ANNET_LAND_OM_TRYGD("Barnet innlagt i helseinstitusjon dekket etter avtale med et annet land om trygd"),
-    ANNET("Annet"),
+    ANNET("Innleggelsen dekkes av søker selv"),
 }
 
 data class UtenlandsoppholdIPerioden(

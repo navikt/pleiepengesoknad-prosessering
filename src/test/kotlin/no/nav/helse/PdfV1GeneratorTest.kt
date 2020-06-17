@@ -318,7 +318,7 @@ class PdfV1GeneratorTest {
                             tilOgMed = LocalDate.parse("2020-01-04")
                         )
                     ),
-                    årsak = Årsak.BARNET_INNLAGT_I_HELSEINSTITUSJON_FOR_NORSK_OFFENTLIG_REGNING
+                    årsak = Årsak.ANNET
                 ),
                 Utenlandsopphold(
                     fraOgMed = LocalDate.parse("2020-01-01"),
