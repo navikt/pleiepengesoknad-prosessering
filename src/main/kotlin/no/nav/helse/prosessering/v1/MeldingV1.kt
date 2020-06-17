@@ -203,6 +203,7 @@ data class Utenlandsopphold(
     val landnavn: String,
     val erUtenforEøs: Boolean?,
     val erBarnetInnlagt: Boolean?,
+    val perioderBarnetErInnlagt: List<Periode> = listOf(),
     val årsak: Årsak?
 ) {
     override fun toString(): String {
@@ -210,10 +211,15 @@ data class Utenlandsopphold(
     }
 }
 
-enum class Årsak {
-    BARNET_INNLAGT_I_HELSEINSTITUSJON_FOR_NORSK_OFFENTLIG_REGNING,
-    BARNET_INNLAGT_I_HELSEINSTITUSJON_DEKKET_ETTER_AVTALE_MED_ET_ANNET_LAND_OM_TRYGD,
-    ANNET,
+data class Periode(
+    val fraOgMed: LocalDate,
+    val tilOgMed: LocalDate
+)
+
+enum class Årsak(val beskrivelse: String) {
+    BARNET_INNLAGT_I_HELSEINSTITUSJON_FOR_NORSK_OFFENTLIG_REGNING("Barnet innlagt i helseinstitusjon for norsk offentlig regning"),
+    BARNET_INNLAGT_I_HELSEINSTITUSJON_DEKKET_ETTER_AVTALE_MED_ET_ANNET_LAND_OM_TRYGD("Barnet innlagt i helseinstitusjon dekket etter avtale med et annet land om trygd"),
+    ANNET("Innleggelsen dekkes av søker selv"),
 }
 
 data class UtenlandsoppholdIPerioden(

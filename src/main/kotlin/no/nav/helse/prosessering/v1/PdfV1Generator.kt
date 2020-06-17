@@ -49,7 +49,7 @@ internal class PdfV1Generator  {
                     Handlebars.SafeString(text)
                 }
             })
-            registerHelper("enumNæringstyper", Helper<String> { context, options ->
+            registerHelper("enumNæringstyper", Helper<String> { context, _ ->
                 Næringstyper.valueOf(context).beskrivelse
             })
             registerHelper("dato", Helper<String> { context, _ ->
@@ -261,9 +261,14 @@ private fun List<Utenlandsopphold>.somMapUtenlandsopphold(): List<Map<String, An
     return map {
         mapOf<String,Any?>(
             "landnavn" to it.landnavn,
+            "landkode" to it.landkode,
             "fraOgMed" to dateFormatter.format(it.fraOgMed),
-            "tilOgMed" to dateFormatter.format(it.tilOgMed)
-            )
+            "tilOgMed" to dateFormatter.format(it.tilOgMed),
+            "erUtenforEØS" to it.erUtenforEøs,
+            "erBarnetInnlagt" to it.erBarnetInnlagt,
+            "perioderBarnetErInnlagt" to it.perioderBarnetErInnlagt.somMapPerioder(),
+            "årsak" to it.årsak?.beskrivelse
+        )
     }
 }
 
@@ -274,6 +279,16 @@ private fun List<Ferieuttak>.somMapFerieuttak(): List<Map<String, Any?>> {
             "fraOgMed" to dateFormatter.format(it.fraOgMed),
             "tilOgMed" to dateFormatter.format(it.tilOgMed)
             )
+    }
+}
+
+private fun List<Periode>.somMapPerioder(): List<Map<String, Any?>>{
+    val dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy").withZone(ZoneId.of("Europe/Oslo"))
+    return map {
+        mapOf<String,Any?>(
+            "fraOgMed" to dateFormatter.format(it.fraOgMed),
+            "tilOgMed" to dateFormatter.format(it.tilOgMed)
+        )
     }
 }
 
