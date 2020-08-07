@@ -18,6 +18,10 @@
           "role": "MANAGER"
         },
         {
+          "member": "O158190",
+          "role": "MANAGER"
+        },
+        {
           "member": "F154868",
           "role": "MANAGER"
         }
@@ -40,6 +44,10 @@
         },
         {
           "member": "E157419",
+          "role": "MANAGER"
+        },
+        {
+          "member": "O158190",
           "role": "MANAGER"
         },
         {
@@ -68,6 +76,10 @@
           "role": "MANAGER"
         },
         {
+          "member": "O158190",
+          "role": "MANAGER"
+        },
+        {
           "member": "F154868",
           "role": "MANAGER"
         }
@@ -89,7 +101,15 @@
           "role": "CONSUMER"
         },
         {
+          "member": "srv-sif-innsyn-mtk",
+          "role": "CONSUMER"
+        },
+        {
           "member": "E157419",
+          "role": "MANAGER"
+        },
+        {
+          "member": "O158190",
           "role": "MANAGER"
         },
         {
