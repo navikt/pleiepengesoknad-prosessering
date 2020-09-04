@@ -13,7 +13,7 @@ spec:
   alerts:
     - alert: {{app}} nede
       expr: up{app="{{app}}", job="kubernetes-pods"} == 0
-      for: 2m
+      for: 10m
       description: "App \{{ $labels.app }} er nede i namespace \{{ $labels.kubernetes_namespace }}"
       action: "`kubectl describe pod \{{ $labels.kubernetes_pod_name }} -n \{{ $labels.kubernetes_namespace }}` for events, og `kubectl logs \{{ $labels.kubernetes_pod_name }} -n \{{ $labels.kubernetes_namespace }}` for logger"
 
@@ -24,6 +24,6 @@ spec:
 
     - alert: {{app}} feiler
       expr: stream_status{app="{{app}}"} > 0
-      for: 1m
+      for: 20m
       description: "\{{ $labels.stream }}-stream feiler. Sjekk loggene for å se hvorfor."
       action: "`kubectl logs \{{ $labels.kubernetes_pod_name }} -n \{{ $labels.kubernetes_namespace }}`"
