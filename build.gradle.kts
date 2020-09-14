@@ -36,7 +36,7 @@ dependencies {
     
     // Client
     compile ( "no.nav.helse:dusseldorf-ktor-client:$dusseldorfKtorVersion")
-    compile ( "no.nav.helse:dusseldorf-oauth2-client:$dusseldorfKtorVersion")
+    compile ( "no.nav.helse:dusseldorf-oauth2-client:1.4.0.8634f4b")
 
     // PDF
     compile ( "com.openhtmltopdf:openhtmltopdf-pdfbox:$openhtmltopdfVersion")
