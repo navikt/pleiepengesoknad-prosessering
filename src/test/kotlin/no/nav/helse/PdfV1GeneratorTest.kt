@@ -136,12 +136,7 @@ class PdfV1GeneratorTest {
                     tilOgMed = LocalDate.now().plusDays(10),
                     navnPåVirksomheten = "Kjells Møbelsnekkeri",
                     registrertINorge = true,
-                    organisasjonsnummer = "111111",
-                    revisor = Revisor(
-                        navn = "Kjell Revisor",
-                        telefon = "9999",
-                        kanInnhenteOpplysninger = true
-                    )
+                    organisasjonsnummer = "111111"
                 ),
                 Virksomhet(
                     næringstyper = listOf(Næringstyper.JORDBRUK_SKOGBRUK, Næringstyper.DAGMAMMA, Næringstyper.FISKE),
@@ -245,11 +240,6 @@ class PdfV1GeneratorTest {
                     dato = LocalDate.now(),
                     inntektEtterEndring = 202020,
                     forklaring = "ASDASDASDASDASD"
-                ),
-                revisor = Revisor(
-                    navn = "Kjell Revisor",
-                    telefon = "9999",
-                    kanInnhenteOpplysninger = true
                 )
             ),
             Virksomhet(
