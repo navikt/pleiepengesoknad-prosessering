@@ -1,7 +1,7 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
-val dusseldorfKtorVersion = "1.2.5.b695602"
+val dusseldorfKtorVersion = "1.4.0.8634f4b"
 val ktorVersion = ext.get("ktorVersion").toString()
 val k9FormatVersion = "3.0.0.f5ec313"
 val slf4jVersion = ext.get("slf4jVersion").toString()
@@ -36,7 +36,7 @@ dependencies {
     
     // Client
     compile ( "no.nav.helse:dusseldorf-ktor-client:$dusseldorfKtorVersion")
-    compile ( "no.nav.helse:dusseldorf-oauth2-client:1.4.0.8634f4b")
+    compile ( "no.nav.helse:dusseldorf-oauth2-client:$dusseldorfKtorVersion")
 
     // PDF
     compile ( "com.openhtmltopdf:openhtmltopdf-pdfbox:$openhtmltopdfVersion")
@@ -50,7 +50,7 @@ dependencies {
     // Test
     testCompile("org.apache.kafka:kafka-clients:$kafkaVersion")
     testCompile ("no.nav:kafka-embedded-env:$kafkaEmbeddedEnvVersion")
-    testCompile ( "no.nav.helse:dusseldorf-ktor-test-support:$dusseldorfKtorVersion")
+    testCompile ( "no.nav.helse:dusseldorf-test-support:$dusseldorfKtorVersion")
     testCompile("io.ktor:ktor-server-test-host:$ktorVersion") {
         exclude(group = "org.eclipse.jetty")
     }
