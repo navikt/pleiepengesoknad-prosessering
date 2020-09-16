@@ -474,18 +474,6 @@
                     <p>Navn: {{virksomhet.regnskapsfører.navn}}</p>
                     <p>Telefon: {{virksomhet.regnskapsfører.telefon}}</p>
                 </ul>
-            {{else}}
-                {{#if virksomhet.revisor}}
-                    <h3>Revisor:</h3>
-                    <ul>
-                        <p>Navn: {{virksomhet.revisor.navn}}</p>
-                        <p>Telefon: {{virksomhet.revisor.telefon}}</p>
-                        <p class="sporsmalstekst">
-                            Gir du NAV fullmakt til å innhente opplysninger direkte fra revisor?
-                        </p>
-                        {{>jaNeiCheckbox parameter=virksomhet.revisor.kanInnhenteOpplysninger}}
-                    </ul>
-                {{/if}}
             {{/if}}
             {{#if @last}}
                 <!--Setter ikke <hr/> på siste linje -->

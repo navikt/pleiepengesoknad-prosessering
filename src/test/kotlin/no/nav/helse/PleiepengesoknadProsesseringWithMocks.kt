@@ -2,8 +2,8 @@ package no.nav.helse
 
 import com.github.tomakehurst.wiremock.WireMockServer
 import io.ktor.server.testing.withApplication
-import no.nav.helse.dusseldorf.ktor.testsupport.asArguments
-import no.nav.helse.dusseldorf.ktor.testsupport.wiremock.WireMockBuilder
+import no.nav.helse.dusseldorf.testsupport.asArguments
+import no.nav.helse.dusseldorf.testsupport.wiremock.WireMockBuilder
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
