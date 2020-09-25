@@ -64,6 +64,9 @@ internal class PdfV1Generator  {
             registerHelper("varighet", Helper<String> { context, _ ->
                 Duration.parse(context).tilString()
             })
+            registerHelper("jaNeiSvar", Helper<Boolean> { context, _ ->
+                if (context == true) "Ja" else "Nei"
+            })
 
             infiniteLoops(true)
         }
@@ -161,6 +164,7 @@ internal class PdfV1Generator  {
 
             PdfRendererBuilder()
                 .useFastMode()
+                .usePdfUaAccessbility(true)
                 .withHtmlContent(html, "")
                 .medFonter()
                 .toStream(outputStream)
