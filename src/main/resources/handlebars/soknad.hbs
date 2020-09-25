@@ -124,9 +124,7 @@
                             <p>{{opphold.landnavn}}{{#if opphold.erUtenforEØS}} (utenfor EØS) {{/if}}: {{opphold.fraOgMed}} - {{opphold.tilOgMed}}</p>
                             {{#if opphold.erUtenforEØS}}
                                 {{#if opphold.erBarnetInnlagt}}
-                                    <p><b>Barn innlagt?</b></p>
-                                    <p>{{ jaNeiSvar opphold.erBarnetInnlagt }}</p>
-
+                                    <p><b>Barn innlagt?</b> {{ jaNeiSvar opphold.erBarnetInnlagt }}</p>
                                     <p><b>Perioder:</b>
                                         {{# each opphold.perioderBarnetErInnlagt as |periode| }}
                                             {{#if @last}}
@@ -138,8 +136,8 @@
                                     <p>{{opphold.årsak}}</p>
                                 {{/if}}
                             {{/if}}
+                            <br/>
                         </li>
-                        <br/>
                     {{/each}}
                 </ul>
             {{else}}
