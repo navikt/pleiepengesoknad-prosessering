@@ -31,6 +31,7 @@
 
 <div class="innholdscontainer">
     <div class="person" id="søker">
+        <p>Søker</p>
         <p class="navn">
             {{ soker.navn }}
         </p>
@@ -94,16 +95,12 @@
                     {{# if skal_passe_pa_barnet_i_hele_perioden}}
                         <li>
                             Søker bekrefter å ha omsorgen for barnet i hele perioden.<br/>
-                            <ul>
-                                <li>
-                                    {{# if beskrivelse_omsorgsrollen}}
-                                        <div class="fritekst">
-                                            <p class="sporsmalstekst">Beskrivelse av omsorgsrollen:</p>
-                                            <p class="fritekst_textarea">{{fritekst beskrivelse_omsorgsrollen}}</p>
-                                        </div>
-                                    {{/if}}
-                                </li>
-                            </ul>
+                            {{# if beskrivelse_omsorgsrollen}}
+                                <div class="fritekst">
+                                    <p class="sporsmalstekst">Beskrivelse av omsorgsrollen:</p>
+                                    <p class="fritekst_textarea">{{fritekst beskrivelse_omsorgsrollen}}</p>
+                                </div>
+                            {{/if}}
                         </li>
                     {{/if}}
                 </ul>
@@ -169,7 +166,7 @@
         {{# if arbeidsgivere.har_arbeidsgivere }}
             <ul>
                 {{# each arbeidsgivere.organisasjoner as |org|~}}
-                    <li class="sporsmalstekst">{{org.navn}} (orgnr: {{org.organisasjonsnummer}})
+                    <li><b>{{org.navn}} (orgnr: {{org.organisasjonsnummer}})</b>
                     <ul>
                         <li>
                             {{#if org.skal_jobbe}}
@@ -425,14 +422,13 @@
         <p class="sporsmalstekst">Har bodd i utlandet siste 12 månedene?</p>
         {{# if medlemskap.har_bodd_i_utlandet_siste_12_mnd }}
             <p>Ja</p>
-            {{# if medlemskap.utenlandsopphold_siste_12_mnd.length}}<ul>
+            <ul>
                 {{# each medlemskap.utenlandsopphold_siste_12_mnd as |opphold|~}}
                     <li>
                         {{opphold.landnavn}} ({{opphold.fraOgMed}} - {{opphold.tilOgMed}})
                     </li>
                 {{/each}}
             </ul>
-            {{/if}}
         {{else}}
             <p>Nei</p>{{/if}}
         <hr />
