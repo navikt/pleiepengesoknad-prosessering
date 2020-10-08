@@ -218,15 +218,14 @@ fun Arbeidsgivere.tilK9Arbeid(
         builder.frilanser(frilans.tilK9Frilanser())
     }
 
-    selvstendigVirksomheter?.let {
+    if (selvstendigVirksomheter != null && selvstendigVirksomheter.isNotEmpty()) {
         builder.selvstendigNæringsdrivende(selvstendigVirksomheter.tilK9SelvstendigNæringsdrivende())
     }
-
 
     return builder.build()
 }
 
-private fun List<Virksomhet>.tilK9SelvstendigNæringsdrivende(): SelvstendigNæringsdrivende {
+fun List<Virksomhet>.tilK9SelvstendigNæringsdrivende(): SelvstendigNæringsdrivende {
     val perioder = mutableMapOf<Periode, SelvstendigNæringsdrivende.SelvstendigNæringsdrivendePeriodeInfo>()
     map {
         perioder.put(
@@ -237,7 +236,7 @@ private fun List<Virksomhet>.tilK9SelvstendigNæringsdrivende(): SelvstendigNær
     return SelvstendigNæringsdrivende.builder().perioder(perioder).build()
 }
 
-private fun Frilans.tilK9Frilanser(): Frilanser {
+fun Frilans.tilK9Frilanser(): Frilanser {
     return Frilanser.builder()
         .periode(Periode.builder().fraOgMed(this.startdato).build(), Frilanser.FrilanserPeriodeInfo())
         .build()
