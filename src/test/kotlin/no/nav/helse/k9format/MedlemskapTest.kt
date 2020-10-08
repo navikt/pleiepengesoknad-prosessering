@@ -2,13 +2,21 @@ package no.nav.helse.k9format
 
 import no.nav.helse.prosessering.v1.Bosted
 import no.nav.helse.prosessering.v1.Medlemskap
+import no.nav.k9.søknad.JsonUtils
+import no.nav.k9.søknad.felles.Bosteder
 import no.nav.k9.søknad.felles.Landkode
 import no.nav.k9.søknad.felles.Periode
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import java.time.LocalDate
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-internal class MedlemskapTest  {
+internal class MedlemskapTest {
+
+    companion object {
+        private val logger: Logger = LoggerFactory.getLogger(MedlemskapTest::class.java)
+    }
 
     @Test
     internal fun `Overlappende datoer på tvers av harBodd og skalBo`() {
