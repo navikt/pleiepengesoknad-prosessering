@@ -116,7 +116,10 @@ class PdfV1GeneratorTest {
                 beredskap = true,
                 tilleggsinformasjon = "Jeg er i beredskap\rmed\nlinje\r\nlinjeskift."
             ),
-            utenlandsoppholdIPerioden = null,
+            utenlandsoppholdIPerioden = UtenlandsoppholdIPerioden(
+                skalOppholdeSegIUtlandetIPerioden = false,
+                opphold = listOf()
+            ),
             ferieuttakIPerioden = FerieuttakIPerioden(
                 skalTaUtFerieIPerioden = true,
                 ferieuttak = listOf(
