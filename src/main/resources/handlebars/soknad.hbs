@@ -325,7 +325,7 @@
     </section>
 
     <section id="beredskap">
-        {{# if nattevaak }}
+        {{# if beredskap }}
             <h2>Beredskap</h2>
             <p class="sporsmalstekst">Må du være i beredskap også når barnet er i et omsorgstilbud?</p>
             <p>{{ jaNeiSvar beredskap.i_beredskap }}</p>
@@ -351,8 +351,8 @@
     </section>
 
     <section id="selvstendig">
-        <h2>Selvstendig næringsdrivende</h2>
         {{#if søknad.selvstendigVirksomheter}}
+        <h2>Selvstendig næringsdrivende</h2>
             {{# each søknad.selvstendigVirksomheter as |virksomhet|~}}
                 <h3>{{virksomhet.navnPåVirksomheten}} (startet {{#dato virksomhet.fraOgMed}}{{/dato}},
                     {{#if virksomhet.tilOgMed}}
