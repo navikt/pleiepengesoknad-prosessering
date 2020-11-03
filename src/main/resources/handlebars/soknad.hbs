@@ -1,542 +1,474 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8"/>
+    <meta charset="UTF-8" />
     <title>Søknad om pleiepenger for sykt barn eller person over 18 år</title>
-    {{#block 'style' }}
-    {{/block}}
-
-    {{#*inline "jaNeiCheckbox"}}
-        {{#if parameter}}
-            <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Ja
-            <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Nei
-        {{else}}
-            <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Ja
-            <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Nei
-        {{/if}}
-    {{/inline}}
-
+    <meta name="subject" content="Søknad om pleiepenger for sykt barn eller person over 18 år" />
+    <meta name="author" content="nav.no" />
+    <meta name="description"
+          content="Søknad om pleiepenger for sykt barn eller person over 18 år mottatt {{soknad_mottatt_dag}} {{ soknad_mottatt }}" />
+    <bookmarks>
+        <bookmark name="Søker" href="#søker" />
+        <bookmark name="Barn" href="#barn" />
+        <bookmark name="Perioder" href="#perioder" />
+        <bookmark name="Utenlandsopphold" href="#utenlandsopphold" />
+        <bookmark name="Arbeidsforhold" href="#arbeidsforhold" />
+        <bookmark name="Omsorgstilbud" href="#omsorgstilbud" />
+        <bookmark name="Nattevåk" href="#nattevaak" />
+        <bookmark name="Beredskap" href="#beredskap" />
+        <bookmark name="Frilans" href="#frilans" />
+        <bookmark name="Selvstendig" href="#selvstendig" />
+        <bookmark name="Medlemskap" href="#medlemskap" />
+        <bookmark name="Vedlegg" href="#vedlegg" />
+        <bookmark name="Samtykke" href="#samtykke" />
+    </bookmarks>
+    {{#block 'style-common' }} {{/block}}
 </head>
+
 <body>
-<div id="header">
-    <img class="navlogo" src="{{ image "Navlogo.png" }}"/>
-    <h1 class="title">Søknad om pleiepenger for sykt barn eller person over 18 år</h1>
-</div>
-<div class="container">
-    <div id="container_top">
-        <div class="nokkeldata">
-            <br/><br/>
-            <p>
-                <span class="nokkeldata__overskrift">Sendt til NAV</span><br/>
-                {{soknad_mottatt_dag}} {{ soknad_mottatt }}
-            </p>
-            <br/>
-        </div>
-        <div class="personinfo">
-            <div class="persontekst">
-                <div class="persontekst__sidetopp">
-                    <img class="ikon" src="{{ image "Personikon.png" }}"/>
-                    <div class="persontekst__personalia">
-                        <p>
-                            Søker
-                        </p>
-                        <p class="navn">
-                            {{ soker.navn }}
-                        </p>
-                        <p class="id">
-                            {{ soker.fodselsnummer }}<br/>
-                        </p>
-                    </div>
-                    <br/>
-                    <img class="ikon" src="{{ image "Personikon.png" }}"/>
-                    <div class="persontekst__personalia">
-                        <p>Barn</p>
-                        <p class="navn">
-                            {{# if barn.navn }}
-                                {{ barn.navn }}
-                            {{else}}
-                                <span class="ikke_satt">Navn ikke angitt</span>
-                            {{/if}}
-                        </p>
-                        {{# if barn.id }}
-                            <p class="barnid">
-                                {{ barn.id }}
-                            </p>
-                        {{else}}
-                            <p class="fodselsdato">
-                                {{# if barn.fodselsdato }}
-                                    {{ barn.fodselsdato }}
-                                {{/if}}
-                            </p>
-                        {{/if}}
-                    </div>
-                </div>
-            </div>
-        </div>
+<h1 id="header">Søknad om pleiepenger for sykt barn eller person over 18 år</h1>
+
+<p class="nokkelinfo"><strong>Sendt til NAV </strong>{{soknad_mottatt_dag}} {{ soknad_mottatt }}</p>
+
+<div class="innholdscontainer">
+    <div class="person" id="søker">
+        <p>Søker</p>
+        <p class="navn">
+            {{ soker.navn }}
+        </p>
+        <p>
+            {{ soker.fodselsnummer }}<br />
+        </p>
+    </div>
+    <div class="person" id="barn">
+        <p>Barn</p>
+        <p class="navn">
+            {{# if barn.navn }}
+                {{ barn.navn }}
+            {{else}}
+                <span class="ikke_satt">Navn ikke angitt</span>
+            {{/if}}
+        </p>
+        <p>
+            {{# if barn.fodselsdato }}
+                {{ barn.fodselsdato }} <br />
+            {{/if}}
+            {{# if barn.id }}
+                {{ barn.id }}
+            {{else}}
+                <span class="ikke_satt">ID ikke angitt</span>
+            {{/if}}
+        </p>
     </div>
 
-    <!-- HJELP -->
-    <h2>
-        <span>Perioder</span>
-    </h2>
+    <section id="perioder">
+        <h2>Perioder du søker om pleiepenger</h2>
+        <ul>
+            <li>
+                <strong>{{ periode.fra_og_med }} - {{ periode.til_og_med }}</strong><br/>
+                <ul>
+                    {{#if bekrefterPeriodeOver8Uker}}
+                        <li>Du bekrefter at søknaden gjelder for en periode på mer enn 8 uker.</li>
+                    {{/if}}
 
-    <ul>
-        <li>
-            <strong>{{ periode.fra_og_med }} - {{ periode.til_og_med }}</strong><br/>
-            <ul style="list-style-type:circle;">
-                {{#if bekrefterPeriodeOver8Uker}}
-                    <li>Søker bekrefter at søknaden gjelder for en periode på mer enn 8 uker.</li>
-                {{/if}}
+                    {{# if hjelp.har_medsoker }}
+                        <li>
+                            Du opplyser at en medsøker skal søke for samme periode som deg.<br/>
+                            <ul>
+                                {{# if samtidig_hjemme }}
+                                    <li>
+                                        Du opplyser at du og medsøker skal være hjemme eller på sykehus samtidig.
+                                    </li>
+                                {{/if}}
+                                {{#unless samtidig_hjemme}}
+                                    <li>
+                                        Du opplyser at du og medsøker ikke skal være hjemme eller på sykehus samtidig.
+                                    </li>
+                                {{/unless}}
+                            </ul>
+                        </li>
 
-                {{# if hjelp.har_medsoker }}
-                    <li>
-                        Søker opplyser at en medsøker skal søke for samme periode.<br/>
-                        <ul style="list-style-type:square;">
-                            {{# if samtidig_hjemme }}
-                                <li>
-                                    Søker og medsøker skal være hjemme eller på sykehus samtidig.
-                                </li>
-                            {{/if}}
-                            {{#unless samtidig_hjemme}}
-                                <li>
-                                    Søker og medsøker skal <span class="highlight">ikke</span> være hjemme / på sykehus
-                                    samtidig.
-                                </li>
-                            {{/unless}}
-                        </ul>
-                    </li>
+                    {{else}}
+                        <li>Det er ikke oppgitt andre medsøkere.</li>
+                    {{/if}}
 
-                {{else}}
-                    <li>Det er <span class="highlight">ikke</span> oppgitt andre medsøkere.
-                    </li>
-                {{/if}}
-
-                {{# if skal_passe_pa_barnet_i_hele_perioden}}
-                    <li>
-                        Søker bekrefter å ha omsorgen for barnet i hele perioden.<br/>
-                        <ul style="list-style-type: none">
+                    {{# if skal_passe_pa_barnet_i_hele_perioden}}
+                        <li>
+                            Du bekrefter at du har omsorgen for barnet i hele perioden du søker om.<br/>
                             {{# if beskrivelse_omsorgsrollen}}
                                 <div class="fritekst">
-                                    <p class="sporsmalstekst"><img class="lite_ikon" src="{{ image "Fritekst.png" }}"/>
-                                        Beskrivelse av omsorgsrollen:
-                                    </p>
+                                    <p class="sporsmalstekst">Din beskrivelse av omsorgsrollen:</p>
                                     <p class="fritekst_textarea">{{fritekst beskrivelse_omsorgsrollen}}</p>
                                 </div>
                             {{/if}}
-                        </ul>
-                    </li>
-                {{/if}}
-            </ul>
-        </li>
-    </ul>
+                        </li>
+                    {{/if}}
+                </ul>
+            </li>
+        </ul>
+    </section>
 
-    <ul>
-        <!--{{# if hjelp.sprak }}
-                <li>Det er valgt {{hjelp.sprak}} som språk i søknaden.</li>
-            {{/if}}-->
-    </ul>
-    {{# if utenlandsoppholdIPerioden.skalOppholdeSegIUtlandetIPerioden }}
-        <h2>
-            <span>
-               Utenlandsopphold / Ferie
-            </span>
-        </h2>
-        <p class="sporsmalstekst">Skal du reise til utlandet i perioden du søker for?</p>
+    <section id="utenlandsopphold">
         {{# if utenlandsoppholdIPerioden.skalOppholdeSegIUtlandetIPerioden }}
-            <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Ja
-            <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Nei
-            <ul>
-                {{# each utenlandsoppholdIPerioden.opphold as |opphold|~}}
-                    <li>
-                        <p>{{opphold.landnavn}}
-                            {{#if opphold.erUtenforEØS}} (utenfor EØS) {{/if}}: {{opphold.fraOgMed}} - {{opphold.tilOgMed}}
-                            </p>
-                        {{#if opphold.erUtenforEØS}}
-                            {{#if opphold.erBarnetInnlagt}}
-                                <p><b>Barn innlagt?</b></p> {{>jaNeiCheckbox parameter=opphold.erBarnetInnlagt}}
-                                <p><b>Perioder:</b>
-                                {{# each opphold.perioderBarnetErInnlagt as |periode| }}
-                                    {{#if @last}}
-                                        {{periode.fraOgMed}} - {{periode.tilOgMed}}
-                                    {{else}}
-                                        {{periode.fraOgMed}} - {{periode.tilOgMed}},
-                                    {{/if}}
-                                {{/each}}</p>
-                                <p>{{opphold.årsak}}</p>
+            <h2>Perioder med utenlandsopphold og ferie</h2>
+            <p class="sporsmalstekst">Skal du reise til utlandet i perioden du søker for?</p>
+            {{# if utenlandsoppholdIPerioden.skalOppholdeSegIUtlandetIPerioden }}
+                <p>{{ jaNeiSvar utenlandsoppholdIPerioden.skalOppholdeSegIUtlandetIPerioden }}</p>
+                <ul>
+                    {{# each utenlandsoppholdIPerioden.opphold as |opphold|~}}
+                        <li>
+                            <p>{{opphold.landnavn}}{{#if opphold.erUtenforEØS}} (utenfor EØS) {{/if}}: {{opphold.fraOgMed}} - {{opphold.tilOgMed}}</p>
+                            {{#if opphold.erUtenforEØS}}
+                                {{#if opphold.erBarnetInnlagt}}
+                                    <p><b>Er barnet innlagt?</b> {{ jaNeiSvar opphold.erBarnetInnlagt }}</p>
+                                    <p><b>Perioder:</b>
+                                        {{# each opphold.perioderBarnetErInnlagt as |periode| }}
+                                            {{#if @last}}
+                                                {{periode.fraOgMed}} - {{periode.tilOgMed}}
+                                            {{else}}
+                                                {{periode.fraOgMed}} - {{periode.tilOgMed}},
+                                            {{/if}}
+                                        {{/each}}</p>
+                                    <p>{{opphold.årsak}}</p>
+                                {{/if}}
                             {{/if}}
-                        {{/if}}
+                            <br/>
+                        </li>
+                    {{/each}}
+                </ul>
+            {{else}}
+                <p>{{ jaNeiSvar utenlandsoppholdIPerioden.skalOppholdeSegIUtlandetIPerioden }}</p>
+            {{/if}}
+        {{/if}}
+        <p class="sporsmalstekst">Skal du ha ferie i perioden du søker om?</p>
+        {{# if ferieuttakIPerioden.skalTaUtFerieIPerioden }}
+            <p>Du opplyser at du skal ha ferie</p>
+            <ul>
+                {{# each ferieuttakIPerioden.ferieuttak as |ferieuttak|~}}
+                    <li>
+                        {{ferieuttak.fraOgMed}} - {{ferieuttak.tilOgMed}}
                     </li>
-                    <br></br>
                 {{/each}}
             </ul>
         {{else}}
-            <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Ja
-            <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Nei
+            <p>{{ jaNeiSvar utenlandsoppholdIPerioden.skalTaUtFerieIPerioden }}</p>
         {{/if}}
-    {{/if}}
-    <p class="sporsmalstekst">Skal du ta ut feriedager i perioden?</p>
-    {{# if ferieuttakIPerioden.skalTaUtFerieIPerioden }}
-        <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Ja
-        <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Nei
-        <ul>
-            {{# each ferieuttakIPerioden.ferieuttak as |ferieuttak|~}}
-                <li>
-                    {{ferieuttak.fraOgMed}} - {{ferieuttak.tilOgMed}}
-                </li>
-            {{/each}}
-        </ul>
-    {{else}}
-        <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Ja
-        <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Nei
-    {{/if}}
-    <h2>
-        <span>
-           Arbeidsforhold
-        </span>
-    </h2>
-    <!-- ARBEIDSGIVERE -->
-    {{# if hjelp.ingen_arbeidsgivere }}
-        <ul>
-            <li class="ikke_satt">Det er ikke angitt noen arbeidsgivere i søknaden.</li>
-        </ul>
-    {{/if}}
+    </section>
 
-    {{# if arbeidsgivere.har_arbeidsgivere }}
-        <ul>
-            {{# each arbeidsgivere.organisasjoner as |org|~}}
-                <li class="sporsmalstekst">{{org.navn}} (orgnr: {{org.organisasjonsnummer}})</li>
-                <ul>
-                    <li>
-                        {{#if org.skal_jobbe}}
-                            {{#eq org.skal_jobbe "ja"}}
-                                Søker skal jobbe som vanlig i perioden.
-                            {{/eq}}
+    <section id="arbeidsforhold">
+        <h2>Dine arbeidsforhold</h2>
+        {{# if hjelp.ingen_arbeidsgivere }}
+            <ul>
+                <li class="ikke_satt">Du har ikke angitt noen arbeidsgivere i søknaden.</li>
+            </ul>
+        {{/if}}
 
-                            {{#eq org.skal_jobbe "nei"}}
-                                Søker skal ikke jobbe her i perioden.
-                            {{/eq}}
+        {{# if arbeidsgivere.har_arbeidsgivere }}
+            <ul>
+                {{# each arbeidsgivere.organisasjoner as |org|~}}
+                    <li><b>{{org.navn}} (orgnr: {{org.organisasjonsnummer}})</b>
+                    <ul>
+                        <li>
+                            {{#if org.skal_jobbe}}
+                                {{#eq org.skal_jobbe "ja"}}
+                                    Du skal jobbe som vanlig i perioden.
+                                {{/eq}}
 
-                            {{#eq org.skal_jobbe "redusert"}}
-                                Søker skal jobbe redusert i perioden.
-                            {{/eq}}
+                                {{#eq org.skal_jobbe "nei"}}
+                                    Du skal ikke jobbe her i perioden.
+                                {{/eq}}
 
-                            {{#eq org.skal_jobbe "vetIkke"}}
-                                Søker vet ikke om han/hun skal jobbe her, men sier fra hvis det blir tilfelle.
-                            {{/eq}}
-                        {{/if}}
-                    </li>
+                                {{#eq org.skal_jobbe "redusert"}}
+                                    Du skal jobbe redusert i perioden.
+                                {{/eq}}
 
-                    <li>
-                        {{#if org.skal_jobbe_prosent }}
-                            {{#unless org.jobber_normaltimer }}
-                                Skal jobbe {{org.skal_jobbe_prosent }}% av sin stilling. Søker får et
-                                inntektstap
-                                på {{org.inntektstap_prosent}}%
-                            {{/unless}}
-                        {{/if}}
-                    </li>
-                <li>
-                    {{#if org.skal_jobbe_prosent }}
-                        {{#if org.jobber_normaltimer }}
-                            <li>Søker jobber vanligvis {{org.jobber_normaltimer }} timer i uken hos denne arbeidsgiveren.</li>
-                            <li>I pleiepengeperioden skal søker jobbe {{org.skal_jobbe_prosent }}%. Søker får et inntektstap
-                                på {{org.inntektstap_prosent}}%
-                            </li>
-                        {{/if}}
-                    {{/if}}
-                    </li>
-                    <li>
-                        {{#if org.jobber_normaltimer}}
-                            {{#if org.vet_ikke_ekstra_info}}
-                                Søker jobber vanligvis {{org.jobber_normaltimer}} timer i uken.<br/>
+                                {{#eq org.skal_jobbe "vetIkke"}}
+                                    Du vet ikke om du skal jobbe her, men sier fra hvis det blir tilfelle.
+                                {{/eq}}
                             {{/if}}
-                        {{/if}}
+                        </li>
+
+                        <li>
+                            {{#if org.skal_jobbe_prosent }}
+                                {{#unless org.jobber_normaltimer }}
+                                    Du jobbe {{org.skal_jobbe_prosent }}% av din stilling. Du får et
+                                    inntektstap på {{org.inntektstap_prosent}}%
+                                {{/unless}}
+                            {{/if}}
+                        </li>
+                        <li>
+                            {{#if org.skal_jobbe_prosent }}
+                                {{#if org.jobber_normaltimer }}
+                                    <li>Du jobber vanligvis {{org.jobber_normaltimer }} timer i uken hos denne arbeidsgiveren.</li>
+                                    <li>I perioden med pleiepenger skal du jobbe {{org.skal_jobbe_prosent }}%. Du får et inntektstap
+                                        på {{org.inntektstap_prosent}}%
+                                    </li>
+                                {{/if}}
+                            {{/if}}
+                        </li>
+                        <li>
+                            {{#if org.jobber_normaltimer}}
+                                {{#if org.vet_ikke_ekstra_info}}
+                                    Du jobber vanligvis {{org.jobber_normaltimer}} timer i uken.<br/>
+                                {{/if}}
+                            {{/if}}
+                        </li>
+                    </ul>
                     </li>
-                </ul>
-            {{/each}}
-        </ul>
-    {{/if}}
+                {{/each}}
+            </ul>
+        {{/if}}
+    </section>
 
-    <!-- Omsorgstilbud -->
-    {{# if tilsynsordning }}
-        <h2><span>Omsorgstilbud</span></h2>
-
-        <!-- Sjekkbokser -->
-        {{#eq tilsynsordning.tilsynsordning_svar "ja" }}
-            <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Ja
-            <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Nei
-            <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Usikker
-        {{/eq}}
-        {{#eq tilsynsordning.tilsynsordning_svar "nei" }}
-            <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Ja
-            <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Nei
-            <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Usikker
-        {{/eq}}
-        {{#eq tilsynsordning.tilsynsordning_svar "vetIkke" }}
-            <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Ja
-            <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Nei
-            <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Usikker
-        {{/eq}}
-
-        <!-- Ja -->
-        {{#eq tilsynsordning.tilsynsordning_svar "ja" }}
-            <hr/>
-            <p><span class="sporsmalstekst">Mandag: </span>
-                {{# if tilsynsordning.mandag }}
-                    {{tilsynsordning.mandag}}
-                {{ else }}
-                    <span class="ikke_satt">Ikke angitt</span>
-                {{/if}}
-            </p>
-            <p><span class="sporsmalstekst">Tirsdag: </span>
-                {{# if tilsynsordning.tirsdag }}
-                    {{tilsynsordning.tirsdag}}
-                {{ else }}
-                    <span class="ikke_satt">Ikke angitt</span>
-                {{/if}}
-            </p>
-            <p><span class="sporsmalstekst">Onsdag: </span>
-                {{# if tilsynsordning.onsdag }}
-                    {{tilsynsordning.onsdag}}
-                {{ else }}
-                    <span class="ikke_satt">Ikke angitt</span>
-                {{/if}}
-            </p>
-            <p><span class="sporsmalstekst">Torsdag: </span>
-                {{# if tilsynsordning.torsdag }}
-                    {{tilsynsordning.torsdag}}
-                {{ else }}
-                    <span class="ikke_satt">Ikke angitt</span>
-                {{/if}}
-            </p>
-            <p><span class="sporsmalstekst">Fredag: </span>
-                {{# if tilsynsordning.fredag }}
-                    {{tilsynsordning.fredag}}
-                {{ else }}
-                    <span class="ikke_satt">Ikke angitt</span>
-                {{/if}}
-            </p>
-            <br/>
-            <p>Dette tilsvarer <span class="sporsmalstekst">{{tilsynsordning.prosent_av_normal_arbeidsuke}}
-                %</span> av
-                en normal arbeidsuke på <span class="sporsmalstekst">37 timer og 30 minutter.</span></p>
-            <br/>
-            {{#if tilsynsordning.tilleggsinformasjon}}
-                <div class="fritekst">
-                    <p class="sporsmalstekst"><img class="lite_ikon" src="{{ image "Fritekst.png" }}"/> Søkers
-                        tilleggsopplysninger:</p>
-                    <p class="fritekst_textarea">{{fritekst tilsynsordning.tilleggsinformasjon}}</p>
-                </div>
-            {{/if}}
-        {{/eq}}
-
-        <!-- Vet ikke -->
-        {{#eq tilsynsordning.tilsynsordning_svar "vetIkke" }}
-            <hr/>
+    <section id="omsorgstilbud">
+        {{# if tilsynsordning }}
+            <h2>Omsorgstilbud</h2>
+            <p class="sporsmalstekst">Skal barnet være i et omsorgstilbud i perioden du har søkt om?</p>
             <!-- Sjekkbokser -->
-            {{#eq tilsynsordning.svar "erSporadisk" }}
-                <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Er sporadisk
-                <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Er ikke laget en plan
-                <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Annet
+            {{#eq tilsynsordning.tilsynsordning_svar "ja" }}
+                <p>Ja</p>
             {{/eq}}
-            {{#eq tilsynsordning.svar "erIkkeLagetEnPlan" }}
-                <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Er sporadisk
-                <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Er ikke laget en plan
-                <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Annet
+            {{#eq tilsynsordning.tilsynsordning_svar "nei" }}
+                <p>Nei</p>
             {{/eq}}
-            {{#eq tilsynsordning.svar "annet" }}
-                <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Er sporadisk
-                <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Er ikke laget en plan
-                <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Annet
+            {{#eq tilsynsordning.tilsynsordning_svar "vetIkke" }}
+                <p>Usikker</p>
             {{/eq}}
-            <br/>
-            <br/>
-            {{#if tilsynsordning.annet}}
+
+            <!-- Ja -->
+            {{#eq tilsynsordning.tilsynsordning_svar "ja" }}
+                <hr/>
+                <p><span class="sporsmalstekst">Mandag: </span>
+                    {{# if tilsynsordning.mandag }}
+                        {{tilsynsordning.mandag}}
+                    {{ else }}
+                        <span class="ikke_satt">Nei</span>
+                    {{/if}}
+                </p>
+                <p><span class="sporsmalstekst">Tirsdag: </span>
+                    {{# if tilsynsordning.tirsdag }}
+                        {{tilsynsordning.tirsdag}}
+                    {{ else }}
+                        <span class="ikke_satt">Nei</span>
+                    {{/if}}
+                </p>
+                <p><span class="sporsmalstekst">Onsdag: </span>
+                    {{# if tilsynsordning.onsdag }}
+                        {{tilsynsordning.onsdag}}
+                    {{ else }}
+                        <span class="ikke_satt">Nei</span>
+                    {{/if}}
+                </p>
+                <p><span class="sporsmalstekst">Torsdag: </span>
+                    {{# if tilsynsordning.torsdag }}
+                        {{tilsynsordning.torsdag}}
+                    {{ else }}
+                        <span class="ikke_satt">Nei</span>
+                    {{/if}}
+                </p>
+                <p><span class="sporsmalstekst">Fredag: </span>
+                    {{# if tilsynsordning.fredag }}
+                        {{tilsynsordning.fredag}}
+                    {{ else }}
+                        <span class="ikke_satt">Nei</span>
+                    {{/if}}
+                </p>
+                <br/>
+                <p>Dette tilsvarer <span class="sporsmalstekst">{{tilsynsordning.prosent_av_normal_arbeidsuke}}
+                    %</span> av en normal arbeidsuke på <span class="sporsmalstekst">37 timer og 30 minutter.</span></p>
+                <br/>
+                {{#if tilsynsordning.tilleggsinformasjon}}
+                    <div class="fritekst">
+                        <p class="sporsmalstekst"> Dine tilleggsopplysninger:</p>
+                        <p class="fritekst_textarea">{{fritekst tilsynsordning.tilleggsinformasjon}}</p>
+                    </div>
+                {{/if}}
+            {{/eq}}
+
+            <!-- Vet ikke -->
+            {{#eq tilsynsordning.tilsynsordning_svar "vetIkke" }}
+                <hr/>
+                <!-- Sjekkbokser -->
+                {{#eq tilsynsordning.svar "erSporadisk" }}
+                    <p>Er sporadisk</p>
+                {{/eq}}
+                {{#eq tilsynsordning.svar "erIkkeLagetEnPlan" }}
+                    <p>Er ikke laget en plan</p>
+                {{/eq}}
+                {{#eq tilsynsordning.svar "annet" }}
+                    <p>Annet</p>
+                {{/eq}}
+                <br/>
+                <br/>
+                {{#if tilsynsordning.annet}}
+                    <div class="fritekst">
+                        <p class="sporsmalstekst"> Du er usikker, fordi:</p>
+                        <p class="fritekst_textarea">{{fritekst tilsynsordning.annet}}</p>
+                    </div>
+                {{/if}}
+            {{/eq}}
+        {{/if}}
+    </section>
+
+    <section id="nattevaak">
+        {{# if nattevaak }}
+            <h2>Nattevåk</h2>
+            <p class="sporsmalstekst">Må du være våken om natten for å pleie barnet, og derfor må være borte fra jobb dagen etter?</p>
+            <p>{{ jaNeiSvar nattevaak.har_nattevaak }}</p>
+            {{# if nattevaak.tilleggsinformasjon }}
                 <div class="fritekst">
-                    <p class="sporsmalstekst"><img class="lite_ikon" src="{{ image "Fritekst.png" }}"/> Søker er
-                        usikker, fordi:</p>
-                    <p class="fritekst_textarea">{{fritekst tilsynsordning.annet}}</p>
+                    <p class="sporsmalstekst">Dine tilleggsopplysninger:</p>
+                    <p class="fritekst_textarea">{{fritekst nattevaak.tilleggsinformasjon}}</p>
                 </div>
             {{/if}}
-        {{/eq}}
-    {{/if}}
-
-    <!-- NATTEVÅK -->
-    {{# if nattevaak }}
-        <h2><span>Nattevåk</span></h2>
-        {{# if nattevaak.har_nattevaak }}
-            <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Ja
-            <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Nei
-        {{else}}
-            <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Ja
-            <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Nei
         {{/if}}
-        {{# if nattevaak.tilleggsinformasjon }}
-            <br/>
-            <br/>
-            <div class="fritekst">
-                <p class="sporsmalstekst"><img class="lite_ikon" src="{{ image "Fritekst.png" }}"/>Søkers
-                    tilleggsopplysninger:</p>
-                <p class="fritekst_textarea">{{fritekst nattevaak.tilleggsinformasjon}}</p>
-            </div>
+    </section>
+
+    <section id="beredskap">
+        {{# if beredskap }}
+            <h2>Beredskap</h2>
+            <p class="sporsmalstekst">Må du være i beredskap også når barnet er i et omsorgstilbud?</p>
+            <p>{{ jaNeiSvar beredskap.i_beredskap }}</p>
+            {{# if beredskap.tilleggsinformasjon }}
+                <div class="fritekst">
+                    <p class="sporsmalstekst">Dine tilleggsopplysninger:</p>
+                    <p class="fritekst_textarea">{{fritekst beredskap.tilleggsinformasjon}}</p>
+                </div>
+            {{/if}}
         {{/if}}
-    {{/if}}
+    </section>
 
-    <!-- Beredskap -->
-    {{# if nattevaak }}
-        <h2><span>Beredskap</span></h2>
-        {{# if beredskap.i_beredskap }}
-            <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Ja
-            <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Nei
-        {{else}}
-            <img class="checkbox" src="{{ image "Checkbox_off.png" }}"/> Ja
-            <img class="checkbox" src="{{ image "Checkbox_on.png" }}"/> Nei
+    <section id="frilans">
+        {{# if søknad.frilans }}
+            <h2>Frilans</h2>
+            <p class="sporsmalstekst">Når startet du som frilanser?</p>
+            <p>{{#dato søknad.frilans.startdato}}{{/dato}}</p>
+            <p class="sporsmalstekst">Har du jobbet og hatt inntekt som frilanser de siste 4 ukene?</p>
+            <p>{{ jaNeiSvar true }}</p>
+            <p class="sporsmalstekst">Jobber du fremdeles som frilanser?</p>
+            <p>{{ jaNeiSvar søknad.frilans.jobberFortsattSomFrilans }}</p>
         {{/if}}
-        {{# if beredskap.tilleggsinformasjon }}
-            <br/>
-            <br/>
-            <div class="fritekst">
-                <p class="sporsmalstekst"><img class="lite_ikon" src="{{ image "Fritekst.png" }}"/>Søkers
-                    tilleggsopplysninger:</p>
-                <p class="fritekst_textarea">{{fritekst beredskap.tilleggsinformasjon}}</p>
-            </div>
-        {{/if}}
-    {{/if}}
+    </section>
 
-    <!-- FRILANS -->
-    {{# if søknad.frilans }}
-        <h2><span>Frilans</span></h2>
-        <p class="sporsmalstekst">Når startet du som frilanser?</p>
-        <p>{{#dato søknad.frilans.startdato}}{{/dato}}</p>
-
-        <p class="sporsmalstekst">Har du jobbet og hatt inntekt som frilanser de siste 4 uker?</p>
-        {{>jaNeiCheckbox parameter=søknad.frilans}}  <br/> <br/>
-
-        <p class="sporsmalstekst">Jobber du fortsatt som frilanser?</p>
-        {{>jaNeiCheckbox parameter=søknad.frilans.jobberFortsattSomFrilans}}
-    {{/if}}
-
-    <!-- SELVSTENDIG NÆRINGSDRIVENDE -->
-    {{#if søknad.selvstendigVirksomheter}}
-        <h2><span>Selvstendig næringsdrivende</span></h2>
-        {{# each søknad.selvstendigVirksomheter as |virksomhet|~}}
-
-            <h3>{{virksomhet.navnPåVirksomheten}} (startet {{#dato virksomhet.fraOgMed}}{{/dato}},
-                {{#if virksomhet.tilOgMed}}
-                    avsluttet {{#dato virksomhet.tilOgMed}}{{/dato}})
-                {{else}}
-                    er pågående)
-                {{/if}}</h3>
-            <p>Næringstype:
-                {{# each virksomhet.næringstyper as |næringstype|~}}
-                    {{#if @first}}
-                        {{#enumNæringstyper næringstype}}{{/enumNæringstyper}}
+    <section id="selvstendig">
+        {{#if søknad.selvstendigVirksomheter}}
+        <h2>Selvstendig næringsdrivende</h2>
+            {{# each søknad.selvstendigVirksomheter as |virksomhet|~}}
+                <h3>{{virksomhet.navnPåVirksomheten}} (startet {{#dato virksomhet.fraOgMed}}{{/dato}},
+                    {{#if virksomhet.tilOgMed}}
+                        avsluttet {{#dato virksomhet.tilOgMed}}{{/dato}})
                     {{else}}
-                        , {{#enumNæringstyper næringstype}}{{/enumNæringstyper}}
-                    {{/if}}
-                    {{#eq næringstype "FISKE"}}
-                        {{#if virksomhet.fiskerErPåBladB}}
-                            (blad B)
+                        er pågående)
+                    {{/if}}</h3>
+                <p>Næringstype:
+                    {{# each virksomhet.næringstyper as |næringstype|~}}
+                        {{#if @first}}
+                            {{#enumNæringstyper næringstype}}{{/enumNæringstyper}}
                         {{else}}
-                            (ikke blad B)
+                            , {{#enumNæringstyper næringstype}}{{/enumNæringstyper}}
                         {{/if}}
-                    {{/eq}}
-                {{/each}}</p>
-            {{#if virksomhet.næringsinntekt}}
-                <p>Næringsinntekt: {{virksomhet.næringsinntekt}},-</p>
-            {{/if}}
-            {{#if virksomhet.registrertINorge}}
-                <p>Registrert i Norge</p>
-                <p>Organisasjonsnummeret: {{virksomhet.organisasjonsnummer}}</p>
-            {{else}}
-                <p>Registrert i land: {{virksomhet.registrertIUtlandet.landnavn}} ({{virksomhet.registrertIUtlandet.landkode}})</p>
-            {{/if}}
+                        {{#eq næringstype "FISKE"}}
+                            {{#if virksomhet.fiskerErPåBladB}}
+                                (blad B)
+                            {{else}}
+                                (ikke blad B)
+                            {{/if}}
+                        {{/eq}}
+                    {{/each}}</p>
+                {{#if virksomhet.næringsinntekt}}
+                    <p>Næringsinntekt: {{virksomhet.næringsinntekt}},-</p>
+                {{/if}}
+                {{#if virksomhet.registrertINorge}}
+                    <p>Registrert i Norge</p>
+                    <p>Organisasjonsnummeret: {{virksomhet.organisasjonsnummer}}</p>
+                {{else}}
+                    <p>Registrert i land: {{virksomhet.registrertIUtlandet.landnavn}} ({{virksomhet.registrertIUtlandet.landkode}})</p>
+                {{/if}}
 
-            {{#if virksomhet.yrkesaktivSisteTreFerdigliknedeÅrene}}
-                <p>Oppgi dato for når du ble
-                    yrkesaktiv: {{#dato virksomhet.yrkesaktivSisteTreFerdigliknedeÅrene.oppstartsdato}}{{/dato}}</p>
-            {{/if}}
-            {{#if virksomhet.varigEndring}}
-                <h3>Varig endring</h3>
-                <ul>
-                    <p>Dato for endring: {{#dato virksomhet.varigEndring.dato}}{{/dato}}</p>
-                    <p>Næringsinntekten etter endringen: {{virksomhet.varigEndring.inntektEtterEndring}}</p>
-                    <div class="fritekst">
-                        <p class="sporsmalstekst"><img class="lite_ikon" src="{{ image "Fritekst.png" }}"/>Søkers
-                            forklaring:</p>
-                        <p class="fritekst_textarea">{{virksomhet.varigEndring.forklaring}}</p>
-                    </div>
-                </ul>
-            {{/if}}
-            {{#if virksomhet.regnskapsfører}}
-                <h3>Regnskapsfører:</h3>
-                <ul>
-                    <p>Navn: {{virksomhet.regnskapsfører.navn}}</p>
-                    <p>Telefon: {{virksomhet.regnskapsfører.telefon}}</p>
-                </ul>
-            {{/if}}
-            {{#if @last}}
-                <!--Setter ikke <hr/> på siste linje -->
-            {{else}}
-                <hr/>
-            {{/if}}
-        {{/each}}
-    {{/if}}
-
-    <!-- MEDLEMSKAP -->
-    <h2><span>Medlemskap</span></h2>
-    <p class="sporsmalstekst">Har bodd i utlandet siste 12 månedene?</p>
-    {{# if medlemskap.har_bodd_i_utlandet_siste_12_mnd }}
-        {{>jaNeiCheckbox parameter=medlemskap.har_bodd_i_utlandet_siste_12_mnd}}
-        <ul>
-            {{# each medlemskap.utenlandsopphold_siste_12_mnd as |opphold|~}}
-                <li>
-                    {{opphold.landnavn}} ({{opphold.fraOgMed}} - {{opphold.tilOgMed}})
-                </li>
+                {{#if virksomhet.yrkesaktivSisteTreFerdigliknedeÅrene}}
+                    <p>Oppgi dato for når du ble yrkesaktiv: {{#dato virksomhet.yrkesaktivSisteTreFerdigliknedeÅrene.oppstartsdato}}{{/dato}}</p>
+                {{/if}}
+                {{#if virksomhet.varigEndring}}
+                    <h3>Varig endring</h3>
+                    <ul>
+                        <li>
+                            <p>Dato for når varig endring oppsto: {{#dato virksomhet.varigEndring.dato}}{{/dato}}</p>
+                            <p>Næringsinntekt etter endringen: {{virksomhet.varigEndring.inntektEtterEndring}}</p>
+                            <div class="fritekst">
+                                <p class="sporsmalstekst">Din forklaring om varig endring:</p>
+                                <p class="fritekst_textarea">{{virksomhet.varigEndring.forklaring}}</p>
+                            </div>
+                        </li>
+                    </ul>
+                {{/if}}
+                {{#if virksomhet.regnskapsfører}}
+                    <h3>Regnskapsfører:</h3>
+                    <ul>
+                        <li>
+                            <p>Navn: {{virksomhet.regnskapsfører.navn}}</p>
+                            <p>Telefon: {{virksomhet.regnskapsfører.telefon}}</p>
+                        </li>
+                    </ul>
+                {{/if}}
+                {{#if @last}}
+                {{else}}
+                    <hr/>
+                {{/if}}
             {{/each}}
-        </ul>
-    {{else}}
-        {{>jaNeiCheckbox parameter=medlemskap.har_bodd_i_utlandet_siste_12_mnd}}
-    {{/if}}
-    <hr/>
-    <p class="sporsmalstekst">Skal bo i utlandet de neste 12 månedene?</p>
-    {{# if medlemskap.skal_bo_i_utlandet_neste_12_mnd }}
-        {{> jaNeiCheckbox parameter=medlemskap.skal_bo_i_utlandet_neste_12_mnd}}
-        <ul>
-            {{# each medlemskap.utenlandsopphold_neste_12_mnd as |opphold|~}}
-                <li>
-                    {{opphold.landnavn}} ({{opphold.fraOgMed}} - {{opphold.tilOgMed}})
-                </li>
-            {{/each}}
-        </ul>
-    {{else}}
-        {{> jaNeiCheckbox parameter=false}}
-    {{/if}}
-    <!-- Info om har ikke lastet opp vedlegg -->
-    {{#if harIkkeVedlegg}}
-        <h2>
-        <span>
-            Legeerklæring
-        </span>
-        </h2>
-        <p>Ingen vedlegg er lastet opp.</p>
-    {{/if}}
-    <!-- SAMTYKKE -->
-    <br/>
-    <br/>
-    <h2><span>Samtykke</span></h2>
+        {{/if}}
+    </section>
 
-    <p class="sporsmalstekst">Har forstått rettigheter og plikter?</p>
-    {{> jaNeiCheckbox parameter=samtykke.har_forstatt_rettigheter_og_plikter}}
-    <hr/>
-    <p class="sporsmalstekst">Har bekreftet opplysninger?</p>
-    {{> jaNeiCheckbox parameter=samtykke.har_bekreftet_opplysninger}}
+    <section id="medlemskap">
+        <h2>Medlemskap i folketrygden</h2>
+        <p class="sporsmalstekst">Har du bodd i utlandet de siste 12 månedene?</p>
+        {{# if medlemskap.har_bodd_i_utlandet_siste_12_mnd }}
+            <p>Ja</p>
+            <ul>
+                {{# each medlemskap.utenlandsopphold_siste_12_mnd as |opphold|~}}
+                    <li>
+                        {{opphold.landnavn}} ({{opphold.fraOgMed}} - {{opphold.tilOgMed}})
+                    </li>
+                {{/each}}
+            </ul>
+        {{else}}
+            <p>Nei</p>{{/if}}
+        <hr />
+        <p class="sporsmalstekst">Skal du bo i utlandet de neste 12 månedene?</p>
+        {{# if medlemskap.skal_bo_i_utlandet_neste_12_mnd }}
+            <p>Ja</p>
+            <ul>
+                {{# each medlemskap.utenlandsopphold_neste_12_mnd as |opphold|~}}
+                    <li>
+                        {{opphold.landnavn}} ({{opphold.fraOgMed}} - {{opphold.tilOgMed}})
+                    </li>
+                {{/each}}
+            </ul>
+        {{else}}
+            <p>Nei</p>{{/if}}
+    </section>
+
+    <section id="vedlegg">
+        <!-- Info om har ikke lastet opp vedlegg -->
+        {{#if harIkkeVedlegg}}
+            <h2>Legeerklæring</h2>
+            <p>Ingen vedlegg er lastet opp.</p>
+        {{/if}}
+    </section>
+
+    <section id="samtykke">
+        <h2>Samtykke fra deg</h2>
+        <p class="sporsmalstekst">Har du forstått dine rettigheter og plikter?</p>
+        <p>{{ jaNeiSvar samtykke.har_forstatt_rettigheter_og_plikter }}</p>
+        <hr />
+        <p class="sporsmalstekst">Har du bekreftet at opplysninger som er gitt er riktige?</p>
+        <p>{{ jaNeiSvar samtykke.har_bekreftet_opplysninger }}</p>
+    </section>
 </div>
-
 <!-- FOOTER -->
-<div id="footer">
+<p id="footer">
     <span class="soknadsid">{{ soknad_id }}</span>
     <span class="sidetall">side <span id="pagenumber"></span> av <span id="pagecount"></span></span>
-</div>
+</p>
 </body>
+
 </html>

@@ -117,8 +117,51 @@ class PdfV1GeneratorTest {
                 tilleggsinformasjon = "Jeg er i beredskap\rmed\nlinje\r\nlinjeskift."
             ),
             utenlandsoppholdIPerioden = UtenlandsoppholdIPerioden(
-                skalOppholdeSegIUtlandetIPerioden = false,
-                opphold = listOf()
+                skalOppholdeSegIUtlandetIPerioden = true,
+                opphold = listOf(
+                    Utenlandsopphold(
+                        fraOgMed = LocalDate.parse("2020-01-01"),
+                        tilOgMed = LocalDate.parse("2020-01-10"),
+                        landnavn = "Bahamas",
+                        landkode = "BAH",
+                        erUtenforEøs = true,
+                        erBarnetInnlagt = true,
+                        perioderBarnetErInnlagt = listOf(
+                            Periode(
+                                fraOgMed = LocalDate.parse("2020-01-01"),
+                                tilOgMed = LocalDate.parse("2020-01-01")
+                            ),
+                            Periode(
+                                fraOgMed = LocalDate.parse("2020-01-03"),
+                                tilOgMed = LocalDate.parse("2020-01-04")
+                            )
+                        ),
+                        årsak = Årsak.ANNET
+                    ),
+                    Utenlandsopphold(
+                        fraOgMed = LocalDate.parse("2020-01-01"),
+                        tilOgMed = LocalDate.parse("2020-01-10"),
+                        landnavn = "Svergie",
+                        landkode = "BHS",
+                        erUtenforEøs = false,
+                        erBarnetInnlagt = true,
+                        perioderBarnetErInnlagt = listOf(
+                            Periode(
+                                fraOgMed = LocalDate.parse("2020-01-01"),
+                                tilOgMed = LocalDate.parse("2020-01-01")
+                            ),
+                            Periode(
+                                fraOgMed = LocalDate.parse("2020-01-03"),
+                                tilOgMed = LocalDate.parse("2020-01-04")
+                            ),
+                            Periode(
+                                fraOgMed = LocalDate.parse("2020-01-05"),
+                                tilOgMed = LocalDate.parse("2020-01-05")
+                            )
+                        ),
+                        årsak = Årsak.ANNET
+                    )
+                )
             ),
             ferieuttakIPerioden = FerieuttakIPerioden(
                 skalTaUtFerieIPerioden = true,
@@ -761,7 +804,7 @@ class PdfV1GeneratorTest {
     }
 
     @Test
-    @Ignore
+    //@Ignore
     fun `opprett lesbar oppsummerings-PDF`() {
         genererOppsummeringsPdfer(true)
     }
