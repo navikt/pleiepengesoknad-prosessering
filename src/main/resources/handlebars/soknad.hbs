@@ -62,28 +62,27 @@
     </div>
 
     <section id="perioder">
-        <h2>Perioder</h2>
+        <h2>Perioder du søker om pleiepenger</h2>
         <ul>
             <li>
                 <strong>{{ periode.fra_og_med }} - {{ periode.til_og_med }}</strong><br/>
                 <ul>
                     {{#if bekrefterPeriodeOver8Uker}}
-                        <li>Søker bekrefter at søknaden gjelder for en periode på mer enn 8 uker.</li>
+                        <li>Du bekrefter at søknaden gjelder for en periode på mer enn 8 uker.</li>
                     {{/if}}
 
                     {{# if hjelp.har_medsoker }}
                         <li>
-                            Søker opplyser at en medsøker skal søke for samme periode.<br/>
+                            Du opplyser at en medsøker skal søke for samme periode som deg.<br/>
                             <ul>
                                 {{# if samtidig_hjemme }}
                                     <li>
-                                        Søker og medsøker skal være hjemme eller på sykehus samtidig.
+                                        Du opplyser at du og medsøker skal være hjemme eller på sykehus samtidig.
                                     </li>
                                 {{/if}}
                                 {{#unless samtidig_hjemme}}
                                     <li>
-                                        Søker og medsøker skal ikke være hjemme / på sykehus
-                                        samtidig.
+                                        Du opplyser at du og medsøker skal være hjemme eller på sykehus samtidig.
                                     </li>
                                 {{/unless}}
                             </ul>
@@ -95,10 +94,10 @@
 
                     {{# if skal_passe_pa_barnet_i_hele_perioden}}
                         <li>
-                            Søker bekrefter å ha omsorgen for barnet i hele perioden.<br/>
+                            Du bekrefter at du har omsorgen for barnet i hele perioden du søker om.<br/>
                             {{# if beskrivelse_omsorgsrollen}}
                                 <div class="fritekst">
-                                    <p class="sporsmalstekst">Beskrivelse av omsorgsrollen:</p>
+                                    <p class="sporsmalstekst">Din beskrivelse av omsorgsrollen:</p>
                                     <p class="fritekst_textarea">{{fritekst beskrivelse_omsorgsrollen}}</p>
                                 </div>
                             {{/if}}
@@ -111,7 +110,7 @@
 
     <section id="utenlandsopphold">
         {{# if utenlandsoppholdIPerioden.skalOppholdeSegIUtlandetIPerioden }}
-            <h2>Utenlandsopphold / Ferie</h2>
+            <h2>Perioder med utenlandsopphold og ferie</h2>
             <p class="sporsmalstekst">Skal du reise til utlandet i perioden du søker for?</p>
             {{# if utenlandsoppholdIPerioden.skalOppholdeSegIUtlandetIPerioden }}
                 <p>{{ jaNeiSvar utenlandsoppholdIPerioden.skalOppholdeSegIUtlandetIPerioden }}</p>
@@ -121,7 +120,7 @@
                             <p>{{opphold.landnavn}}{{#if opphold.erUtenforEØS}} (utenfor EØS) {{/if}}: {{opphold.fraOgMed}} - {{opphold.tilOgMed}}</p>
                             {{#if opphold.erUtenforEØS}}
                                 {{#if opphold.erBarnetInnlagt}}
-                                    <p><b>Barn innlagt?</b> {{ jaNeiSvar opphold.erBarnetInnlagt }}</p>
+                                    <p><b>Er barnet innlagt?</b> {{ jaNeiSvar opphold.erBarnetInnlagt }}</p>
                                     <p><b>Perioder:</b>
                                         {{# each opphold.perioderBarnetErInnlagt as |periode| }}
                                             {{#if @last}}
@@ -141,9 +140,9 @@
                 <p>{{ jaNeiSvar utenlandsoppholdIPerioden.skalOppholdeSegIUtlandetIPerioden }}</p>
             {{/if}}
         {{/if}}
-        <p class="sporsmalstekst">Skal du ta ut feriedager i perioden?</p>
+        <p class="sporsmalstekst">Skal du ha ferie i perioden du søker om?</p>
         {{# if ferieuttakIPerioden.skalTaUtFerieIPerioden }}
-            <p>Ja</p>
+            <p>Du opplyser at du skal ha ferie</p>
             <ul>
                 {{# each ferieuttakIPerioden.ferieuttak as |ferieuttak|~}}
                     <li>
@@ -157,10 +156,10 @@
     </section>
 
     <section id="arbeidsforhold">
-        <h2>Arbeidsforhold</h2>
+        <h2>Dine arbeidsforhold</h2>
         {{# if hjelp.ingen_arbeidsgivere }}
             <ul>
-                <li class="ikke_satt">Det er ikke angitt noen arbeidsgivere i søknaden.</li>
+                <li class="ikke_satt">Du har ikke angitt noen arbeidsgivere i søknaden.</li>
             </ul>
         {{/if}}
 
@@ -172,19 +171,19 @@
                         <li>
                             {{#if org.skal_jobbe}}
                                 {{#eq org.skal_jobbe "ja"}}
-                                    Søker skal jobbe som vanlig i perioden.
+                                    Du skal jobbe som vanlig i perioden.
                                 {{/eq}}
 
                                 {{#eq org.skal_jobbe "nei"}}
-                                    Søker skal ikke jobbe her i perioden.
+                                    Du skal ikke jobbe her i perioden.
                                 {{/eq}}
 
                                 {{#eq org.skal_jobbe "redusert"}}
-                                    Søker skal jobbe redusert i perioden.
+                                    Du skal jobbe redusert i perioden.
                                 {{/eq}}
 
                                 {{#eq org.skal_jobbe "vetIkke"}}
-                                    Søker vet ikke om han/hun skal jobbe her, men sier fra hvis det blir tilfelle.
+                                    Du vet ikke om du skal jobbe her, men sier fra hvis det blir tilfelle.
                                 {{/eq}}
                             {{/if}}
                         </li>
@@ -192,7 +191,7 @@
                         <li>
                             {{#if org.skal_jobbe_prosent }}
                                 {{#unless org.jobber_normaltimer }}
-                                    Skal jobbe {{org.skal_jobbe_prosent }}% av sin stilling. Søker får et
+                                    Du jobbe {{org.skal_jobbe_prosent }}% av din stilling. Du får et
                                     inntektstap på {{org.inntektstap_prosent}}%
                                 {{/unless}}
                             {{/if}}
@@ -200,8 +199,8 @@
                         <li>
                             {{#if org.skal_jobbe_prosent }}
                                 {{#if org.jobber_normaltimer }}
-                                    <li>Søker jobber vanligvis {{org.jobber_normaltimer }} timer i uken hos denne arbeidsgiveren.</li>
-                                    <li>I pleiepengeperioden skal søker jobbe {{org.skal_jobbe_prosent }}%. Søker får et inntektstap
+                                    <li>Du jobber vanligvis {{org.jobber_normaltimer }} timer i uken hos denne arbeidsgiveren.</li>
+                                    <li>I perioden med pleiepenger skal du jobbe {{org.skal_jobbe_prosent }}%. Du får et inntektstap
                                         på {{org.inntektstap_prosent}}%
                                     </li>
                                 {{/if}}
@@ -210,7 +209,7 @@
                         <li>
                             {{#if org.jobber_normaltimer}}
                                 {{#if org.vet_ikke_ekstra_info}}
-                                    Søker jobber vanligvis {{org.jobber_normaltimer}} timer i uken.<br/>
+                                    Du jobber vanligvis {{org.jobber_normaltimer}} timer i uken.<br/>
                                 {{/if}}
                             {{/if}}
                         </li>
@@ -224,7 +223,7 @@
     <section id="omsorgstilbud">
         {{# if tilsynsordning }}
             <h2>Omsorgstilbud</h2>
-
+            <p class="sporsmalstekst">Skal barnet være i et omsorgstilbud i perioden du har søkt om?</p>
             <!-- Sjekkbokser -->
             {{#eq tilsynsordning.tilsynsordning_svar "ja" }}
                 <p>Ja</p>
@@ -243,35 +242,35 @@
                     {{# if tilsynsordning.mandag }}
                         {{tilsynsordning.mandag}}
                     {{ else }}
-                        <span class="ikke_satt">Ikke angitt</span>
+                        <span class="ikke_satt">Nei</span>
                     {{/if}}
                 </p>
                 <p><span class="sporsmalstekst">Tirsdag: </span>
                     {{# if tilsynsordning.tirsdag }}
                         {{tilsynsordning.tirsdag}}
                     {{ else }}
-                        <span class="ikke_satt">Ikke angitt</span>
+                        <span class="ikke_satt">Nei</span>
                     {{/if}}
                 </p>
                 <p><span class="sporsmalstekst">Onsdag: </span>
                     {{# if tilsynsordning.onsdag }}
                         {{tilsynsordning.onsdag}}
                     {{ else }}
-                        <span class="ikke_satt">Ikke angitt</span>
+                        <span class="ikke_satt">Nei</span>
                     {{/if}}
                 </p>
                 <p><span class="sporsmalstekst">Torsdag: </span>
                     {{# if tilsynsordning.torsdag }}
                         {{tilsynsordning.torsdag}}
                     {{ else }}
-                        <span class="ikke_satt">Ikke angitt</span>
+                        <span class="ikke_satt">Nei</span>
                     {{/if}}
                 </p>
                 <p><span class="sporsmalstekst">Fredag: </span>
                     {{# if tilsynsordning.fredag }}
                         {{tilsynsordning.fredag}}
                     {{ else }}
-                        <span class="ikke_satt">Ikke angitt</span>
+                        <span class="ikke_satt">Nei</span>
                     {{/if}}
                 </p>
                 <br/>
@@ -280,7 +279,7 @@
                 <br/>
                 {{#if tilsynsordning.tilleggsinformasjon}}
                     <div class="fritekst">
-                        <p class="sporsmalstekst"> Søkers tilleggsopplysninger:</p>
+                        <p class="sporsmalstekst"> Dine tilleggsopplysninger:</p>
                         <p class="fritekst_textarea">{{fritekst tilsynsordning.tilleggsinformasjon}}</p>
                     </div>
                 {{/if}}
@@ -303,7 +302,7 @@
                 <br/>
                 {{#if tilsynsordning.annet}}
                     <div class="fritekst">
-                        <p class="sporsmalstekst"> Søker er usikker, fordi:</p>
+                        <p class="sporsmalstekst"> Du er usikker, fordi:</p>
                         <p class="fritekst_textarea">{{fritekst tilsynsordning.annet}}</p>
                     </div>
                 {{/if}}
@@ -314,10 +313,11 @@
     <section id="nattevaak">
         {{# if nattevaak }}
             <h2>Nattevåk</h2>
+            <p class="sporsmalstekst">Må du være våken om natten for å pleie barnet, og derfor må være borte fra jobb dagen etter?</p>
             <p>{{ jaNeiSvar nattevaak.har_nattevaak }}</p>
             {{# if nattevaak.tilleggsinformasjon }}
                 <div class="fritekst">
-                    <p class="sporsmalstekst">Søkers tilleggsopplysninger:</p>
+                    <p class="sporsmalstekst">Dine tilleggsopplysninger:</p>
                     <p class="fritekst_textarea">{{fritekst nattevaak.tilleggsinformasjon}}</p>
                 </div>
             {{/if}}
@@ -327,10 +327,11 @@
     <section id="beredskap">
         {{# if nattevaak }}
             <h2>Beredskap</h2>
+            <p class="sporsmalstekst">Må du være i beredskap også når barnet er i et omsorgstilbud?</p>
             <p>{{ jaNeiSvar beredskap.i_beredskap }}</p>
             {{# if beredskap.tilleggsinformasjon }}
                 <div class="fritekst">
-                    <p class="sporsmalstekst">Søkers tilleggsopplysninger:</p>
+                    <p class="sporsmalstekst">Dine tilleggsopplysninger:</p>
                     <p class="fritekst_textarea">{{fritekst beredskap.tilleggsinformasjon}}</p>
                 </div>
             {{/if}}
@@ -342,9 +343,9 @@
             <h2>Frilans</h2>
             <p class="sporsmalstekst">Når startet du som frilanser?</p>
             <p>{{#dato søknad.frilans.startdato}}{{/dato}}</p>
-            <p class="sporsmalstekst">Har du jobbet og hatt inntekt som frilanser de siste 4 uker?</p>
+            <p class="sporsmalstekst">Har du jobbet og hatt inntekt som frilanser de siste 4 ukene?</p>
             <p>{{ jaNeiSvar true }}</p>
-            <p class="sporsmalstekst">Jobber du fortsatt som frilanser?</p>
+            <p class="sporsmalstekst">Jobber du fremdeles som frilanser?</p>
             <p>{{ jaNeiSvar søknad.frilans.jobberFortsattSomFrilans }}</p>
         {{/if}}
     </section>
@@ -391,10 +392,10 @@
                     <h3>Varig endring</h3>
                     <ul>
                         <li>
-                            <p>Dato for endring: {{#dato virksomhet.varigEndring.dato}}{{/dato}}</p>
-                            <p>Næringsinntekten etter endringen: {{virksomhet.varigEndring.inntektEtterEndring}}</p>
+                            <p>Dato for når varig endring oppsto: {{#dato virksomhet.varigEndring.dato}}{{/dato}}</p>
+                            <p>Næringsinntekt etter endringen: {{virksomhet.varigEndring.inntektEtterEndring}}</p>
                             <div class="fritekst">
-                                <p class="sporsmalstekst">Søkers forklaring:</p>
+                                <p class="sporsmalstekst">Din forklaring om varig endring:</p>
                                 <p class="fritekst_textarea">{{virksomhet.varigEndring.forklaring}}</p>
                             </div>
                         </li>
@@ -418,8 +419,8 @@
     </section>
 
     <section id="medlemskap">
-        <h2>Medlemskap</h2>
-        <p class="sporsmalstekst">Har bodd i utlandet siste 12 månedene?</p>
+        <h2>Medlemskap i folketrygden</h2>
+        <p class="sporsmalstekst">Har du bodd i utlandet de siste 12 månedene?</p>
         {{# if medlemskap.har_bodd_i_utlandet_siste_12_mnd }}
             <p>Ja</p>
             <ul>
@@ -432,7 +433,7 @@
         {{else}}
             <p>Nei</p>{{/if}}
         <hr />
-        <p class="sporsmalstekst">Skal bo i utlandet de neste 12 månedene?</p>
+        <p class="sporsmalstekst">Skal du bo i utlandet de neste 12 månedene?</p>
         {{# if medlemskap.skal_bo_i_utlandet_neste_12_mnd }}
             <p>Ja</p>
             <ul>
@@ -455,17 +456,15 @@
     </section>
 
     <section id="samtykke">
-        <h2>Samtykke</h2>
-        <p class="sporsmalstekst">Har forstått rettigheter og plikter?</p>
+        <h2>Samtykke fra deg</h2>
+        <p class="sporsmalstekst">Har du forstått dine rettigheter og plikter?</p>
         <p>{{ jaNeiSvar samtykke.har_forstatt_rettigheter_og_plikter }}</p>
         <hr />
-        <p class="sporsmalstekst">Har bekreftet opplysninger?</p>
+        <p class="sporsmalstekst">Har du bekreftet at opplysninger som er gitt er riktige?</p>
         <p>{{ jaNeiSvar samtykke.har_bekreftet_opplysninger }}</p>
     </section>
 
 </div>
-
-
 <!-- FOOTER -->
 <p id="footer">
     <span class="soknadsid">{{ soknad_id }}</span>
