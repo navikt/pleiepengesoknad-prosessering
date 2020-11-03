@@ -21,7 +21,7 @@ data class MeldingV1 (
     var vedleggUrls : List<URI> = listOf(),
     val medlemskap: Medlemskap,
     val bekrefterPeriodeOver8Uker: Boolean? = null,
-    val utenlandsoppholdIPerioden: UtenlandsoppholdIPerioden?,
+    val utenlandsoppholdIPerioden: UtenlandsoppholdIPerioden,
     val ferieuttakIPerioden: FerieuttakIPerioden?,
     val harMedsøker : Boolean,
     val samtidigHjemme: Boolean? = null,
@@ -216,7 +216,7 @@ enum class Årsak(val beskrivelse: String) {
 }
 
 data class UtenlandsoppholdIPerioden(
-    val skalOppholdeSegIUtlandetIPerioden: Boolean? = null,
+    val skalOppholdeSegIUtlandetIPerioden: Boolean,
     val opphold: List<Utenlandsopphold> = listOf()
 )
 

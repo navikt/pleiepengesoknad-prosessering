@@ -35,14 +35,11 @@ internal class PreprosseseringV1Service(
 
         val sokerAktoerId = AktoerId(melding.søker.aktørId)
 
-        logger.info("Søkerens AktørID = $sokerAktoerId")
-
         logger.trace("Henter AktørID for barnet.")
         val barnAktoerId: AktoerId? = when {
             melding.barn.aktørId.isNullOrBlank() -> hentBarnetsAktoerId(barn = melding.barn, correlationId = correlationId)
             else -> AktoerId(melding.barn.aktørId)
         }
-        logger.info("Barnets AktørID = $barnAktoerId")
 
         val barnetsIdent: NorskIdent? = when {
             barnAktoerId != null -> aktoerService.getIdent(barnAktoerId.id, correlationId = correlationId)

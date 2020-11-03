@@ -19,7 +19,7 @@ data class PreprossesertMeldingV1(
     val arbeidsgivere: Arbeidsgivere,
     val medlemskap: Medlemskap,
     val bekrefterPeriodeOver8Uker: Boolean? = null,
-    val utenlandsoppholdIPerioden: UtenlandsoppholdIPerioden?,
+    val utenlandsoppholdIPerioden: UtenlandsoppholdIPerioden,
     val ferieuttakIPerioden: FerieuttakIPerioden?,
     val beredskap: Beredskap?,
     val nattevåk: Nattevåk?,

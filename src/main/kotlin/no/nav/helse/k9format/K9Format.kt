@@ -12,9 +12,7 @@ import no.nav.k9.søknad.pleiepengerbarn.*
 import no.nav.k9.søknad.pleiepengerbarn.Beredskap
 import no.nav.k9.søknad.pleiepengerbarn.Nattevåk
 import no.nav.k9.søknad.pleiepengerbarn.Utenlandsopphold
-import java.lang.IllegalArgumentException
 import java.math.BigDecimal
-import java.time.Duration
 import java.time.LocalDate
 
 fun PreprossesertMeldingV1.tilK9PleiepengeBarnSøknad(): JsonNode {
@@ -38,7 +36,9 @@ fun PreprossesertMeldingV1.tilK9PleiepengeBarnSøknad(): JsonNode {
         .barn(barn.tilK9Barn())
         .søknadsperiode(Periode.builder().fraOgMed(fraOgMed).tilOgMed(tilOgMed).build(), SøknadsperiodeInfo())
 
-    builder.bosteder(medlemskap.tilK9bosteder())
+    if (medlemskap.harBoddIUtlandetSiste12Mnd || medlemskap.skalBoIUtlandetNeste12Mnd) {
+        builder.bosteder(medlemskap.tilK9bosteder())
+    }
 
     beredskap?.let {
         builder.beredskap(
@@ -49,9 +49,10 @@ fun PreprossesertMeldingV1.tilK9PleiepengeBarnSøknad(): JsonNode {
         )
     }
 
-    utenlandsoppholdIPerioden?.let {
+    if(utenlandsoppholdIPerioden.opphold.isNotEmpty() && utenlandsoppholdIPerioden.skalOppholdeSegIUtlandetIPerioden) {
         builder.utenlandsopphold(utenlandsoppholdIPerioden.tilK9Utenlandsopphold())
     }
+
 
     nattevåk?.let {
         val nattvåkBuilder = Nattevåk.NattevåkPeriodeInfo.builder()
@@ -116,9 +117,12 @@ fun Medlemskap.tilK9bosteder(): Bosteder {
             Bosteder.BostedPeriodeInfo.builder().land(Landkode.of(it.landkode)).build()
     }
 
-    return Bosteder.builder()
-        .perioder(perioder)
-        .build()
+    val builder = Bosteder.builder()
+    if (perioder.isNotEmpty()) {
+        builder.perioder(perioder)
+    }
+
+    return builder.build()
 }
 
 fun Tilsynsordning.tilK9Tilsynsordning(
@@ -218,15 +222,14 @@ fun Arbeidsgivere.tilK9Arbeid(
         builder.frilanser(frilans.tilK9Frilanser())
     }
 
-    selvstendigVirksomheter?.let {
+    if (selvstendigVirksomheter != null && selvstendigVirksomheter.isNotEmpty()) {
         builder.selvstendigNæringsdrivende(selvstendigVirksomheter.tilK9SelvstendigNæringsdrivende())
     }
-
 
     return builder.build()
 }
 
-private fun List<Virksomhet>.tilK9SelvstendigNæringsdrivende(): SelvstendigNæringsdrivende {
+fun List<Virksomhet>.tilK9SelvstendigNæringsdrivende(): SelvstendigNæringsdrivende {
     val perioder = mutableMapOf<Periode, SelvstendigNæringsdrivende.SelvstendigNæringsdrivendePeriodeInfo>()
     map {
         perioder.put(
@@ -237,7 +240,7 @@ private fun List<Virksomhet>.tilK9SelvstendigNæringsdrivende(): SelvstendigNær
     return SelvstendigNæringsdrivende.builder().perioder(perioder).build()
 }
 
-private fun Frilans.tilK9Frilanser(): Frilanser {
+fun Frilans.tilK9Frilanser(): Frilanser {
     return Frilanser.builder()
         .periode(Periode.builder().fraOgMed(this.startdato).build(), Frilanser.FrilanserPeriodeInfo())
         .build()
