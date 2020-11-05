@@ -56,5 +56,4 @@ object TestConfiguration {
 
         return map.toMap()
     }
-    private fun String.getAsJson() = JSONObject(this.httpGet().responseString().third.component1())
 }
