@@ -5,6 +5,7 @@ import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.common.config.SaslConfigs
 import org.apache.kafka.common.config.SslConfigs
 import org.apache.kafka.streams.StreamsConfig.*
+import org.apache.kafka.streams.Topology
 import org.apache.kafka.streams.errors.LogAndFailExceptionHandler
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -20,12 +21,13 @@ internal class KafkaConfig(
     credentials: Pair<String, String>,
     trustStore: Pair<String, String>?,
     exactlyOnce: Boolean,
+    autoOffsetReset: String,
     internal val unreadyAfterStreamStoppedIn: Duration
 ) {
     private val streams = Properties().apply {
         put(BOOTSTRAP_SERVERS_CONFIG, bootstrapServers)
         put(DEFAULT_DESERIALIZATION_EXCEPTION_HANDLER_CLASS_CONFIG, LogAndFailExceptionHandler::class.java)
-        put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest")
+        put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, autoOffsetReset)
         medCredentials(credentials)
         medTrustStore(trustStore)
         medProcessingGuarantee(exactlyOnce)

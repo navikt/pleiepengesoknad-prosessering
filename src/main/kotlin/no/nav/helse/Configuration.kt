@@ -6,6 +6,7 @@ import no.nav.helse.dusseldorf.ktor.core.getOptionalString
 import no.nav.helse.dusseldorf.ktor.core.getRequiredList
 import no.nav.helse.dusseldorf.ktor.core.getRequiredString
 import no.nav.helse.kafka.KafkaConfig
+import java.lang.IllegalArgumentException
 import java.net.URI
 import java.time.Duration
 import java.time.temporal.ChronoUnit
@@ -32,12 +33,20 @@ data class Configuration(private val config: ApplicationConfig) {
                 }
             }
 
+            val autoOffsetReset = when(val offsetReset = config.getOptionalString(key = "nav.kafka.auto_offset_reset", secret = false)) {
+                null -> "none"
+                "latest" -> offsetReset.toLowerCase()
+                "earliest" -> offsetReset.toLowerCase()
+                else -> throw IllegalArgumentException("Ugyldig verdi for nav.kafka.auto_offset_reset: $offsetReset")
+            }
+
             KafkaConfig(
                 bootstrapServers = bootstrapServers,
                 credentials = Pair(
                     config.getRequiredString("nav.kafka.username", secret = false),
                     config.getRequiredString("nav.kafka.password", secret = true)
                 ),
+                autoOffsetReset = autoOffsetReset,
                 trustStore = trustStore,
                 exactlyOnce = trustStore != null,
                 unreadyAfterStreamStoppedIn = unreadyAfterStreamStoppedIn()
