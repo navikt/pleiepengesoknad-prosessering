@@ -60,7 +60,7 @@
     },
     {
       "configEntries": {
-        "retention.ms": 2628000000
+        "retention.ms": -1
       },
       "members": [
         {
