@@ -9,7 +9,7 @@ dependencies {
     compile 'no.nav.k9:soknad-pleiepenger-barn:3.0.0.f5ec313'
     compile 'no.nav.helse:dusseldorf-ktor-client:1.4.0.8634f4b'
     compile 'no.nav.helse:dusseldorf-oauth2-client:1.4.0.8634f4b'
-    compile 'com.openhtmltopdf:openhtmltopdf-pdfbox:1.0.0'
+    compile 'com.openhtmltopdf:openhtmltopdf-pdfbox:1.0.6'
     compile 'com.openhtmltopdf:openhtmltopdf-slf4j:1.0.0'
     compile 'org.slf4j:jcl-over-slf4j:1.7.30'
     compile 'com.github.jknack:handlebars:4.1.2'
