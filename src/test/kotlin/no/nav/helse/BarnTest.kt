@@ -1,6 +1,8 @@
 package no.nav.helse
 
+import io.prometheus.client.CollectorRegistry
 import no.nav.helse.prosessering.v1.*
+import org.junit.Before
 import java.time.LocalDate
 import java.time.ZoneId
 import kotlin.test.Test
@@ -11,6 +13,11 @@ import kotlin.test.assertTrue
 class BarnTest {
     private companion object {
         val now = LocalDate.now(ZoneId.of("Europe/Oslo"))
+    }
+
+    @Before
+    fun setUp() {
+        CollectorRegistry.defaultRegistry.clear()
     }
 
     @Test
