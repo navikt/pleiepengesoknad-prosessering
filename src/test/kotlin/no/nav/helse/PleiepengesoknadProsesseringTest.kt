@@ -407,7 +407,6 @@ class PleiepengesoknadProsesseringTest {
                 mellomnavn = "Mellomnavn",
                 etternavn = "Nordmann"
             ),
-            relasjonTilBarnet = "far",
             harMedsøker = false,
             barn = Barn(
                 navn = "Bjarne",
