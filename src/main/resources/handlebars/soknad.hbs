@@ -10,6 +10,7 @@
     <bookmarks>
         <bookmark name="Søker" href="#søker" />
         <bookmark name="Barn" href="#barn" />
+        <bookmark name="Relasjon til barnet" href="#relasjonTilBarnet" />
         <bookmark name="Perioder" href="#perioder" />
         <bookmark name="Utenlandsopphold" href="#utenlandsopphold" />
         <bookmark name="Arbeidsforhold" href="#arbeidsforhold" />
@@ -60,6 +61,18 @@
             {{/if}}
         </p>
     </div>
+
+    <section id="relasjonTilBarnet">
+        {{#if barnRelasjon}}
+            <h2>Relasjon til barnet</h2>
+            <p class="sporsmalstekst">Hvilken relasjon har du til barnet?</p>
+            <p>{{barnRelasjon}}</p>
+            {{#if barnRelasjonBeskrivelse}}
+                <p class="sporsmalstekst">Beskriv relasjon og tilsynsoppgave(r)?</p>
+                <p>{{barnRelasjonBeskrivelse}}</p>
+            {{/if}}
+        {{/if}}
+    </section>
 
     <section id="perioder">
         <h2>Perioder du søker om pleiepenger</h2>

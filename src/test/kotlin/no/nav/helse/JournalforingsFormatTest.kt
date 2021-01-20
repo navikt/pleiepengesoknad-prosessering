@@ -105,7 +105,9 @@ class JournalforingsFormatTest {
             "selvstendigVirksomheter" : [],
           "skalBekrefteOmsorg": true,
           "skalPassePaBarnetIHelePerioden": true,
-          "beskrivelseOmsorgsrollen": "En kort beskrivelse"
+          "beskrivelseOmsorgsrollen": "En kort beskrivelse",
+          "barnRelasjon" : "FAR",
+          "barnRelasjonBeskrivelse" : null
         }
         """.trimIndent(), String(json), true)
 
@@ -177,6 +179,7 @@ class JournalforingsFormatTest {
         selvstendigVirksomheter = listOf(),
         skalBekrefteOmsorg = true,
         skalPassePaBarnetIHelePerioden = true,
-        beskrivelseOmsorgsrollen = "En kort beskrivelse"
+        beskrivelseOmsorgsrollen = "En kort beskrivelse",
+        barnRelasjon = BarnRelasjon.FAR
     )
 }

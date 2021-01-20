@@ -156,7 +156,9 @@ internal class PdfV1Generator  {
                 ),
                 "skal_bekrefte_omsorg" to melding.skalBekrefteOmsorg,
                 "skal_passe_pa_barnet_i_hele_perioden" to melding.skalPassePaBarnetIHelePerioden,
-                "beskrivelse_omsorgsrollen" to melding.beskrivelseOmsorgsrollen
+                "beskrivelse_omsorgsrollen" to melding.beskrivelseOmsorgsrollen,
+                "barnRelasjon" to melding.barnRelasjon?.utskriftsvennlig,
+                "barnRelasjonBeskrivelse" to melding.barnRelasjonBeskrivelse
             ))
             .resolver(MapValueResolver.INSTANCE)
             .build()).let { html ->
