@@ -40,7 +40,6 @@ class JournalforingsFormatTest {
                 "fødselsdato": null,
                 "aktørId": null
             },
-            "relasjonTilBarnet": "Mor",
             "arbeidsgivere": {
                 "organisasjoner": [{
                     "organisasjonsnummer": "1212",
@@ -129,7 +128,6 @@ class JournalforingsFormatTest {
             fødselsdato = null,
             aktørId = null
         ),
-        relasjonTilBarnet = "Mor",
         bekrefterPeriodeOver8Uker = true,
         arbeidsgivere = Arbeidsgivere(
             organisasjoner = listOf(
