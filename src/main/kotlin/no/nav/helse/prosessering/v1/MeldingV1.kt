@@ -16,7 +16,6 @@ data class MeldingV1 (
     val tilOgMed : LocalDate,
     val søker : Søker,
     val barn : Barn,
-    val relasjonTilBarnet : String,
     val arbeidsgivere: Arbeidsgivere,
     var vedleggUrls : List<URI> = listOf(),
     val medlemskap: Medlemskap,

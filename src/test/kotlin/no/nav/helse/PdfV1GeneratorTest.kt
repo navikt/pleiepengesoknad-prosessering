@@ -39,7 +39,6 @@ class PdfV1GeneratorTest {
                 navn = barnetsNavn,
                 fødselsdato = null
             ),
-            relasjonTilBarnet = "Mor",
             arbeidsgivere = Arbeidsgivere(
                 organisasjoner = listOf(
                     Organisasjon(
@@ -321,7 +320,6 @@ class PdfV1GeneratorTest {
             fødselsnummer = "29099012345"
         ),
         barn = barn,
-        relasjonTilBarnet = "Onkel & Nærstående ' <> \" {}",
         arbeidsgivere = Arbeidsgivere(
             organisasjoner = organisasjoner
         ),

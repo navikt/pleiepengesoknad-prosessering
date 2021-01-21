@@ -33,7 +33,6 @@ internal object SøknadUtils {
             fødselsdato = LocalDate.now().minusYears(10),
             aktørId = "123456"
         ),
-        relasjonTilBarnet = "Mor",
         arbeidsgivere = Arbeidsgivere(
             organisasjoner = listOf(
                 Organisasjon(

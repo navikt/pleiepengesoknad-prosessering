@@ -110,8 +110,7 @@ internal class PdfV1Generator  {
                 "bekrefterPeriodeOver8Uker" to melding.bekrefterPeriodeOver8Uker,
                 "soker" to mapOf(
                     "navn" to melding.søker.formatertNavn(),
-                    "fodselsnummer" to melding.søker.fødselsnummer,
-                    "relasjon_til_barnet" to melding.relasjonTilBarnet
+                    "fodselsnummer" to melding.søker.fødselsnummer
                 ),
                 "barn" to mapOf(
                     "navn" to barnetsNavn,
