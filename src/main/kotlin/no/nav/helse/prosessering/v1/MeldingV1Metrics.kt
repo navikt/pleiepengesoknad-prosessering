@@ -27,22 +27,98 @@ private val nattevaakCounter = Counter.build()
     .labelNames("spm", "svar")
     .register()
 
+private val frilansCounter = Counter.build()
+    .name("frilansCounter")
+    .help("Teller for frilans")
+    .register()
+
+private val arbeidstakerCounter = Counter.build()
+    .name("arbeidstakerCounter")
+    .help("Teller for arbeidstaker")
+    .register()
+
+private val selvstendigNæringsdrivendeOgFrilans = Counter.build()
+    .name("selvstendigNaringsdrivendeOgFrilans")
+    .help("Teller for selvstending næringsdrivende og frilans")
+    .register()
+
+private val selvstendigNæringsdrivendeFrilansOgArbeidstaker = Counter.build()
+    .name("selvstendigNaringsdrivendeFrilansOgArbeidstaker")
+    .help("Teller for selvstending næringsdrivende, frilans og arbeidstaker")
+    .register()
+
+private val selvstendingNæringsdrivendeOgArbeidstaker = Counter.build()
+    .name("selvstendigNaringsdrivendeOgArbeidstaker")
+    .help("Teller for selvstending næringsdrivende og arbeidstaker")
+    .register()
+
+private val frilansOgArbeidstaker = Counter.build()
+    .name("frilansOgArbeidstaker")
+    .help("Teller for frilans og arbeidstaker")
+    .register()
+
+private val selvstendigVirksomhetCounter = Counter.build()
+    .name("selvstendigNaringsdrivendeCounter")
+    .help("Teller for selvstending næringsdrivende")
+    .register()
+
+private val arbeidsgivereCounter = Counter.build()
+    .name("arbeidsgivereCounter")
+    .help("Teller for arbeidsgivere")
+    .labelNames("antallArbeidsgivere", "skalJobbe")
+    .register()
+
 internal fun MeldingV1.reportMetrics() {
     opplastedeVedleggHistogram.observe(vedleggUrls.size.toDouble())
 
     when (tilsynsordning?.svar) {
-        "ja"  -> omsorgstilbudCounter.labels("omsorgstilbud", "ja").inc()
+        "ja" -> omsorgstilbudCounter.labels("omsorgstilbud", "ja").inc()
         "nei" -> omsorgstilbudCounter.labels("omsorgstilbud", "nei").inc()
         else -> omsorgstilbudCounter.labels("omsorgstilbud", "vetIkke").inc()
     }
 
     when (beredskap?.beredskap) {
-        true  -> beredskapCounter.labels("beredskap", "ja").inc()
+        true -> beredskapCounter.labels("beredskap", "ja").inc()
         false -> beredskapCounter.labels("beredskap", "nei").inc()
     }
 
     when (nattevåk?.harNattevåk) {
-        true  -> nattevaakCounter.labels("nattevåk", "ja").inc()
+        true -> nattevaakCounter.labels("nattevåk", "ja").inc()
         false -> nattevaakCounter.labels("nattevåk", "nei").inc()
     }
+
+    val skalJobbeString = arbeidsgivere.organisasjoner.map { it.skalJobbe.toLowerCase() }.sorted().joinToString("|")
+    println("SkalJobbbeString: $skalJobbeString") //TODO: Fjern før prodsetting.
+    arbeidsgivereCounter.labels(arbeidsgivere.organisasjoner.size.toString(), skalJobbeString).inc()
+
+    when {
+        erArbeidstaker() -> arbeidstakerCounter.inc()
+        erArbeidstakerOgFrilanser() -> frilansOgArbeidstaker.inc()
+        erArbeidstakerOgSelvstendigNæringsdrivende() -> selvstendingNæringsdrivendeOgArbeidstaker.inc()
+        erArbeidstakerFrilanserOgSelvstendigNæringsdrivende() -> selvstendigNæringsdrivendeFrilansOgArbeidstaker.inc()
+        erFrilanserOgSelvstendigNæringsdrivende() -> selvstendigNæringsdrivendeOgFrilans.inc()
+        erFrilanser() -> frilansCounter.inc()
+        erSelvstendigNæringsdrivende() -> selvstendigVirksomhetCounter.inc()
+    }
 }
+
+private fun MeldingV1.erArbeidstaker() =
+    this.arbeidsgivere.organisasjoner.isNotEmpty() && selvstendigVirksomheter == null && frilans == null
+
+private fun MeldingV1.erArbeidstakerOgFrilanser() =
+    this.arbeidsgivere.organisasjoner.isNotEmpty() && selvstendigVirksomheter == null && frilans != null
+
+private fun MeldingV1.erArbeidstakerOgSelvstendigNæringsdrivende() =
+    this.arbeidsgivere.organisasjoner.isNotEmpty() && selvstendigVirksomheter != null && frilans == null
+
+private fun MeldingV1.erArbeidstakerFrilanserOgSelvstendigNæringsdrivende() =
+    this.arbeidsgivere.organisasjoner.isNotEmpty() && selvstendigVirksomheter != null && frilans != null
+
+private fun MeldingV1.erFrilanserOgSelvstendigNæringsdrivende() =
+    this.arbeidsgivere.organisasjoner.isEmpty() && selvstendigVirksomheter != null && frilans != null
+
+private fun MeldingV1.erFrilanser() =
+    this.arbeidsgivere.organisasjoner.isEmpty() && selvstendigVirksomheter == null && frilans != null
+
+private fun MeldingV1.erSelvstendigNæringsdrivende() =
+    this.arbeidsgivere.organisasjoner.isEmpty() && selvstendigVirksomheter != null && frilans == null
