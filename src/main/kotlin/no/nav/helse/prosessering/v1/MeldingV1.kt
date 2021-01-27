@@ -33,8 +33,19 @@ data class MeldingV1 (
     val selvstendigVirksomheter: List<Virksomhet>? = null,
     val skalBekrefteOmsorg: Boolean? = null, // TODO: Fjern optional når prodsatt.
     val skalPassePaBarnetIHelePerioden: Boolean? = null, // TODO: Fjern optional når prodsatt.
-    val beskrivelseOmsorgsrollen: String? = null // TODO: Fjern optional når prodsatt.
+    val beskrivelseOmsorgsrollen: String? = null, // TODO: Fjern optional når prodsatt.
+    val barnRelasjon: BarnRelasjon? = null,
+    val barnRelasjonBeskrivelse: String? = null
 )
+
+enum class BarnRelasjon(val utskriftsvennlig: String) {
+    MOR("Mor"),
+    MEDMOR("Medmor"),
+    FAR("Far"),
+    STEFORELDER("Steforelder"),
+    FOSTERFORELDER("Fosterforelder"),
+    ANNET("Annet")
+}
 
 data class Virksomhet(
     val næringstyper: List<Næringstyper>,

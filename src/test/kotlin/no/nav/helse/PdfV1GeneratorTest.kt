@@ -388,7 +388,9 @@ class PdfV1GeneratorTest {
             )
         ),
         frilans = frilans,
-        selvstendigVirksomheter = selvstendigVirksomheter
+        selvstendigVirksomheter = selvstendigVirksomheter,
+        barnRelasjon = BarnRelasjon.ANNET,
+        barnRelasjonBeskrivelse = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec iaculis tempus molestie"
     )
 
     private fun genererOppsummeringsPdfer(writeBytes: Boolean) {
