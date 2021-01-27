@@ -103,22 +103,22 @@ internal fun MeldingV1.reportMetrics() {
 }
 
 private fun MeldingV1.erArbeidstaker() =
-    this.arbeidsgivere.organisasjoner.isNotEmpty() && selvstendigVirksomheter == null && frilans == null
+    this.arbeidsgivere.organisasjoner.isNotEmpty() && selvstendigVirksomheter.isNullOrEmpty() && frilans == null
 
 private fun MeldingV1.erArbeidstakerOgFrilanser() =
-    this.arbeidsgivere.organisasjoner.isNotEmpty() && selvstendigVirksomheter == null && frilans != null
+    this.arbeidsgivere.organisasjoner.isNotEmpty() && selvstendigVirksomheter.isNullOrEmpty() && frilans != null
 
 private fun MeldingV1.erArbeidstakerOgSelvstendigNæringsdrivende() =
-    this.arbeidsgivere.organisasjoner.isNotEmpty() && selvstendigVirksomheter != null && frilans == null
+    this.arbeidsgivere.organisasjoner.isNotEmpty() && selvstendigVirksomheter.isNullOrEmpty() && frilans == null
 
 private fun MeldingV1.erArbeidstakerFrilanserOgSelvstendigNæringsdrivende() =
-    this.arbeidsgivere.organisasjoner.isNotEmpty() && selvstendigVirksomheter != null && frilans != null
+    this.arbeidsgivere.organisasjoner.isNotEmpty() && !selvstendigVirksomheter.isNullOrEmpty() && frilans != null
 
 private fun MeldingV1.erFrilanserOgSelvstendigNæringsdrivende() =
-    this.arbeidsgivere.organisasjoner.isEmpty() && selvstendigVirksomheter != null && frilans != null
+    this.arbeidsgivere.organisasjoner.isEmpty() && !selvstendigVirksomheter.isNullOrEmpty() && frilans != null
 
 private fun MeldingV1.erFrilanser() =
-    this.arbeidsgivere.organisasjoner.isEmpty() && selvstendigVirksomheter == null && frilans != null
+    this.arbeidsgivere.organisasjoner.isEmpty() && selvstendigVirksomheter.isNullOrEmpty() && frilans != null
 
 private fun MeldingV1.erSelvstendigNæringsdrivende() =
-    this.arbeidsgivere.organisasjoner.isEmpty() && selvstendigVirksomheter != null && frilans == null
+    this.arbeidsgivere.organisasjoner.isEmpty() && !selvstendigVirksomheter.isNullOrEmpty() && frilans == null
