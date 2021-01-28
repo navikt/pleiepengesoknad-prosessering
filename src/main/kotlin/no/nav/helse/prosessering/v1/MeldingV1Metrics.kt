@@ -70,8 +70,8 @@ private val arbeidsgivereCounter = Counter.build()
 
 private val ingenInntektCounter = Counter.build()
     .name("ingenInntektCounter")
-    .help("Teller for verken arbeidsgiver, frilanser, eller selvstendig næringsdrivende")
-    .labelNames("antallArbeidsgivere", "skalJobbe")
+    .help("Teller for valg av verken arbeidsgiver, frilanser, eller selvstendig næringsdrivende")
+    .labelNames()
     .register()
 
 internal fun MeldingV1.reportMetrics() {
