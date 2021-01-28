@@ -109,7 +109,7 @@ private fun MeldingV1.erArbeidstakerOgFrilanser() =
     this.arbeidsgivere.organisasjoner.isNotEmpty() && selvstendigVirksomheter.isNullOrEmpty() && frilans != null
 
 private fun MeldingV1.erArbeidstakerOgSelvstendigNæringsdrivende() =
-    this.arbeidsgivere.organisasjoner.isNotEmpty() && selvstendigVirksomheter.isNullOrEmpty() && frilans == null
+    this.arbeidsgivere.organisasjoner.isNotEmpty() && !selvstendigVirksomheter.isNullOrEmpty() && frilans == null
 
 private fun MeldingV1.erArbeidstakerFrilanserOgSelvstendigNæringsdrivende() =
     this.arbeidsgivere.organisasjoner.isNotEmpty() && !selvstendigVirksomheter.isNullOrEmpty() && frilans != null
