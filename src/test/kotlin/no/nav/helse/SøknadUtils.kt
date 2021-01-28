@@ -41,6 +41,27 @@ internal object SøknadUtils {
                     jobberNormaltTimer = 4.0,
                     skalJobbeProsent = 50.0,
                     skalJobbe = "redusert"
+                ),
+                Organisasjon(
+                    "917755734",
+                    "Gyldig",
+                    jobberNormaltTimer = 40.0,
+                    skalJobbeProsent = 40.0,
+                    skalJobbe = "ja"
+                ),
+                Organisasjon(
+                    "917755734",
+                    "Gyldig",
+                    jobberNormaltTimer = 8.0,
+                    skalJobbeProsent = 0.0,
+                    skalJobbe = "nei"
+                ),
+                Organisasjon(
+                    "917755734",
+                    "Gyldig",
+                    jobberNormaltTimer = 40.0,
+                    skalJobbeProsent = 40.0,
+                    skalJobbe = "vetIkke"
                 )
             )
         ),
