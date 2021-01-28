@@ -531,6 +531,7 @@ class PleiepengesoknadProsesseringTest {
                     Ferieuttak(LocalDate.parse("2020-01-09"), LocalDate.parse("2020-01-10"))
                 )
             ),
+            samtidigHjemme = true,
             harBekreftetOpplysninger = true,
             harForståttRettigheterOgPlikter = true
         )
