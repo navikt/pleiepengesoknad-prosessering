@@ -3,7 +3,7 @@ package no.nav.helse.prosessering.v1.asynkron
 import no.nav.helse.CorrelationId
 import no.nav.helse.aktoer.AktoerId
 import no.nav.helse.joark.JoarkGateway
-import no.nav.helse.k9format.tilK9PleiepengeBarnSøknad
+import no.nav.helse.k9format.tilK9PleiepengesøknadSyktBarn
 import no.nav.helse.kafka.KafkaConfig
 import no.nav.helse.kafka.ManagedKafkaStreams
 import no.nav.helse.kafka.ManagedStreamHealthy
@@ -61,7 +61,7 @@ internal class JournalforingsStream(
                         logger.info("Dokumenter journalført med ID = ${journaPostId.journalPostId}.")
                         val journalfort = Journalfort(
                             journalpostId = journaPostId.journalPostId,
-                            søknad = entry.data.tilK9PleiepengeBarnSøknad()
+                            søknad = entry.data.tilK9PleiepengesøknadSyktBarn()
                         )
                         Cleanup(
                             metadata = entry.metadata,

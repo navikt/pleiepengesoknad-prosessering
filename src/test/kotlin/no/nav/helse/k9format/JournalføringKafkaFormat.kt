@@ -1,7 +1,8 @@
 package no.nav.helse.k9format
 
 import no.nav.k9.søknad.JsonUtils
-import no.nav.k9.søknad.pleiepengerbarn.PleiepengerBarnSøknad
+import no.nav.k9.søknad.Søknad
+import no.nav.k9.søknad.ytelse.psb.v1.PleiepengerSyktBarn
 import org.json.JSONObject
 import org.skyscreamer.jsonassert.JSONAssert
 import org.slf4j.Logger
@@ -9,7 +10,7 @@ import org.slf4j.LoggerFactory
 import kotlin.test.assertNotNull
 
 
-internal fun String.assertJournalførtFormat(printJournalført: Boolean = false): PleiepengerBarnSøknad {
+internal fun String.assertJournalførtFormat(printJournalført: Boolean = false): Søknad {
     val logger: Logger = LoggerFactory.getLogger("K9 JournalførtFormat")
     val rawJson = JSONObject(this)
 
@@ -21,14 +22,14 @@ internal fun String.assertJournalførtFormat(printJournalført: Boolean = false)
 
     val søknad = assertNotNull(data.getJSONObject("søknad"))
 
-    val rekonstruertSøknad = PleiepengerBarnSøknad
-        .builder()
-        .json(søknad.toString())
-        .build()
+    val rekonstruertSøknad = JsonUtils.fromString(søknad.toString(), Søknad::class.java)
 
-    JSONAssert.assertEquals(søknad.toString(), PleiepengerBarnSøknad.SerDes.serialize(rekonstruertSøknad), true)
+    JSONAssert.assertEquals(søknad.toString(), JsonUtils.getObjectMapper().writeValueAsString(rekonstruertSøknad), true)
     if (printJournalført) {
         logger.info(JsonUtils.getObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(rekonstruertSøknad))
     }
+
     return rekonstruertSøknad
 }
+
+//TODO Må lage tester for k9format

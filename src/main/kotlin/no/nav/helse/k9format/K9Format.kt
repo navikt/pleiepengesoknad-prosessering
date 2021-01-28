@@ -1,3 +1,4 @@
+/*
 package no.nav.helse.k9format
 
 import com.fasterxml.jackson.databind.JsonNode
@@ -8,6 +9,11 @@ import no.nav.k9.søknad.felles.*
 import no.nav.k9.søknad.felles.Barn
 import no.nav.k9.søknad.felles.Periode
 import no.nav.k9.søknad.felles.Søker
+import no.nav.k9.søknad.felles.aktivitet.SelvstendigNæringsdrivende
+import no.nav.k9.søknad.felles.personopplysninger.Barn
+import no.nav.k9.søknad.felles.personopplysninger.Søker
+import no.nav.k9.søknad.felles.type.NorskIdentitetsnummer
+import no.nav.k9.søknad.felles.type.Språk
 import no.nav.k9.søknad.pleiepengerbarn.*
 import no.nav.k9.søknad.pleiepengerbarn.Beredskap
 import no.nav.k9.søknad.pleiepengerbarn.Nattevåk
@@ -125,7 +131,7 @@ fun Medlemskap.tilK9bosteder(): Bosteder {
     return builder.build()
 }
 
-fun Tilsynsordning.tilK9Tilsynsordning(
+private fun Tilsynsordning.tilK9Tilsynsordning(
     fraOgMed: LocalDate,
     tilOgMed: LocalDate
 ): no.nav.k9.søknad.pleiepengerbarn.Tilsynsordning {
@@ -186,18 +192,6 @@ fun UtenlandsoppholdIPerioden.tilK9Utenlandsopphold(): Utenlandsopphold? {
         .build()
 }
 
-fun PreprossesertBarn.tilK9Barn(): Barn {
-    return when {
-        !fødselsnummer.isNullOrBlank() -> Barn.builder().norskIdentitetsnummer(NorskIdentitetsnummer.of(fødselsnummer))
-            .build()
-        else -> Barn.builder().fødselsdato(fødselsdato).build()
-    }
-}
-
-fun PreprossesertSøker.tilK9Søker(): Søker = Søker.builder()
-    .norskIdentitetsnummer(NorskIdentitetsnummer.of(fødselsnummer))
-    .build()
-
 fun Arbeidsgivere.tilK9Arbeid(
     frilans: Frilans?,
     selvstendigVirksomheter: List<Virksomhet>?,
@@ -229,19 +223,4 @@ fun Arbeidsgivere.tilK9Arbeid(
     return builder.build()
 }
 
-fun List<Virksomhet>.tilK9SelvstendigNæringsdrivende(): SelvstendigNæringsdrivende {
-    val perioder = mutableMapOf<Periode, SelvstendigNæringsdrivende.SelvstendigNæringsdrivendePeriodeInfo>()
-    map {
-        perioder.put(
-            Periode.builder().fraOgMed(it.fraOgMed).tilOgMed(it.tilOgMed).build(),
-            SelvstendigNæringsdrivende.SelvstendigNæringsdrivendePeriodeInfo()
-        )
-    }
-    return SelvstendigNæringsdrivende.builder().perioder(perioder).build()
-}
-
-fun Frilans.tilK9Frilanser(): Frilanser {
-    return Frilanser.builder()
-        .periode(Periode.builder().fraOgMed(this.startdato).build(), Frilanser.FrilanserPeriodeInfo())
-        .build()
-}
+*/
