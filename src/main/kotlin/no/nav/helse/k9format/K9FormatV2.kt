@@ -203,7 +203,7 @@ private fun FerieuttakIPerioden.tilK9LovbestemtFerie(): LovbestemtFerie? {
     return LovbestemtFerie(perioder)
 }
 
-private fun Medlemskap.tilK9Bosteder(): Bosteder {
+fun Medlemskap.tilK9Bosteder(): Bosteder {
     val perioder = mutableMapOf<Periode, Bosteder.BostedPeriodeInfo>()
 
     utenlandsoppholdSiste12Mnd?.forEach { bosted ->

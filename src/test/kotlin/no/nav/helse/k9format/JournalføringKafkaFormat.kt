@@ -31,5 +31,3 @@ internal fun String.assertJournalførtFormat(printJournalført: Boolean = false)
 
     return rekonstruertSøknad
 }
-
-//TODO Må lage tester for k9format
