@@ -30,7 +30,7 @@ data class MeldingV1 (
     val beredskap: Beredskap?,
     val nattevåk: Nattevåk?,
     val frilans: Frilans?,
-    val selvstendigVirksomheter: List<Virksomhet>? = null,
+    val selvstendigVirksomheter: List<Virksomhet> = listOf(),
     val skalBekrefteOmsorg: Boolean? = null, // TODO: Fjern optional når prodsatt.
     val skalPassePaBarnetIHelePerioden: Boolean? = null, // TODO: Fjern optional når prodsatt.
     val beskrivelseOmsorgsrollen: String? = null, // TODO: Fjern optional når prodsatt.
