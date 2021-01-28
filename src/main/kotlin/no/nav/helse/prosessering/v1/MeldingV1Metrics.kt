@@ -68,6 +68,12 @@ private val arbeidsgivereCounter = Counter.build()
     .labelNames("antallArbeidsgivere", "skalJobbe")
     .register()
 
+private val ingenInntektCounter = Counter.build()
+    .name("ingenInntektCounter")
+    .help("Teller for verken arbeidsgiver, frilanser, eller selvstendig næringsdrivende")
+    .labelNames("antallArbeidsgivere", "skalJobbe")
+    .register()
+
 internal fun MeldingV1.reportMetrics() {
     opplastedeVedleggHistogram.observe(vedleggUrls.size.toDouble())
 
@@ -98,6 +104,7 @@ internal fun MeldingV1.reportMetrics() {
         erFrilanserOgSelvstendigNæringsdrivende() -> selvstendigNæringsdrivendeOgFrilans.inc()
         erFrilanser() -> frilansCounter.inc()
         erSelvstendigNæringsdrivende() -> selvstendigVirksomhetCounter.inc()
+        else -> ingenInntektCounter.inc()
     }
 }
 
