@@ -88,7 +88,6 @@ internal fun MeldingV1.reportMetrics() {
     }
 
     val skalJobbeString = arbeidsgivere.organisasjoner.map { it.skalJobbe.toLowerCase() }.sorted().joinToString("|")
-    println("SkalJobbbeString: $skalJobbeString") //TODO: Fjern før prodsetting.
     arbeidsgivereCounter.labels(arbeidsgivere.organisasjoner.size.toString(), skalJobbeString).inc()
 
     when {
