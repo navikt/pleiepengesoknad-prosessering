@@ -11,40 +11,45 @@ import no.nav.k9.søknad.felles.personopplysninger.Barn
 import no.nav.k9.søknad.felles.personopplysninger.Bosteder
 import no.nav.k9.søknad.felles.personopplysninger.Søker
 import no.nav.k9.søknad.felles.personopplysninger.Utenlandsopphold
+import no.nav.k9.søknad.felles.personopplysninger.Utenlandsopphold.UtenlandsoppholdPeriodeInfo
 import no.nav.k9.søknad.felles.personopplysninger.Utenlandsopphold.UtenlandsoppholdÅrsak.BARNET_INNLAGT_I_HELSEINSTITUSJON_DEKKET_ETTER_AVTALE_MED_ET_ANNET_LAND_OM_TRYGD
 import no.nav.k9.søknad.felles.personopplysninger.Utenlandsopphold.UtenlandsoppholdÅrsak.BARNET_INNLAGT_I_HELSEINSTITUSJON_FOR_NORSK_OFFENTLIG_REGNING
 import no.nav.k9.søknad.felles.type.Landkode
 import no.nav.k9.søknad.felles.type.NorskIdentitetsnummer
 import no.nav.k9.søknad.felles.type.Periode
 import no.nav.k9.søknad.felles.type.SøknadId
+import no.nav.k9.søknad.ytelse.psb.v1.Beredskap.BeredskapPeriodeInfo
+import no.nav.k9.søknad.ytelse.psb.v1.Nattevåk.NattevåkPeriodeInfo
 import no.nav.k9.søknad.ytelse.psb.v1.PleiepengerSyktBarn
-import no.nav.k9.søknad.ytelse.psb.v1.tilsyn.TilsynsordningOpphold
-import no.nav.k9.søknad.ytelse.psb.v1.tilsyn.TilsynsordningSvar
+import no.nav.k9.søknad.ytelse.psb.v1.SøknadInfo
+import no.nav.k9.søknad.ytelse.psb.v1.Uttak
+import no.nav.k9.søknad.ytelse.psb.v1.UttakPeriodeInfo
+import no.nav.k9.søknad.ytelse.psb.v1.arbeidstid.Arbeidstid
+import no.nav.k9.søknad.ytelse.psb.v1.arbeidstid.ArbeidstidInfo
+import no.nav.k9.søknad.ytelse.psb.v1.arbeidstid.ArbeidstidPeriodeInfo
+import no.nav.k9.søknad.ytelse.psb.v1.tilsyn.TilsynPeriodeInfo
 import java.time.Duration
-import java.time.LocalDate
 
 fun PreprossesertMeldingV1.tilK9PleiepengesøknadSyktBarn(): Søknad {
+    val søknadsPeriode = Periode(fraOgMed, tilOgMed)
     val søknad = Søknad(
         SøknadId.of(søknadId),
         Versjon.of("2.0"),
         mottatt,
         søker.tilK9Søker(),
         PleiepengerSyktBarn(
-            Periode(fraOgMed, tilOgMed),
+            søknadsPeriode,
+            byggSøknadInfo(),
             barn.tilK9Barn(),
             byggK9ArbeidAktivitet(),
-            beredskap?.tilK9Beredskap(fraOgMed, tilOgMed),
-            nattevåk?.tilK9Nattevåk(fraOgMed, tilOgMed),
-            tilsynsordning?.tilK9Tilsynsordning(fraOgMed, tilOgMed),
-            null, //TODO Arbeid er fjernet fra 5.1.7 versjonen
-            null, //TODO Uttak
+            beredskap?.tilK9Beredskap(søknadsPeriode),
+            nattevåk?.tilK9Nattevåk(søknadsPeriode),
+            tilsynsordning?.tilK9Tilsynsordning(søknadsPeriode),
+            byggK9Arbeidstid(),
+            byggK9Uttak(søknadsPeriode),
             ferieuttakIPerioden?.tilK9LovbestemtFerie(),
             medlemskap.tilK9Bosteder(),
-            utenlandsoppholdIPerioden.tilK9Utenlandsopphold(fraOgMed, tilOgMed),
-            null, // TODO flereOmsorgspersjoner fjernes i 5.1.7,
-            null, //TODO Relasjon til barnet fjernes i 5.1.7
-            null, //TODO samtykketOmsorgForBarnet fjernes i 5.1.7
-            null //TODO veskrivelseavOmsorgsrollen fjernes i 5.1.7
+            utenlandsoppholdIPerioden.tilK9Utenlandsopphold(søknadsPeriode)
         )
     )
     return søknad
@@ -66,13 +71,8 @@ fun PreprossesertMeldingV1.byggK9ArbeidAktivitet(): ArbeidAktivitet {
         builder.frilanser(frilans.tilK9Frilanser())
     }
 
-    selvstendigVirksomheter?.let {
-        builder.selvstendigNæringsdrivende(selvstendigVirksomheter.tilK9SelvstendigNæringsdrivende())
-    }
-
-    arbeidsgivere?.let {
-        builder.arbeidstaker(arbeidsgivere.tilK9Arbeidstaker(søker.fødselsnummer, fraOgMed, tilOgMed))
-    }
+    builder.selvstendigNæringsdrivende(selvstendigVirksomheter.tilK9SelvstendigNæringsdrivende())
+    builder.arbeidstaker(arbeidsgivere.tilK9Arbeidstaker(søker.fødselsnummer, Periode(fraOgMed, tilOgMed)))
 
     return builder.build()
 }
@@ -146,77 +146,53 @@ private fun List<Næringstyper>.tilK9VirksomhetType(): List<VirksomhetType> = ma
 
 private fun Arbeidsgivere.tilK9Arbeidstaker(
     identitetsnummer: String,
-    tilOgMed: LocalDate,
-    fraOgMed: LocalDate
+    periode: Periode
 ): List<Arbeidstaker> {
     return organisasjoner.map { organisasjon ->
-        Arbeidstaker.builder()
-            .norskIdentitetsnummer(NorskIdentitetsnummer.of(identitetsnummer))
-            .organisasjonsnummer(Organisasjonsnummer.of(organisasjon.organisasjonsnummer))
-            .periode(Periode(fraOgMed, tilOgMed), organisasjon.tilK9ArbeidstakerPeriodeInfo())
-            .build()
+        Arbeidstaker(
+            NorskIdentitetsnummer.of(identitetsnummer),
+            Organisasjonsnummer.of(organisasjon.organisasjonsnummer),
+            organisasjon.tilK9ArbeidstidInfo(periode)
+        )
     }
 }
 
-private fun Organisasjon.tilK9ArbeidstakerPeriodeInfo(): Arbeidstaker.ArbeidstakerPeriodeInfo =
-    Arbeidstaker.ArbeidstakerPeriodeInfo.builder()
-        .skalJobbeProsent(skalJobbeProsent.toBigDecimal())
-        .jobberNormaltPerUke(jobberNormaltTimer.timerTilDuration())
-        .build()
-
-private fun Beredskap.tilK9Beredskap(
-    fraOgMed: LocalDate,
-    tilOgMed: LocalDate
+fun Beredskap.tilK9Beredskap(
+    periode: Periode
 ): no.nav.k9.søknad.ytelse.psb.v1.Beredskap? {
     if (!beredskap) return null
 
-    val perioder = mutableMapOf<Periode, no.nav.k9.søknad.ytelse.psb.v1.Beredskap.BeredskapPeriodeInfo>()
+    val perioder = mutableMapOf<Periode, BeredskapPeriodeInfo>()
 
-    perioder.put(
-        Periode(fraOgMed, tilOgMed),
-        no.nav.k9.søknad.ytelse.psb.v1.Beredskap.BeredskapPeriodeInfo(this.tilleggsinformasjon)
-    )
+    perioder[periode] = BeredskapPeriodeInfo(this.tilleggsinformasjon)
 
     return no.nav.k9.søknad.ytelse.psb.v1.Beredskap(perioder)
 }
 
-private fun Nattevåk.tilK9Nattevåk(fraOgMed: LocalDate, tilOgMed: LocalDate): no.nav.k9.søknad.ytelse.psb.v1.Nattevåk? {
+fun Nattevåk.tilK9Nattevåk(periode: Periode): no.nav.k9.søknad.ytelse.psb.v1.Nattevåk? {
     if (!harNattevåk) return null
 
-    val perioder = mutableMapOf<Periode, no.nav.k9.søknad.ytelse.psb.v1.Nattevåk.NattevåkPeriodeInfo>()
+    val perioder = mutableMapOf<Periode, NattevåkPeriodeInfo>()
 
-    perioder.put(
-        Periode(fraOgMed, tilOgMed),
-        no.nav.k9.søknad.ytelse.psb.v1.Nattevåk.NattevåkPeriodeInfo(tilleggsinformasjon)
-    )
+    perioder[periode] = NattevåkPeriodeInfo(tilleggsinformasjon)
 
     return no.nav.k9.søknad.ytelse.psb.v1.Nattevåk(perioder)
 }
 
 private fun Tilsynsordning.tilK9Tilsynsordning(
-    fraOgMed: LocalDate,
-    tilOgMed: LocalDate
+    periode: Periode
 ): no.nav.k9.søknad.ytelse.psb.v1.tilsyn.Tilsynsordning {
-    val perioder = mutableMapOf<Periode, TilsynsordningOpphold>()
+    val perioder = mutableMapOf<Periode, TilsynPeriodeInfo>()
 
-    perioder.put(
-        Periode(fraOgMed, tilOgMed),
-        TilsynsordningOpphold(Duration.ofHours(1))
-    ) //TODO Lengde blir fjernet i 5.1.7. Dette må ryddes bort
+    perioder[periode] = TilsynPeriodeInfo(
+        Duration.ofHours(4) //TODO Har ikke dette. Skal man hente inn for man-fre også dele på 5?
+    )
 
-    val tilsynsordningSvar = when (svar) {
-        "ja" -> TilsynsordningSvar.JA
-        "nei" -> TilsynsordningSvar.NEI
-        "vetIkke" -> TilsynsordningSvar.VET_IKKE
-        "vet_ikke" -> TilsynsordningSvar.VET_IKKE
-        else -> throw IllegalArgumentException("Ikke gyldig tilsynsordningsvar. Forventet ja/nei/vetIkke/vet_ikke, men fikk $svar")
-    }
-
-    return no.nav.k9.søknad.ytelse.psb.v1.tilsyn.Tilsynsordning(tilsynsordningSvar, perioder)
+    return no.nav.k9.søknad.ytelse.psb.v1.tilsyn.Tilsynsordning(perioder)
 }
 
 private fun FerieuttakIPerioden.tilK9LovbestemtFerie(): LovbestemtFerie? {
-    if(!skalTaUtFerieIPerioden) return null
+    if (!skalTaUtFerieIPerioden) return null
 
     val perioder = mutableListOf<Periode>()
 
@@ -237,37 +213,93 @@ private fun Medlemskap.tilK9Bosteder(): Bosteder {
     }
 
     utenlandsoppholdNeste12Mnd?.forEach { bosted ->
-        perioder.put(
-            Periode(bosted.fraOgMed, bosted.tilOgMed),
-            Bosteder.BostedPeriodeInfo.builder()
-                .land(Landkode.of(bosted.landkode))
-                .build()
-        )
+        perioder[Periode(bosted.fraOgMed, bosted.tilOgMed)] = Bosteder.BostedPeriodeInfo.builder()
+            .land(Landkode.of(bosted.landkode))
+            .build()
     }
 
     return Bosteder.builder().perioder(perioder).build()
 }
 
-private fun UtenlandsoppholdIPerioden.tilK9Utenlandsopphold(fraOgMed: LocalDate, tilOgMed: LocalDate): Utenlandsopphold? {
-    if(!skalOppholdeSegIUtlandetIPerioden) return null
+private fun UtenlandsoppholdIPerioden.tilK9Utenlandsopphold(
+    periode: Periode
+): Utenlandsopphold? {
+    if (!skalOppholdeSegIUtlandetIPerioden) return null
 
-    val perioder = mutableMapOf<Periode, Utenlandsopphold.UtenlandsoppholdPeriodeInfo>()
+    val perioder = mutableMapOf<Periode, UtenlandsoppholdPeriodeInfo>()
 
     opphold.forEach {
-        val årsak = when(it.årsak) {
+        val årsak = when (it.årsak) {
             Årsak.BARNET_INNLAGT_I_HELSEINSTITUSJON_FOR_NORSK_OFFENTLIG_REGNING -> BARNET_INNLAGT_I_HELSEINSTITUSJON_FOR_NORSK_OFFENTLIG_REGNING
             Årsak.BARNET_INNLAGT_I_HELSEINSTITUSJON_DEKKET_ETTER_AVTALE_MED_ET_ANNET_LAND_OM_TRYGD -> BARNET_INNLAGT_I_HELSEINSTITUSJON_DEKKET_ETTER_AVTALE_MED_ET_ANNET_LAND_OM_TRYGD
             else -> null
         }
 
-        perioder.put(
-            Periode(fraOgMed, tilOgMed),
-            Utenlandsopphold.UtenlandsoppholdPeriodeInfo.builder()
-                .land(Landkode.of(it.landkode))
-                .årsak(årsak)
-                .build()
-        )
+        perioder[periode] = UtenlandsoppholdPeriodeInfo.builder()
+            .land(Landkode.of(it.landkode))
+            .årsak(årsak)
+            .build()
     }
 
     return Utenlandsopphold.builder().perioder(perioder).build()
+}
+
+fun PreprossesertMeldingV1.byggSøknadInfo(): SøknadInfo = SøknadInfo(
+    barnRelasjon?.utskriftsvennlig ?: "Forelder",
+    skalBekrefteOmsorg,
+    beskrivelseOmsorgsrollen,
+    harForstattRettigheterOgPlikter,
+    harBekreftetOpplysninger,
+    false, //TODO Mangler dette feltet,
+    samtidigHjemme,
+    harMedsøker,
+    bekrefterPeriodeOver8Uker
+)
+
+fun Organisasjon.tilK9ArbeidstidInfo(periode: Periode): ArbeidstidInfo {
+    val perioder = mutableMapOf<Periode, ArbeidstidPeriodeInfo>()
+
+    perioder[periode] = ArbeidstidPeriodeInfo(
+        Duration.ofHours(6) //TODO Mangler denne verdien
+    )
+    return ArbeidstidInfo(Duration.ofHours(7), perioder) //TODO Mangler denne verdien
+}
+
+fun PreprossesertMeldingV1.byggK9Arbeidstid(): Arbeidstid {
+    val frilanserArbeidstidInfo = frilans?.tilK9ArbeidstidInfo(Periode(fraOgMed, tilOgMed))
+    val selvstendigNæringsdrivendeArbeidstidInfo = selvstendigVirksomheter.tilK9ArbeidstidInfo()
+    val arbeidstakerList: List<Arbeidstaker> =
+        arbeidsgivere.tilK9Arbeidstaker(søker.fødselsnummer, Periode(fraOgMed, tilOgMed))
+
+    return Arbeidstid(arbeidstakerList, frilanserArbeidstidInfo, selvstendigNæringsdrivendeArbeidstidInfo)
+}
+
+fun Frilans.tilK9ArbeidstidInfo(periode: Periode): ArbeidstidInfo {
+    val perioder = mutableMapOf<Periode, ArbeidstidPeriodeInfo>()
+
+    perioder[periode] = ArbeidstidPeriodeInfo(
+        Duration.ofHours(5) //TODO Mangler denne verdien
+    )
+
+    return ArbeidstidInfo(Duration.ofHours(7), perioder) //TODO Mangler denne verdien
+}
+
+fun List<Virksomhet>.tilK9ArbeidstidInfo(): ArbeidstidInfo {
+    val perioder = mutableMapOf<Periode, ArbeidstidPeriodeInfo>()
+
+    forEach { virksomhet ->
+        perioder[Periode(virksomhet.fraOgMed, virksomhet.tilOgMed)] =
+                //TODO Er dette riktig å bruke periode fra virksomheten eller periode for søknadsperioden
+            ArbeidstidPeriodeInfo(Duration.ofHours(4)) //TODO Mangler denne verdien
+    }
+
+    return ArbeidstidInfo(Duration.ofHours(7), perioder) //TODO Mangler denne verdien
+}
+
+fun PreprossesertMeldingV1.byggK9Uttak(periode: Periode): Uttak {
+    val perioder = mutableMapOf<Periode, UttakPeriodeInfo>()
+
+    perioder[periode] = UttakPeriodeInfo(Duration.ofHours(5)) //TODO Mangler info om dette
+
+    return Uttak(perioder)
 }

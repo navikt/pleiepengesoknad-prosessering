@@ -28,6 +28,9 @@ data class PreprossesertMeldingV1(
     val selvstendigVirksomheter: List<Virksomhet> = listOf(),
     val barnRelasjon: BarnRelasjon? = null,
     val barnRelasjonBeskrivelse: String? = null,
+    val skalBekrefteOmsorg: Boolean? = null, //TODO: Fjerne optinal når prodsatt
+    val beskrivelseOmsorgsrollen: String? = null, // TODO: Fjern optional når prodsatt
+    val samtidigHjemme: Boolean? = null,
     val harForstattRettigheterOgPlikter: Boolean,
     val harBekreftetOpplysninger: Boolean
 ) {
@@ -62,7 +65,10 @@ data class PreprossesertMeldingV1(
         utenlandsoppholdIPerioden = melding.utenlandsoppholdIPerioden,
         ferieuttakIPerioden = melding.ferieuttakIPerioden,
         barnRelasjon = melding.barnRelasjon,
-        barnRelasjonBeskrivelse = melding.barnRelasjonBeskrivelse
+        barnRelasjonBeskrivelse = melding.barnRelasjonBeskrivelse,
+        skalBekrefteOmsorg = melding.skalBekrefteOmsorg,
+        beskrivelseOmsorgsrollen = melding.beskrivelseOmsorgsrollen,
+        samtidigHjemme = melding.samtidigHjemme
     )
 }
 

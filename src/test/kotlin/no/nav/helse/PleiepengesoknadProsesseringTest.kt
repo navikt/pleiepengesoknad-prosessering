@@ -438,7 +438,7 @@ class PleiepengesoknadProsesseringTest {
             ),
             selvstendigVirksomheter = listOf(
                 Virksomhet(
-                    næringstyper = listOf(),
+                    næringstyper = listOf(Næringstyper.DAGMAMMA),
                     fraOgMed = LocalDate.parse("2020-01-01"),
                     næringsinntekt = 123456,
                     navnPåVirksomheten = "Virksomehet 1",
@@ -446,7 +446,7 @@ class PleiepengesoknadProsesseringTest {
                     organisasjonsnummer = "12345"
                 ),
                 Virksomhet(
-                    næringstyper = listOf(),
+                    næringstyper = listOf(Næringstyper.FISKE),
                     fraOgMed = LocalDate.parse("2020-02-01"),
                     tilOgMed = LocalDate.parse("2020-05-01"),
                     næringsinntekt = 123456,
