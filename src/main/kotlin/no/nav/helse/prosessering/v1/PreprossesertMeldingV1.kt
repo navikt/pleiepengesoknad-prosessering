@@ -25,7 +25,7 @@ data class PreprossesertMeldingV1(
     val tilsynsordning: Tilsynsordning?,
     val harMedsøker: Boolean,
     val frilans: Frilans? = null,
-    val selvstendigVirksomheter: List<Virksomhet>? = null,
+    val selvstendigVirksomheter: List<Virksomhet> = listOf(),
     val barnRelasjon: BarnRelasjon? = null,
     val barnRelasjonBeskrivelse: String? = null,
     val harForstattRettigheterOgPlikter: Boolean,

@@ -272,7 +272,7 @@ class PdfV1GeneratorTest {
             startdato = LocalDate.now().minusYears(3),
             jobberFortsattSomFrilans = true
         ),
-        selvstendigVirksomheter: List<Virksomhet>? = listOf(
+        selvstendigVirksomheter: List<Virksomhet> = listOf(
             Virksomhet(
                 næringstyper = listOf(Næringstyper.ANNEN, Næringstyper.FISKE, Næringstyper.JORDBRUK_SKOGBRUK, Næringstyper.DAGMAMMA),
                 fiskerErPåBladB = true,
