@@ -8,13 +8,14 @@ import no.nav.helse.pleiepengerKonfiguert
 import no.nav.helse.prosessering.Metadata
 import no.nav.helse.prosessering.v1.MeldingV1
 import no.nav.helse.prosessering.v1.PreprossesertMeldingV1
+import no.nav.k9.søknad.Søknad
 import org.apache.kafka.common.serialization.Deserializer
 import org.apache.kafka.common.serialization.Serdes
 import org.apache.kafka.common.serialization.Serializer
 import org.apache.kafka.common.serialization.StringSerializer
 
 data class TopicEntry<V>(val metadata: Metadata, val data: V)
-data class Journalfort(@JsonProperty("journalpostId") val journalpostId: String, val søknad: JsonNode)
+data class Journalfort(@JsonProperty("journalpostId") val journalpostId: String, val søknad: Søknad)
 data class Cleanup(val metadata: Metadata, val melding: PreprossesertMeldingV1, val journalførtMelding: Journalfort)
 
 internal data class Topic<V>(
