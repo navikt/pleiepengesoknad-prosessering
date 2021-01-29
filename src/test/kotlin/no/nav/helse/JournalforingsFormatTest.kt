@@ -1,6 +1,7 @@
 package no.nav.helse
 
 import no.nav.helse.dokument.JournalforingsFormat
+import no.nav.helse.felles.*
 import no.nav.helse.prosessering.v1.*
 import org.skyscreamer.jsonassert.JSONAssert
 import java.net.URI

@@ -1,6 +1,6 @@
 package no.nav.helse
 
-import no.nav.helse.prosessering.v1.DateUtils
+import no.nav.helse.utils.DateUtils
 import java.time.LocalDate
 import kotlin.test.Test
 import kotlin.test.assertEquals

@@ -14,8 +14,8 @@ import org.apache.kafka.common.serialization.Serdes
 import org.apache.kafka.common.serialization.Serializer
 import org.apache.kafka.common.serialization.StringSerializer
 
-data class Journalfort(@JsonProperty("journalpostId") val journalpostId: String, val søknad: Søknad)
-data class Cleanup(val metadata: Metadata, val melding: PreprossesertMeldingV2, val journalførtMelding: Journalfort)
+data class JournalfortV2(@JsonProperty("journalpostId") val journalpostId: String, val søknad: Søknad)
+data class CleanupV2(val metadata: Metadata, val melding: PreprossesertMeldingV2, val journalførtMelding: JournalfortV2)
 
 internal data class Topic<V>(
     val name: String,
@@ -26,21 +26,21 @@ internal data class Topic<V>(
     val valueSerde = Serdes.serdeFrom(serDes, serDes)
 }
 
-internal object Topics {
+internal object TopicsV2 {
     val MOTTATT = Topic(
-        name = "privat-pleiepengesoknad-mottatt",
+        name = "privat-pleiepengesoknad-v2-mottatt",
         serDes = MottattSoknadSerDes()
     )
     val PREPROSSESERT = Topic(
-        name = "privat-pleiepengesoknad-preprossesert",
+        name = "privat-pleiepengesoknad-v2-preprossesert",
         serDes = PreprossesertSerDes()
     )
     val JOURNALFORT = Topic(
-        name = "privat-pleiepengesoknad-journalfort",
+        name = "privat-pleiepengesoknad-v2-journalfort",
         serDes = JournalfortSerDes()
     )
     val CLEANUP = Topic(
-        name = "privat-pleiepengesoknad-cleanup",
+        name = "privat-pleiepengesoknad-v2-cleanup",
         serDes = CleanupSerDes()
     )
 }
@@ -70,15 +70,15 @@ private class PreprossesertSerDes: SerDes<TopicEntry<PreprossesertMeldingV2>>() 
         }
     }
 }
-private class JournalfortSerDes: SerDes<TopicEntry<Journalfort>>() {
-    override fun deserialize(topic: String?, data: ByteArray?): TopicEntry<Journalfort>? {
+private class JournalfortSerDes: SerDes<TopicEntry<JournalfortV2>>() {
+    override fun deserialize(topic: String?, data: ByteArray?): TopicEntry<JournalfortV2>? {
         return data?.let {
             objectMapper.readValue(it)
         }
     }
 }
-private class CleanupSerDes: SerDes<TopicEntry<Cleanup>>() {
-    override fun deserialize(topic: String?, data: ByteArray?): TopicEntry<Cleanup>? {
+private class CleanupSerDes: SerDes<TopicEntry<CleanupV2>>() {
+    override fun deserialize(topic: String?, data: ByteArray?): TopicEntry<CleanupV2>? {
         return data?.let {
             objectMapper.readValue(it)
         }

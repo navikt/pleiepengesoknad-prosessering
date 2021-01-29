@@ -1,7 +1,7 @@
 package no.nav.helse
 
+import no.nav.helse.felles.TilsynsordningJa
 import no.nav.helse.prosessering.v1.NormalArbeidsdag
-import no.nav.helse.prosessering.v1.TilsynsordningJa
 import no.nav.helse.prosessering.v1.prosentAvNormalArbeidsuke
 import java.time.Duration
 import kotlin.test.Test

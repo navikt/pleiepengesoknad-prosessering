@@ -1,4 +1,4 @@
-package no.nav.helse.prosessering.v1
+package no.nav.helse.prosessering.v2
 
 import io.prometheus.client.Counter
 import io.prometheus.client.Histogram

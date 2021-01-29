@@ -1,7 +1,12 @@
 package no.nav.helse
 
 import io.prometheus.client.CollectorRegistry
+import no.nav.helse.felles.PreprossesertBarn
 import no.nav.helse.prosessering.v1.*
+import no.nav.helse.utils.aarSiden
+import no.nav.helse.utils.erUnderEttAar
+import no.nav.helse.utils.fodseldato
+import no.nav.helse.utils.ukerSiden
 import org.junit.Before
 import java.time.LocalDate
 import java.time.ZoneId

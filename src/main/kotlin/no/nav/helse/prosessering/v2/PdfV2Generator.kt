@@ -1,4 +1,4 @@
-package no.nav.helse.prosessering.v1
+package no.nav.helse.prosessering.v2
 
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
@@ -13,6 +13,10 @@ import no.nav.helse.aktoer.NorskIdent
 import no.nav.helse.dusseldorf.ktor.core.fromResources
 import no.nav.helse.felles.*
 import no.nav.helse.pleiepengerKonfiguert
+import no.nav.helse.prosessering.v1.avrundetMedEnDesimal
+import no.nav.helse.prosessering.v1.formaterOrganisasjonsnummer
+import no.nav.helse.prosessering.v1.formatertMedEnDesimal
+import no.nav.helse.prosessering.v1.skalJobbeProsentTilInntektstap
 import no.nav.helse.prosessering.v2.MeldingV2
 import no.nav.helse.utils.DateUtils
 import no.nav.helse.utils.norskDag
@@ -230,7 +234,7 @@ internal class PdfV2Generator  {
         .useFont({ ByteArrayInputStream(BOLD_FONT) }, "Source Sans Pro", 700, BaseRendererBuilder.FontStyle.NORMAL, false)
         .useFont({ ByteArrayInputStream(ITALIC_FONT) }, "Source Sans Pro", 400, BaseRendererBuilder.FontStyle.ITALIC, false)
 
-    private fun MeldingV1.somMap() = mapper.convertValue(
+    private fun MeldingV2.somMap() = mapper.convertValue(
         this,
         object :
             TypeReference<MutableMap<String, Any?>>() {}
@@ -316,4 +320,4 @@ private fun String.sprakTilTekst() = when (this.toLowerCase()) {
     else -> this
 }
 
-private fun MeldingV1.sjekkOmHarIkkeVedlegg() : Boolean = !vedleggUrls.isNotEmpty()
+private fun MeldingV2.sjekkOmHarIkkeVedlegg() : Boolean = !vedleggUrls.isNotEmpty()

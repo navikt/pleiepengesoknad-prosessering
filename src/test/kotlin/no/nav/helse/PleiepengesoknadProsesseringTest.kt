@@ -12,9 +12,10 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.time.delay
 import no.nav.common.KafkaEnvironment
 import no.nav.helse.dusseldorf.testsupport.wiremock.WireMockBuilder
+import no.nav.helse.felles.*
 import no.nav.helse.k9format.assertJournalførtFormat
+import no.nav.helse.kafka.TopicEntry
 import no.nav.helse.prosessering.v1.*
-import no.nav.helse.prosessering.v1.asynkron.TopicEntry
 import org.junit.AfterClass
 import org.junit.BeforeClass
 import org.slf4j.Logger
@@ -222,7 +223,7 @@ class PleiepengesoknadProsesseringTest {
         kafkaTestProducer.leggSoknadTilProsessering(melding)
         journalførtConsumer
             .hentJournalførtMelding(melding.søknadId)
-            .assertJournalførtFormat()
+            .assertJournalførtFormat(true)
     }
 
     @Test
@@ -250,7 +251,7 @@ class PleiepengesoknadProsesseringTest {
         )
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
-        val preprosessertMelding: TopicEntry<PreprossesertMeldingV2> =
+        val preprosessertMelding: TopicEntry<PreprossesertMeldingV1> =
             kafkaTestConsumer.hentPreprosessertMelding(melding.søknadId)
         assertEquals("KLØKTIG BLUNKENDE SUPERKONSOLL", preprosessertMelding.data.barn.navn)
         journalførtConsumer
@@ -270,7 +271,7 @@ class PleiepengesoknadProsesseringTest {
         )
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
-        val preprosessertMelding: TopicEntry<PreprossesertMeldingV2> =
+        val preprosessertMelding: TopicEntry<PreprossesertMeldingV1> =
             kafkaTestConsumer.hentPreprosessertMelding(melding.søknadId)
         assertEquals("KLØKTIG SUPERKONSOLL", preprosessertMelding.data.barn.navn)
         journalførtConsumer
@@ -302,7 +303,7 @@ class PleiepengesoknadProsesseringTest {
         )
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
-        val preprosessertMelding: TopicEntry<PreprossesertMeldingV2> =
+        val preprosessertMelding: TopicEntry<PreprossesertMeldingV1> =
             kafkaTestConsumer.hentPreprosessertMelding(melding.søknadId)
         assertEquals("KLØKTIG BLUNKENDE SUPERKONSOLL", preprosessertMelding.data.barn.navn)
         journalførtConsumer
@@ -322,7 +323,7 @@ class PleiepengesoknadProsesseringTest {
         )
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
-        val preprosessertMelding: TopicEntry<PreprossesertMeldingV2> =
+        val preprosessertMelding: TopicEntry<PreprossesertMeldingV1> =
             kafkaTestConsumer.hentPreprosessertMelding(melding.søknadId)
         assertEquals("KLØKTIG BLUNKENDE SUPERKONSOLL", preprosessertMelding.data.barn.navn)
         journalførtConsumer
@@ -343,7 +344,7 @@ class PleiepengesoknadProsesseringTest {
         )
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
-        val preprosessertMelding: TopicEntry<PreprossesertMeldingV2> =
+        val preprosessertMelding: TopicEntry<PreprossesertMeldingV1> =
             kafkaTestConsumer.hentPreprosessertMelding(melding.søknadId)
         assertEquals(forventetFodselsNummer, preprosessertMelding.data.barn.fødselsnummer)
         journalførtConsumer
@@ -363,7 +364,7 @@ class PleiepengesoknadProsesseringTest {
         )
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
-        val preprosessertMelding: TopicEntry<PreprossesertMeldingV2> =
+        val preprosessertMelding: TopicEntry<PreprossesertMeldingV1> =
             kafkaTestConsumer.hentPreprosessertMelding(melding.søknadId)
         assertEquals(forventetFodselsNummer, preprosessertMelding.data.barn.fødselsnummer)
         journalførtConsumer
@@ -382,7 +383,7 @@ class PleiepengesoknadProsesseringTest {
         )
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
-        val preprosesssertMelding: TopicEntry<PreprossesertMeldingV2> =
+        val preprosesssertMelding: TopicEntry<PreprossesertMeldingV1> =
             kafkaTestConsumer.hentPreprosessertMelding(melding.søknadId)
         assertEquals(LocalDate.now(), preprosesssertMelding.data.barn.fødselsdato)
         journalførtConsumer

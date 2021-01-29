@@ -1,8 +1,12 @@
-package no.nav.helse.prosessering.v1
+package no.nav.helse.prosessering.v2
 
 import io.prometheus.client.Counter
 import io.prometheus.client.Histogram
 import no.nav.helse.prosessering.v2.PreprossesertMeldingV2
+import no.nav.helse.utils.*
+import no.nav.helse.utils.aarSiden
+import no.nav.helse.utils.erUnderEttAar
+import no.nav.helse.utils.fodseldato
 import no.nav.helse.utils.tilJaEllerNei
 import java.time.LocalDate
 import java.time.ZoneId

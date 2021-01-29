@@ -1,4 +1,4 @@
-package no.nav.helse.prosessering.v1.asynkron
+package no.nav.helse.prosessering.v2.asynkron
 
 import no.nav.helse.CorrelationId
 import no.nav.helse.aktoer.AktoerId
@@ -29,17 +29,17 @@ internal class CleanupStreamV2(
     internal val healthy = ManagedStreamHealthy(stream)
 
     private companion object {
-        private const val NAME = "CleanupV1"
+        private const val NAME = "CleanupV2"
         private val logger = LoggerFactory.getLogger("no.nav.$NAME.topology")
 
         private fun topology(dokumentService: DokumentService): Topology {
             val builder = StreamsBuilder()
-            val fraCleanup: Topic<TopicEntry<Cleanup>> = Topics.CLEANUP
-            val tilJournalfort: Topic<TopicEntry<Journalfort>> = Topics.JOURNALFORT
+            val fraCleanupV2: Topic<TopicEntry<CleanupV2>> = TopicsV2.CLEANUP
+            val tilJournalfortV2: Topic<TopicEntry<JournalfortV2>> = TopicsV2.JOURNALFORT
 
             builder
-                .stream<String, TopicEntry<Cleanup>>(
-                    fraCleanup.name, Consumed.with(fraCleanup.keySerde, fraCleanup.valueSerde)
+                .stream<String, TopicEntry<CleanupV2>>(
+                    fraCleanupV2.name, Consumed.with(fraCleanupV2.keySerde, fraCleanupV2.valueSerde)
                 )
                 .filter {_, entry -> 1 == entry.metadata.version }
                 .mapValues { soknadId, entry ->
@@ -56,7 +56,7 @@ internal class CleanupStreamV2(
                         entry.data.journalførtMelding
                     }
                 }
-                .to(tilJournalfort.name, Produced.with(tilJournalfort.keySerde, tilJournalfort.valueSerde))
+                .to(tilJournalfortV2.name, Produced.with(tilJournalfortV2.keySerde, tilJournalfortV2.valueSerde))
             return builder.build()
         }
     }

@@ -3,8 +3,7 @@ package no.nav.helse.felles
 import com.fasterxml.jackson.annotation.JsonFormat
 import no.nav.helse.aktoer.AktoerId
 import no.nav.helse.aktoer.NorskIdent
-import no.nav.helse.prosessering.v1.Barn
-import no.nav.helse.prosessering.v1.Søker
+import no.nav.helse.tpsproxy.TpsNavn
 import java.time.Duration
 import java.time.LocalDate
 
@@ -237,6 +236,12 @@ data class PreprossesertSøker(
         aktørId = aktoerId.id
     )
 }
+
+fun PreprossesertSøker.tilTpsNavn(): TpsNavn = TpsNavn(
+    fornavn = fornavn,
+    mellomnavn = mellomnavn,
+    etternavn = etternavn
+)
 
 data class PreprossesertBarn(
     val fødselsnummer: String?,

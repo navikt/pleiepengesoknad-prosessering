@@ -11,7 +11,10 @@ import com.openhtmltopdf.outputdevice.helper.BaseRendererBuilder
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder
 import no.nav.helse.aktoer.NorskIdent
 import no.nav.helse.dusseldorf.ktor.core.fromResources
+import no.nav.helse.felles.*
 import no.nav.helse.pleiepengerKonfiguert
+import no.nav.helse.utils.DateUtils
+import no.nav.helse.utils.norskDag
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.time.Duration

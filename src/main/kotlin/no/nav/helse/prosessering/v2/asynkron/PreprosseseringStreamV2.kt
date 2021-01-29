@@ -1,4 +1,4 @@
-package no.nav.helse.prosessering.v1.asynkron
+package no.nav.helse.prosessering.v2.asynkron
 
 import no.nav.helse.kafka.*
 import no.nav.helse.kafka.KafkaConfig
@@ -29,13 +29,13 @@ internal class PreprosseseringStreamV2(
 
     private companion object {
 
-        private const val NAME = "PreprosesseringV1"
+        private const val NAME = "PreprosesseringV2"
         private val logger = LoggerFactory.getLogger("no.nav.$NAME.topology")
 
         private fun topology(preprosseseringV2Service: PreprosseseringV2Service) : Topology {
             val builder = StreamsBuilder()
-            val fromTopic = no.nav.helse.prosessering.v2.asynkron.Topics.MOTTATT
-            val toTopic = no.nav.helse.prosessering.v2.asynkron.Topics.PREPROSSESERT
+            val fromTopic = TopicsV2.MOTTATT
+            val toTopic = TopicsV2.PREPROSSESERT
 
             builder
                 .stream<String, TopicEntry<MeldingV2>>(fromTopic.name, Consumed.with(fromTopic.keySerde, fromTopic.valueSerde))
