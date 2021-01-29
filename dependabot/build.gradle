@@ -17,7 +17,7 @@ dependencies {
     testCompile 'org.apache.kafka:kafka-clients:2.3.0'
     testCompile 'no.nav:kafka-embedded-env:2.2.3'
     testCompile 'no.nav.helse:dusseldorf-test-support:1.5.0.8b77f1d'
-    testCompile 'io.ktor:ktor-server-test-host:1.5.0'
+    testCompile 'io.ktor:ktor-server-test-host:1.5.1'
     testCompile 'org.skyscreamer:jsonassert:1.5.0'
     testCompile 'no.nav.helse:dusseldorf-ktor-core:1.5.0.8b77f1d'
     testCompile 'no.nav.helse:dusseldorf-ktor-jackson:1.5.0.8b77f1d'
