@@ -3,9 +3,6 @@ package no.nav.helse.prosessering.v2.asynkron
 import no.nav.helse.dokument.DokumentService
 import no.nav.helse.joark.JoarkGateway
 import no.nav.helse.kafka.KafkaConfig
-import no.nav.helse.prosessering.v1.asynkron.CleanupStreamV2
-import no.nav.helse.prosessering.v1.asynkron.JournalforingsStreamV2
-import no.nav.helse.prosessering.v1.asynkron.PreprosseseringStreamV2
 import no.nav.helse.prosessering.v2.PreprosseseringV2Service
 import org.slf4j.LoggerFactory
 

@@ -1,5 +1,6 @@
 package no.nav.helse.prosessering.v1
 
+import no.nav.helse.felles.Organisasjon
 import java.math.BigDecimal
 import java.math.RoundingMode
 

@@ -1,5 +1,6 @@
 package no.nav.helse.prosessering.v1
 
+import no.nav.helse.felles.TilsynsordningJa
 import java.time.Duration
 
 internal val NormalArbeidsdag = Duration.ofHours(7).plusMinutes(30)

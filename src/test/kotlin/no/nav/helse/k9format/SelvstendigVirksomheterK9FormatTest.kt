@@ -1,5 +1,6 @@
 package no.nav.helse.k9format
 
+import no.nav.helse.felles.*
 import no.nav.helse.prosessering.v1.*
 import no.nav.k9.søknad.JsonUtils
 import org.junit.Test

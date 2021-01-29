@@ -1,9 +1,9 @@
 package no.nav.helse.k9format
 
-import no.nav.helse.prosessering.v1.Beredskap
-import no.nav.helse.prosessering.v1.Bosted
-import no.nav.helse.prosessering.v1.Medlemskap
-import no.nav.helse.prosessering.v1.Nattevåk
+import no.nav.helse.felles.Beredskap
+import no.nav.helse.felles.Bosted
+import no.nav.helse.felles.Medlemskap
+import no.nav.helse.felles.Nattevåk
 import no.nav.k9.søknad.JsonUtils
 import no.nav.k9.søknad.felles.type.Periode
 import org.junit.Test

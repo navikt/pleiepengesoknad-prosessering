@@ -4,12 +4,12 @@ import no.nav.helse.CorrelationId
 import no.nav.helse.aktoer.AktoerId
 import no.nav.helse.aktoer.AktoerService
 import no.nav.helse.aktoer.NorskIdent
+import no.nav.helse.aktoer.tilNorskIdent
 import no.nav.helse.barn.BarnOppslag
 import no.nav.helse.dokument.DokumentService
 import no.nav.helse.felles.Barn
 import no.nav.helse.prosessering.Metadata
 import no.nav.helse.prosessering.SoknadId
-import no.nav.helse.prosessering.v1.PdfV2Generator
 import no.nav.helse.prosessering.v1.reportMetrics
 import no.nav.helse.tpsproxy.Ident
 import no.nav.helse.tpsproxy.TpsNavn

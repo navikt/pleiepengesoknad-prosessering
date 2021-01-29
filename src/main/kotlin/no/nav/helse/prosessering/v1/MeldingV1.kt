@@ -1,5 +1,6 @@
 package no.nav.helse.prosessering.v1
 
+import no.nav.helse.felles.*
 import java.net.URI
 import java.time.LocalDate
 import java.time.ZonedDateTime

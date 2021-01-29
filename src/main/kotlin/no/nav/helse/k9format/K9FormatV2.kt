@@ -3,6 +3,7 @@
 package no.nav.helse.k9format
 
 import no.nav.helse.felles.*
+import no.nav.helse.prosessering.v1.PreprossesertMeldingV1
 import no.nav.helse.prosessering.v2.PreprossesertMeldingV2
 import no.nav.k9.søknad.Søknad
 import no.nav.k9.søknad.felles.LovbestemtFerie
@@ -30,6 +31,31 @@ import no.nav.k9.søknad.ytelse.psb.v1.arbeidstid.ArbeidstidInfo
 import no.nav.k9.søknad.ytelse.psb.v1.arbeidstid.ArbeidstidPeriodeInfo
 import no.nav.k9.søknad.ytelse.psb.v1.tilsyn.TilsynPeriodeInfo
 import java.time.Duration
+
+fun PreprossesertMeldingV1.tilK9PleiepengesøknadSyktBarn(): Søknad {
+    val søknadsPeriode = Periode(fraOgMed, tilOgMed)
+    val søknad = Søknad(
+        SøknadId.of(søknadId),
+        Versjon.of("2.0"),
+        mottatt,
+        søker.tilK9Søker(),
+        PleiepengerSyktBarn(
+            søknadsPeriode,
+            byggSøknadInfo(),
+            barn.tilK9Barn(),
+            byggK9ArbeidAktivitet(),
+            beredskap?.tilK9Beredskap(søknadsPeriode),
+            nattevåk?.tilK9Nattevåk(søknadsPeriode),
+            tilsynsordning?.tilK9Tilsynsordning(søknadsPeriode),
+            byggK9Arbeidstid(),
+            byggK9Uttak(søknadsPeriode),
+            ferieuttakIPerioden?.tilK9LovbestemtFerie(),
+            medlemskap.tilK9Bosteder(),
+            utenlandsoppholdIPerioden.tilK9Utenlandsopphold(søknadsPeriode)
+        )
+    )
+    return søknad
+}
 
 fun PreprossesertMeldingV2.tilK9PleiepengesøknadSyktBarn(): Søknad {
     val søknadsPeriode = Periode(fraOgMed, tilOgMed)
@@ -66,6 +92,19 @@ fun PreprossesertSøker.tilK9Søker(): Søker = Søker.builder()
     .build()
 
 fun PreprossesertMeldingV2.byggK9ArbeidAktivitet(): ArbeidAktivitet {
+    val builder = ArbeidAktivitet.builder()
+
+    frilans?.let {
+        builder.frilanser(frilans.tilK9Frilanser())
+    }
+
+    builder.selvstendigNæringsdrivende(selvstendigVirksomheter.tilK9SelvstendigNæringsdrivende())
+    builder.arbeidstaker(arbeidsgivere.tilK9Arbeidstaker(søker.fødselsnummer, Periode(fraOgMed, tilOgMed)))
+
+    return builder.build()
+}
+
+fun PreprossesertMeldingV1.byggK9ArbeidAktivitet(): ArbeidAktivitet {
     val builder = ArbeidAktivitet.builder()
 
     frilans?.let {
@@ -257,6 +296,18 @@ fun PreprossesertMeldingV2.byggSøknadInfo(): SøknadInfo = SøknadInfo(
     bekrefterPeriodeOver8Uker
 )
 
+fun PreprossesertMeldingV1.byggSøknadInfo(): SøknadInfo = SøknadInfo(
+    barnRelasjon?.utskriftsvennlig ?: "Forelder",
+    skalBekrefteOmsorg,
+    beskrivelseOmsorgsrollen,
+    harForstattRettigheterOgPlikter,
+    harBekreftetOpplysninger,
+    false, //TODO Mangler dette feltet,
+    samtidigHjemme,
+    harMedsøker,
+    bekrefterPeriodeOver8Uker
+)
+
 fun Organisasjon.tilK9ArbeidstidInfo(periode: Periode): ArbeidstidInfo {
     val perioder = mutableMapOf<Periode, ArbeidstidPeriodeInfo>()
 
@@ -267,6 +318,15 @@ fun Organisasjon.tilK9ArbeidstidInfo(periode: Periode): ArbeidstidInfo {
 }
 
 fun PreprossesertMeldingV2.byggK9Arbeidstid(): Arbeidstid {
+    val frilanserArbeidstidInfo = frilans?.tilK9ArbeidstidInfo(Periode(fraOgMed, tilOgMed))
+    val selvstendigNæringsdrivendeArbeidstidInfo = selvstendigVirksomheter.tilK9ArbeidstidInfo()
+    val arbeidstakerList: List<Arbeidstaker> =
+        arbeidsgivere.tilK9Arbeidstaker(søker.fødselsnummer, Periode(fraOgMed, tilOgMed))
+
+    return Arbeidstid(arbeidstakerList, frilanserArbeidstidInfo, selvstendigNæringsdrivendeArbeidstidInfo)
+}
+
+fun PreprossesertMeldingV1.byggK9Arbeidstid(): Arbeidstid {
     val frilanserArbeidstidInfo = frilans?.tilK9ArbeidstidInfo(Periode(fraOgMed, tilOgMed))
     val selvstendigNæringsdrivendeArbeidstidInfo = selvstendigVirksomheter.tilK9ArbeidstidInfo()
     val arbeidstakerList: List<Arbeidstaker> =
@@ -298,6 +358,14 @@ fun List<Virksomhet>.tilK9ArbeidstidInfo(): ArbeidstidInfo {
 }
 
 fun PreprossesertMeldingV2.byggK9Uttak(periode: Periode): Uttak {
+    val perioder = mutableMapOf<Periode, UttakPeriodeInfo>()
+
+    perioder[periode] = UttakPeriodeInfo(Duration.ofHours(5)) //TODO Mangler info om dette
+
+    return Uttak(perioder)
+}
+
+fun PreprossesertMeldingV1.byggK9Uttak(periode: Periode): Uttak {
     val perioder = mutableMapOf<Periode, UttakPeriodeInfo>()
 
     perioder[periode] = UttakPeriodeInfo(Duration.ofHours(5)) //TODO Mangler info om dette

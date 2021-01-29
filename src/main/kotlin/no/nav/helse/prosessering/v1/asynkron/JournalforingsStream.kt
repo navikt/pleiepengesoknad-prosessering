@@ -2,14 +2,15 @@ package no.nav.helse.prosessering.v1.asynkron
 
 import no.nav.helse.CorrelationId
 import no.nav.helse.aktoer.AktoerId
+import no.nav.helse.felles.tilTpsNavn
 import no.nav.helse.joark.JoarkGateway
 import no.nav.helse.k9format.tilK9PleiepengesøknadSyktBarn
+import no.nav.helse.kafka.*
 import no.nav.helse.kafka.KafkaConfig
 import no.nav.helse.kafka.ManagedKafkaStreams
 import no.nav.helse.kafka.ManagedStreamHealthy
 import no.nav.helse.kafka.ManagedStreamReady
 import no.nav.helse.prosessering.v1.PreprossesertMeldingV1
-import no.nav.helse.prosessering.v1.PreprossesertSøker
 import no.nav.helse.tpsproxy.TpsNavn
 import org.apache.kafka.streams.StreamsBuilder
 import org.apache.kafka.streams.Topology
@@ -77,9 +78,3 @@ internal class JournalforingsStream(
 
     internal fun stop() = stream.stop(becauseOfError = false)
 }
-
-fun PreprossesertSøker.tilTpsNavn(): TpsNavn = TpsNavn(
-    fornavn = fornavn,
-    mellomnavn = mellomnavn,
-    etternavn = etternavn
-)

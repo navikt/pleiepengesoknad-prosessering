@@ -2,6 +2,7 @@ package no.nav.helse
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.helse.dusseldorf.ktor.jackson.dusseldorfConfigured
+import no.nav.helse.felles.*
 import no.nav.helse.prosessering.v1.*
 import java.net.URI
 import java.time.Duration

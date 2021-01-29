@@ -1,7 +1,8 @@
-package no.nav.helse.prosessering.v1.asynkron
+package no.nav.helse.prosessering.v2.asynkron
 
 import no.nav.helse.CorrelationId
 import no.nav.helse.aktoer.AktoerId
+import no.nav.helse.felles.tilTpsNavn
 import no.nav.helse.joark.JoarkGateway
 import no.nav.helse.k9format.tilK9PleiepengesøknadSyktBarn
 import no.nav.helse.kafka.*
@@ -10,9 +11,6 @@ import no.nav.helse.kafka.ManagedKafkaStreams
 import no.nav.helse.kafka.ManagedStreamHealthy
 import no.nav.helse.kafka.ManagedStreamReady
 import no.nav.helse.prosessering.v2.PreprossesertMeldingV2
-import no.nav.helse.prosessering.v2.asynkron.Cleanup
-import no.nav.helse.prosessering.v2.asynkron.Journalfort
-import no.nav.helse.prosessering.v2.asynkron.Topics
 import org.apache.kafka.streams.StreamsBuilder
 import org.apache.kafka.streams.Topology
 import org.apache.kafka.streams.kstream.Consumed
@@ -35,13 +33,13 @@ internal class JournalforingsStreamV2(
     internal val healthy = ManagedStreamHealthy(stream)
 
     private companion object {
-        private const val NAME = "JournalforingV1"
+        private const val NAME = "JournalforingV2"
         private val logger = LoggerFactory.getLogger("no.nav.$NAME.topology")
 
         private fun topology(joarkGateway: JoarkGateway): Topology {
             val builder = StreamsBuilder()
-            val fraPreprossesert= no.nav.helse.prosessering.v2.asynkron.Topics.PREPROSSESERT
-            val tilCleanup = Topics.CLEANUP
+            val fraPreprossesert= no.nav.helse.prosessering.v2.asynkron.TopicsV2.PREPROSSESERT
+            val tilCleanup = TopicsV2.CLEANUP
 
             builder
                 .stream<String, TopicEntry<PreprossesertMeldingV2>>(
@@ -61,11 +59,11 @@ internal class JournalforingsStreamV2(
                             norskIdent = entry.data.søker.fødselsnummer
                         )
                         logger.info("Dokumenter journalført med ID = ${journaPostId.journalPostId}.")
-                        val journalfort = Journalfort(
+                        val journalfort = JournalfortV2(
                             journalpostId = journaPostId.journalPostId,
                             søknad = entry.data.tilK9PleiepengesøknadSyktBarn()
                         )
-                        Cleanup(
+                        CleanupV2(
                             metadata = entry.metadata,
                             melding = entry.data,
                             journalførtMelding = journalfort
