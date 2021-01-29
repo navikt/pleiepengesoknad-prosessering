@@ -10,7 +10,9 @@ import no.nav.helse.kafka.ManagedKafkaStreams
 import no.nav.helse.kafka.ManagedStreamHealthy
 import no.nav.helse.kafka.ManagedStreamReady
 import no.nav.helse.prosessering.v2.PreprossesertMeldingV2
-import no.nav.helse.tpsproxy.TpsNavn
+import no.nav.helse.prosessering.v2.asynkron.Cleanup
+import no.nav.helse.prosessering.v2.asynkron.Journalfort
+import no.nav.helse.prosessering.v2.asynkron.Topics
 import org.apache.kafka.streams.StreamsBuilder
 import org.apache.kafka.streams.Topology
 import org.apache.kafka.streams.kstream.Consumed
@@ -38,8 +40,8 @@ internal class JournalforingsStreamV2(
 
         private fun topology(joarkGateway: JoarkGateway): Topology {
             val builder = StreamsBuilder()
-            val fraPreprossesert: Topic<TopicEntry<PreprossesertMeldingV2>> = Topics.PREPROSSESERT
-            val tilCleanup: Topic<TopicEntry<Cleanup>> = Topics.CLEANUP
+            val fraPreprossesert= no.nav.helse.prosessering.v2.asynkron.Topics.PREPROSSESERT
+            val tilCleanup = Topics.CLEANUP
 
             builder
                 .stream<String, TopicEntry<PreprossesertMeldingV2>>(
@@ -77,9 +79,3 @@ internal class JournalforingsStreamV2(
 
     internal fun stop() = stream.stop(becauseOfError = false)
 }
-
-fun PreprossesertSøker.tilTpsNavn(): TpsNavn = TpsNavn(
-    fornavn = fornavn,
-    mellomnavn = mellomnavn,
-    etternavn = etternavn
-)

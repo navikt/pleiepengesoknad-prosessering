@@ -2,8 +2,7 @@ package no.nav.helse.prosessering.v2
 
 import no.nav.helse.aktoer.AktoerId
 import no.nav.helse.aktoer.NorskIdent
-import no.nav.helse.felles.PreprossesertBarn
-import no.nav.helse.felles.PreprossesertSøker
+import no.nav.helse.felles.*
 import no.nav.helse.prosessering.v1.*
 import java.net.URI
 import java.time.LocalDate

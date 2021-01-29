@@ -1,11 +1,12 @@
 package no.nav.helse.prosessering.v1.asynkron
 
+import no.nav.helse.kafka.*
 import no.nav.helse.kafka.KafkaConfig
 import no.nav.helse.kafka.ManagedKafkaStreams
 import no.nav.helse.kafka.ManagedStreamHealthy
 import no.nav.helse.kafka.ManagedStreamReady
-import no.nav.helse.prosessering.v1.MeldingV1
-import no.nav.helse.prosessering.v1.PreprosseseringV2Service
+import no.nav.helse.prosessering.v2.MeldingV2
+import no.nav.helse.prosessering.v2.PreprosseseringV2Service
 import org.apache.kafka.streams.StreamsBuilder
 import org.apache.kafka.streams.Topology
 import org.apache.kafka.streams.kstream.Consumed
@@ -33,11 +34,11 @@ internal class PreprosseseringStreamV2(
 
         private fun topology(preprosseseringV2Service: PreprosseseringV2Service) : Topology {
             val builder = StreamsBuilder()
-            val fromTopic = Topics.MOTTATT
-            val toTopic = Topics.PREPROSSESERT
+            val fromTopic = no.nav.helse.prosessering.v2.asynkron.Topics.MOTTATT
+            val toTopic = no.nav.helse.prosessering.v2.asynkron.Topics.PREPROSSESERT
 
             builder
-                .stream<String, TopicEntry<MeldingV1>>(fromTopic.name, Consumed.with(fromTopic.keySerde, fromTopic.valueSerde))
+                .stream<String, TopicEntry<MeldingV2>>(fromTopic.name, Consumed.with(fromTopic.keySerde, fromTopic.valueSerde))
                 .filter { _, entry -> 1 == entry.metadata.version }
                 .mapValues { soknadId, entry  ->
                     process(NAME, soknadId, entry) {
