@@ -30,7 +30,7 @@ import no.nav.k9.søknad.ytelse.psb.v1.arbeidstid.ArbeidstidPeriodeInfo
 import no.nav.k9.søknad.ytelse.psb.v1.tilsyn.TilsynPeriodeInfo
 import java.time.Duration
 
-fun PreprossesertMeldingV1.tilK9PleiepengesøknadSyktBarn(): Søknad {
+fun PreprossesertMeldingV2.tilK9PleiepengesøknadSyktBarn(): Søknad {
     val søknadsPeriode = Periode(fraOgMed, tilOgMed)
     val søknad = Søknad(
         SøknadId.of(søknadId),
@@ -64,7 +64,7 @@ fun PreprossesertSøker.tilK9Søker(): Søker = Søker.builder()
     .norskIdentitetsnummer(NorskIdentitetsnummer.of(fødselsnummer))
     .build()
 
-fun PreprossesertMeldingV1.byggK9ArbeidAktivitet(): ArbeidAktivitet {
+fun PreprossesertMeldingV2.byggK9ArbeidAktivitet(): ArbeidAktivitet {
     val builder = ArbeidAktivitet.builder()
 
     frilans?.let {
@@ -244,7 +244,7 @@ private fun UtenlandsoppholdIPerioden.tilK9Utenlandsopphold(
     return Utenlandsopphold.builder().perioder(perioder).build()
 }
 
-fun PreprossesertMeldingV1.byggSøknadInfo(): SøknadInfo = SøknadInfo(
+fun PreprossesertMeldingV2.byggSøknadInfo(): SøknadInfo = SøknadInfo(
     barnRelasjon?.utskriftsvennlig ?: "Forelder",
     skalBekrefteOmsorg,
     beskrivelseOmsorgsrollen,
@@ -265,7 +265,7 @@ fun Organisasjon.tilK9ArbeidstidInfo(periode: Periode): ArbeidstidInfo {
     return ArbeidstidInfo(Duration.ofHours(7), perioder) //TODO Mangler denne verdien
 }
 
-fun PreprossesertMeldingV1.byggK9Arbeidstid(): Arbeidstid {
+fun PreprossesertMeldingV2.byggK9Arbeidstid(): Arbeidstid {
     val frilanserArbeidstidInfo = frilans?.tilK9ArbeidstidInfo(Periode(fraOgMed, tilOgMed))
     val selvstendigNæringsdrivendeArbeidstidInfo = selvstendigVirksomheter.tilK9ArbeidstidInfo()
     val arbeidstakerList: List<Arbeidstaker> =
@@ -296,7 +296,7 @@ fun List<Virksomhet>.tilK9ArbeidstidInfo(): ArbeidstidInfo {
     return ArbeidstidInfo(Duration.ofHours(7), perioder) //TODO Mangler denne verdien
 }
 
-fun PreprossesertMeldingV1.byggK9Uttak(periode: Periode): Uttak {
+fun PreprossesertMeldingV2.byggK9Uttak(periode: Periode): Uttak {
     val perioder = mutableMapOf<Periode, UttakPeriodeInfo>()
 
     perioder[periode] = UttakPeriodeInfo(Duration.ofHours(5)) //TODO Mangler info om dette

@@ -1,10 +1,11 @@
-package no.nav.helse.prosessering.v1
+package no.nav.helse.prosessering.v2
 
+import no.nav.helse.felles.*
 import java.net.URI
 import java.time.LocalDate
 import java.time.ZonedDateTime
 
-data class MeldingV1 (
+data class MeldingV2 (
     val språk: String? = null,
     val søknadId: String,
     val mottatt: ZonedDateTime,

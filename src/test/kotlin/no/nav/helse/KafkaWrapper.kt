@@ -4,7 +4,7 @@ import no.nav.common.JAASCredential
 import no.nav.common.KafkaEnvironment
 import no.nav.helse.prosessering.Metadata
 import no.nav.helse.prosessering.v1.MeldingV1
-import no.nav.helse.prosessering.v1.PreprossesertMeldingV1
+import no.nav.helse.prosessering.v1.PreprossesertMeldingV2
 import no.nav.helse.prosessering.v1.asynkron.TopicEntry
 import no.nav.helse.prosessering.v1.asynkron.Topics
 import no.nav.helse.prosessering.v1.asynkron.Topics.CLEANUP
@@ -65,8 +65,8 @@ private fun KafkaEnvironment.testProducerProperties() : MutableMap<String, Any>?
 }
 
 
-fun KafkaEnvironment.testConsumer() : KafkaConsumer<String, TopicEntry<PreprossesertMeldingV1>> {
-    val consumer = KafkaConsumer<String, TopicEntry<PreprossesertMeldingV1>>(
+fun KafkaEnvironment.testConsumer() : KafkaConsumer<String, TopicEntry<PreprossesertMeldingV2>> {
+    val consumer = KafkaConsumer<String, TopicEntry<PreprossesertMeldingV2>>(
         testConsumerProperties("PleiepengesoknadProsesseringTestConsumer"),
         StringDeserializer(),
         PREPROSSESERT.serDes
@@ -91,10 +91,10 @@ fun KafkaEnvironment.testProducer() = KafkaProducer(
     Topics.MOTTATT.serDes
 )
 
-fun KafkaConsumer<String, TopicEntry<PreprossesertMeldingV1>>.hentPreprosessertMelding(
+fun KafkaConsumer<String, TopicEntry<PreprossesertMeldingV2>>.hentPreprosessertMelding(
     soknadId: String,
     maxWaitInSeconds: Long = 20
-) : TopicEntry<PreprossesertMeldingV1> {
+) : TopicEntry<PreprossesertMeldingV2> {
     val end = System.currentTimeMillis() + Duration.ofSeconds(maxWaitInSeconds).toMillis()
     while (System.currentTimeMillis() < end) {
         seekToBeginning(assignment())

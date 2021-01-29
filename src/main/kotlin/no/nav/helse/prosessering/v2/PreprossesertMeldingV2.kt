@@ -1,14 +1,15 @@
-package no.nav.helse.prosessering.v1
+package no.nav.helse.prosessering.v2
 
 import no.nav.helse.aktoer.AktoerId
 import no.nav.helse.aktoer.NorskIdent
 import no.nav.helse.felles.PreprossesertBarn
 import no.nav.helse.felles.PreprossesertSøker
+import no.nav.helse.prosessering.v1.*
 import java.net.URI
 import java.time.LocalDate
 import java.time.ZonedDateTime
 
-data class PreprossesertMeldingV1(
+data class PreprossesertMeldingV2(
     val språk: String?,
     val søknadId: String,
     val dokumentUrls: List<List<URI>>,
@@ -37,7 +38,7 @@ data class PreprossesertMeldingV1(
     val harBekreftetOpplysninger: Boolean
 ) {
     internal constructor(
-        melding: MeldingV1,
+        melding: MeldingV2,
         dokumentUrls: List<List<URI>>,
         sokerAktoerId: AktoerId,
         barnAktoerId: AktoerId?,
@@ -73,3 +74,4 @@ data class PreprossesertMeldingV1(
         samtidigHjemme = melding.samtidigHjemme
     )
 }
+
