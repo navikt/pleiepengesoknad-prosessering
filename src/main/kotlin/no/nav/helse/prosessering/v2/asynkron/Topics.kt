@@ -6,7 +6,7 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import no.nav.helse.kafka.TopicEntry
 import no.nav.helse.pleiepengerKonfiguert
 import no.nav.helse.prosessering.Metadata
-import no.nav.helse.prosessering.v1.MeldingV2
+import no.nav.helse.prosessering.v2.MeldingV2
 import no.nav.helse.prosessering.v2.PreprossesertMeldingV2
 import no.nav.k9.søknad.Søknad
 import org.apache.kafka.common.serialization.Deserializer

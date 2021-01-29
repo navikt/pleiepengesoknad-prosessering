@@ -2,7 +2,8 @@
 
 package no.nav.helse.k9format
 
-import no.nav.helse.prosessering.v1.*
+import no.nav.helse.felles.*
+import no.nav.helse.prosessering.v2.PreprossesertMeldingV2
 import no.nav.k9.søknad.Søknad
 import no.nav.k9.søknad.felles.LovbestemtFerie
 import no.nav.k9.søknad.felles.Versjon
