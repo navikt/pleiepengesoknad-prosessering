@@ -250,7 +250,7 @@ class PleiepengesoknadProsesseringTest {
         )
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
-        val preprosessertMelding: TopicEntry<PreprossesertMeldingV1> =
+        val preprosessertMelding: TopicEntry<PreprossesertMeldingV2> =
             kafkaTestConsumer.hentPreprosessertMelding(melding.søknadId)
         assertEquals("KLØKTIG BLUNKENDE SUPERKONSOLL", preprosessertMelding.data.barn.navn)
         journalførtConsumer
@@ -270,7 +270,7 @@ class PleiepengesoknadProsesseringTest {
         )
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
-        val preprosessertMelding: TopicEntry<PreprossesertMeldingV1> =
+        val preprosessertMelding: TopicEntry<PreprossesertMeldingV2> =
             kafkaTestConsumer.hentPreprosessertMelding(melding.søknadId)
         assertEquals("KLØKTIG SUPERKONSOLL", preprosessertMelding.data.barn.navn)
         journalførtConsumer
@@ -302,7 +302,7 @@ class PleiepengesoknadProsesseringTest {
         )
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
-        val preprosessertMelding: TopicEntry<PreprossesertMeldingV1> =
+        val preprosessertMelding: TopicEntry<PreprossesertMeldingV2> =
             kafkaTestConsumer.hentPreprosessertMelding(melding.søknadId)
         assertEquals("KLØKTIG BLUNKENDE SUPERKONSOLL", preprosessertMelding.data.barn.navn)
         journalførtConsumer
@@ -322,7 +322,7 @@ class PleiepengesoknadProsesseringTest {
         )
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
-        val preprosessertMelding: TopicEntry<PreprossesertMeldingV1> =
+        val preprosessertMelding: TopicEntry<PreprossesertMeldingV2> =
             kafkaTestConsumer.hentPreprosessertMelding(melding.søknadId)
         assertEquals("KLØKTIG BLUNKENDE SUPERKONSOLL", preprosessertMelding.data.barn.navn)
         journalførtConsumer
@@ -343,7 +343,7 @@ class PleiepengesoknadProsesseringTest {
         )
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
-        val preprosessertMelding: TopicEntry<PreprossesertMeldingV1> =
+        val preprosessertMelding: TopicEntry<PreprossesertMeldingV2> =
             kafkaTestConsumer.hentPreprosessertMelding(melding.søknadId)
         assertEquals(forventetFodselsNummer, preprosessertMelding.data.barn.fødselsnummer)
         journalførtConsumer
@@ -363,7 +363,7 @@ class PleiepengesoknadProsesseringTest {
         )
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
-        val preprosessertMelding: TopicEntry<PreprossesertMeldingV1> =
+        val preprosessertMelding: TopicEntry<PreprossesertMeldingV2> =
             kafkaTestConsumer.hentPreprosessertMelding(melding.søknadId)
         assertEquals(forventetFodselsNummer, preprosessertMelding.data.barn.fødselsnummer)
         journalførtConsumer
@@ -382,7 +382,7 @@ class PleiepengesoknadProsesseringTest {
         )
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
-        val preprosesssertMelding: TopicEntry<PreprossesertMeldingV1> =
+        val preprosesssertMelding: TopicEntry<PreprossesertMeldingV2> =
             kafkaTestConsumer.hentPreprosessertMelding(melding.søknadId)
         assertEquals(LocalDate.now(), preprosesssertMelding.data.barn.fødselsdato)
         journalførtConsumer

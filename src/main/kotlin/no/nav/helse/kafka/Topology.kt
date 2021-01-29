@@ -1,10 +1,13 @@
-package no.nav.helse.prosessering.v1.asynkron
+package no.nav.helse.kafka
 
 import io.prometheus.client.Counter
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.slf4j.MDCContext
 import no.nav.helse.dusseldorf.ktor.core.Retry
+import no.nav.helse.prosessering.Metadata
 import java.time.Duration
+
+data class TopicEntry<V>(val metadata: Metadata, val data: V)
 
 private object StreamCounter {
     private val counter = Counter.build()

@@ -34,8 +34,8 @@ import no.nav.helse.dusseldorf.ktor.jackson.dusseldorfConfigured
 import no.nav.helse.dusseldorf.ktor.metrics.MetricsRoute
 import no.nav.helse.joark.JoarkGateway
 import no.nav.helse.prosessering.v1.PdfV1Generator
-import no.nav.helse.prosessering.v1.PreprosseseringV1Service
-import no.nav.helse.prosessering.v1.asynkron.AsynkronProsesseringV1Service
+import no.nav.helse.prosessering.v1.PreprosseseringV2Service
+import no.nav.helse.prosessering.v1.asynkron.AsynkronProsesseringV2Service
 import no.nav.helse.tpsproxy.TpsProxyV1Gateway
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -80,7 +80,7 @@ fun Application.pleiepengesoknadProsessering() {
         accessTokenClient = accessTokenClientResolver.tpsProxyAccessTokenClient()
     )
 
-    val preprosseseringV1Service = PreprosseseringV1Service(
+    val preprosseseringV1Service = PreprosseseringV2Service(
         aktoerService = aktoerService,
         pdfV1Generator = PdfV1Generator(),
         dokumentService = dokumentService,
@@ -92,9 +92,9 @@ fun Application.pleiepengesoknadProsessering() {
         journalforeScopes = configuration.getJournalforeScopes()
     )
 
-    val asynkronProsesseringV1Service = AsynkronProsesseringV1Service(
+    val asynkronProsesseringV1Service = AsynkronProsesseringV2Service(
         kafkaConfig = configuration.getKafkaConfig(),
-        preprosseseringV1Service = preprosseseringV1Service,
+        preprosseseringV2Service = preprosseseringV1Service,
         joarkGateway = joarkGateway,
         dokumentService = dokumentService
     )

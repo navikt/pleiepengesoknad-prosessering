@@ -1,4 +1,4 @@
-package no.nav.helse.prosessering.v1
+package no.nav.helse.utils
 
 import java.time.DayOfWeek.*
 import java.time.LocalDate

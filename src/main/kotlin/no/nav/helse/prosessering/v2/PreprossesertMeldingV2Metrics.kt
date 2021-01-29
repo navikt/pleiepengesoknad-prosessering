@@ -2,16 +2,14 @@ package no.nav.helse.prosessering.v1
 
 import io.prometheus.client.Counter
 import io.prometheus.client.Histogram
-import no.nav.helse.felles.PreprossesertBarn
-import no.nav.helse.utils.*
-import no.nav.helse.utils.aarSiden
-import no.nav.helse.utils.fodseldato
+import no.nav.helse.prosessering.v2.PreprossesertMeldingV2
 import no.nav.helse.utils.tilJaEllerNei
-import no.nav.helse.utils.ukerSiden
 import java.time.LocalDate
 import java.time.ZoneId
 import java.time.temporal.ChronoUnit
 import kotlin.math.absoluteValue
+
+private val ZONE_ID = ZoneId.of("Europe/Oslo")
 
 private val periodeSoknadGjelderIUkerHistogram = Histogram.build()
     .buckets(0.00, 1.00, 4.00, 8.00, 12.00, 16.00, 20.00, 24.00, 28.00, 32.00, 36.00, 40.00, 44.00, 48.00, 52.00)
@@ -56,7 +54,7 @@ private val barnetsAlderIUkerCounter = Counter.build()
     .labelNames("uker")
     .register()
 
-internal fun PreprossesertMeldingV1.reportMetrics() {
+internal fun PreprossesertMeldingV2.reportMetrics() {
     val barnetsFodselsdato = barn.fodseldato() ?: barn.fødselsdato
     if (barnetsFodselsdato != null) {
         val barnetsAlder = barnetsFodselsdato.aarSiden()
