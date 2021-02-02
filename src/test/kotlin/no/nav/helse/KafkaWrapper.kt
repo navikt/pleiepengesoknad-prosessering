@@ -11,6 +11,8 @@ import no.nav.helse.prosessering.v1.asynkron.Topics.CLEANUP
 import no.nav.helse.prosessering.v1.asynkron.Topics.JOURNALFORT
 import no.nav.helse.prosessering.v1.asynkron.Topics.MOTTATT
 import no.nav.helse.prosessering.v1.asynkron.Topics.PREPROSSESERT
+import no.nav.helse.prosessering.v2.MeldingV2
+import no.nav.helse.prosessering.v2.asynkron.TopicsV2
 import org.apache.kafka.clients.CommonClientConfigs
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.clients.consumer.KafkaConsumer
@@ -37,7 +39,11 @@ object KafkaWrapper {
                 MOTTATT.name,
                 PREPROSSESERT.name,
                 JOURNALFORT.name,
-                CLEANUP.name
+                CLEANUP.name,
+                TopicsV2.MOTTATT.name,
+                TopicsV2.PREPROSSESERT.name,
+                TopicsV2.JOURNALFORT.name,
+                TopicsV2.CLEANUP.name
             )
         )
         return kafkaEnvironment
@@ -85,10 +91,26 @@ fun KafkaEnvironment.journalføringsKonsumer(): KafkaConsumer<String, String> {
     return consumer
 }
 
+fun KafkaEnvironment.journalføringsKonsumerV2(): KafkaConsumer<String, String> {
+    val consumer = KafkaConsumer(
+        testConsumerProperties("K9FordelKonsumer"),
+        StringDeserializer(),
+        StringDeserializer()
+    )
+    consumer.subscribe(listOf(TopicsV2.JOURNALFORT.name))
+    return consumer
+}
+
 fun KafkaEnvironment.testProducer() = KafkaProducer(
     testProducerProperties(),
     Topics.MOTTATT.keySerializer,
     Topics.MOTTATT.serDes
+)
+
+fun KafkaEnvironment.testProducerV2() = KafkaProducer(
+    testProducerProperties(),
+    TopicsV2.MOTTATT.keySerializer,
+    TopicsV2.MOTTATT.serDes
 )
 
 fun KafkaConsumer<String, TopicEntry<PreprossesertMeldingV1>>.hentPreprosessertMelding(
@@ -129,6 +151,25 @@ fun KafkaConsumer<String, String>.hentJournalførtMelding(
     throw IllegalStateException("Fant ikke journalført melding for søknad $soknadId etter $maxWaitInSeconds sekunder.")
 }
 
+fun KafkaConsumer<String, String>.hentJournalførtMeldingV2(
+    soknadId: String,
+    maxWaitInSeconds: Long = 20
+): String {
+    val end = System.currentTimeMillis() + Duration.ofSeconds(maxWaitInSeconds).toMillis()
+    while (System.currentTimeMillis() < end) {
+        seekToBeginning(assignment())
+        val entries = poll(Duration.ofSeconds(1))
+            .records(TopicsV2.JOURNALFORT.name)
+            .filter { it.key() == soknadId }
+
+        if (entries.isNotEmpty()) {
+            assertEquals(1, entries.size)
+            return entries.first().value()
+        }
+    }
+    throw IllegalStateException("Fant ikke journalført melding for søknad $soknadId etter $maxWaitInSeconds sekunder.")
+}
+
 fun KafkaProducer<String, TopicEntry<MeldingV1>>.leggSoknadTilProsessering(soknad: MeldingV1) {
     send(
         ProducerRecord(
@@ -141,6 +182,23 @@ fun KafkaProducer<String, TopicEntry<MeldingV1>>.leggSoknadTilProsessering(sokna
                     requestId =  UUID.randomUUID().toString()
                 ),
                 data = soknad
+            )
+        )
+    ).get()
+}
+
+fun KafkaProducer<String, TopicEntry<MeldingV2>>.leggSoknadTilProsessering(melding: MeldingV2) {
+    send(
+        ProducerRecord(
+            TopicsV2.MOTTATT.name,
+            melding.søknad.søknadId.id,
+            TopicEntry(
+                metadata = Metadata(
+                    version = 1,
+                    correlationId = UUID.randomUUID().toString(),
+                    requestId =  UUID.randomUUID().toString()
+                ),
+                data = melding
             )
         )
     ).get()

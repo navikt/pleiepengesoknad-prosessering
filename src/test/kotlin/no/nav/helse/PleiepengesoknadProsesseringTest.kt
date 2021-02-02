@@ -56,6 +56,9 @@ class PleiepengesoknadProsesseringTest {
         private val journalførtConsumer = kafkaEnvironment.journalføringsKonsumer()
         private val kafkaTestProducer = kafkaEnvironment.testProducer()
 
+        private val journalførtConsumerV2 = kafkaEnvironment.journalføringsKonsumerV2()
+        private val kafkaTestProducerV2 = kafkaEnvironment.testProducerV2()
+
         // Se https://github.com/navikt/dusseldorf-ktor#f%C3%B8dselsnummer
         private val gyldigFodselsnummerA = "02119970078"
         private val gyldigFodselsnummerB = "19066672169"
@@ -143,15 +146,13 @@ class PleiepengesoknadProsesseringTest {
     }
 
     @Test
-    fun `Gylding meldingV2 blir prosessert`() {
+    fun `Gylding MeldingV2 blir prosessert`() {
 
-        val melding = SøknadUtils.defaultSøknad.copy(
-            søknadId = UUID.randomUUID().toString()
-        )
+        val meldingV2 = SøknadUtils.defaultMeldingV2
 
-        kafkaTestProducer.leggSoknadTilProsessering(melding)
-        journalførtConsumer
-            .hentJournalførtMelding(melding.søknadId)
+        kafkaTestProducerV2.leggSoknadTilProsessering(meldingV2)
+        journalførtConsumerV2
+            .hentJournalførtMeldingV2(meldingV2.søknad.søknadId.id)
             .assertJournalførtFormat()
     }
 
