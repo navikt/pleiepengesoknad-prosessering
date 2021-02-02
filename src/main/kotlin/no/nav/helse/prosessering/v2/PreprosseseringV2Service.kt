@@ -11,6 +11,7 @@ import no.nav.helse.felles.Barn
 import no.nav.helse.prosessering.Metadata
 import no.nav.helse.prosessering.SoknadId
 import no.nav.helse.prosessering.v1.reportMetrics
+import no.nav.helse.prosessering.v2.PdfV2Generator.Companion.generateSoknadOppsummeringPdf
 import no.nav.helse.tpsproxy.Ident
 import no.nav.helse.tpsproxy.TpsNavn
 import org.slf4j.LoggerFactory
@@ -30,30 +31,16 @@ internal class PreprosseseringV2Service(
         melding: MeldingV2,
         metadata: Metadata
     ): PreprossesertMeldingV2 {
-        val soknadId = SoknadId(melding.søknadId)
+        val soknadId = SoknadId(melding.søknad.søknadId.id)
         logger.info("Preprosseserer $soknadId")
 
         val correlationId = CorrelationId(metadata.correlationId)
 
-        val sokerAktoerId = AktoerId(melding.søker.aktørId)
-
-        logger.trace("Henter AktørID for barnet.")
-        val barnAktoerId: AktoerId? = when {
-            melding.barn.aktørId.isNullOrBlank() -> hentBarnetsAktoerId(barn = melding.barn, correlationId = correlationId)
-            else -> AktoerId(melding.barn.aktørId)
-        }
-
-        val barnetsIdent: NorskIdent? = when {
-            barnAktoerId != null -> aktoerService.getIdent(barnAktoerId.id, correlationId = correlationId)
-            else -> null
-        }
-
-        val barnetsNavn: String? = slaaOppBarnetsNavn(melding.barn, barnetsIdent = barnetsIdent, correlationId = correlationId)
-        val barnetsFødselsdato = melding.barn.fødselsdato
+        val sokerAktoerId = AktoerId( "FAKE"/*melding.søknad.søker.aktørId*/) // TODO: 29/01/2021 Trenger aktørId på søker
 
         logger.trace("Genererer Oppsummerings-PDF av søknaden.")
 
-        val soknadOppsummeringPdf = pdfGenerator.generateSoknadOppsummeringPdf(melding, barnetsIdent, barnetsFødselsdato, barnetsNavn)
+        val soknadOppsummeringPdf = melding.søknad.generateSoknadOppsummeringPdf()
 
         logger.trace("Generering av Oppsummerings-PDF OK.")
         logger.trace("Mellomlagrer Oppsummerings-PDF.")
@@ -93,13 +80,9 @@ internal class PreprosseseringV2Service(
         logger.trace("Totalt ${komplettDokumentUrls.size} dokumentbolker.")
 
         val preprossesertMelding = PreprossesertMeldingV2(
-            melding = melding,
             dokumentUrls = komplettDokumentUrls.toList(),
-            sokerAktoerId = sokerAktoerId,
-            barnAktoerId = barnAktoerId,
-            barnetsNavn = barnetsNavn,
-            barnetsNorskeIdent = barnetsIdent,
-            barnetsFødselsdato = barnetsFødselsdato
+            søknad = melding.søknad,
+            interInfo = melding.interInfo
         )
         melding.reportMetrics()
         preprossesertMelding.reportMetrics()
@@ -144,24 +127,6 @@ internal class PreprosseseringV2Service(
         return when {
             tpsNavn.mellomnavn.isNullOrBlank() -> "${tpsNavn.fornavn} ${tpsNavn.etternavn}"
             else -> "${tpsNavn.fornavn} ${tpsNavn.mellomnavn} ${tpsNavn.etternavn}"
-        }
-    }
-
-    private suspend fun hentBarnetsAktoerId(
-        barn: Barn,
-        correlationId: CorrelationId
-    ): AktoerId? {
-        return try {
-            when {
-                !barn.fødselsnummer.isNullOrBlank() -> aktoerService.getAktorId(
-                    ident = barn.fødselsnummer.tilNorskIdent(),
-                    correlationId = correlationId
-                )
-                else -> null
-            }
-        } catch (cause: Throwable) {
-            logger.warn("Feil ved oppslag på Aktør ID basert på barnets fødselsnummer/dnummer. Kan være at det ikke er registrert i Aktørregisteret enda. ${cause.message}")
-            null
         }
     }
 }

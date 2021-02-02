@@ -48,7 +48,7 @@ internal class CleanupStreamV2(
 
                         dokumentService.slettDokumeter(
                             urlBolks = entry.data.melding.dokumentUrls,
-                            aktørId = AktoerId(entry.data.melding.søker.aktørId),
+                            aktørId = entry.data.melding.interInfo.internSøker.aktørId,
                             correlationId = CorrelationId(entry.metadata.correlationId)
                         )
                         logger.info("Dokumenter slettet.")

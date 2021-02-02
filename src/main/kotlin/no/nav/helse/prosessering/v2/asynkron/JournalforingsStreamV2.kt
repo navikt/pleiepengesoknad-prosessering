@@ -1,16 +1,15 @@
 package no.nav.helse.prosessering.v2.asynkron
 
 import no.nav.helse.CorrelationId
-import no.nav.helse.aktoer.AktoerId
-import no.nav.helse.felles.tilTpsNavn
 import no.nav.helse.joark.JoarkGateway
-import no.nav.helse.k9format.tilK9PleiepengesøknadSyktBarn
 import no.nav.helse.kafka.*
 import no.nav.helse.kafka.KafkaConfig
 import no.nav.helse.kafka.ManagedKafkaStreams
 import no.nav.helse.kafka.ManagedStreamHealthy
 import no.nav.helse.kafka.ManagedStreamReady
+import no.nav.helse.prosessering.v2.InternSøker
 import no.nav.helse.prosessering.v2.PreprossesertMeldingV2
+import no.nav.helse.tpsproxy.TpsNavn
 import org.apache.kafka.streams.StreamsBuilder
 import org.apache.kafka.streams.Topology
 import org.apache.kafka.streams.kstream.Consumed
@@ -51,17 +50,17 @@ internal class JournalforingsStreamV2(
                     process(NAME, soknadId, entry) {
                         logger.info("Journalfører dokumenter.")
                         val journaPostId = joarkGateway.journalfoer(
-                            mottatt = entry.data.mottatt,
-                            aktoerId = AktoerId(entry.data.søker.aktørId),
-                            sokerNavn = entry.data.søker.tilTpsNavn(),
+                            mottatt = entry.data.søknad.mottattDato,
+                            aktoerId = entry.data.interInfo.internSøker.aktørId,
+                            sokerNavn = entry.data.interInfo.internSøker.tilTpsNavn(),
                             correlationId = CorrelationId(entry.metadata.correlationId),
                             dokumenter = entry.data.dokumentUrls,
-                            norskIdent = entry.data.søker.fødselsnummer
+                            norskIdent = entry.data.søknad.søker.norskIdentitetsnummer.verdi
                         )
                         logger.info("Dokumenter journalført med ID = ${journaPostId.journalPostId}.")
                         val journalfort = JournalfortV2(
                             journalpostId = journaPostId.journalPostId,
-                            søknad = entry.data.tilK9PleiepengesøknadSyktBarn()
+                            søknad = entry.data.søknad
                         )
                         CleanupV2(
                             metadata = entry.metadata,
@@ -77,3 +76,9 @@ internal class JournalforingsStreamV2(
 
     internal fun stop() = stream.stop(becauseOfError = false)
 }
+
+fun InternSøker.tilTpsNavn(): TpsNavn = TpsNavn(
+    fornavn = fornavn,
+    mellomnavn = mellomnavn,
+    etternavn = etternavn
+)

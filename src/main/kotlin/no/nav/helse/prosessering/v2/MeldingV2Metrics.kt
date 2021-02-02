@@ -2,6 +2,7 @@ package no.nav.helse.prosessering.v2
 
 import io.prometheus.client.Counter
 import io.prometheus.client.Histogram
+import no.nav.k9.søknad.ytelse.psb.v1.PleiepengerSyktBarn
 
 private val opplastedeVedleggHistogram = Histogram.build()
     .buckets(0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0)
@@ -28,21 +29,5 @@ private val nattevaakCounter = Counter.build()
     .register()
 
 internal fun MeldingV2.reportMetrics() {
-    opplastedeVedleggHistogram.observe(vedleggUrls.size.toDouble())
 
-    when (tilsynsordning?.svar) {
-        "ja"  -> omsorgstilbudCounter.labels("omsorgstilbud", "ja").inc()
-        "nei" -> omsorgstilbudCounter.labels("omsorgstilbud", "nei").inc()
-        else -> omsorgstilbudCounter.labels("omsorgstilbud", "vetIkke").inc()
-    }
-
-    when (beredskap?.beredskap) {
-        true  -> beredskapCounter.labels("beredskap", "ja").inc()
-        false -> beredskapCounter.labels("beredskap", "nei").inc()
-    }
-
-    when (nattevåk?.harNattevåk) {
-        true  -> nattevaakCounter.labels("nattevåk", "ja").inc()
-        false -> nattevaakCounter.labels("nattevåk", "nei").inc()
-    }
 }
