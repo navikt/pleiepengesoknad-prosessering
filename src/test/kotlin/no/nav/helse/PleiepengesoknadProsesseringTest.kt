@@ -143,6 +143,19 @@ class PleiepengesoknadProsesseringTest {
     }
 
     @Test
+    fun `Gylding meldingV2 blir prosessert`() {
+
+        val melding = SøknadUtils.defaultSøknad.copy(
+            søknadId = UUID.randomUUID().toString()
+        )
+
+        kafkaTestProducer.leggSoknadTilProsessering(melding)
+        journalførtConsumer
+            .hentJournalførtMelding(melding.søknadId)
+            .assertJournalførtFormat()
+    }
+
+    @Test
     fun `Melding med språk og skal jobbe prosent blir prosessert`() {
 
         val språk = "nn"
