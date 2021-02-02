@@ -2,16 +2,12 @@ package no.nav.helse.prosessering.v2
 
 import io.prometheus.client.Counter
 import io.prometheus.client.Histogram
-import no.nav.helse.prosessering.v2.PreprossesertMeldingV2
 import no.nav.helse.utils.*
-import no.nav.helse.utils.aarSiden
-import no.nav.helse.utils.erUnderEttAar
-import no.nav.helse.utils.fodseldato
-import no.nav.helse.utils.tilJaEllerNei
+import no.nav.k9.søknad.felles.personopplysninger.Barn
+import no.nav.k9.søknad.ytelse.psb.v1.PleiepengerSyktBarn
 import java.time.LocalDate
 import java.time.ZoneId
-import java.time.temporal.ChronoUnit
-import kotlin.math.absoluteValue
+import java.time.temporal.ChronoUnit.WEEKS
 
 private val ZONE_ID = ZoneId.of("Europe/Oslo")
 
@@ -59,7 +55,8 @@ private val barnetsAlderIUkerCounter = Counter.build()
     .register()
 
 internal fun PreprossesertMeldingV2.reportMetrics() {
-    val barnetsFodselsdato = barn.fodseldato() ?: barn.fødselsdato
+    val ytelse = søknad.getYtelse<PleiepengerSyktBarn>()
+    val barnetsFodselsdato = ytelse.barn.fodseldato() ?: ytelse.barn.fødselsdato
     if (barnetsFodselsdato != null) {
         val barnetsAlder = barnetsFodselsdato.aarSiden()
         barnetsAlderHistogram.observe(barnetsAlder)
@@ -67,11 +64,31 @@ internal fun PreprossesertMeldingV2.reportMetrics() {
             barnetsAlderIUkerCounter.labels(barnetsFodselsdato.ukerSiden()).inc()
         }
     }
-    valgteArbeidsgivereHistogram.observe(arbeidsgivere.organisasjoner.size.toDouble())
-    idTypePaaBarnCounter.labels(barn.idType()).inc()
-    periodeSoknadGjelderIUkerHistogram.observe(ChronoUnit.WEEKS.between(fraOgMed, tilOgMed).toDouble())
+    valgteArbeidsgivereHistogram.observe(ytelse.arbeidstid.arbeidstakerList.size.toDouble())
+    idTypePaaBarnCounter.labels(ytelse.barn.idType()).inc()
+    periodeSoknadGjelderIUkerHistogram.observe(
+        WEEKS.between(ytelse.søknadsperiode.fraOgMed, ytelse.søknadsperiode.tilOgMed).toDouble()
+    )
 
-    jaNeiCounter.labels("har_medsoker", harMedsøker.tilJaEllerNei()).inc()
-    jaNeiCounter.labels("har_bodd_i_utlandet_siste_12_mnd", medlemskap.harBoddIUtlandetSiste12Mnd.tilJaEllerNei()).inc()
-    jaNeiCounter.labels("skal_bo_i_utlandet_neste_12_mnd", medlemskap.skalBoIUtlandetNeste12Mnd.tilJaEllerNei()).inc()
+    jaNeiCounter.labels("har_medsoker", ytelse.søknadInfo.harMedsøker.tilJaEllerNei()).inc()
+}
+
+private fun Barn.fodseldato(): LocalDate? {
+    if (norskIdentitetsnummer == null) return null
+    return try {
+        val dag = norskIdentitetsnummer.verdi.substring(0, 2).toInt()
+        val maned = norskIdentitetsnummer.verdi.substring(2, 4).toInt()
+        val ar = "20${norskIdentitetsnummer.verdi.substring(4, 6)}".toInt()
+        LocalDate.of(ar, maned, dag)
+    } catch (cause: Throwable) {
+        null
+    }
+}
+
+private fun Barn.idType(): String {
+    return when {
+        norskIdentitetsnummer != null -> "fodselsnummer"
+        fødselsdato != null -> "fodselsdato"
+        else -> "ingen_id"
+    }
 }
