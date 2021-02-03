@@ -11,6 +11,7 @@ import io.ktor.jackson.*
 import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.util.*
+import io.prometheus.client.CollectorRegistry
 import io.prometheus.client.hotspot.DefaultExports
 import no.nav.helse.aktoer.AktoerGateway
 import no.nav.helse.aktoer.AktoerService
@@ -116,6 +117,7 @@ fun Application.pleiepengesoknadProsessering() {
     environment.monitor.subscribe(ApplicationStopping) {
         logger.info("Stopper AsynkronProsesseringV1Service.")
         asynkronProsesseringV1Service.stop()
+        CollectorRegistry.defaultRegistry.clear()
         logger.info("AsynkronProsesseringV1Service Stoppet.")
     }
 

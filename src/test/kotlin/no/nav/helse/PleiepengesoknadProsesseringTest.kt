@@ -89,7 +89,6 @@ class PleiepengesoknadProsesseringTest {
 
         internal fun restartEngine() {
             stopEngine()
-            CollectorRegistry.defaultRegistry.clear()
             engine = newEngine(kafkaEnvironment)
             engine.start(wait = true)
         }
@@ -146,17 +145,6 @@ class PleiepengesoknadProsesseringTest {
         kafkaTestProducer.leggSoknadTilProsessering(melding)
         journalførtConsumer
             .hentJournalførtMelding(melding.søknadId)
-            .assertJournalførtFormat()
-    }
-
-    @Test
-    fun `Gylding MeldingV2 blir prosessert`() {
-
-        val meldingV2 = SøknadUtils.defaultMeldingV2
-
-        kafkaTestProducerV2.leggSoknadTilProsessering(meldingV2)
-        journalførtConsumerV2
-            .hentJournalførtMeldingV2(meldingV2.søknad.søknadId.id)
             .assertJournalførtFormat()
     }
 
