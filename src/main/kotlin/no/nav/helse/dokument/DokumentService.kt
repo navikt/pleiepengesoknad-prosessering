@@ -3,7 +3,6 @@ package no.nav.helse.dokument
 import no.nav.helse.CorrelationId
 import no.nav.helse.aktoer.AktoerId
 import no.nav.helse.prosessering.v1.MeldingV1
-import no.nav.helse.prosessering.v2.MeldingV2
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.net.URI
@@ -44,22 +43,6 @@ class DokumentService(
 
     internal suspend fun lagreSoknadsMelding(
         melding: MeldingV1,
-        aktoerId: AktoerId,
-        correlationId: CorrelationId
-    ) : URI {
-        return lagreDokument(
-            dokument = DokumentGateway.Dokument(
-                content = JournalforingsFormat.somJson(melding),
-                contentType = "application/json",
-                title = "Søknad om pleiepenger som JSON"
-            ),
-            aktoerId = aktoerId,
-            correlationId = correlationId
-        )
-    }
-
-    internal suspend fun lagreSoknadsMelding(
-        melding: MeldingV2,
         aktoerId: AktoerId,
         correlationId: CorrelationId
     ) : URI {

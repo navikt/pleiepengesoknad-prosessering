@@ -33,9 +33,6 @@ import no.nav.helse.joark.JoarkGateway
 import no.nav.helse.prosessering.v1.PdfV1Generator
 import no.nav.helse.prosessering.v1.PreprosseseringV1Service
 import no.nav.helse.prosessering.v1.asynkron.AsynkronProsesseringV1Service
-import no.nav.helse.prosessering.v2.PdfV2Generator
-import no.nav.helse.prosessering.v2.PreprosseseringV2Service
-import no.nav.helse.prosessering.v2.asynkron.AsynkronProsesseringV2Service
 import no.nav.helse.tpsproxy.TpsProxyV1Gateway
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -87,12 +84,6 @@ fun Application.pleiepengesoknadProsessering() {
         barnOppslag = BarnOppslag(tpsProxyV1Gateway)
     )
 
-    val preprosseseringV2Service = PreprosseseringV2Service(
-        aktoerService = aktoerService,
-        pdfGenerator = PdfV2Generator(),
-        dokumentService = dokumentService,
-        barnOppslag = BarnOppslag(tpsProxyV1Gateway)
-    )
 
     val joarkGateway = JoarkGateway(
         baseUrl = configuration.getk9JoarkBaseUrl(),
@@ -107,12 +98,6 @@ fun Application.pleiepengesoknadProsessering() {
         dokumentService = dokumentService
     )
 
-    val asynkronProsesseringV2Service = AsynkronProsesseringV2Service(
-        kafkaConfig = configuration.getKafkaConfig(),
-        preprosseseringV2Service = preprosseseringV2Service,
-        joarkGateway = joarkGateway,
-        dokumentService = dokumentService
-    )
 
     environment.monitor.subscribe(ApplicationStopping) {
         logger.info("Stopper AsynkronProsesseringV1Service.")
@@ -150,7 +135,6 @@ fun Application.pleiepengesoknadProsessering() {
                     )
                 )
                     .plus(asynkronProsesseringV1Service.healthChecks()).toSet()
-                    .plus(asynkronProsesseringV2Service.healthChecks()).toSet()
             )
         )
     }

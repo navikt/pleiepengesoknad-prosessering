@@ -4,7 +4,6 @@ package no.nav.helse.k9format
 
 import no.nav.helse.felles.*
 import no.nav.helse.prosessering.v1.PreprossesertMeldingV1
-import no.nav.helse.prosessering.v2.PreprossesertMeldingV2
 import no.nav.k9.søknad.Søknad
 import no.nav.k9.søknad.felles.LovbestemtFerie
 import no.nav.k9.søknad.felles.Versjon
@@ -314,14 +313,6 @@ fun List<Virksomhet>.tilK9ArbeidstidInfo(): ArbeidstidInfo {
     }
 
     return ArbeidstidInfo(Duration.ofHours(7), perioder) //TODO Mangler denne verdien
-}
-
-fun PreprossesertMeldingV2.byggK9Uttak(periode: Periode): Uttak {
-    val perioder = mutableMapOf<Periode, UttakPeriodeInfo>()
-
-    perioder[periode] = UttakPeriodeInfo(Duration.ofHours(5)) //TODO Mangler info om dette
-
-    return Uttak(perioder)
 }
 
 fun PreprossesertMeldingV1.byggK9Uttak(periode: Periode): Uttak {

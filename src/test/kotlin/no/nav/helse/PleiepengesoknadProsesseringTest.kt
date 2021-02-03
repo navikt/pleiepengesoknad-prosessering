@@ -56,9 +56,6 @@ class PleiepengesoknadProsesseringTest {
         private val journalførtConsumer = kafkaEnvironment.journalføringsKonsumer()
         private val kafkaTestProducer = kafkaEnvironment.testProducer()
 
-        private val journalførtConsumerV2 = kafkaEnvironment.journalføringsKonsumerV2()
-        private val kafkaTestProducerV2 = kafkaEnvironment.testProducerV2()
-
         // Se https://github.com/navikt/dusseldorf-ktor#f%C3%B8dselsnummer
         private val gyldigFodselsnummerA = "02119970078"
         private val gyldigFodselsnummerB = "19066672169"
@@ -107,9 +104,7 @@ class PleiepengesoknadProsesseringTest {
             wireMockServer.stop()
             kafkaTestConsumer.close()
             kafkaTestProducer.close()
-            kafkaTestProducerV2.close()
             journalførtConsumer.close()
-            journalførtConsumerV2.close()
             stopEngine()
             kafkaEnvironment.tearDown()
 

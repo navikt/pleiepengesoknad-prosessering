@@ -5,9 +5,6 @@ import no.nav.helse.aktoer.AktoerId
 import no.nav.helse.dusseldorf.ktor.jackson.dusseldorfConfigured
 import no.nav.helse.felles.*
 import no.nav.helse.prosessering.v1.*
-import no.nav.helse.prosessering.v2.InternInfo
-import no.nav.helse.prosessering.v2.InternSøker
-import no.nav.helse.prosessering.v2.MeldingV2
 import no.nav.k9.søknad.Søknad
 import no.nav.k9.søknad.felles.LovbestemtFerie
 import no.nav.k9.søknad.felles.Versjon
@@ -403,18 +400,6 @@ internal object SøknadUtils {
                         .årsak(BARNET_INNLAGT_I_HELSEINSTITUSJON_FOR_NORSK_OFFENTLIG_REGNING)
                         .build()
                 )
-            )
-        )
-    )
-
-    val defaultMeldingV2 = MeldingV2(
-        søknad = defaultK9FormatPSB,
-        vedleggUrls = listOf(URI("http://localhost:8080/vedlegg/11")),
-        interInfo = InternInfo(
-            internSøker = InternSøker(
-                fornavn = "Ole",
-                etternavn = "Hansen",
-                aktørId = AktoerId("123456789")
             )
         )
     )
