@@ -8,6 +8,7 @@ import no.nav.helse.aktoer.tilNorskIdent
 import no.nav.helse.barn.BarnOppslag
 import no.nav.helse.dokument.DokumentService
 import no.nav.helse.felles.Barn
+import no.nav.helse.k9format.tilK9PleiepengesøknadSyktBarn
 import no.nav.helse.prosessering.Metadata
 import no.nav.helse.prosessering.SoknadId
 import no.nav.helse.tpsproxy.Ident
@@ -68,8 +69,9 @@ internal class PreprosseseringV1Service(
 
         logger.trace("Mellomlagrer Oppsummerings-JSON")
 
+        val k9FormatSøknad = melding.tilK9PleiepengesøknadSyktBarn()
         val soknadJsonUrl = dokumentService.lagreSoknadsMelding(
-            melding = melding,
+            k9FormatSøknad = k9FormatSøknad,
             aktoerId = sokerAktoerId,
             correlationId = correlationId
         )
@@ -98,7 +100,8 @@ internal class PreprosseseringV1Service(
             barnAktoerId = barnAktoerId,
             barnetsNavn = barnetsNavn,
             barnetsNorskeIdent = barnetsIdent,
-            barnetsFødselsdato = barnetsFødselsdato
+            barnetsFødselsdato = barnetsFødselsdato,
+            k9FormatSøknad = k9FormatSøknad
         )
         melding.reportMetrics()
         preprossesertMeldingV1.reportMetrics()

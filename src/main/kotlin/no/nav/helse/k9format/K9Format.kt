@@ -3,6 +3,7 @@
 package no.nav.helse.k9format
 
 import no.nav.helse.felles.*
+import no.nav.helse.prosessering.v1.MeldingV1
 import no.nav.helse.prosessering.v1.PreprossesertMeldingV1
 import no.nav.k9.søknad.Søknad
 import no.nav.k9.søknad.felles.LovbestemtFerie
@@ -31,6 +32,31 @@ import no.nav.k9.søknad.ytelse.psb.v1.arbeidstid.ArbeidstidPeriodeInfo
 import no.nav.k9.søknad.ytelse.psb.v1.tilsyn.TilsynPeriodeInfo
 import java.time.Duration
 
+fun MeldingV1.tilK9PleiepengesøknadSyktBarn(): Søknad {
+    val søknadsPeriode = Periode(fraOgMed, tilOgMed)
+    val søknad = Søknad(
+        SøknadId.of(søknadId),
+        Versjon.of("2.0"),
+        mottatt,
+        søker.tilK9Søker(),
+        PleiepengerSyktBarn(
+            søknadsPeriode,
+            byggSøknadInfo(),
+            barn.tilK9Barn(),
+            byggK9ArbeidAktivitet(),
+            beredskap?.tilK9Beredskap(søknadsPeriode),
+            nattevåk?.tilK9Nattevåk(søknadsPeriode),
+            tilsynsordning?.tilK9Tilsynsordning(søknadsPeriode),
+            byggK9Arbeidstid(),
+            byggK9Uttak(søknadsPeriode),
+            ferieuttakIPerioden?.tilK9LovbestemtFerie(),
+            medlemskap.tilK9Bosteder(),
+            utenlandsoppholdIPerioden.tilK9Utenlandsopphold(søknadsPeriode)
+        )
+    )
+    return søknad
+}
+
 fun PreprossesertMeldingV1.tilK9PleiepengesøknadSyktBarn(): Søknad {
     val søknadsPeriode = Periode(fraOgMed, tilOgMed)
     val søknad = Søknad(
@@ -56,14 +82,36 @@ fun PreprossesertMeldingV1.tilK9PleiepengesøknadSyktBarn(): Søknad {
     return søknad
 }
 
-fun PreprossesertBarn.tilK9Barn(): Barn = Barn.builder()
+fun no.nav.helse.felles.Barn.tilK9Barn(): Barn = Barn.builder()
     .norskIdentitetsnummer(NorskIdentitetsnummer.of(this.fødselsnummer))
     .fødselsdato(this.fødselsdato)
     .build()
 
-fun PreprossesertSøker.tilK9Søker(): Søker = Søker.builder()
+fun no.nav.helse.felles.PreprossesertBarn.tilK9Barn(): Barn = Barn.builder()
+    .norskIdentitetsnummer(NorskIdentitetsnummer.of(this.fødselsnummer))
+    .fødselsdato(this.fødselsdato)
+    .build()
+
+fun no.nav.helse.felles.Søker.tilK9Søker(): Søker = Søker.builder()
     .norskIdentitetsnummer(NorskIdentitetsnummer.of(fødselsnummer))
     .build()
+
+fun no.nav.helse.felles.PreprossesertSøker.tilK9Søker(): Søker = Søker.builder()
+    .norskIdentitetsnummer(NorskIdentitetsnummer.of(fødselsnummer))
+    .build()
+
+fun MeldingV1.byggK9ArbeidAktivitet(): ArbeidAktivitet {
+    val builder = ArbeidAktivitet.builder()
+
+    frilans?.let {
+        builder.frilanser(frilans.tilK9Frilanser())
+    }
+
+    builder.selvstendigNæringsdrivende(selvstendigVirksomheter.tilK9SelvstendigNæringsdrivende())
+    builder.arbeidstaker(arbeidsgivere.tilK9Arbeidstaker(søker.fødselsnummer, Periode(fraOgMed, tilOgMed)))
+
+    return builder.build()
+}
 
 fun PreprossesertMeldingV1.byggK9ArbeidAktivitet(): ArbeidAktivitet {
     val builder = ArbeidAktivitet.builder()
@@ -263,13 +311,25 @@ private fun UtenlandsoppholdIPerioden.tilK9Utenlandsopphold(
     return Utenlandsopphold.builder().perioder(perioder).build()
 }
 
+fun MeldingV1.byggSøknadInfo(): SøknadInfo = SøknadInfo(
+    barnRelasjon?.utskriftsvennlig ?: "Forelder",
+    skalBekrefteOmsorg,
+    beskrivelseOmsorgsrollen,
+    harForståttRettigheterOgPlikter,
+    harBekreftetOpplysninger,
+    null, //TODO Dette skal fjernes i k9-format,
+    samtidigHjemme,
+    harMedsøker,
+    bekrefterPeriodeOver8Uker
+)
+
 fun PreprossesertMeldingV1.byggSøknadInfo(): SøknadInfo = SøknadInfo(
     barnRelasjon?.utskriftsvennlig ?: "Forelder",
     skalBekrefteOmsorg,
     beskrivelseOmsorgsrollen,
     harForstattRettigheterOgPlikter,
     harBekreftetOpplysninger,
-    null, //TODO Mangler dette feltet i brukerdialog,
+    null, //TODO Dette skal fjernes i k9-format,
     samtidigHjemme,
     harMedsøker,
     bekrefterPeriodeOver8Uker
@@ -282,6 +342,15 @@ fun Organisasjon.tilK9ArbeidstidInfo(periode: Periode): ArbeidstidInfo {
         Duration.ofHours(6) //TODO Mangler denne verdien
     )
     return ArbeidstidInfo(Duration.ofHours(7), perioder) //TODO Mangler denne verdien
+}
+
+fun MeldingV1.byggK9Arbeidstid(): Arbeidstid {
+    val frilanserArbeidstidInfo = frilans?.tilK9ArbeidstidInfo(Periode(fraOgMed, tilOgMed))
+    val selvstendigNæringsdrivendeArbeidstidInfo = selvstendigVirksomheter.tilK9ArbeidstidInfo()
+    val arbeidstakerList: List<Arbeidstaker> =
+        arbeidsgivere.tilK9Arbeidstaker(søker.fødselsnummer, Periode(fraOgMed, tilOgMed))
+
+    return Arbeidstid(arbeidstakerList, frilanserArbeidstidInfo, selvstendigNæringsdrivendeArbeidstidInfo)
 }
 
 fun PreprossesertMeldingV1.byggK9Arbeidstid(): Arbeidstid {
@@ -313,6 +382,14 @@ fun List<Virksomhet>.tilK9ArbeidstidInfo(): ArbeidstidInfo {
     }
 
     return ArbeidstidInfo(Duration.ofHours(7), perioder) //TODO Mangler denne verdien
+}
+
+fun MeldingV1.byggK9Uttak(periode: Periode): Uttak {
+    val perioder = mutableMapOf<Periode, UttakPeriodeInfo>()
+
+    perioder[periode] = UttakPeriodeInfo(Duration.ofHours(5)) //TODO Mangler info om dette
+
+    return Uttak(perioder)
 }
 
 fun PreprossesertMeldingV1.byggK9Uttak(periode: Periode): Uttak {

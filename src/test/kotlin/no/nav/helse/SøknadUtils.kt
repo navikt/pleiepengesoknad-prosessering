@@ -218,15 +218,15 @@ internal object SøknadUtils {
         )
     )
 
-    val defaultK9FormatPSB = Søknad(
-        SøknadId.of(UUID.randomUUID().toString()),
+    fun defaultK9FormatPSB(søknadId: UUID= UUID.randomUUID()) = Søknad(
+        SøknadId.of(søknadId.toString()),
         Versjon.of("2.0.0"),
-        ZonedDateTime.now(),
+        ZonedDateTime.parse("2020-01-01T10:00:00Z"),
         K9Søker.builder()
             .norskIdentitetsnummer(NorskIdentitetsnummer.of("12345678910"))
             .build(),
         PleiepengerSyktBarn(
-            K9Periode(LocalDate.now().minusMonths(1), LocalDate.now()),
+            K9Periode(LocalDate.parse("2020-01-01"), LocalDate.parse("2020-01-10")),
             SøknadInfo(
                 "Far",
                 true,
@@ -243,14 +243,14 @@ internal object SøknadUtils {
                 null
             ),
             ArbeidAktivitet.builder()
-                .frilanser(Frilanser(LocalDate.now().minusMonths(9), true))
+                .frilanser(Frilanser(LocalDate.parse("2020-01-01"), true))
                 .selvstendigNæringsdrivende(
                     listOf(
                         SelvstendigNæringsdrivende(
                             mapOf(
                                 K9Periode(
-                                    LocalDate.now().minusMonths(9),
-                                    LocalDate.now()
+                                    LocalDate.parse("2018-01-01"),
+                                    LocalDate.parse("2020-01-01")
                                 ) to SelvstendigNæringsdrivende.SelvstendigNæringsdrivendePeriodeInfo.builder()
                                     .erNyoppstartet(true)
                                     .registrertIUtlandet(false)
@@ -294,36 +294,36 @@ internal object SøknadUtils {
             K9Beredskap(
                 mapOf(
                     K9Periode(
-                        LocalDate.now().minusDays(5),
-                        LocalDate.now()
+                        LocalDate.parse("2020-01-01"),
+                        LocalDate.parse("2020-01-05")
                     ) to BeredskapPeriodeInfo("Jeg skal være i beredskap. Basta!"),
                     K9Periode(
-                        LocalDate.now(),
-                        LocalDate.now().plusDays(5)
+                        LocalDate.parse("2020-01-07"),
+                        LocalDate.parse("2020-01-10")
                     ) to BeredskapPeriodeInfo("Jeg skal være i beredskap i denne perioden også. Basta!")
                 )
             ),
             K9Nattevåk(
                 mapOf(
                     K9Periode(
-                        LocalDate.now().minusDays(5),
-                        LocalDate.now()
+                        LocalDate.parse("2020-01-01"),
+                        LocalDate.parse("2020-01-05")
                     ) to NattevåkPeriodeInfo("Jeg skal ha nattevåk. Basta!"),
                     K9Periode(
-                        LocalDate.now(),
-                        LocalDate.now().plusDays(5)
+                        LocalDate.parse("2020-01-07"),
+                        LocalDate.parse("2020-01-10")
                     ) to NattevåkPeriodeInfo("Jeg skal ha nattevåk i perioden også. Basta!")
                 )
             ),
             K9Tilsynsordning(
                 mapOf(
                     K9Periode(
-                        LocalDate.now().minusDays(5),
-                        LocalDate.now()
+                        LocalDate.parse("2020-01-01"),
+                        LocalDate.parse("2020-01-05")
                     ) to TilsynPeriodeInfo(Duration.ofHours(8)),
                     K9Periode(
-                        LocalDate.now(),
-                        LocalDate.now().plusDays(5)
+                        LocalDate.parse("2020-01-06"),
+                        LocalDate.parse("2020-01-10")
                     ) to TilsynPeriodeInfo(Duration.ofHours(4))
                 )
             ),
@@ -336,12 +336,12 @@ internal object SøknadUtils {
                             Duration.ofHours(8),
                             mapOf(
                                 K9Periode(
-                                    LocalDate.now().minusDays(10),
-                                    LocalDate.now()
+                                    LocalDate.parse("2018-01-01"),
+                                    LocalDate.parse("2020-01-05")
                                 ) to ArbeidstidPeriodeInfo(Duration.ofHours(4)),
                                 K9Periode(
-                                    LocalDate.now().minusDays(20),
-                                    LocalDate.now().minusDays(10)
+                                    LocalDate.parse("2020-01-06"),
+                                    LocalDate.parse("2020-01-10")
                                 ) to ArbeidstidPeriodeInfo(Duration.ofHours(2))
                             )
                         )
@@ -352,32 +352,32 @@ internal object SøknadUtils {
             Uttak(
                 mapOf(
                     K9Periode(
-                        LocalDate.now().minusDays(10),
-                        LocalDate.now()
+                        LocalDate.parse("2020-01-01"),
+                        LocalDate.parse("2020-01-05")
                     ) to UttakPeriodeInfo(Duration.ofHours(4)),
                     K9Periode(
-                        LocalDate.now().minusDays(20),
-                        LocalDate.now().minusDays(10)
+                        LocalDate.parse("2020-01-06"),
+                        LocalDate.parse("2020-01-10")
                     ) to UttakPeriodeInfo(Duration.ofHours(2))
                 )
             ),
             LovbestemtFerie(
                 listOf(
-                    K9Periode(LocalDate.now().minusDays(10), LocalDate.now()),
-                    K9Periode(LocalDate.now().minusDays(20), LocalDate.now().minusDays(10))
+                    K9Periode(LocalDate.parse("2020-01-01"), LocalDate.parse("2020-01-05")),
+                    K9Periode(LocalDate.parse("2020-01-06"), LocalDate.parse("2020-01-10"))
                 )
             ),
             Bosteder(
                 mapOf(
                     K9Periode(
-                        LocalDate.now().minusDays(10),
-                        LocalDate.now()
+                        LocalDate.parse("2020-01-01"),
+                        LocalDate.parse("2020-01-05")
                     ) to Bosteder.BostedPeriodeInfo.builder()
                         .land(Landkode.SPANIA)
                         .build(),
                     K9Periode(
-                        LocalDate.now().minusDays(20),
-                        LocalDate.now().minusDays(10)
+                        LocalDate.parse("2020-01-06"),
+                        LocalDate.parse("2020-01-10")
                     ) to Bosteder.BostedPeriodeInfo.builder()
                         .land(Landkode.NORGE)
                         .build()
@@ -386,15 +386,15 @@ internal object SøknadUtils {
             K9Utenlandsopphold(
                 mapOf(
                     K9Periode(
-                        LocalDate.now().minusDays(10),
-                        LocalDate.now()
+                        LocalDate.parse("2020-01-01"),
+                        LocalDate.parse("2020-01-05")
                     ) to UtenlandsoppholdPeriodeInfo.builder()
                         .land(Landkode.CANADA)
                         .årsak(BARNET_INNLAGT_I_HELSEINSTITUSJON_DEKKET_ETTER_AVTALE_MED_ET_ANNET_LAND_OM_TRYGD)
                         .build(),
                     K9Periode(
-                        LocalDate.now().minusDays(20),
-                        LocalDate.now().minusDays(10)
+                        LocalDate.parse("2020-01-06"),
+                        LocalDate.parse("2020-01-10")
                     ) to UtenlandsoppholdPeriodeInfo.builder()
                         .land(Landkode.SVERIGE)
                         .årsak(BARNET_INNLAGT_I_HELSEINSTITUSJON_FOR_NORSK_OFFENTLIG_REGNING)
