@@ -40,7 +40,7 @@ internal class PreprosseseringV2Service(
 
         logger.trace("Genererer Oppsummerings-PDF av søknaden.")
 
-        val soknadOppsummeringPdf = melding.søknad.generateSoknadOppsummeringPdf()
+        val soknadOppsummeringPdf = melding.generateSoknadOppsummeringPdf()
 
         logger.trace("Generering av Oppsummerings-PDF OK.")
         logger.trace("Mellomlagrer Oppsummerings-PDF.")

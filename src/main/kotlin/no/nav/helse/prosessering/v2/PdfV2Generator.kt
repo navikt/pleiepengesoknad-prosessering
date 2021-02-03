@@ -128,10 +128,10 @@ internal class PdfV2Generator {
             "Fritekst.png" to loadPng("Fritekst")
         )
 
-        fun Søknad.generateSoknadOppsummeringPdf(): ByteArray {
+        fun MeldingV2.generateSoknadOppsummeringPdf(): ByteArray {
             soknadTemplate.apply(
                 Context
-                    .newBuilder(this.somMap())
+                    .newBuilder(somMap())
                     .resolver(MapValueResolver.INSTANCE)
                     .build()
             ).let { html ->
@@ -152,17 +152,17 @@ internal class PdfV2Generator {
             }
         }
 
-        private fun Søknad.somMap(): Map<String, Any?> {
-            val ytelse = getYtelse<PleiepengerSyktBarn>()
+        private fun MeldingV2.somMap(): Map<String, Any?> {
+            val ytelse = søknad.getYtelse<PleiepengerSyktBarn>()
             return mapOf(
-                "søknadId" to søknadId.id,
-                "mottattDag" to mottattDato.withZoneSameInstant(ZONE_ID).norskDag(),
-                "mottattDato" to DATE_TIME_FORMATTER.format(mottattDato),
+                "søknadId" to søknad.søknadId.id,
+                "mottattDag" to søknad.mottattDato.withZoneSameInstant(ZONE_ID).norskDag(),
+                "mottattDato" to DATE_TIME_FORMATTER.format(søknad.mottattDato),
                 "harMedsøker" to ytelse.søknadInfo.harMedsøker,
                 "samtidigHjemme" to ytelse.søknadInfo.samtidigHjemme,
                 "bekrefterPeriodeOver8Uker" to ytelse.søknadInfo.bekrefterPeriodeOver8Uker,
                 "søker" to mapOf(
-                    "norskIdentitetsnummer" to søker.norskIdentitetsnummer.verdi
+                    "norskIdentitetsnummer" to søknad.søker.norskIdentitetsnummer.verdi
                 ),
                 "barn" to mapOf(
                     "fødselsdato" to ytelse.barn.fødselsdato?.format(DATE_FORMATTER),
@@ -200,7 +200,6 @@ internal class PdfV2Generator {
                 "utenlandsopphold" to ytelse.utenlandsopphold.somMap(),
                 "lovbestemtFerie" to ytelse.lovbestemtFerie.somMap(),
                 "samtykketOmsorgForBarnet" to ytelse.søknadInfo.samtykketOmsorgForBarnet,
-                "skal_passe_pa_barnet_i_hele_perioden" to null, // TODO: 01/02/2021 Mangler på k9-format
                 "beskrivelseAvOmsorgsrollen" to ytelse.søknadInfo.beskrivelseAvOmsorgsrollen,
                 "relasjonTilBarnet" to ytelse.søknadInfo.relasjonTilBarnet,
                 "barnRelasjonBeskrivelse" to null // TODO: 01/02/2021 Mangler i k9-format
