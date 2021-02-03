@@ -84,7 +84,7 @@ internal class PreprosseseringV2Service(
             søknad = melding.søknad,
             interInfo = melding.interInfo
         )
-        melding.reportMetrics()
+
         preprossesertMelding.reportMetrics()
         return preprossesertMelding
     }

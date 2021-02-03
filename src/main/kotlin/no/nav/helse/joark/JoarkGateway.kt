@@ -2,14 +2,13 @@ package no.nav.helse.joark
 
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.PropertyNamingStrategy
+import com.fasterxml.jackson.databind.PropertyNamingStrategies
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.github.kittinunf.fuel.coroutines.awaitStringResponseResult
 import com.github.kittinunf.fuel.httpPost
-import io.ktor.http.HttpHeaders
-import io.ktor.http.Url
+import io.ktor.http.*
 import no.nav.helse.CorrelationId
 import no.nav.helse.HttpError
 import no.nav.helse.aktoer.AktoerId
@@ -109,7 +108,7 @@ class JoarkGateway(
     private fun configuredObjectMapper() : ObjectMapper {
         val objectMapper = jacksonObjectMapper()
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-        objectMapper.propertyNamingStrategy = PropertyNamingStrategy.SNAKE_CASE
+        objectMapper.propertyNamingStrategy = PropertyNamingStrategies.SNAKE_CASE
         objectMapper.registerModule(JavaTimeModule())
         return objectMapper
     }

@@ -1,5 +1,6 @@
 package no.nav.helse.dokument
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategies
 import com.fasterxml.jackson.databind.PropertyNamingStrategy
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.databind.node.ObjectNode
@@ -13,7 +14,7 @@ class JournalforingsFormat {
         private val objectMapper = jacksonObjectMapper()
             .dusseldorfConfigured()
             .configure(SerializationFeature.WRITE_DURATIONS_AS_TIMESTAMPS, false)
-            .setPropertyNamingStrategy(PropertyNamingStrategy.LOWER_CAMEL_CASE)
+            .setPropertyNamingStrategy(PropertyNamingStrategies.LOWER_CAMEL_CASE)
 
         internal fun somJson(
             meldingV1: MeldingV1

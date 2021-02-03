@@ -149,8 +149,8 @@ internal class PdfV1Generator  {
                 "nattevaak" to nattevåk(melding.nattevåk),
                 "beredskap" to beredskap(melding.beredskap),
                 "utenlandsoppholdIPerioden" to mapOf(
-                    "skalOppholdeSegIUtlandetIPerioden" to melding.utenlandsoppholdIPerioden?.skalOppholdeSegIUtlandetIPerioden,
-                    "opphold" to melding.utenlandsoppholdIPerioden?.opphold?.somMapUtenlandsopphold()
+                    "skalOppholdeSegIUtlandetIPerioden" to melding.utenlandsoppholdIPerioden.skalOppholdeSegIUtlandetIPerioden,
+                    "opphold" to melding.utenlandsoppholdIPerioden.opphold.somMapUtenlandsopphold()
                 ),
                 "ferieuttakIPerioden" to mapOf(
                     "skalTaUtFerieIPerioden" to melding.ferieuttakIPerioden?.skalTaUtFerieIPerioden,
