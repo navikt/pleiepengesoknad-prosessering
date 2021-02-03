@@ -186,9 +186,27 @@ private fun Tilsynsordning.tilK9Tilsynsordning(
 ): no.nav.k9.søknad.ytelse.psb.v1.tilsyn.Tilsynsordning {
     val perioder = mutableMapOf<Periode, TilsynPeriodeInfo>()
 
-    perioder[periode] = TilsynPeriodeInfo(
-        Duration.ofHours(4) //TODO Har ikke dette. Skal man hente inn for man-fre også dele på 5?
-    )
+    // TODO: 03/02/2021 Bør sees på engang til før prodsetting. K9-sak behandler ikke dette enda.
+    when(svar) {
+        "ja" -> {
+            val snittTilsynTimerPerDag = listOf(
+                ja!!.mandag?.toHours() ?: 0,
+                ja.tirsdag?.toHours() ?: 0,
+                ja.onsdag?.toHours() ?: 0,
+                ja.torsdag?.toHours() ?: 0,
+                ja.fredag?.toHours() ?: 0
+            ).sum().div(5)
+
+            perioder[periode] = TilsynPeriodeInfo(
+                Duration.ofHours(snittTilsynTimerPerDag)
+            )
+        }
+        "nei", "vetIkke" -> {
+            perioder[periode] = TilsynPeriodeInfo(
+                Duration.ofHours(0)
+            )
+        }
+    }
 
     return no.nav.k9.søknad.ytelse.psb.v1.tilsyn.Tilsynsordning(perioder)
 }
@@ -252,7 +270,7 @@ fun PreprossesertMeldingV1.byggSøknadInfo(): SøknadInfo = SøknadInfo(
     beskrivelseOmsorgsrollen,
     harForstattRettigheterOgPlikter,
     harBekreftetOpplysninger,
-    false, //TODO Mangler dette feltet,
+    null, //TODO Mangler dette feltet i brukerdialog,
     samtidigHjemme,
     harMedsøker,
     bekrefterPeriodeOver8Uker
