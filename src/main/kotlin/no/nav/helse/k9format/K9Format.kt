@@ -268,7 +268,8 @@ fun FerieuttakIPerioden.tilK9LovbestemtFerie(): LovbestemtFerie? {
     return LovbestemtFerie(perioder)
 }
 
-fun Medlemskap.tilK9Bosteder(): Bosteder {
+fun Medlemskap.tilK9Bosteder(): Bosteder? {
+    if (!harBoddIUtlandetSiste12Mnd && !skalBoIUtlandetNeste12Mnd) return null
     val perioder = mutableMapOf<Periode, Bosteder.BostedPeriodeInfo>()
 
     utenlandsoppholdSiste12Mnd.forEach { bosted ->
