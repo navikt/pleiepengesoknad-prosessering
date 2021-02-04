@@ -260,7 +260,7 @@ private fun Tilsynsordning.tilK9Tilsynsordning(
     return no.nav.k9.søknad.ytelse.psb.v1.tilsyn.Tilsynsordning(perioder)
 }
 
-private fun FerieuttakIPerioden.tilK9LovbestemtFerie(): LovbestemtFerie? {
+fun FerieuttakIPerioden.tilK9LovbestemtFerie(): LovbestemtFerie? {
     if (!skalTaUtFerieIPerioden) return null
 
     val perioder = mutableListOf<Periode>()

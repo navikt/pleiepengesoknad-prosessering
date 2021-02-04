@@ -1,10 +1,6 @@
 package no.nav.helse.k9format
 
-import no.nav.helse.felles.Beredskap
-import no.nav.helse.felles.Bosted
-import no.nav.helse.felles.Medlemskap
-import no.nav.helse.felles.Nattevåk
-import no.nav.helse.felles.Organisasjon
+import no.nav.helse.felles.*
 import no.nav.k9.søknad.JsonUtils
 import no.nav.k9.søknad.felles.type.Periode
 import org.junit.Test
@@ -106,12 +102,11 @@ class K9FormatTest {
               }
             }
         """.trimIndent()
-        println(JsonUtils.toString(bostederK9Format))
         assertEquals(forventetJson, JsonUtils.toString(bostederK9Format))
     }
 
     @Test
-    fun `Organisasjon til k9Arbeidsaktivitet`() {
+    fun `Organisasjon til K9ArbeidstidInfo`() {
         val org = Organisasjon(
             organisasjonsnummer = "",
             navn = "",
@@ -120,6 +115,8 @@ class K9FormatTest {
             skalJobbeProsent = 50.0
         )
 
+        val k9ArbeidstidInfo = org.tilK9ArbeidstidInfo(periode)
+
         val forventetNormaltimerPerDag = org.jobberNormaltTimer.tilTimerPerDag().toLong()
         val forventetFaktiskArbeidstimerPerDag = org.jobberNormaltTimer.tilFaktiskTimerPerUke(org.skalJobbeProsent).tilTimerPerDag().toLong()
 
@@ -127,13 +124,43 @@ class K9FormatTest {
             //language=json
             """
             {
-              "jobberNormaltTimerPerDag": "${Duration.ofHours(forventetNormaltimerPerDag)}",
-              "perioder": {
-                "2020-01-01/2020-01-31": {
-                  "faktiskArbeidTimerPerDag": "${Duration.ofHours(forventetFaktiskArbeidstimerPerDag)}"
+              "jobberNormaltTimerPerDag" : "${Duration.ofHours(forventetNormaltimerPerDag)}",
+              "perioder" : {
+                "2020-01-01/2020-01-31" : {
+                  "faktiskArbeidTimerPerDag" : "${Duration.ofHours(forventetFaktiskArbeidstimerPerDag)}"
                 }
               }
             }
         """.trimIndent()
+
+        assertEquals(forventetJson, JsonUtils.toString(k9ArbeidstidInfo))
     }
+
+    @Test
+    fun `FerieuttakIPerioden tilK9LovbestemtFerie`(){
+        val ferieuttakIPerioden = FerieuttakIPerioden(
+            skalTaUtFerieIPerioden = true,
+            ferieuttak = listOf(
+                Ferieuttak(
+                    fraOgMed = LocalDate.parse("2020-01-01"),
+                    tilOgMed = LocalDate.parse("2020-01-31"),
+                ),
+                Ferieuttak(
+                    fraOgMed = LocalDate.parse("2020-02-01"),
+                    tilOgMed = LocalDate.parse("2020-02-11"),
+                )
+            )
+        )
+
+        val k9LovbestemtFerie = ferieuttakIPerioden.tilK9LovbestemtFerie()
+
+        val forventetJson = """ 
+            {
+              "perioder" : [ "2020-01-01/2020-01-31", "2020-02-01/2020-02-11" ]
+            }
+        """.trimIndent()
+
+        assertEquals(forventetJson, JsonUtils.toString(k9LovbestemtFerie))
+    }
+
 }
