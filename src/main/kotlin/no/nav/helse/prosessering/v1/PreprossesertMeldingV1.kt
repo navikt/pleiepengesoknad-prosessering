@@ -73,6 +73,6 @@ data class PreprossesertMeldingV1(
         skalBekrefteOmsorg = melding.skalBekrefteOmsorg,
         beskrivelseOmsorgsrollen = melding.beskrivelseOmsorgsrollen,
         samtidigHjemme = melding.samtidigHjemme,
-        k9FormatSøknad = k9FormatSøknad
+        k9FormatSøknad = melding.k9FormatSøknad ?: k9FormatSøknad
     )
 }
