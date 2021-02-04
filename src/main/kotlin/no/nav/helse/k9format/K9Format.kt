@@ -2,13 +2,30 @@
 
 package no.nav.helse.k9format
 
-import no.nav.helse.felles.*
+import no.nav.helse.felles.Arbeidsgivere
+import no.nav.helse.felles.Beredskap
+import no.nav.helse.felles.FerieuttakIPerioden
+import no.nav.helse.felles.Frilans
+import no.nav.helse.felles.Medlemskap
+import no.nav.helse.felles.Nattevåk
+import no.nav.helse.felles.Næringstyper
+import no.nav.helse.felles.Organisasjon
+import no.nav.helse.felles.Tilsynsordning
+import no.nav.helse.felles.UtenlandsoppholdIPerioden
+import no.nav.helse.felles.Virksomhet
+import no.nav.helse.felles.Årsak
 import no.nav.helse.prosessering.v1.MeldingV1
 import no.nav.helse.prosessering.v1.PreprossesertMeldingV1
+import no.nav.helse.prosessering.v1.snittTilsynsTimerPerDag
 import no.nav.k9.søknad.Søknad
 import no.nav.k9.søknad.felles.LovbestemtFerie
 import no.nav.k9.søknad.felles.Versjon
-import no.nav.k9.søknad.felles.aktivitet.*
+import no.nav.k9.søknad.felles.aktivitet.ArbeidAktivitet
+import no.nav.k9.søknad.felles.aktivitet.Arbeidstaker
+import no.nav.k9.søknad.felles.aktivitet.Frilanser
+import no.nav.k9.søknad.felles.aktivitet.Organisasjonsnummer
+import no.nav.k9.søknad.felles.aktivitet.SelvstendigNæringsdrivende
+import no.nav.k9.søknad.felles.aktivitet.VirksomhetType
 import no.nav.k9.søknad.felles.personopplysninger.Barn
 import no.nav.k9.søknad.felles.personopplysninger.Bosteder
 import no.nav.k9.søknad.felles.personopplysninger.Søker
@@ -230,34 +247,17 @@ fun Nattevåk.tilK9Nattevåk(periode: Periode): no.nav.k9.søknad.ytelse.psb.v1.
     return no.nav.k9.søknad.ytelse.psb.v1.Nattevåk(perioder)
 }
 
-private fun Tilsynsordning.tilK9Tilsynsordning(
+fun Tilsynsordning.tilK9Tilsynsordning(
     periode: Periode
-): no.nav.k9.søknad.ytelse.psb.v1.tilsyn.Tilsynsordning {
-    val perioder = mutableMapOf<Periode, TilsynPeriodeInfo>()
-
-    // TODO: 03/02/2021 Bør sees på engang til før prodsetting. K9-sak behandler ikke dette enda.
-    when (svar) {
-        "ja" -> {
-            val snittTilsynTimerPerDag = listOf(
-                ja!!.mandag?.toHours() ?: 0,
-                ja.tirsdag?.toHours() ?: 0,
-                ja.onsdag?.toHours() ?: 0,
-                ja.torsdag?.toHours() ?: 0,
-                ja.fredag?.toHours() ?: 0
-            ).sum().div(5)
-
-            perioder[periode] = TilsynPeriodeInfo(
-                Duration.ofHours(snittTilsynTimerPerDag)
+): no.nav.k9.søknad.ytelse.psb.v1.tilsyn.Tilsynsordning = when (svar) {
+    "ja" -> no.nav.k9.søknad.ytelse.psb.v1.tilsyn.Tilsynsordning(mutableMapOf(periode to TilsynPeriodeInfo(ja!!.snittTilsynsTimerPerDag())))
+    else -> no.nav.k9.søknad.ytelse.psb.v1.tilsyn.Tilsynsordning(
+        mutableMapOf(
+            periode to TilsynPeriodeInfo(
+                Duration.ZERO
             )
-        }
-        "nei", "vetIkke" -> {
-            perioder[periode] = TilsynPeriodeInfo(
-                Duration.ofHours(0)
-            )
-        }
-    }
-
-    return no.nav.k9.søknad.ytelse.psb.v1.tilsyn.Tilsynsordning(perioder)
+        )
+    )
 }
 
 fun FerieuttakIPerioden.tilK9LovbestemtFerie(): LovbestemtFerie? {
@@ -319,7 +319,7 @@ fun MeldingV1.byggSøknadInfo(): SøknadInfo = SøknadInfo(
     beskrivelseOmsorgsrollen,
     harForståttRettigheterOgPlikter,
     harBekreftetOpplysninger,
-    null, //TODO Dette skal fjernes i k9-format,
+    null,
     samtidigHjemme,
     harMedsøker,
     bekrefterPeriodeOver8Uker
@@ -384,18 +384,18 @@ fun List<Virksomhet>.tilK9ArbeidstidInfo(): ArbeidstidInfo {
     val perioder = mutableMapOf<Periode, ArbeidstidPeriodeInfo>()
 
     forEach { virksomhet ->
+        //TODO Er dette riktig å bruke periode fra virksomheten eller periode for søknadsperioden
         perioder[Periode(virksomhet.fraOgMed, virksomhet.tilOgMed)] =
-                //TODO Er dette riktig å bruke periode fra virksomheten eller periode for søknadsperioden
-            ArbeidstidPeriodeInfo(Duration.ofHours(4)) //TODO Mangler denne verdien
+            ArbeidstidPeriodeInfo(null) //TODO Mangler denne verdien i brukerdialog
     }
 
-    return ArbeidstidInfo(Duration.ofHours(7), perioder) //TODO Mangler denne verdien
+    return ArbeidstidInfo(null, perioder) //TODO Mangler denne verdien i brukerdialog
 }
 
 fun MeldingV1.byggK9Uttak(periode: Periode): Uttak {
     val perioder = mutableMapOf<Periode, UttakPeriodeInfo>()
 
-    perioder[periode] = UttakPeriodeInfo(Duration.ofHours(5)) //TODO Mangler info om dette
+    perioder[periode] = UttakPeriodeInfo(null) //TODO Mangler info om dette i brukerdialog
 
     return Uttak(perioder)
 }
@@ -403,7 +403,7 @@ fun MeldingV1.byggK9Uttak(periode: Periode): Uttak {
 fun PreprossesertMeldingV1.byggK9Uttak(periode: Periode): Uttak {
     val perioder = mutableMapOf<Periode, UttakPeriodeInfo>()
 
-    perioder[periode] = UttakPeriodeInfo(Duration.ofHours(5)) //TODO Mangler info om dette
+    perioder[periode] = UttakPeriodeInfo(null) //TODO Mangler info om dette i brukerdialog
 
     return Uttak(perioder)
 }

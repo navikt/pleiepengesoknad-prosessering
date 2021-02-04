@@ -1,12 +1,20 @@
 package no.nav.helse.k9format
 
-import no.nav.helse.felles.*
+import no.nav.helse.felles.Beredskap
+import no.nav.helse.felles.Bosted
+import no.nav.helse.felles.Ferieuttak
+import no.nav.helse.felles.FerieuttakIPerioden
+import no.nav.helse.felles.Medlemskap
+import no.nav.helse.felles.Nattevåk
+import no.nav.helse.felles.Organisasjon
+import no.nav.helse.felles.Tilsynsordning
+import no.nav.helse.felles.TilsynsordningJa
 import no.nav.k9.søknad.JsonUtils
 import no.nav.k9.søknad.felles.type.Periode
 import org.junit.Test
+import org.skyscreamer.jsonassert.JSONAssert
 import java.time.Duration
 import java.time.LocalDate
-import kotlin.test.assertEquals
 
 class K9FormatTest {
     companion object {
@@ -30,7 +38,7 @@ class K9FormatTest {
             }
         """.trimIndent()
 
-        assertEquals(forventetJson, JsonUtils.toString(nattevåkK9Format))
+        JSONAssert.assertEquals(forventetJson, JsonUtils.toString(nattevåkK9Format), true)
     }
 
     @Test
@@ -50,7 +58,7 @@ class K9FormatTest {
             }
         """.trimIndent()
 
-        assertEquals(forventetJson, JsonUtils.toString(beredskapK9Format))
+        JSONAssert.assertEquals(forventetJson, JsonUtils.toString(beredskapK9Format), true)
     }
 
     @Test
@@ -102,7 +110,7 @@ class K9FormatTest {
               }
             }
         """.trimIndent()
-        assertEquals(forventetJson, JsonUtils.toString(bostederK9Format))
+        JSONAssert.assertEquals(forventetJson, JsonUtils.toString(bostederK9Format), true)
     }
 
     @Test
@@ -118,7 +126,8 @@ class K9FormatTest {
         val k9ArbeidstidInfo = org.tilK9ArbeidstidInfo(periode)
 
         val forventetNormaltimerPerDag = org.jobberNormaltTimer.tilTimerPerDag().toLong()
-        val forventetFaktiskArbeidstimerPerDag = org.jobberNormaltTimer.tilFaktiskTimerPerUke(org.skalJobbeProsent).tilTimerPerDag().toLong()
+        val forventetFaktiskArbeidstimerPerDag =
+            org.jobberNormaltTimer.tilFaktiskTimerPerUke(org.skalJobbeProsent).tilTimerPerDag().toLong()
 
         val forventetJson =
             //language=json
@@ -133,11 +142,11 @@ class K9FormatTest {
             }
         """.trimIndent()
 
-        assertEquals(forventetJson, JsonUtils.toString(k9ArbeidstidInfo))
+        JSONAssert.assertEquals(forventetJson, JsonUtils.toString(k9ArbeidstidInfo), true)
     }
 
     @Test
-    fun `FerieuttakIPerioden tilK9LovbestemtFerie`(){
+    fun `FerieuttakIPerioden tilK9LovbestemtFerie`() {
         val ferieuttakIPerioden = FerieuttakIPerioden(
             skalTaUtFerieIPerioden = true,
             ferieuttak = listOf(
@@ -160,7 +169,35 @@ class K9FormatTest {
             }
         """.trimIndent()
 
-        assertEquals(forventetJson, JsonUtils.toString(k9LovbestemtFerie))
+        JSONAssert.assertEquals(forventetJson, JsonUtils.toString(k9LovbestemtFerie), true)
     }
 
+    @Test
+    fun `Tilsynsordning til k9Tilsynsordning`() {
+        val tilsynsordning = Tilsynsordning(
+            svar = "ja",
+            ja = TilsynsordningJa(
+                mandag = Duration.parse("PT7H30M"),
+                tirsdag = Duration.parse("PT4H30M"),
+                onsdag = Duration.parse("PT2H30M"),
+                torsdag = null,
+                fredag = Duration.parse("PT5H")
+            ),
+            vetIkke = null
+        ).tilK9Tilsynsordning(periode)
+
+        val forventetJson =
+            //language=json
+            """
+                {
+                  "perioder" : {
+                    "2020-01-01/2020-01-31" : {
+                      "etablertTilsynTimerPerDag" : "PT3H54M"
+                    }
+                  }
+                }
+            """.trimIndent()
+
+        JSONAssert.assertEquals(forventetJson, JsonUtils.toString(tilsynsordning), true)
+    }
 }
