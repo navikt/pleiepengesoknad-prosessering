@@ -346,13 +346,15 @@ fun Organisasjon.tilK9ArbeidstidInfo(periode: Periode): ArbeidstidInfo {
     val perioder = mutableMapOf<Periode, ArbeidstidPeriodeInfo>()
 
     val faktiskTimerPerUke = jobberNormaltTimer.tilFaktiskTimerPerUke(skalJobbeProsent)
-    val normalTimerPerDag = jobberNormaltTimer.tilTimerPerDag().toLong()
-    val faktiskArbeidstimerPerDag = faktiskTimerPerUke.tilTimerPerDag().toLong()
+    val normalTimerPerDag = jobberNormaltTimer.tilTimerPerDag().tilDuration()
+    val faktiskArbeidstimerPerDag = faktiskTimerPerUke.tilTimerPerDag().tilDuration()
 
-    perioder[periode] = ArbeidstidPeriodeInfo(Duration.ofHours(faktiskArbeidstimerPerDag))
+    perioder[periode] = ArbeidstidPeriodeInfo(faktiskArbeidstimerPerDag)
 
-    return ArbeidstidInfo(Duration.ofHours(normalTimerPerDag), perioder)
+    return ArbeidstidInfo(normalTimerPerDag, perioder)
 }
+
+fun Double.tilDuration() = Duration.ofMinutes((this*60).toLong())
 
 fun MeldingV1.byggK9Arbeidstid(): Arbeidstid {
     val frilanserArbeidstidInfo = frilans?.tilK9ArbeidstidInfo(Periode(fraOgMed, tilOgMed))

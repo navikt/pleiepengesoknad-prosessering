@@ -119,24 +119,24 @@ class K9FormatTest {
             organisasjonsnummer = "",
             navn = "",
             skalJobbe = "",
-            jobberNormaltTimer = 40.0,
+            jobberNormaltTimer = 35.5,
             skalJobbeProsent = 50.0
         )
 
         val k9ArbeidstidInfo = org.tilK9ArbeidstidInfo(periode)
 
-        val forventetNormaltimerPerDag = org.jobberNormaltTimer.tilTimerPerDag().toLong()
+        val forventetNormaltimerPerDag = org.jobberNormaltTimer.tilTimerPerDag().tilDuration()
         val forventetFaktiskArbeidstimerPerDag =
-            org.jobberNormaltTimer.tilFaktiskTimerPerUke(org.skalJobbeProsent).tilTimerPerDag().toLong()
+            org.jobberNormaltTimer.tilFaktiskTimerPerUke(org.skalJobbeProsent).tilTimerPerDag().tilDuration()
 
         val forventetJson =
             //language=json
             """
             {
-              "jobberNormaltTimerPerDag" : "${Duration.ofHours(forventetNormaltimerPerDag)}",
+              "jobberNormaltTimerPerDag" : "$forventetNormaltimerPerDag",
               "perioder" : {
                 "2020-01-01/2020-01-31" : {
-                  "faktiskArbeidTimerPerDag" : "${Duration.ofHours(forventetFaktiskArbeidstimerPerDag)}"
+                  "faktiskArbeidTimerPerDag" : "$forventetFaktiskArbeidstimerPerDag"
                 }
               }
             }
