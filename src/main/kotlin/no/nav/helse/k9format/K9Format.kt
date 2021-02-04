@@ -42,12 +42,12 @@ import no.nav.k9.søknad.ytelse.psb.v1.Nattevåk.NattevåkPeriodeInfo
 import no.nav.k9.søknad.ytelse.psb.v1.PleiepengerSyktBarn
 import no.nav.k9.søknad.ytelse.psb.v1.SøknadInfo
 import no.nav.k9.søknad.ytelse.psb.v1.Uttak
-import no.nav.k9.søknad.ytelse.psb.v1.UttakPeriodeInfo
 import no.nav.k9.søknad.ytelse.psb.v1.arbeidstid.Arbeidstid
 import no.nav.k9.søknad.ytelse.psb.v1.arbeidstid.ArbeidstidInfo
 import no.nav.k9.søknad.ytelse.psb.v1.arbeidstid.ArbeidstidPeriodeInfo
 import no.nav.k9.søknad.ytelse.psb.v1.tilsyn.TilsynPeriodeInfo
 import java.time.Duration
+import no.nav.k9.søknad.ytelse.psb.v1.Beredskap as K9Beredskap
 
 const val DAGER_PER_UKE = 5
 
@@ -103,64 +103,35 @@ fun PreprossesertMeldingV1.tilK9PleiepengesøknadSyktBarn(): Søknad {
     return søknad
 }
 
-fun no.nav.helse.felles.Barn.tilK9Barn(): Barn = Barn.builder()
-    .norskIdentitetsnummer(NorskIdentitetsnummer.of(this.fødselsnummer))
-    .fødselsdato(this.fødselsdato)
-    .build()
+fun no.nav.helse.felles.Barn.tilK9Barn(): Barn = Barn(NorskIdentitetsnummer.of(this.fødselsnummer), (this.fødselsdato))
 
-fun no.nav.helse.felles.PreprossesertBarn.tilK9Barn(): Barn = Barn.builder()
-    .norskIdentitetsnummer(NorskIdentitetsnummer.of(this.fødselsnummer))
-    .fødselsdato(this.fødselsdato)
-    .build()
+fun no.nav.helse.felles.PreprossesertBarn.tilK9Barn(): Barn =
+    Barn(NorskIdentitetsnummer.of(this.fødselsnummer), (this.fødselsdato))
 
-fun no.nav.helse.felles.Søker.tilK9Søker(): Søker = Søker.builder()
-    .norskIdentitetsnummer(NorskIdentitetsnummer.of(fødselsnummer))
-    .build()
+fun no.nav.helse.felles.Søker.tilK9Søker(): Søker = Søker(NorskIdentitetsnummer.of(fødselsnummer))
 
-fun no.nav.helse.felles.PreprossesertSøker.tilK9Søker(): Søker = Søker.builder()
-    .norskIdentitetsnummer(NorskIdentitetsnummer.of(fødselsnummer))
-    .build()
+fun no.nav.helse.felles.PreprossesertSøker.tilK9Søker(): Søker = Søker(NorskIdentitetsnummer.of(fødselsnummer))
 
-fun MeldingV1.byggK9ArbeidAktivitet(): ArbeidAktivitet {
-    val builder = ArbeidAktivitet.builder()
+fun MeldingV1.byggK9ArbeidAktivitet(): ArbeidAktivitet = ArbeidAktivitet(
+    arbeidsgivere.tilK9Arbeidstaker(søker.fødselsnummer, Periode(fraOgMed, tilOgMed)),
+    selvstendigVirksomheter.tilK9SelvstendigNæringsdrivende(),
+    frilans?.tilK9Frilanser()
+)
 
-    frilans?.let {
-        builder.frilanser(frilans.tilK9Frilanser())
-    }
+fun PreprossesertMeldingV1.byggK9ArbeidAktivitet(): ArbeidAktivitet = ArbeidAktivitet(
+    arbeidsgivere.tilK9Arbeidstaker(søker.fødselsnummer, Periode(fraOgMed, tilOgMed)),
+    selvstendigVirksomheter.tilK9SelvstendigNæringsdrivende(),
+    frilans?.tilK9Frilanser()
+)
 
-    builder.selvstendigNæringsdrivende(selvstendigVirksomheter.tilK9SelvstendigNæringsdrivende())
-    builder.arbeidstaker(arbeidsgivere.tilK9Arbeidstaker(søker.fødselsnummer, Periode(fraOgMed, tilOgMed)))
-
-    return builder.build()
-}
-
-fun PreprossesertMeldingV1.byggK9ArbeidAktivitet(): ArbeidAktivitet {
-    val builder = ArbeidAktivitet.builder()
-
-    frilans?.let {
-        builder.frilanser(frilans.tilK9Frilanser())
-    }
-
-    builder.selvstendigNæringsdrivende(selvstendigVirksomheter.tilK9SelvstendigNæringsdrivende())
-    builder.arbeidstaker(arbeidsgivere.tilK9Arbeidstaker(søker.fødselsnummer, Periode(fraOgMed, tilOgMed)))
-
-    return builder.build()
-}
-
-fun Frilans.tilK9Frilanser(): Frilanser = Frilanser.builder()
-    .jobberFortsattSomFrilans(this.jobberFortsattSomFrilans)
-    .startdato(this.startdato)
-    .build()
+fun Frilans.tilK9Frilanser(): Frilanser = Frilanser(startdato, jobberFortsattSomFrilans)
 
 fun List<Virksomhet>.tilK9SelvstendigNæringsdrivende(): List<SelvstendigNæringsdrivende> = map { virksomhet ->
-    SelvstendigNæringsdrivende.builder()
-        .organisasjonsnummer(Organisasjonsnummer.of(virksomhet.organisasjonsnummer))
-        .virksomhetNavn(virksomhet.navnPåVirksomheten)
-        .periode(
-            Periode(virksomhet.fraOgMed, virksomhet.tilOgMed),
-            virksomhet.tilK9SelvstendingNæringsdrivendeInfo()
-        )
-        .build()
+    SelvstendigNæringsdrivende(
+        mapOf(Periode(virksomhet.fraOgMed, virksomhet.tilOgMed) to virksomhet.tilK9SelvstendingNæringsdrivendeInfo()),
+        Organisasjonsnummer.of(virksomhet.organisasjonsnummer),
+        virksomhet.navnPåVirksomheten
+    )
 }
 
 fun Virksomhet.tilK9SelvstendingNæringsdrivendeInfo(): SelvstendigNæringsdrivende.SelvstendigNæringsdrivendePeriodeInfo {
@@ -229,15 +200,9 @@ private fun Arbeidsgivere.tilK9Arbeidstaker(
 
 fun Beredskap.tilK9Beredskap(
     periode: Periode
-): no.nav.k9.søknad.ytelse.psb.v1.Beredskap? {
-    if (!beredskap) return null
+): K9Beredskap? =
+    if (!beredskap) null else K9Beredskap(mapOf(periode to BeredskapPeriodeInfo(this.tilleggsinformasjon)))
 
-    val perioder = mutableMapOf<Periode, BeredskapPeriodeInfo>()
-
-    perioder[periode] = BeredskapPeriodeInfo(this.tilleggsinformasjon)
-
-    return no.nav.k9.søknad.ytelse.psb.v1.Beredskap(perioder)
-}
 
 fun Nattevåk.tilK9Nattevåk(periode: Periode): no.nav.k9.søknad.ytelse.psb.v1.Nattevåk? {
     if (!harNattevåk) return null
@@ -273,18 +238,14 @@ fun Medlemskap.tilK9Bosteder(): Bosteder? {
     val perioder = mutableMapOf<Periode, Bosteder.BostedPeriodeInfo>()
 
     utenlandsoppholdSiste12Mnd.forEach { bosted ->
-        perioder[Periode(bosted.fraOgMed, bosted.tilOgMed)] = Bosteder.BostedPeriodeInfo.builder()
-            .land(Landkode.of(bosted.landkode))
-            .build()
+        perioder[Periode(bosted.fraOgMed, bosted.tilOgMed)] = Bosteder.BostedPeriodeInfo(Landkode.of(bosted.landkode))
     }
 
     utenlandsoppholdNeste12Mnd.forEach { bosted ->
-        perioder[Periode(bosted.fraOgMed, bosted.tilOgMed)] = Bosteder.BostedPeriodeInfo.builder()
-            .land(Landkode.of(bosted.landkode))
-            .build()
+        perioder[Periode(bosted.fraOgMed, bosted.tilOgMed)] = Bosteder.BostedPeriodeInfo(Landkode.of(bosted.landkode))
     }
 
-    return Bosteder.builder().perioder(perioder).build()
+    return Bosteder(perioder)
 }
 
 private fun UtenlandsoppholdIPerioden.tilK9Utenlandsopphold(
@@ -307,7 +268,7 @@ private fun UtenlandsoppholdIPerioden.tilK9Utenlandsopphold(
             .build()
     }
 
-    return Utenlandsopphold.builder().perioder(perioder).build()
+    return Utenlandsopphold(perioder)
 }
 
 fun MeldingV1.byggSøknadInfo(): SøknadInfo = SøknadInfo(
@@ -349,7 +310,7 @@ fun Organisasjon.tilK9ArbeidstidInfo(periode: Periode): ArbeidstidInfo {
     return ArbeidstidInfo(normalTimerPerDag, perioder)
 }
 
-fun Double.tilDuration() = Duration.ofMinutes((this*60).toLong())
+fun Double.tilDuration() = Duration.ofMinutes((this * 60).toLong())
 
 fun MeldingV1.byggK9Arbeidstid(): Arbeidstid {
     val frilanserArbeidstidInfo = frilans?.tilK9ArbeidstidInfo(Periode(fraOgMed, tilOgMed))
