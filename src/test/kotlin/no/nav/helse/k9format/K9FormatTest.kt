@@ -4,19 +4,21 @@ import no.nav.helse.felles.Beredskap
 import no.nav.helse.felles.Bosted
 import no.nav.helse.felles.Medlemskap
 import no.nav.helse.felles.Nattevåk
+import no.nav.helse.felles.Organisasjon
 import no.nav.k9.søknad.JsonUtils
 import no.nav.k9.søknad.felles.type.Periode
 import org.junit.Test
+import java.time.Duration
 import java.time.LocalDate
 import kotlin.test.assertEquals
 
 class K9FormatTest {
-    companion object{
+    companion object {
         val periode = Periode(LocalDate.parse("2020-01-01"), LocalDate.parse("2020-01-31"))
     }
 
     @Test
-    fun `Bygge nattevåk til forventet K9Format`(){
+    fun `Bygge nattevåk til forventet K9Format`() {
         val nattevåk = Nattevåk(
             harNattevåk = true,
             tilleggsinformasjon = "Barnet sover ikke"
@@ -36,7 +38,7 @@ class K9FormatTest {
     }
 
     @Test
-    fun `Bygge beredskap til forventet K9Format`(){
+    fun `Bygge beredskap til forventet K9Format`() {
         val beredskap = Beredskap(
             beredskap = true,
             tilleggsinformasjon = "Må være beredt"
@@ -56,7 +58,7 @@ class K9FormatTest {
     }
 
     @Test
-    fun `Bygge Bosteder-K9 fra Medlemskap til forventet K9Format`(){
+    fun `Bygge Bosteder-K9 fra Medlemskap til forventet K9Format`() {
         val medlemskap = Medlemskap(
             harBoddIUtlandetSiste12Mnd = true,
             utenlandsoppholdSiste12Mnd = listOf(
@@ -108,4 +110,30 @@ class K9FormatTest {
         assertEquals(forventetJson, JsonUtils.toString(bostederK9Format))
     }
 
+    @Test
+    fun `Organisasjon til k9Arbeidsaktivitet`() {
+        val org = Organisasjon(
+            organisasjonsnummer = "",
+            navn = "",
+            skalJobbe = "",
+            jobberNormaltTimer = 40.0,
+            skalJobbeProsent = 50.0
+        )
+
+        val forventetNormaltimerPerDag = org.jobberNormaltTimer.tilTimerPerDag().toLong()
+        val forventetFaktiskArbeidstimerPerDag = org.jobberNormaltTimer.tilFaktiskTimerPerUke(org.skalJobbeProsent).tilTimerPerDag().toLong()
+
+        val forventetJson =
+            //language=json
+            """
+            {
+              "jobberNormaltTimerPerDag": "${Duration.ofHours(forventetNormaltimerPerDag)}",
+              "perioder": {
+                "2020-01-01/2020-01-31": {
+                  "faktiskArbeidTimerPerDag": "${Duration.ofHours(forventetFaktiskArbeidstimerPerDag)}"
+                }
+              }
+            }
+        """.trimIndent()
+    }
 }

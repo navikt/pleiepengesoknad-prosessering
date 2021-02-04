@@ -32,6 +32,8 @@ import no.nav.k9.søknad.ytelse.psb.v1.arbeidstid.ArbeidstidPeriodeInfo
 import no.nav.k9.søknad.ytelse.psb.v1.tilsyn.TilsynPeriodeInfo
 import java.time.Duration
 
+const val DAGER_PER_UKE = 5
+
 fun MeldingV1.tilK9PleiepengesøknadSyktBarn(): Søknad {
     val søknadsPeriode = Periode(fraOgMed, tilOgMed)
     val søknad = Søknad(
@@ -234,7 +236,7 @@ private fun Tilsynsordning.tilK9Tilsynsordning(
     val perioder = mutableMapOf<Periode, TilsynPeriodeInfo>()
 
     // TODO: 03/02/2021 Bør sees på engang til før prodsetting. K9-sak behandler ikke dette enda.
-    when(svar) {
+    when (svar) {
         "ja" -> {
             val snittTilsynTimerPerDag = listOf(
                 ja!!.mandag?.toHours() ?: 0,
@@ -335,13 +337,19 @@ fun PreprossesertMeldingV1.byggSøknadInfo(): SøknadInfo = SøknadInfo(
     bekrefterPeriodeOver8Uker
 )
 
+fun Double.tilFaktiskTimerPerUke(prosent: Double) = this.times(prosent.div(100))
+fun Double.tilTimerPerDag() = this.div(DAGER_PER_UKE)
+
 fun Organisasjon.tilK9ArbeidstidInfo(periode: Periode): ArbeidstidInfo {
     val perioder = mutableMapOf<Periode, ArbeidstidPeriodeInfo>()
 
-    perioder[periode] = ArbeidstidPeriodeInfo(
-        Duration.ofHours(6) //TODO Mangler denne verdien
-    )
-    return ArbeidstidInfo(Duration.ofHours(7), perioder) //TODO Mangler denne verdien
+    val faktiskTimerPerUke = jobberNormaltTimer.tilFaktiskTimerPerUke(skalJobbeProsent)
+    val normalTimerPerDag = jobberNormaltTimer.tilTimerPerDag().toLong()
+    val faktiskArbeidstimerPerDag = faktiskTimerPerUke.tilTimerPerDag().toLong()
+
+    perioder[periode] = ArbeidstidPeriodeInfo(Duration.ofHours(faktiskArbeidstimerPerDag))
+
+    return ArbeidstidInfo(Duration.ofHours(normalTimerPerDag), perioder)
 }
 
 fun MeldingV1.byggK9Arbeidstid(): Arbeidstid {
@@ -366,10 +374,10 @@ fun Frilans.tilK9ArbeidstidInfo(periode: Periode): ArbeidstidInfo {
     val perioder = mutableMapOf<Periode, ArbeidstidPeriodeInfo>()
 
     perioder[periode] = ArbeidstidPeriodeInfo(
-        Duration.ofHours(5) //TODO Mangler denne verdien
+        null //TODO Mangler denne verdien i brukerdialog
     )
 
-    return ArbeidstidInfo(Duration.ofHours(7), perioder) //TODO Mangler denne verdien
+    return ArbeidstidInfo(null, perioder) //TODO Mangler denne verdien i brukerdialog
 }
 
 fun List<Virksomhet>.tilK9ArbeidstidInfo(): ArbeidstidInfo {
