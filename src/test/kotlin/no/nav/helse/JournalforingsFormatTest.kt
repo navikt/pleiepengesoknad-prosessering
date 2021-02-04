@@ -52,7 +52,7 @@ class JournalforingsFormatTest {
                       "regnskapsførerNavn": "Regnskapsfører Svensen",
                       "regnskapsførerTlf": "+4799887766",
                       "erVarigEndring": true,
-                      "endringDato": "2020-10-03",
+                      "endringDato": "2020-01-01",
                       "endringBegrunnelse": "Grunnet Covid-19",
                       "bruttoInntekt": 5000000,
                       "erNyoppstartet": true,
@@ -65,7 +65,7 @@ class JournalforingsFormatTest {
                 },
                 {
                   "perioder": {
-                    "2016-02-03/2021-02-03": {
+                    "2015-01-01/2017-01-01": {
                       "virksomhetstyper": [
                         "FISKE"
                       ],

@@ -256,7 +256,7 @@ internal object SøknadUtils {
                                     .registrertIUtlandet(false)
                                     .bruttoInntekt(BigDecimal(5_000_000))
                                     .erVarigEndring(true)
-                                    .endringDato(LocalDate.now().minusMonths(4))
+                                    .endringDato(LocalDate.parse("2020-01-01"))
                                     .endringBegrunnelse("Grunnet Covid-19")
                                     .landkode(Landkode.NORGE)
                                     .regnskapsførerNavn("Regnskapsfører Svensen")
@@ -270,8 +270,8 @@ internal object SøknadUtils {
                         SelvstendigNæringsdrivende(
                             mapOf(
                                 K9Periode(
-                                    LocalDate.now().minusYears(5),
-                                    LocalDate.now()
+                                    LocalDate.parse("2015-01-01"),
+                                    LocalDate.parse("2017-01-01")
                                 ) to SelvstendigNæringsdrivende.SelvstendigNæringsdrivendePeriodeInfo.builder()
                                     .erNyoppstartet(false)
                                     .registrertIUtlandet(true)
