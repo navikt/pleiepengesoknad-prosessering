@@ -251,15 +251,9 @@ fun Nattevåk.tilK9Nattevåk(periode: Periode): no.nav.k9.søknad.ytelse.psb.v1.
 
 fun Tilsynsordning.tilK9Tilsynsordning(
     periode: Periode
-): no.nav.k9.søknad.ytelse.psb.v1.tilsyn.Tilsynsordning = when (svar) {
+): no.nav.k9.søknad.ytelse.psb.v1.tilsyn.Tilsynsordning? = when (svar) {
     "ja" -> no.nav.k9.søknad.ytelse.psb.v1.tilsyn.Tilsynsordning(mutableMapOf(periode to TilsynPeriodeInfo(ja!!.snittTilsynsTimerPerDag())))
-    else -> no.nav.k9.søknad.ytelse.psb.v1.tilsyn.Tilsynsordning(
-        mutableMapOf(
-            periode to TilsynPeriodeInfo(
-                Duration.ZERO
-            )
-        )
-    )
+    else -> null
 }
 
 fun FerieuttakIPerioden.tilK9LovbestemtFerie(): LovbestemtFerie? {
@@ -384,7 +378,8 @@ fun Frilans.tilK9ArbeidstidInfo(periode: Periode): ArbeidstidInfo {
     return ArbeidstidInfo(null, perioder) //TODO Mangler denne verdien i brukerdialog
 }
 
-fun List<Virksomhet>.tilK9ArbeidstidInfo(): ArbeidstidInfo {
+fun List<Virksomhet>.tilK9ArbeidstidInfo(): ArbeidstidInfo? {
+    if (isEmpty()) return null
     val perioder = mutableMapOf<Periode, ArbeidstidPeriodeInfo>()
 
     forEach { virksomhet ->
@@ -396,18 +391,20 @@ fun List<Virksomhet>.tilK9ArbeidstidInfo(): ArbeidstidInfo {
     return ArbeidstidInfo(null, perioder) //TODO Mangler denne verdien i brukerdialog
 }
 
-fun MeldingV1.byggK9Uttak(periode: Periode): Uttak {
-    val perioder = mutableMapOf<Periode, UttakPeriodeInfo>()
+fun MeldingV1.byggK9Uttak(periode: Periode): Uttak? {
+    return null
+    /*val perioder = mutableMapOf<Periode, UttakPeriodeInfo>()
 
     perioder[periode] = UttakPeriodeInfo(null) //TODO Mangler info om dette i brukerdialog
 
-    return Uttak(perioder)
+    return Uttak(perioder)*/
 }
 
-fun PreprossesertMeldingV1.byggK9Uttak(periode: Periode): Uttak {
-    val perioder = mutableMapOf<Periode, UttakPeriodeInfo>()
+fun PreprossesertMeldingV1.byggK9Uttak(periode: Periode): Uttak? {
+    return null
+    /*val perioder = mutableMapOf<Periode, UttakPeriodeInfo>()
 
     perioder[periode] = UttakPeriodeInfo(null) //TODO Mangler info om dette i brukerdialog
 
-    return Uttak(perioder)
+    return Uttak(perioder)*/
 }
