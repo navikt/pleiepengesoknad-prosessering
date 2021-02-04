@@ -220,7 +220,7 @@ internal object SøknadUtils {
 
     fun defaultK9FormatPSB(søknadId: UUID= UUID.randomUUID()) = Søknad(
         SøknadId.of(søknadId.toString()),
-        Versjon.of("2.0.0"),
+        Versjon.of("1.0"),
         ZonedDateTime.parse("2020-01-01T10:00:00Z"),
         K9Søker.builder()
             .norskIdentitetsnummer(NorskIdentitetsnummer.of("12345678910"))

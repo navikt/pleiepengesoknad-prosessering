@@ -51,11 +51,13 @@ import java.time.Duration
 
 const val DAGER_PER_UKE = 5
 
+private val k9FormatVersjon = Versjon.of("1.0")
+
 fun MeldingV1.tilK9PleiepengesøknadSyktBarn(): Søknad {
     val søknadsPeriode = Periode(fraOgMed, tilOgMed)
     val søknad = Søknad(
         SøknadId.of(søknadId),
-        Versjon.of("2.0"),
+        k9FormatVersjon,
         mottatt,
         søker.tilK9Søker(),
         PleiepengerSyktBarn(
@@ -80,7 +82,7 @@ fun PreprossesertMeldingV1.tilK9PleiepengesøknadSyktBarn(): Søknad {
     val søknadsPeriode = Periode(fraOgMed, tilOgMed)
     val søknad = Søknad(
         SøknadId.of(søknadId),
-        Versjon.of("2.0"),
+        k9FormatVersjon,
         mottatt,
         søker.tilK9Søker(),
         PleiepengerSyktBarn(

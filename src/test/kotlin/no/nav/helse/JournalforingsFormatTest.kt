@@ -17,7 +17,7 @@ class JournalforingsFormatTest {
             """
         {
           "søknadId": "$soknadId",
-          "versjon": "2.0.0",
+          "versjon": "1.0",
           "mottattDato": "2020-01-01T10:00:00.000Z",
           "søker": {
             "norskIdentitetsnummer": "12345678910"
