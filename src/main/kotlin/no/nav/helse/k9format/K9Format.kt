@@ -333,7 +333,7 @@ fun PreprossesertMeldingV1.byggSøknadInfo(): SøknadInfo = SøknadInfo(
     beskrivelseOmsorgsrollen,
     harForstattRettigheterOgPlikter,
     harBekreftetOpplysninger,
-    null, //TODO Dette skal fjernes i k9-format,
+    null,
     samtidigHjemme,
     harMedsøker,
     bekrefterPeriodeOver8Uker
