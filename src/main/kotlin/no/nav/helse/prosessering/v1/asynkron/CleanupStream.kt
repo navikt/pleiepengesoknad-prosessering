@@ -8,6 +8,7 @@ import no.nav.helse.kafka.KafkaConfig
 import no.nav.helse.kafka.ManagedKafkaStreams
 import no.nav.helse.kafka.ManagedStreamHealthy
 import no.nav.helse.kafka.ManagedStreamReady
+import no.nav.k9.søknad.JsonUtils
 import org.apache.kafka.streams.StreamsBuilder
 import org.apache.kafka.streams.Topology
 import org.apache.kafka.streams.kstream.Consumed
@@ -53,7 +54,9 @@ internal class CleanupStream(
                         )
                         logger.info("Dokumenter slettet.")
                         logger.info("Videresender journalført melding")
-                        entry.data.journalførtMelding
+                        val journalførtMelding = entry.data.journalførtMelding
+                        logger.info(JsonUtils.getObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(journalførtMelding))
+                        journalførtMelding
                     }
                 }
                 .to(tilJournalfort.name, Produced.with(tilJournalfort.keySerde, tilJournalfort.valueSerde))
