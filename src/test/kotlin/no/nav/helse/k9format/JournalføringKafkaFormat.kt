@@ -24,9 +24,10 @@ internal fun String.assertJournalførtFormat(printJournalført: Boolean = false)
 
     val rekonstruertSøknad = JsonUtils.fromString(søknad.toString(), Søknad::class.java)
 
-    JSONAssert.assertEquals(søknad.toString(), JsonUtils.getObjectMapper().writeValueAsString(rekonstruertSøknad), true)
+    val rekonstruertSøknadSomString = JsonUtils.toString(rekonstruertSøknad)
+    JSONAssert.assertEquals(søknad.toString(), rekonstruertSøknadSomString, true)
     if (printJournalført) {
-        logger.info(JsonUtils.getObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(rekonstruertSøknad))
+        logger.info(rekonstruertSøknadSomString)
     }
 
     return rekonstruertSøknad
