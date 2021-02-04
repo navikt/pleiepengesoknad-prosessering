@@ -1,6 +1,7 @@
 package no.nav.helse.prosessering.v1
 
 import no.nav.helse.felles.*
+import no.nav.k9.søknad.Søknad
 import java.net.URI
 import java.time.LocalDate
 import java.time.ZonedDateTime
@@ -32,5 +33,6 @@ data class MeldingV1 (
     val skalPassePaBarnetIHelePerioden: Boolean? = null, // TODO: Fjern optional når prodsatt.
     val beskrivelseOmsorgsrollen: String? = null, // TODO: Fjern optional når prodsatt.
     val barnRelasjon: BarnRelasjon? = null,
-    val barnRelasjonBeskrivelse: String? = null
+    val barnRelasjonBeskrivelse: String? = null,
+    val k9FormatSøknad: Søknad? = null
 )

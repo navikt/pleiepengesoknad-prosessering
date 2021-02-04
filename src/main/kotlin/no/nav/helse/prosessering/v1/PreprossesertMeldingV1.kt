@@ -35,7 +35,7 @@ data class PreprossesertMeldingV1(
     val samtidigHjemme: Boolean? = null,
     val harForstattRettigheterOgPlikter: Boolean,
     val harBekreftetOpplysninger: Boolean,
-    val k9FormatSøknad: Søknad? = null // TODO: 03/02/2021 Fjern nullable etter prodsetting.
+    val k9FormatSøknad: Søknad? = null
 ) {
     internal constructor(
         melding: MeldingV1,

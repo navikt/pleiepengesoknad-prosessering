@@ -69,7 +69,7 @@ internal class PreprosseseringV1Service(
 
         logger.trace("Mellomlagrer Oppsummerings-JSON")
 
-        val k9FormatSøknad = melding.tilK9PleiepengesøknadSyktBarn()
+        val k9FormatSøknad = melding.k9FormatSøknad?: melding.tilK9PleiepengesøknadSyktBarn()
         val soknadJsonUrl = dokumentService.lagreSoknadsMelding(
             k9FormatSøknad = k9FormatSøknad,
             aktoerId = sokerAktoerId,
