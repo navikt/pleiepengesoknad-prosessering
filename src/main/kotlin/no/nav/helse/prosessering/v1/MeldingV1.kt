@@ -42,7 +42,6 @@ enum class BarnRelasjon(val utskriftsvennlig: String) {
     MOR("Mor"),
     MEDMOR("Medmor"),
     FAR("Far"),
-    STEFORELDER("Steforelder"),
     FOSTERFORELDER("Fosterforelder"),
     ANNET("Annet")
 }
