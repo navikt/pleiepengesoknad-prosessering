@@ -46,14 +46,16 @@ class PdfV1GeneratorTest {
                         navn = "Arbeidsgiver 1",
                         skalJobbe = "ja",
                         skalJobbeProsent = 100.0,
-                        jobberNormaltTimer = 37.5
+                        jobberNormaltTimer = 37.5,
+                        arbeidsform = Arbeidsform.FAST
                     ),
                     Organisasjon(
                         organisasjonsnummer = "952352655",
                         navn = "Arbeidsgiver 2",
                         skalJobbe = "nei",
                         skalJobbeProsent = 0.0,
-                        jobberNormaltTimer = 37.5
+                        jobberNormaltTimer = 37.5,
+                        arbeidsform = Arbeidsform.VARIERENDE
                     ),
                     Organisasjon(
                         organisasjonsnummer = "952352655",
@@ -61,14 +63,16 @@ class PdfV1GeneratorTest {
                         skalJobbe = "vetIkke",
                         jobberNormaltTimer = 30.0,
                         skalJobbeProsent = 50.0,
-                        vetIkkeEkstrainfo = "Vondt i hode, skulker, kne og tå, kne og tå"
+                        vetIkkeEkstrainfo = "Vondt i hode, skulker, kne og tå, kne og tå",
+                        arbeidsform = Arbeidsform.FAST
                     ),
                     Organisasjon(
                         organisasjonsnummer = "952352655",
                         navn = "Arbeidsgiver 4",
                         skalJobbe = "redusert",
                         jobberNormaltTimer = 30.0,
-                        skalJobbeProsent = 50.0
+                        skalJobbeProsent = 50.0,
+                        arbeidsform = Arbeidsform.TURNUS
                     )
                 )
             ),
@@ -223,28 +227,32 @@ class PdfV1GeneratorTest {
                 navn = "NAV",
                 jobberNormaltTimer = 30.0,
                 skalJobbeProsent = 50.0,
-                skalJobbe = "redusert"
+                skalJobbe = "redusert",
+                arbeidsform = Arbeidsform.FAST
             ),
             Organisasjon(
                 organisasjonsnummer = "975124568",
                 navn = "Kiwi",
                 jobberNormaltTimer = 30.0,
                 skalJobbeProsent = 50.0,
-                skalJobbe = "redusert"
+                skalJobbe = "redusert",
+                arbeidsform = Arbeidsform.VARIERENDE
             ),
             Organisasjon(
                 organisasjonsnummer = "952352687",
                 navn = "Bjerkheim gård",
                 jobberNormaltTimer = 30.0,
                 skalJobbeProsent = 50.0,
-                skalJobbe = "redusert"
+                skalJobbe = "redusert",
+                arbeidsform = Arbeidsform.TURNUS
             ),
             Organisasjon(
                 organisasjonsnummer = "952352655",
                 navn = "Hopp i havet",
                 jobberNormaltTimer = 30.0,
                 skalJobbeProsent = 50.0,
-                skalJobbe = "redusert"
+                skalJobbe = "redusert",
+                arbeidsform = Arbeidsform.FAST
             )
         ),
         barn: Barn = Barn(

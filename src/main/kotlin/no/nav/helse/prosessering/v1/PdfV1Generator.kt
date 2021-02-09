@@ -247,7 +247,8 @@ private fun List<Organisasjon>.somMap() = map {
         "skal_jobbe_prosent" to skalJobbeProsent.formatertMedEnDesimal(),
         "inntektstap_prosent" to inntektstapProsent.formatertMedEnDesimal(),
         "jobber_normaltimer" to jobberNormaltimer,
-        "vet_ikke_ekstra_info" to vetIkkeEkstrainfo
+        "vet_ikke_ekstra_info" to vetIkkeEkstrainfo,
+        "arbeidsform" to it.arbeidsform?.utskriftsvennlig
     )
 }
 

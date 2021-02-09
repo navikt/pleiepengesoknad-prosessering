@@ -122,8 +122,15 @@ data class Organisasjon(
     val skalJobbe: String,
     val jobberNormaltTimer: Double,
     val skalJobbeProsent: Double,
-    val vetIkkeEkstrainfo: String? = null
+    val vetIkkeEkstrainfo: String? = null,
+    val arbeidsform: Arbeidsform? = null //TODO 09.02.2021 - Fjerner optional når prodsatt
 )
+
+enum class Arbeidsform(val utskriftsvennlig: String){
+    FAST("Fast antall timer per uke"),
+    TURNUS("Turnus"),
+    VARIERENDE("Deltid/varierende/tilkalling")
+}
 
 data class Medlemskap(
     val harBoddIUtlandetSiste12Mnd : Boolean,
