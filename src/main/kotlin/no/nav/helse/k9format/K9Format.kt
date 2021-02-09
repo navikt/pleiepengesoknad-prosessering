@@ -47,6 +47,7 @@ import no.nav.k9.søknad.ytelse.psb.v1.arbeidstid.ArbeidstidInfo
 import no.nav.k9.søknad.ytelse.psb.v1.arbeidstid.ArbeidstidPeriodeInfo
 import no.nav.k9.søknad.ytelse.psb.v1.tilsyn.TilsynPeriodeInfo
 import java.time.Duration
+import java.time.LocalDate
 import no.nav.k9.søknad.ytelse.psb.v1.Beredskap as K9Beredskap
 
 const val DAGER_PER_UKE = 5
@@ -149,9 +150,9 @@ fun Virksomhet.tilK9SelvstendingNæringsdrivendeInfo(): SelvstendigNæringsdrive
             .registrertIUtlandet(true)
     }
 
-    infoBuilder.erNyoppstartet(true) //TODO Må sjekke hva som er riktig her
-    yrkesaktivSisteTreFerdigliknedeÅrene?.let {
-        infoBuilder.erNyoppstartet(false)
+    when (erEldreEnn3År()) {
+        true -> infoBuilder.erNyoppstartet(false)
+        false -> infoBuilder.erNyoppstartet(true)
     }
 
     regnskapsfører?.let {
@@ -175,6 +176,9 @@ fun Virksomhet.tilK9SelvstendingNæringsdrivendeInfo(): SelvstendigNæringsdrive
 
     return infoBuilder.build()
 }
+
+private fun Virksomhet.erEldreEnn3År() =
+    fraOgMed.isBefore(LocalDate.now().minusYears(3)) || fraOgMed.isEqual(LocalDate.now().minusYears(3))
 
 private fun List<Næringstyper>.tilK9VirksomhetType(): List<VirksomhetType> = map {
     when (it) {

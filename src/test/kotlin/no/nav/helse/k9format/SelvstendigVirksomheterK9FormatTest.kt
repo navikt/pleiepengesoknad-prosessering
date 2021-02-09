@@ -54,7 +54,7 @@ class SelvstendigVirksomheterK9FormatTest {
                     "2021-01-01/2021-01-10" : {
                       "virksomhetstyper" : [ "ANNEN" ],
                       "erVarigEndring" : false,
-                      "erNyoppstartet" : false,
+                      "erNyoppstartet" : true,
                       "registrertIUtlandet" : false,
                       "landkode" : "NOR"
                     }
