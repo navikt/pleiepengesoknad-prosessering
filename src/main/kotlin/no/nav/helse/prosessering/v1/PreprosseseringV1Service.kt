@@ -13,6 +13,8 @@ import no.nav.helse.prosessering.Metadata
 import no.nav.helse.prosessering.SoknadId
 import no.nav.helse.tpsproxy.Ident
 import no.nav.helse.tpsproxy.TpsNavn
+import no.nav.k9.søknad.JsonUtils
+import no.nav.k9.søknad.Søknad
 import org.slf4j.LoggerFactory
 
 internal class PreprosseseringV1Service(
@@ -69,7 +71,14 @@ internal class PreprosseseringV1Service(
 
         logger.trace("Mellomlagrer Oppsummerings-JSON")
 
-        val k9FormatSøknad = melding.k9FormatSøknad?: melding.tilK9PleiepengesøknadSyktBarn()
+        val k9FormatSøknad: Søknad = melding.k9FormatSøknad?.let {
+            logger.info("Bruker k9Format fra api: {}", JsonUtils.toString(it)) // TODO: 09/02/2021 fjern før prodsetting
+            it
+        } ?: melding.tilK9PleiepengesøknadSyktBarn().let {
+            logger.info("Mapper om k9Format fra melding: {}", JsonUtils.toString(it)) // TODO: 09/02/2021 fjern før prodsetting
+            it
+        }
+
         val soknadJsonUrl = dokumentService.lagreSoknadsMelding(
             k9FormatSøknad = k9FormatSøknad,
             aktoerId = sokerAktoerId,
