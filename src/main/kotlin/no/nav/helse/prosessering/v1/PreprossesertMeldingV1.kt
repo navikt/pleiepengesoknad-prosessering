@@ -29,7 +29,8 @@ data class PreprossesertMeldingV1(
     val barnRelasjon: BarnRelasjon? = null,
     val barnRelasjonBeskrivelse: String? = null,
     val harForstattRettigheterOgPlikter: Boolean,
-    val harBekreftetOpplysninger: Boolean
+    val harBekreftetOpplysninger: Boolean,
+    val harVærtEllerErVernepliktig: Boolean? = null
 ) {
     internal constructor(
         melding: MeldingV1,
@@ -62,7 +63,8 @@ data class PreprossesertMeldingV1(
         utenlandsoppholdIPerioden = melding.utenlandsoppholdIPerioden,
         ferieuttakIPerioden = melding.ferieuttakIPerioden,
         barnRelasjon = melding.barnRelasjon,
-        barnRelasjonBeskrivelse = melding.barnRelasjonBeskrivelse
+        barnRelasjonBeskrivelse = melding.barnRelasjonBeskrivelse,
+        harVærtEllerErVernepliktig = melding.harVærtEllerErVernepliktig
     )
 }
 

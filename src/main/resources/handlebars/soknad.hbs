@@ -15,6 +15,7 @@
         <bookmark name="Utenlandsopphold" href="#utenlandsopphold" />
         <bookmark name="Arbeidsforhold" href="#arbeidsforhold" />
         <bookmark name="Omsorgstilbud" href="#omsorgstilbud" />
+        <bookmark name="Verneplikt" href="#verneplikt" />
         <bookmark name="Nattevåk" href="#nattevaak" />
         <bookmark name="Beredskap" href="#beredskap" />
         <bookmark name="Frilans" href="#frilans" />
@@ -320,6 +321,14 @@
                     </div>
                 {{/if}}
             {{/eq}}
+        {{/if}}
+    </section>
+
+    <section id="verneplikt">
+        {{# if harVærtEllerErVernepliktig }}
+            <h2>Verneplikt</h2>
+            <p class="sporsmalstekst">Utøvde du verneplikt på tidspunktet du søker pleiepenger fra??</p>
+            <p>{{ jaNeiSvar harVærtEllerErVernepliktig }}</p>
         {{/if}}
     </section>
 

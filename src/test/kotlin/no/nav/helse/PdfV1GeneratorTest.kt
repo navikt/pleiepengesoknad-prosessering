@@ -209,7 +209,8 @@ class PdfV1GeneratorTest {
             bekrefterPeriodeOver8Uker = true,
             skalBekrefteOmsorg = true,
             skalPassePaBarnetIHelePerioden = true,
-            beskrivelseOmsorgsrollen = "Jeg er far og skal passe på barnet i hele perioden."
+            beskrivelseOmsorgsrollen = "Jeg er far og skal passe på barnet i hele perioden.",
+            harVærtEllerErVernepliktig = true
         )
     }
 

@@ -106,7 +106,8 @@ class JournalforingsFormatTest {
           "skalPassePaBarnetIHelePerioden": true,
           "beskrivelseOmsorgsrollen": "En kort beskrivelse",
           "barnRelasjon" : "FAR",
-          "barnRelasjonBeskrivelse" : null
+          "barnRelasjonBeskrivelse" : null,
+          "harVærtEllerErVernepliktig" : true
         }
         """.trimIndent(), String(json), true)
 
@@ -178,6 +179,7 @@ class JournalforingsFormatTest {
         skalBekrefteOmsorg = true,
         skalPassePaBarnetIHelePerioden = true,
         beskrivelseOmsorgsrollen = "En kort beskrivelse",
-        barnRelasjon = BarnRelasjon.FAR
+        barnRelasjon = BarnRelasjon.FAR,
+        harVærtEllerErVernepliktig = true
     )
 }

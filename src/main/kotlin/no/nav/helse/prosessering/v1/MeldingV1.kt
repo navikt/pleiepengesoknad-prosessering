@@ -35,7 +35,8 @@ data class MeldingV1 (
     val skalPassePaBarnetIHelePerioden: Boolean? = null, // TODO: Fjern optional når prodsatt.
     val beskrivelseOmsorgsrollen: String? = null, // TODO: Fjern optional når prodsatt.
     val barnRelasjon: BarnRelasjon? = null,
-    val barnRelasjonBeskrivelse: String? = null
+    val barnRelasjonBeskrivelse: String? = null,
+    val harVærtEllerErVernepliktig: Boolean? = null //TODO 09.02.2021 - Fjerne nullable når prodsatt
 )
 
 enum class BarnRelasjon(val utskriftsvennlig: String) {
