@@ -398,7 +398,7 @@ class PdfV1GeneratorTest {
         ),
         frilans = frilans,
         selvstendigVirksomheter = selvstendigVirksomheter,
-        barnRelasjon = BarnRelasjon.ANNET,
+        barnRelasjon = BarnRelasjon.FAR,
         barnRelasjonBeskrivelse = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec iaculis tempus molestie"
     )
 

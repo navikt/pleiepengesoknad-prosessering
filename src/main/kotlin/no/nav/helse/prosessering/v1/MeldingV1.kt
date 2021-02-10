@@ -40,10 +40,10 @@ data class MeldingV1 (
 )
 
 enum class BarnRelasjon(val utskriftsvennlig: String) {
-    MOR("Mor"),
-    MEDMOR("Medmor"),
-    FAR("Far"),
-    FOSTERFORELDER("Fosterforelder"),
+    MOR("Du er mor til barnet"),
+    MEDMOR("Du er medmor til barnet"),
+    FAR("Du er far til barnet"),
+    FOSTERFORELDER("Du er fosterforelder til barnet"),
     ANNET("Annet")
 }
 
