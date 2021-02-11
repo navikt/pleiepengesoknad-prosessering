@@ -1,5 +1,6 @@
 package no.nav.helse.k9format
 
+import no.nav.helse.SøknadUtils
 import no.nav.helse.felles.Beredskap
 import no.nav.helse.felles.Bosted
 import no.nav.helse.felles.Ferieuttak
@@ -15,6 +16,9 @@ import org.junit.Test
 import org.skyscreamer.jsonassert.JSONAssert
 import java.time.Duration
 import java.time.LocalDate
+import java.time.ZoneId
+import java.time.ZonedDateTime
+import java.util.*
 
 class K9FormatTest {
     companion object {
@@ -192,12 +196,229 @@ class K9FormatTest {
                 {
                   "perioder" : {
                     "2020-01-01/2020-01-31" : {
-                      "etablertTilsynTimerPerDag" : "PT3H54M"
+                      "etablertTilsynTimerPerDag" : "PT3H54M" 
                     }
                   }
                 }
             """.trimIndent()
 
         JSONAssert.assertEquals(forventetJson, JsonUtils.toString(tilsynsordning), true)
+    }
+
+    @Test
+    fun `Full MeldingV1 blir til forventet K9Format`(){
+        val søknadId = UUID.randomUUID().toString()
+        val mottatt = ZonedDateTime.of(2020, 1, 2, 3, 4, 5, 6, ZoneId.of("UTC"))
+
+        val meldingV1 = SøknadUtils.defaultSøknad.copy(søknadId = søknadId, mottatt = mottatt)
+        val k9Format = meldingV1.tilK9PleiepengesøknadSyktBarn()
+
+        val forventetK9Format = """
+            {
+              "søknadId" : "$søknadId",
+              "versjon" : "1.0.0",
+              "mottattDato" : "2020-01-02T03:04:05.000Z",
+              "søker" : {
+                "norskIdentitetsnummer" : "02119970078"
+              },
+              "språk" : "nb",
+              "ytelse" : {
+                "type" : "PLEIEPENGER_SYKT_BARN",
+                "søknadsperiode" : "2021-02-11/2021-02-18",
+                "dataBruktTilUtledning" : {
+                  "harForståttRettigheterOgPlikter" : true,
+                  "harBekreftetOpplysninger" : true,
+                  "samtidigHjemme" : null,
+                  "harMedsøker" : true,
+                  "bekrefterPeriodeOver8Uker" : null
+                },
+                "barn" : {
+                  "norskIdentitetsnummer" : "19066672169",
+                  "fødselsdato" : "2011-02-11"
+                },
+                "arbeidAktivitet" : {
+                  "arbeidstaker" : [ {
+                    "norskIdentitetsnummer" : "02119970078",
+                    "organisasjonsnummer" : "917755736",
+                    "arbeidstidInfo" : {
+                      "jobberNormaltTimerPerDag" : "PT48M",
+                      "perioder" : {
+                        "2021-02-11/2021-02-18" : {
+                          "faktiskArbeidTimerPerDag" : "PT24M"
+                        }
+                      }
+                    }
+                  }, {
+                    "norskIdentitetsnummer" : "02119970078",
+                    "organisasjonsnummer" : "917755734",
+                    "arbeidstidInfo" : {
+                      "jobberNormaltTimerPerDag" : "PT8H",
+                      "perioder" : {
+                        "2021-02-11/2021-02-18" : {
+                          "faktiskArbeidTimerPerDag" : "PT3H12M"
+                        }
+                      }
+                    }
+                  }, {
+                    "norskIdentitetsnummer" : "02119970078",
+                    "organisasjonsnummer" : "917755734",
+                    "arbeidstidInfo" : {
+                      "jobberNormaltTimerPerDag" : "PT1H36M",
+                      "perioder" : {
+                        "2021-02-11/2021-02-18" : {
+                          "faktiskArbeidTimerPerDag" : "PT0S"
+                        }
+                      }
+                    }
+                  }, {
+                    "norskIdentitetsnummer" : "02119970078",
+                    "organisasjonsnummer" : "917755734",
+                    "arbeidstidInfo" : {
+                      "jobberNormaltTimerPerDag" : "PT8H",
+                      "perioder" : {
+                        "2021-02-11/2021-02-18" : {
+                          "faktiskArbeidTimerPerDag" : "PT3H12M"
+                        }
+                      }
+                    }
+                  } ],
+                  "selvstendigNæringsdrivende" : [ {
+                    "perioder" : {
+                      "2021-01-01/2021-01-10" : {
+                        "virksomhetstyper" : [ "ANNEN" ],
+                        "erVarigEndring" : false,
+                        "erNyoppstartet" : true,
+                        "registrertIUtlandet" : false,
+                        "landkode" : "NOR"
+                      }
+                    },
+                    "organisasjonsnummer" : "111111",
+                    "virksomhetNavn" : "Kjells Møbelsnekkeri"
+                  }, {
+                    "perioder" : {
+                      "2020-01-01/.." : {
+                        "virksomhetstyper" : [ "JORDBRUK_SKOGBRUK" ],
+                        "regnskapsførerNavn" : "Bård",
+                        "regnskapsførerTlf" : "98989898",
+                        "erVarigEndring" : false,
+                        "bruttoInntekt" : 900000,
+                        "erNyoppstartet" : true,
+                        "registrertIUtlandet" : true,
+                        "landkode" : "DEU"
+                      }
+                    },
+                    "organisasjonsnummer" : "9999",
+                    "virksomhetNavn" : "Kjells Skogbruk"
+                  } ],
+                  "frilanser" : {
+                    "startdato" : "2018-02-11",
+                    "jobberFortsattSomFrilans" : true
+                  }
+                },
+                "beredskap" : {
+                  "perioder" : {
+                    "2021-02-11/2021-02-18" : {
+                      "tilleggsinformasjon" : "I Beredskap"
+                    }
+                  }
+                },
+                "nattevåk" : {
+                  "perioder" : {
+                    "2021-02-11/2021-02-18" : {
+                      "tilleggsinformasjon" : "Har Nattevåk"
+                    }
+                  }
+                },
+                "tilsynsordning" : {
+                  "perioder" : {
+                    "2021-02-11/2021-02-18" : {
+                      "etablertTilsynTimerPerDag" : "PT3H15M"
+                    }
+                  }
+                },
+                "arbeidstid" : {
+                  "arbeidstakerList" : [ {
+                    "norskIdentitetsnummer" : "02119970078",
+                    "organisasjonsnummer" : "917755736",
+                    "arbeidstidInfo" : {
+                      "jobberNormaltTimerPerDag" : "PT48M",
+                      "perioder" : {
+                        "2021-02-11/2021-02-18" : {
+                          "faktiskArbeidTimerPerDag" : "PT24M"
+                        }
+                      }
+                    }
+                  }, {
+                    "norskIdentitetsnummer" : "02119970078",
+                    "organisasjonsnummer" : "917755734",
+                    "arbeidstidInfo" : {
+                      "jobberNormaltTimerPerDag" : "PT8H",
+                      "perioder" : {
+                        "2021-02-11/2021-02-18" : {
+                          "faktiskArbeidTimerPerDag" : "PT3H12M"
+                        }
+                      }
+                    }
+                  }, {
+                    "norskIdentitetsnummer" : "02119970078",
+                    "organisasjonsnummer" : "917755734",
+                    "arbeidstidInfo" : {
+                      "jobberNormaltTimerPerDag" : "PT1H36M",
+                      "perioder" : {
+                        "2021-02-11/2021-02-18" : {
+                          "faktiskArbeidTimerPerDag" : "PT0S"
+                        }
+                      }
+                    }
+                  }, {
+                    "norskIdentitetsnummer" : "02119970078",
+                    "organisasjonsnummer" : "917755734",
+                    "arbeidstidInfo" : {
+                      "jobberNormaltTimerPerDag" : "PT8H",
+                      "perioder" : {
+                        "2021-02-11/2021-02-18" : {
+                          "faktiskArbeidTimerPerDag" : "PT3H12M"
+                        }
+                      }
+                    }
+                  } ],
+                  "frilanserArbeidstidInfo" : null,
+                  "selvstendigNæringsdrivendeArbeidstidInfo" : null
+                },
+                "uttak" : {
+                  "perioder" : {
+                    "2021-02-11/2021-02-18" : {
+                      "timerPleieAvBarnetPerDag" : "PT7H30M"
+                    }
+                  }
+                },
+                "omsorg" : {
+                  "relasjonTilBarnet" : "Forelder",
+                  "samtykketOmsorgForBarnet" : null,
+                  "beskrivelseAvOmsorgsrollen" : null
+                },
+                "lovbestemtFerie" : {
+                  "perioder" : [ "2020-01-07/2020-01-08", "2020-01-09/2020-01-10" ]
+                },
+                "bosteder" : {
+                  "perioder" : {
+                    "2020-01-02/2020-01-03" : {
+                      "land" : "US"
+                    }
+                  }
+                },
+                "utenlandsopphold" : {
+                  "perioder" : {
+                    "2021-02-11/2021-02-18" : {
+                      "land" : "BHS",
+                      "årsak" : null
+                    }
+                  }
+                }
+              }
+            }
+        """.trimIndent()
+
+        JSONAssert.assertEquals(forventetK9Format, JsonUtils.toString(k9Format), true)
     }
 }

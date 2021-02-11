@@ -14,7 +14,7 @@ import kotlin.test.Test
 class JournalforingsFormatTest {
 
     @Test
-    fun `Soknaden journalfoeres som JSON uten vedlegg`() {
+    fun `Søknaden journalfoeres som JSON uten vedlegg`() {
         val soknadId = UUID.randomUUID()
         val json = JournalforingsFormat.somJson(SøknadUtils.defaultK9FormatPSB(søknadId = soknadId))
         println(String(json))
@@ -23,7 +23,7 @@ class JournalforingsFormatTest {
             """
         {
           "søknadId": "$soknadId",
-          "versjon": "1.0",
+          "versjon": "1.0.0",
           "språk": "nb",
           "mottattDato": "2020-01-01T10:00:00.000Z",
           "søker": {
@@ -32,16 +32,12 @@ class JournalforingsFormatTest {
           "ytelse": {
             "type": "PLEIEPENGER_SYKT_BARN",
             "søknadsperiode": "2020-01-01/2020-01-10",
-            "søknadInfo": {
-              "relasjonTilBarnet": "Far",
-              "samtykketOmsorgForBarnet": true,
-              "beskrivelseAvOmsorgsrollen": "beskriver omsorgsrollen...",
-              "harForståttRettigheterOgPlikter": true,
-              "harBekreftetOpplysninger": true,
-              "flereOmsorgspersoner": true,
-              "samtidigHjemme": true,
-              "harMedsøker": true,
-              "bekrefterPeriodeOver8Uker": true
+            "dataBruktTilUtledning" : {
+              "harForståttRettigheterOgPlikter" : true,
+              "harBekreftetOpplysninger" : true,
+              "samtidigHjemme" : true,
+              "harMedsøker" : true,
+              "bekrefterPeriodeOver8Uker" : true
             },
             "barn": {
               "norskIdentitetsnummer": "10987654321",
@@ -152,6 +148,11 @@ class JournalforingsFormatTest {
                   "timerPleieAvBarnetPerDag": "PT2H"
                 }
               }
+            },
+            "omsorg" : {
+              "relasjonTilBarnet" : "Forelder",
+              "samtykketOmsorgForBarnet" : true,
+              "beskrivelseAvOmsorgsrollen" : "Blabla beskrivelse"
             },
             "lovbestemtFerie": {
               "perioder": [

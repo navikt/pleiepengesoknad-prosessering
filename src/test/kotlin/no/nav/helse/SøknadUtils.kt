@@ -17,12 +17,9 @@ import no.nav.k9.søknad.felles.personopplysninger.Utenlandsopphold.Utenlandsopp
 import no.nav.k9.søknad.felles.type.Landkode
 import no.nav.k9.søknad.felles.type.NorskIdentitetsnummer
 import no.nav.k9.søknad.felles.type.SøknadId
+import no.nav.k9.søknad.ytelse.psb.v1.*
 import no.nav.k9.søknad.ytelse.psb.v1.Beredskap.BeredskapPeriodeInfo
 import no.nav.k9.søknad.ytelse.psb.v1.Nattevåk.NattevåkPeriodeInfo
-import no.nav.k9.søknad.ytelse.psb.v1.PleiepengerSyktBarn
-import no.nav.k9.søknad.ytelse.psb.v1.SøknadInfo
-import no.nav.k9.søknad.ytelse.psb.v1.Uttak
-import no.nav.k9.søknad.ytelse.psb.v1.UttakPeriodeInfo
 import no.nav.k9.søknad.ytelse.psb.v1.arbeidstid.Arbeidstid
 import no.nav.k9.søknad.ytelse.psb.v1.arbeidstid.ArbeidstidInfo
 import no.nav.k9.søknad.ytelse.psb.v1.arbeidstid.ArbeidstidPeriodeInfo
@@ -220,28 +217,14 @@ internal object SøknadUtils {
 
     fun defaultK9FormatPSB(søknadId: UUID= UUID.randomUUID()) = Søknad(
         SøknadId.of(søknadId.toString()),
-        Versjon.of("1.0"),
+        Versjon.of("1.0.0"),
         ZonedDateTime.parse("2020-01-01T10:00:00Z"),
-        K9Søker.builder()
-            .norskIdentitetsnummer(NorskIdentitetsnummer.of("12345678910"))
-            .build(),
+        K9Søker(NorskIdentitetsnummer.of("12345678910")),
         PleiepengerSyktBarn(
             K9Periode(LocalDate.parse("2020-01-01"), LocalDate.parse("2020-01-10")),
-            SøknadInfo(
-                "Far",
-                true,
-                "beskriver omsorgsrollen...",
-                true,
-                true,
-                true,
-                true,
-                true,
-                true
-            ),
-            K9Barn(
-                NorskIdentitetsnummer.of("10987654321"),
-                null
-            ),
+            DataBruktTilUtledning(
+                true, true, true, true, true),
+            K9Barn(NorskIdentitetsnummer.of("10987654321"), null),
             ArbeidAktivitet.builder()
                 .frilanser(Frilanser(LocalDate.parse("2020-01-01"), true))
                 .selvstendigNæringsdrivende(
@@ -361,6 +344,11 @@ internal object SøknadUtils {
                     ) to UttakPeriodeInfo(Duration.ofHours(2))
                 )
             ),
+            Omsorg(
+                "Forelder",
+                true,
+                "Blabla beskrivelse"
+            ),
             LovbestemtFerie(
                 listOf(
                     K9Periode(LocalDate.parse("2020-01-01"), LocalDate.parse("2020-01-05")),
@@ -372,15 +360,11 @@ internal object SøknadUtils {
                     K9Periode(
                         LocalDate.parse("2020-01-01"),
                         LocalDate.parse("2020-01-05")
-                    ) to Bosteder.BostedPeriodeInfo.builder()
-                        .land(Landkode.SPANIA)
-                        .build(),
+                    ) to Bosteder.BostedPeriodeInfo(Landkode.SPANIA),
                     K9Periode(
                         LocalDate.parse("2020-01-06"),
                         LocalDate.parse("2020-01-10")
-                    ) to Bosteder.BostedPeriodeInfo.builder()
-                        .land(Landkode.NORGE)
-                        .build()
+                    ) to Bosteder.BostedPeriodeInfo(Landkode.NORGE)
                 )
             ),
             K9Utenlandsopphold(
