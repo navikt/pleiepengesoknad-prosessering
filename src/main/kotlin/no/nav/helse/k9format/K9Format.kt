@@ -31,7 +31,6 @@ import no.nav.k9.søknad.felles.personopplysninger.Søker as K9Søker
 import no.nav.k9.søknad.ytelse.psb.v1.Beredskap as K9Beredskap
 
 const val DAGER_PER_UKE = 5
-
 private val k9FormatVersjon = Versjon.of("1.0.0")
 
 fun MeldingV1.tilK9PleiepengesøknadSyktBarn(): Søknad {
@@ -100,8 +99,7 @@ fun PreprossesertMeldingV1.byggK9Omsorg(): Omsorg = Omsorg(
 
 fun Barn.tilK9Barn(): K9Barn = K9Barn(NorskIdentitetsnummer.of(this.fødselsnummer), (this.fødselsdato))
 
-fun PreprossesertBarn.tilK9Barn(): K9Barn =
-    K9Barn(NorskIdentitetsnummer.of(this.fødselsnummer), (this.fødselsdato))
+fun PreprossesertBarn.tilK9Barn(): K9Barn = K9Barn(NorskIdentitetsnummer.of(this.fødselsnummer), (this.fødselsdato))
 
 fun Søker.tilK9Søker(): K9Søker = K9Søker(NorskIdentitetsnummer.of(fødselsnummer))
 
@@ -144,6 +142,7 @@ fun FerieuttakIPerioden.tilK9LovbestemtFerie(): LovbestemtFerie? {
 
 fun Medlemskap.tilK9Bosteder(): Bosteder? {
     if (!harBoddIUtlandetSiste12Mnd && !skalBoIUtlandetNeste12Mnd) return null
+
     val perioder = mutableMapOf<Periode, Bosteder.BostedPeriodeInfo>()
 
     utenlandsoppholdSiste12Mnd.forEach { bosted ->
