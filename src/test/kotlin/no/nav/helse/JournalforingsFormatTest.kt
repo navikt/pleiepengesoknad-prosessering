@@ -1,7 +1,13 @@
 package no.nav.helse
 
 import no.nav.helse.dokument.JournalforingsFormat
+import no.nav.helse.prosessering.v1.*
 import org.skyscreamer.jsonassert.JSONAssert
+import java.net.URI
+import java.time.Duration
+import java.time.LocalDate
+import java.time.ZoneId
+import java.time.ZonedDateTime
 import java.util.*
 import kotlin.test.Test
 

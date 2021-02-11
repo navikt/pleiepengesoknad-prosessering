@@ -1,7 +1,8 @@
 package no.nav.helse.prosessering.v1
 
-import no.nav.helse.felles.*
-import no.nav.k9.søknad.Søknad
+import com.fasterxml.jackson.annotation.JsonAlias
+import com.fasterxml.jackson.annotation.JsonFormat
+import com.fasterxml.jackson.annotation.JsonProperty
 import java.net.URI
 import java.time.LocalDate
 import java.time.ZonedDateTime
@@ -34,5 +35,6 @@ data class MeldingV1 (
     val beskrivelseOmsorgsrollen: String? = null, // TODO: Fjern optional når prodsatt.
     val barnRelasjon: BarnRelasjon? = null,
     val barnRelasjonBeskrivelse: String? = null,
+    val harVærtEllerErVernepliktig: Boolean? = null,
     val k9FormatSøknad: Søknad? = null
 )

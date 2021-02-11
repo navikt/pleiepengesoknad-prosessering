@@ -35,6 +35,7 @@ data class PreprossesertMeldingV1(
     val samtidigHjemme: Boolean? = null,
     val harForstattRettigheterOgPlikter: Boolean,
     val harBekreftetOpplysninger: Boolean,
+    val harVærtEllerErVernepliktig: Boolean? = null,
     val k9FormatSøknad: Søknad? = null
 ) {
     internal constructor(
@@ -73,6 +74,48 @@ data class PreprossesertMeldingV1(
         skalBekrefteOmsorg = melding.skalBekrefteOmsorg,
         beskrivelseOmsorgsrollen = melding.beskrivelseOmsorgsrollen,
         samtidigHjemme = melding.samtidigHjemme,
+        harVærtEllerErVernepliktig = melding.harVærtEllerErVernepliktig
         k9FormatSøknad = melding.k9FormatSøknad ?: k9FormatSøknad
     )
+}
+
+data class PreprossesertSøker(
+    val fødselsnummer: String,
+    val fornavn: String,
+    val mellomnavn: String?,
+    val etternavn: String,
+    val aktørId: String
+) {
+    internal constructor(soker: Søker, aktoerId: AktoerId) : this(
+        fødselsnummer = soker.fødselsnummer,
+        fornavn = soker.fornavn,
+        mellomnavn = soker.mellomnavn,
+        etternavn = soker.etternavn,
+        aktørId = aktoerId.id
+    )
+}
+
+data class PreprossesertBarn(
+    val fødselsnummer: String?,
+    val navn: String?,
+    val fødselsdato: LocalDate?,
+    val aktørId: String?
+) {
+
+    internal constructor(
+        barn: Barn,
+        barnetsNavn: String?,
+        barnetsNorskeIdent: NorskIdent?,
+        aktoerId: AktoerId?,
+        fødselsdato: LocalDate?
+    ) : this(
+        fødselsnummer = barn.fødselsnummer ?: barnetsNorskeIdent?.getValue(),
+        navn = barnetsNavn,
+        fødselsdato = fødselsdato,
+        aktørId = aktoerId?.id
+    )
+
+    override fun toString(): String {
+        return "PreprossesertBarn(navn=$navn, aktoerId=$aktørId, fodselsdato=$fødselsdato)"
+    }
 }

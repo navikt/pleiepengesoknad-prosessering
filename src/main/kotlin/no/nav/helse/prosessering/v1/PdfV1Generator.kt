@@ -160,7 +160,8 @@ internal class PdfV1Generator  {
                 "skal_passe_pa_barnet_i_hele_perioden" to melding.skalPassePaBarnetIHelePerioden,
                 "beskrivelse_omsorgsrollen" to melding.beskrivelseOmsorgsrollen,
                 "barnRelasjon" to melding.barnRelasjon?.utskriftsvennlig,
-                "barnRelasjonBeskrivelse" to melding.barnRelasjonBeskrivelse
+                "barnRelasjonBeskrivelse" to melding.barnRelasjonBeskrivelse,
+                "harVærtEllerErVernepliktig" to melding.harVærtEllerErVernepliktig
             ))
             .resolver(MapValueResolver.INSTANCE)
             .build()).let { html ->
@@ -249,7 +250,8 @@ private fun List<Organisasjon>.somMap() = map {
         "skal_jobbe_prosent" to skalJobbeProsent.formatertMedEnDesimal(),
         "inntektstap_prosent" to inntektstapProsent.formatertMedEnDesimal(),
         "jobber_normaltimer" to jobberNormaltimer,
-        "vet_ikke_ekstra_info" to vetIkkeEkstrainfo
+        "vet_ikke_ekstra_info" to vetIkkeEkstrainfo,
+        "arbeidsform" to it.arbeidsform?.utskriftsvennlig
     )
 }
 
