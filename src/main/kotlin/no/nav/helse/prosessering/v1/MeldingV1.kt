@@ -35,14 +35,15 @@ data class MeldingV1 (
     val skalPassePaBarnetIHelePerioden: Boolean? = null, // TODO: Fjern optional når prodsatt.
     val beskrivelseOmsorgsrollen: String? = null, // TODO: Fjern optional når prodsatt.
     val barnRelasjon: BarnRelasjon? = null,
-    val barnRelasjonBeskrivelse: String? = null
+    val barnRelasjonBeskrivelse: String? = null,
+    val harVærtEllerErVernepliktig: Boolean? = null //TODO 09.02.2021 - Fjerne nullable når prodsatt
 )
 
 enum class BarnRelasjon(val utskriftsvennlig: String) {
-    MOR("Mor"),
-    MEDMOR("Medmor"),
-    FAR("Far"),
-    FOSTERFORELDER("Fosterforelder"),
+    MOR("Du er mor til barnet"),
+    MEDMOR("Du er medmor til barnet"),
+    FAR("Du er far til barnet"),
+    FOSTERFORELDER("Du er fosterforelder til barnet"),
     ANNET("Annet")
 }
 
@@ -121,8 +122,15 @@ data class Organisasjon(
     val skalJobbe: String,
     val jobberNormaltTimer: Double,
     val skalJobbeProsent: Double,
-    val vetIkkeEkstrainfo: String? = null
+    val vetIkkeEkstrainfo: String? = null,
+    val arbeidsform: Arbeidsform? = null //TODO 09.02.2021 - Fjerner optional når prodsatt
 )
+
+enum class Arbeidsform(val utskriftsvennlig: String){
+    FAST("Fast antall timer per uke"),
+    TURNUS("Turnus"),
+    VARIERENDE("Deltid/varierende/tilkalling")
+}
 
 data class Medlemskap(
     val harBoddIUtlandetSiste12Mnd : Boolean,

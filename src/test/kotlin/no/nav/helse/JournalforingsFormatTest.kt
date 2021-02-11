@@ -48,6 +48,7 @@ class JournalforingsFormatTest {
                     "jobberNormaltTimer": 0.0,
                     "skalJobbeProsent": 0.0,
                     "vetIkkeEkstrainfo": null,
+                    "arbeidsform": "TURNUS"
                 },{
                     "organisasjonsnummer": "54321",
                     "navn": "Navn",
@@ -55,6 +56,7 @@ class JournalforingsFormatTest {
                     "skalJobbeProsent": 22.512,
                     "vetIkkeEkstrainfo": null,
                     "jobberNormaltTimer": 0.0,
+                    "arbeidsform": "FAST"
                 }]
             },
             "medlemskap": {
@@ -106,7 +108,8 @@ class JournalforingsFormatTest {
           "skalPassePaBarnetIHelePerioden": true,
           "beskrivelseOmsorgsrollen": "En kort beskrivelse",
           "barnRelasjon" : "FAR",
-          "barnRelasjonBeskrivelse" : null
+          "barnRelasjonBeskrivelse" : null,
+          "harVærtEllerErVernepliktig" : true
         }
         """.trimIndent(), String(json), true)
 
@@ -133,8 +136,24 @@ class JournalforingsFormatTest {
         bekrefterPeriodeOver8Uker = true,
         arbeidsgivere = Arbeidsgivere(
             organisasjoner = listOf(
-                Organisasjon("1212", "Nei", jobberNormaltTimer = 0.0, skalJobbeProsent = 0.0, vetIkkeEkstrainfo = null, skalJobbe = "nei"),
-                Organisasjon("54321", "Navn", skalJobbeProsent = 22.512, jobberNormaltTimer = 0.0, vetIkkeEkstrainfo = null, skalJobbe = "redusert")
+                Organisasjon(
+                    "1212",
+                    "Nei",
+                    jobberNormaltTimer = 0.0,
+                    skalJobbeProsent = 0.0,
+                    vetIkkeEkstrainfo = null,
+                    skalJobbe = "nei",
+                    arbeidsform = Arbeidsform.TURNUS
+                ),
+                Organisasjon(
+                    "54321",
+                    "Navn",
+                    skalJobbeProsent = 22.512,
+                    jobberNormaltTimer = 0.0,
+                    vetIkkeEkstrainfo = null,
+                    skalJobbe = "redusert",
+                    arbeidsform = Arbeidsform.FAST
+                )
             )
         ),
         vedleggUrls = listOf(
@@ -178,6 +197,7 @@ class JournalforingsFormatTest {
         skalBekrefteOmsorg = true,
         skalPassePaBarnetIHelePerioden = true,
         beskrivelseOmsorgsrollen = "En kort beskrivelse",
-        barnRelasjon = BarnRelasjon.FAR
+        barnRelasjon = BarnRelasjon.FAR,
+        harVærtEllerErVernepliktig = true
     )
 }
