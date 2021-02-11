@@ -3,6 +3,7 @@
 package no.nav.helse.k9format
 
 import no.nav.helse.felles.*
+import no.nav.helse.felles.Beredskap
 import no.nav.helse.felles.Nattevåk
 import no.nav.helse.prosessering.v1.MeldingV1
 import no.nav.helse.prosessering.v1.PreprossesertMeldingV1
@@ -10,12 +11,7 @@ import no.nav.helse.prosessering.v1.snittTilsynsTimerPerDag
 import no.nav.k9.søknad.Søknad
 import no.nav.k9.søknad.felles.LovbestemtFerie
 import no.nav.k9.søknad.felles.Versjon
-import no.nav.k9.søknad.felles.aktivitet.ArbeidAktivitet
-import no.nav.k9.søknad.felles.aktivitet.Arbeidstaker
 import no.nav.k9.søknad.felles.aktivitet.Frilanser
-import no.nav.k9.søknad.felles.aktivitet.Organisasjonsnummer
-import no.nav.k9.søknad.felles.aktivitet.SelvstendigNæringsdrivende
-import no.nav.k9.søknad.felles.aktivitet.VirksomhetType
 import no.nav.k9.søknad.felles.personopplysninger.Bosteder
 import no.nav.k9.søknad.felles.personopplysninger.Utenlandsopphold
 import no.nav.k9.søknad.felles.personopplysninger.Utenlandsopphold.UtenlandsoppholdPeriodeInfo
@@ -28,12 +24,8 @@ import no.nav.k9.søknad.felles.type.SøknadId
 import no.nav.k9.søknad.ytelse.psb.v1.*
 import no.nav.k9.søknad.ytelse.psb.v1.Beredskap.BeredskapPeriodeInfo
 import no.nav.k9.søknad.ytelse.psb.v1.Nattevåk.NattevåkPeriodeInfo
-import no.nav.k9.søknad.ytelse.psb.v1.arbeidstid.Arbeidstid
-import no.nav.k9.søknad.ytelse.psb.v1.arbeidstid.ArbeidstidInfo
-import no.nav.k9.søknad.ytelse.psb.v1.arbeidstid.ArbeidstidPeriodeInfo
 import no.nav.k9.søknad.ytelse.psb.v1.tilsyn.TilsynPeriodeInfo
 import java.time.Duration
-import java.time.LocalDate
 import no.nav.k9.søknad.felles.personopplysninger.Barn as K9Barn
 import no.nav.k9.søknad.felles.personopplysninger.Søker as K9Søker
 import no.nav.k9.søknad.ytelse.psb.v1.Beredskap as K9Beredskap
