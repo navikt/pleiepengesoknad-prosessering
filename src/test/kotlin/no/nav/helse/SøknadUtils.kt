@@ -47,8 +47,8 @@ internal object SøknadUtils {
         språk = "nb",
         søknadId = UUID.randomUUID().toString(),
         mottatt = ZonedDateTime.now(),
-        fraOgMed = LocalDate.now(),
-        tilOgMed = LocalDate.now().plusWeeks(1),
+        fraOgMed = LocalDate.parse("2021-01-01"),
+        tilOgMed = LocalDate.parse("2021-01-01"),
         søker = Søker(
             aktørId = "123456",
             fødselsnummer = "02119970078",
@@ -184,7 +184,7 @@ internal object SøknadUtils {
             )
         ),
         frilans = Frilans(
-            startdato = LocalDate.now().minusYears(3),
+            startdato = LocalDate.parse("2019-01-01"),
             jobberFortsattSomFrilans = true
         ),
         selvstendigVirksomheter = listOf(
