@@ -72,7 +72,7 @@ class PleiepengesoknadProsesseringTest {
 
         private val kafkaEnvironment = KafkaWrapper.bootstrap()
         private val kafkaTestConsumer = kafkaEnvironment.testConsumer()
-        private val journalførtConsumer = kafkaEnvironment.journalføringsKonsumer()
+        private val cleanupConsumer = kafkaEnvironment.cleanupConsumer()
         private val kafkaTestProducer = kafkaEnvironment.testProducer()
 
         // Se https://github.com/navikt/dusseldorf-ktor#f%C3%B8dselsnummer
@@ -123,7 +123,7 @@ class PleiepengesoknadProsesseringTest {
             wireMockServer.stop()
             kafkaTestConsumer.close()
             kafkaTestProducer.close()
-            journalførtConsumer.close()
+            cleanupConsumer.close()
             stopEngine()
             kafkaEnvironment.tearDown()
 
@@ -157,8 +157,8 @@ class PleiepengesoknadProsesseringTest {
         )
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
-        journalførtConsumer
-            .hentJournalførtMelding(melding.søknadId)
+        cleanupConsumer
+            .hentCleanupMelding(melding.søknadId)
             .assertJournalførtFormat()
     }
 
@@ -203,8 +203,8 @@ class PleiepengesoknadProsesseringTest {
         assertEquals(jobb1SkalJobbeProsent, jobb1.skalJobbeProsent)
         assertEquals(jobb2SkalJobberProsent, jobb2.skalJobbeProsent)
 
-        journalførtConsumer
-            .hentJournalførtMelding(melding.søknadId)
+        cleanupConsumer
+            .hentCleanupMelding(melding.søknadId)
             .assertJournalførtFormat()
     }
 
@@ -220,8 +220,8 @@ class PleiepengesoknadProsesseringTest {
 
         wireMockServer.stubJournalfor(201) // Simulerer journalføring fungerer igjen
         restartEngine()
-        journalførtConsumer
-            .hentJournalførtMelding(melding.søknadId)
+        cleanupConsumer
+            .hentCleanupMelding(melding.søknadId)
             .assertJournalførtFormat()
     }
 
@@ -241,9 +241,9 @@ class PleiepengesoknadProsesseringTest {
         val melding = SøknadUtils.defaultSøknad
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
-        journalførtConsumer
-            .hentJournalførtMelding(melding.søknadId)
-            .assertJournalførtFormat(true)
+        cleanupConsumer
+            .hentCleanupMelding(melding.søknadId)
+            .assertJournalførtFormat()
     }
 
     @Test
@@ -254,8 +254,8 @@ class PleiepengesoknadProsesseringTest {
         )
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
-        journalførtConsumer
-            .hentJournalførtMelding(melding.søknadId)
+        cleanupConsumer
+            .hentCleanupMelding(melding.søknadId)
             .assertJournalførtFormat()
     }
 
@@ -274,8 +274,8 @@ class PleiepengesoknadProsesseringTest {
         val preprosessertMelding: TopicEntry<PreprossesertMeldingV1> =
             kafkaTestConsumer.hentPreprosessertMelding(melding.søknadId)
         assertEquals("KLØKTIG BLUNKENDE SUPERKONSOLL", preprosessertMelding.data.barn.navn)
-        journalførtConsumer
-            .hentJournalførtMelding(melding.søknadId)
+        cleanupConsumer
+            .hentCleanupMelding(melding.søknadId)
             .assertJournalførtFormat()
     }
 
@@ -294,8 +294,8 @@ class PleiepengesoknadProsesseringTest {
         val preprosessertMelding: TopicEntry<PreprossesertMeldingV1> =
             kafkaTestConsumer.hentPreprosessertMelding(melding.søknadId)
         assertEquals("KLØKTIG SUPERKONSOLL", preprosessertMelding.data.barn.navn)
-        journalførtConsumer
-            .hentJournalførtMelding(melding.søknadId)
+        cleanupConsumer
+            .hentCleanupMelding(melding.søknadId)
             .assertJournalførtFormat()
     }
 
@@ -308,8 +308,8 @@ class PleiepengesoknadProsesseringTest {
         wireMockServer.stubAktoerRegisterGetAktoerIdNotFound(gyldigFodselsnummerC)
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
-        journalførtConsumer
-            .hentJournalførtMelding(melding.søknadId)
+        cleanupConsumer
+            .hentCleanupMelding(melding.søknadId)
             .assertJournalførtFormat()
     }
 
@@ -326,8 +326,8 @@ class PleiepengesoknadProsesseringTest {
         val preprosessertMelding: TopicEntry<PreprossesertMeldingV1> =
             kafkaTestConsumer.hentPreprosessertMelding(melding.søknadId)
         assertEquals("KLØKTIG BLUNKENDE SUPERKONSOLL", preprosessertMelding.data.barn.navn)
-        journalførtConsumer
-            .hentJournalførtMelding(melding.søknadId)
+        cleanupConsumer
+            .hentCleanupMelding(melding.søknadId)
             .assertJournalførtFormat()
     }
 
@@ -346,8 +346,8 @@ class PleiepengesoknadProsesseringTest {
         val preprosessertMelding: TopicEntry<PreprossesertMeldingV1> =
             kafkaTestConsumer.hentPreprosessertMelding(melding.søknadId)
         assertEquals("KLØKTIG BLUNKENDE SUPERKONSOLL", preprosessertMelding.data.barn.navn)
-        journalførtConsumer
-            .hentJournalførtMelding(melding.søknadId)
+        cleanupConsumer
+            .hentCleanupMelding(melding.søknadId)
             .assertJournalførtFormat()
     }
 
@@ -367,8 +367,8 @@ class PleiepengesoknadProsesseringTest {
         val preprosessertMelding: TopicEntry<PreprossesertMeldingV1> =
             kafkaTestConsumer.hentPreprosessertMelding(melding.søknadId)
         assertEquals(forventetFodselsNummer, preprosessertMelding.data.barn.fødselsnummer)
-        journalførtConsumer
-            .hentJournalførtMelding(melding.søknadId)
+        cleanupConsumer
+            .hentCleanupMelding(melding.søknadId)
             .assertJournalførtFormat()
     }
 
@@ -387,8 +387,8 @@ class PleiepengesoknadProsesseringTest {
         val preprosessertMelding: TopicEntry<PreprossesertMeldingV1> =
             kafkaTestConsumer.hentPreprosessertMelding(melding.søknadId)
         assertEquals(forventetFodselsNummer, preprosessertMelding.data.barn.fødselsnummer)
-        journalførtConsumer
-            .hentJournalførtMelding(melding.søknadId)
+        cleanupConsumer
+            .hentCleanupMelding(melding.søknadId)
             .assertJournalførtFormat()
     }
 
@@ -406,8 +406,8 @@ class PleiepengesoknadProsesseringTest {
         val preprosesssertMelding: TopicEntry<PreprossesertMeldingV1> =
             kafkaTestConsumer.hentPreprosessertMelding(melding.søknadId)
         assertEquals(LocalDate.now(), preprosesssertMelding.data.barn.fødselsdato)
-        journalførtConsumer
-            .hentJournalførtMelding(melding.søknadId)
+        cleanupConsumer
+            .hentCleanupMelding(melding.søknadId)
             .assertJournalførtFormat()
     }
 
@@ -559,8 +559,8 @@ class PleiepengesoknadProsesseringTest {
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
 
-        journalførtConsumer
-            .hentJournalførtMelding(melding.søknadId)
+        cleanupConsumer
+            .hentCleanupMelding(melding.søknadId)
             .assertJournalførtFormat()
     }
 
@@ -584,8 +584,8 @@ class PleiepengesoknadProsesseringTest {
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
 
-        journalførtConsumer
-            .hentJournalførtMelding(melding.søknadId)
+        cleanupConsumer
+            .hentCleanupMelding(melding.søknadId)
             .assertJournalførtFormat()
     }
 
@@ -602,8 +602,8 @@ class PleiepengesoknadProsesseringTest {
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
 
-        journalførtConsumer
-            .hentJournalførtMelding(melding.søknadId)
+        cleanupConsumer
+            .hentCleanupMelding(melding.søknadId)
             .assertJournalførtFormat()
     }
 
@@ -623,8 +623,8 @@ class PleiepengesoknadProsesseringTest {
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
 
-        journalførtConsumer
-            .hentJournalførtMelding(melding.søknadId)
+        cleanupConsumer
+            .hentCleanupMelding(melding.søknadId)
             .assertJournalførtFormat()
     }
 
@@ -643,8 +643,8 @@ class PleiepengesoknadProsesseringTest {
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
 
-        journalførtConsumer
-            .hentJournalførtMelding(melding.søknadId)
+        cleanupConsumer
+            .hentCleanupMelding(melding.søknadId)
             .assertJournalførtFormat()
     }
 
@@ -664,8 +664,8 @@ class PleiepengesoknadProsesseringTest {
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
 
-        journalførtConsumer
-            .hentJournalførtMelding(melding.søknadId)
+        cleanupConsumer
+            .hentCleanupMelding(melding.søknadId)
             .assertJournalførtFormat()
     }
 
@@ -678,8 +678,8 @@ class PleiepengesoknadProsesseringTest {
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
 
-        journalførtConsumer
-            .hentJournalførtMelding(melding.søknadId)
+        cleanupConsumer
+            .hentCleanupMelding(melding.søknadId)
             .assertJournalførtFormat()
     }
 

@@ -18,9 +18,9 @@ internal fun String.assertJournalførtFormat(printJournalført: Boolean = false)
     assertNotNull(metadata.getString("correlationId"))
 
     val data = assertNotNull(rawJson.getJSONObject("data"))
-    assertNotNull(data.getString("journalpostId"))
+    assertNotNull(data.getJSONObject("journalførtMelding").getString("journalpostId"))
 
-    val søknad = assertNotNull(data.getJSONObject("søknad"))
+    val søknad = assertNotNull(data.getJSONObject("melding")).getJSONObject("k9FormatSøknad")
 
     val rekonstruertSøknad = JsonUtils.fromString(søknad.toString(), Søknad::class.java)
 

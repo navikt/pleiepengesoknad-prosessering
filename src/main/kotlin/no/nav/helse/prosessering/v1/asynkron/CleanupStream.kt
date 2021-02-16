@@ -36,7 +36,6 @@ internal class CleanupStream(
         private fun topology(dokumentService: DokumentService): Topology {
             val builder = StreamsBuilder()
             val fraCleanup: Topic<TopicEntry<Cleanup>> = Topics.CLEANUP
-            val tilJournalfort: Topic<TopicEntry<Journalfort>> = Topics.JOURNALFORT
 
             builder
                 .stream<String, TopicEntry<Cleanup>>(
@@ -55,11 +54,10 @@ internal class CleanupStream(
                         logger.info("Dokumenter slettet.")
                         logger.info("Videresender journalført melding")
                         val journalførtMelding = entry.data.journalførtMelding
+                        // TODO: 16/02/2021 Må fjernes før prodsetting
                         logger.info(JsonUtils.getObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(journalførtMelding))
-                        journalførtMelding
                     }
                 }
-                .to(tilJournalfort.name, Produced.with(tilJournalfort.keySerde, tilJournalfort.valueSerde))
             return builder.build()
         }
     }
