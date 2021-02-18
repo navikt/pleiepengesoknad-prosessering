@@ -36,7 +36,7 @@ data class MeldingV1 (
     val beskrivelseOmsorgsrollen: String? = null, // TODO: Fjern optional når prodsatt.
     val barnRelasjon: BarnRelasjon? = null,
     val barnRelasjonBeskrivelse: String? = null,
-    val harVærtEllerErVernepliktig: Boolean? = null //TODO 09.02.2021 - Fjerne nullable når prodsatt
+    val harVærtEllerErVernepliktig: Boolean
 )
 
 enum class BarnRelasjon(val utskriftsvennlig: String) {
@@ -123,7 +123,7 @@ data class Organisasjon(
     val jobberNormaltTimer: Double,
     val skalJobbeProsent: Double,
     val vetIkkeEkstrainfo: String? = null,
-    val arbeidsform: Arbeidsform? = null //TODO 09.02.2021 - Fjerner optional når prodsatt
+    val arbeidsform: Arbeidsform
 )
 
 enum class Arbeidsform(val utskriftsvennlig: String){

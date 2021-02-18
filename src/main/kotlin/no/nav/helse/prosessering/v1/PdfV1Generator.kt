@@ -158,7 +158,6 @@ internal class PdfV1Generator  {
                 "beskrivelse_omsorgsrollen" to melding.beskrivelseOmsorgsrollen,
                 "barnRelasjon" to melding.barnRelasjon?.utskriftsvennlig,
                 "barnRelasjonBeskrivelse" to melding.barnRelasjonBeskrivelse,
-                "harVærtEllerErVernepliktigSatt" to (melding.harVærtEllerErVernepliktig != null), //TODO 11.02.2021 - Fjernes når feltet er prodsatt og påbudt
                 "harVærtEllerErVernepliktig" to melding.harVærtEllerErVernepliktig
             ))
             .resolver(MapValueResolver.INSTANCE)

@@ -40,28 +40,32 @@ internal object SøknadUtils {
                     "Gyldig",
                     jobberNormaltTimer = 4.0,
                     skalJobbeProsent = 50.0,
-                    skalJobbe = "redusert"
+                    skalJobbe = "redusert",
+                    arbeidsform = Arbeidsform.VARIERENDE
                 ),
                 Organisasjon(
                     "917755734",
                     "Gyldig",
                     jobberNormaltTimer = 40.0,
                     skalJobbeProsent = 40.0,
-                    skalJobbe = "ja"
+                    skalJobbe = "ja",
+                    arbeidsform = Arbeidsform.VARIERENDE
                 ),
                 Organisasjon(
                     "917755734",
                     "Gyldig",
                     jobberNormaltTimer = 8.0,
                     skalJobbeProsent = 0.0,
-                    skalJobbe = "nei"
+                    skalJobbe = "nei",
+                    arbeidsform = Arbeidsform.VARIERENDE
                 ),
                 Organisasjon(
                     "917755734",
                     "Gyldig",
                     jobberNormaltTimer = 40.0,
                     skalJobbeProsent = 40.0,
-                    skalJobbe = "vetIkke"
+                    skalJobbe = "vetIkke",
+                    arbeidsform = Arbeidsform.VARIERENDE
                 )
             )
         ),
@@ -101,7 +105,8 @@ internal object SøknadUtils {
         frilans = Frilans(
             startdato = LocalDate.now().minusYears(3),
             jobberFortsattSomFrilans = true
-        )
+        ),
+        harVærtEllerErVernepliktig = true
     )
 }
 

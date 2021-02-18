@@ -158,14 +158,16 @@ class PleiepengesoknadProsesseringTest {
                         "Jobb1",
                         skalJobbeProsent = jobb1SkalJobbeProsent,
                         jobberNormaltTimer = 37.5,
-                        skalJobbe = "redusert"
+                        skalJobbe = "redusert",
+                        arbeidsform = Arbeidsform.VARIERENDE
                     ),
                     Organisasjon(
                         "917755737",
                         "Jobb2",
                         skalJobbeProsent = jobb2SkalJobberProsent,
                         jobberNormaltTimer = 37.5,
-                        skalJobbe = "redusert"
+                        skalJobbe = "redusert",
+                        arbeidsform = Arbeidsform.VARIERENDE
                     )
                 )
             )
@@ -421,14 +423,16 @@ class PleiepengesoknadProsesseringTest {
                         "Jobb1",
                         skalJobbeProsent = 50.25,
                         jobberNormaltTimer = 5.0,
-                        skalJobbe = "redusert"
+                        skalJobbe = "redusert",
+                        arbeidsform = Arbeidsform.VARIERENDE
                     ),
                     Organisasjon(
                         "917755737",
                         "Jobb2",
                         skalJobbeProsent = 20.0,
                         jobberNormaltTimer = 3.75,
-                        skalJobbe = "redusert"
+                        skalJobbe = "redusert",
+                        arbeidsform = Arbeidsform.VARIERENDE
                     )
                 )
             ),
@@ -531,6 +535,7 @@ class PleiepengesoknadProsesseringTest {
                     Ferieuttak(LocalDate.parse("2020-01-09"), LocalDate.parse("2020-01-10"))
                 )
             ),
+            harVærtEllerErVernepliktig = false,
             harBekreftetOpplysninger = true,
             harForståttRettigheterOgPlikter = true
         )
