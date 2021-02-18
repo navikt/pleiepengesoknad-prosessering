@@ -402,7 +402,8 @@ class PdfV1GeneratorTest {
         frilans = frilans,
         selvstendigVirksomheter = selvstendigVirksomheter,
         barnRelasjon = BarnRelasjon.FAR,
-        barnRelasjonBeskrivelse = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec iaculis tempus molestie"
+        barnRelasjonBeskrivelse = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec iaculis tempus molestie",
+        harVærtEllerErVernepliktig = true
     )
 
     private fun genererOppsummeringsPdfer(writeBytes: Boolean) {
@@ -544,14 +545,16 @@ class PdfV1GeneratorTest {
                         navn = "NAV",
                         jobberNormaltTimer = 30.0,
                         skalJobbeProsent = 50.0,
-                        skalJobbe = "vetIkke"
+                        skalJobbe = "vetIkke",
+                        arbeidsform = Arbeidsform.FAST
                     ),
                     Organisasjon(
                         organisasjonsnummer = "975124568",
                         navn = "Kiwi",
                         jobberNormaltTimer = 30.0,
                         skalJobbeProsent = 50.0,
-                        skalJobbe = "redusert"
+                        skalJobbe = "redusert",
+                        arbeidsform = Arbeidsform.TURNUS
                     )
                 )
             ), barnetsIdent = barnetsIdent, barnetsNavn = barnetsNavn,
@@ -606,7 +609,8 @@ class PdfV1GeneratorTest {
                         navn = "Hopp i havet",
                         skalJobbe = "redusert",
                         jobberNormaltTimer = 30.0,
-                        skalJobbeProsent = 50.0
+                        skalJobbeProsent = 50.0,
+                        arbeidsform = Arbeidsform.VARIERENDE
                     )
                 ), barn = Barn(fødselsnummer = null, fødselsdato = null, navn = null, aktørId = null)
             ),
@@ -626,7 +630,8 @@ class PdfV1GeneratorTest {
                         skalJobbe = "vetIkke",
                         jobberNormaltTimer = 30.0,
                         skalJobbeProsent = 0.0,
-                        vetIkkeEkstrainfo = "Vondt i hode, skulker, kne og tå, kne og tå"
+                        vetIkkeEkstrainfo = "Vondt i hode, skulker, kne og tå, kne og tå",
+                        arbeidsform = Arbeidsform.VARIERENDE
                     )
                 ), barn = Barn(fødselsnummer = null, fødselsdato = null, navn = null, aktørId = null)
             ),
@@ -645,7 +650,8 @@ class PdfV1GeneratorTest {
                         navn = "Hopp i havet",
                         skalJobbe = "ja",
                         jobberNormaltTimer = 30.0,
-                        skalJobbeProsent = 100.0
+                        skalJobbeProsent = 100.0,
+                        arbeidsform = Arbeidsform.VARIERENDE
                     )
                 ), barn = Barn(fødselsnummer = null, fødselsdato = null, navn = null, aktørId = null)
             ),
@@ -664,7 +670,8 @@ class PdfV1GeneratorTest {
                         navn = "Hopp i havet",
                         skalJobbe = "nei",
                         jobberNormaltTimer = 30.0,
-                        skalJobbeProsent = 0.0
+                        skalJobbeProsent = 0.0,
+                        arbeidsform = Arbeidsform.VARIERENDE
                     )
                 ), barn = Barn(fødselsnummer = null, fødselsdato = null, navn = null, aktørId = null)
             ),
@@ -683,14 +690,16 @@ class PdfV1GeneratorTest {
                         navn = "Arbeidsgiver 1",
                         skalJobbe = "ja",
                         jobberNormaltTimer = 30.0,
-                        skalJobbeProsent = 100.0
+                        skalJobbeProsent = 100.0,
+                        arbeidsform = Arbeidsform.VARIERENDE
                     ),
                     Organisasjon(
                         organisasjonsnummer = "952352655",
                         navn = "Arbeidsgiver 2",
                         skalJobbe = "nei",
                         skalJobbeProsent = 0.0,
-                        jobberNormaltTimer = 30.0
+                        jobberNormaltTimer = 30.0,
+                        arbeidsform = Arbeidsform.VARIERENDE
                     ),
                     Organisasjon(
                         organisasjonsnummer = "952352655",
@@ -698,14 +707,16 @@ class PdfV1GeneratorTest {
                         skalJobbe = "vetIkke",
                         jobberNormaltTimer = 30.0,
                         skalJobbeProsent = 50.0,
-                        vetIkkeEkstrainfo = "Vondt i hode, skulker, kne og tå, kne og tå"
+                        vetIkkeEkstrainfo = "Vondt i hode, skulker, kne og tå, kne og tå",
+                        arbeidsform = Arbeidsform.VARIERENDE
                     ),
                     Organisasjon(
                         organisasjonsnummer = "952352655",
                         navn = "Arbeidsgiver 4",
                         skalJobbe = "redusert",
                         jobberNormaltTimer = 30.0,
-                        skalJobbeProsent = 50.0
+                        skalJobbeProsent = 50.0,
+                        arbeidsform = Arbeidsform.VARIERENDE
                     )
                 ), barn = Barn(fødselsnummer = null, fødselsdato = null, navn = null, aktørId = null)
             ),

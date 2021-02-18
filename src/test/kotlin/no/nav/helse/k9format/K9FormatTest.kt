@@ -234,7 +234,7 @@ class K9FormatTest {
                     },
                     "barn" : {
                       "norskIdentitetsnummer" : "19066672169",
-                      "fødselsdato" : "2011-02-16"
+                      "fødselsdato" : "2011-02-18"
                     },
                     "arbeidAktivitet" : {
                       "arbeidstaker" : [ {
