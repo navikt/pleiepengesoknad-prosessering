@@ -1,5 +1,6 @@
 package no.nav.helse.k9format
 
+import no.nav.helse.prosessering.v1.Arbeidsform
 import no.nav.helse.prosessering.v1.Arbeidsgivere
 import no.nav.helse.prosessering.v1.Organisasjon
 import no.nav.k9.søknad.JsonUtils
@@ -20,7 +21,8 @@ internal class ArbeidTest  {
                     "Gyldig",
                     jobberNormaltTimer = 4.0,
                     skalJobbeProsent = 50.0,
-                    skalJobbe = "redusert"
+                    skalJobbe = "redusert",
+                    arbeidsform = Arbeidsform.VARIERENDE
                 )
             )
         )
