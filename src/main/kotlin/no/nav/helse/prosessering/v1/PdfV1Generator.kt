@@ -109,11 +109,11 @@ internal class PdfV1Generator  {
                 "samtidig_hjemme" to melding.samtidigHjemme,
                 "bekrefterPeriodeOver8Uker" to melding.bekrefterPeriodeOver8Uker,
                 "soker" to mapOf(
-                    "navn" to melding.søker.formatertNavn(),
+                    "navn" to melding.søker.formatertNavn().capitalizeName(),
                     "fodselsnummer" to melding.søker.fødselsnummer
                 ),
                 "barn" to mapOf(
-                    "navn" to barnetsNavn,
+                    "navn" to barnetsNavn?.capitalizeName(),
                     "fodselsdato" to fødselsdato?.format(DATE_FORMATTER),
                     "id" to barnetsIdent?.getValue()
                 ),
@@ -307,6 +307,8 @@ private fun Duration.tilString(): String = when (this.toMinutesPart()) {
 }
 
 private fun Søker.formatertNavn() = if (mellomnavn != null) "$fornavn $mellomnavn $etternavn" else "$fornavn $etternavn"
+
+fun String.capitalizeName(): String = split(" ").joinToString(" ") { it.toLowerCase().capitalize() }
 
 private fun String.sprakTilTekst() = when (this.toLowerCase()) {
     "nb" -> "bokmål"
