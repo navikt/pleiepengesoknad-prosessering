@@ -123,38 +123,37 @@
     </section>
 
     <section id="utenlandsopphold">
+        <h2>Perioder med utenlandsopphold og ferie</h2>
+        <p class="sporsmalstekst">Skal du reise til utlandet i perioden du søker om pleiepenger?</p>
         {{# if utenlandsoppholdIPerioden.skalOppholdeSegIUtlandetIPerioden }}
-            <h2>Perioder med utenlandsopphold og ferie</h2>
-            <p class="sporsmalstekst">Skal du reise til utlandet i perioden du søker for?</p>
-            {{# if utenlandsoppholdIPerioden.skalOppholdeSegIUtlandetIPerioden }}
-                <p>{{ jaNeiSvar utenlandsoppholdIPerioden.skalOppholdeSegIUtlandetIPerioden }}</p>
-                <ul>
-                    {{# each utenlandsoppholdIPerioden.opphold as |opphold|~}}
-                        <li>
-                            <p>{{opphold.landnavn}}{{#if opphold.erUtenforEØS}} (utenfor EØS) {{/if}}: {{opphold.fraOgMed}} - {{opphold.tilOgMed}}</p>
-                            {{#if opphold.erUtenforEØS}}
-                                {{#if opphold.erBarnetInnlagt}}
-                                    <p><b>Er barnet innlagt?</b> {{ jaNeiSvar opphold.erBarnetInnlagt }}</p>
-                                    <p><b>Perioder:</b>
-                                        {{# each opphold.perioderBarnetErInnlagt as |periode| }}
-                                            {{#if @last}}
-                                                {{periode.fraOgMed}} - {{periode.tilOgMed}}
-                                            {{else}}
-                                                {{periode.fraOgMed}} - {{periode.tilOgMed}},
-                                            {{/if}}
-                                        {{/each}}</p>
-                                    <p>{{opphold.årsak}}</p>
-                                {{/if}}
+            <p>{{ jaNeiSvar utenlandsoppholdIPerioden.skalOppholdeSegIUtlandetIPerioden }}</p>
+            <ul>
+                {{# each utenlandsoppholdIPerioden.opphold as |opphold|~}}
+                    <li>
+                        <p>{{opphold.landnavn}}{{#if opphold.erUtenforEØS}} (utenfor EØS) {{/if}}: {{opphold.fraOgMed}} - {{opphold.tilOgMed}}</p>
+                        {{#if opphold.erUtenforEØS}}
+                            {{#if opphold.erBarnetInnlagt}}
+                                <p><b>Er barnet innlagt?</b> {{ jaNeiSvar opphold.erBarnetInnlagt }}</p>
+                                <p><b>Perioder:</b>
+                                    {{# each opphold.perioderBarnetErInnlagt as |periode| }}
+                                        {{#if @last}}
+                                            {{periode.fraOgMed}} - {{periode.tilOgMed}}
+                                        {{else}}
+                                            {{periode.fraOgMed}} - {{periode.tilOgMed}},
+                                        {{/if}}
+                                    {{/each}}</p>
+                                <p>{{opphold.årsak}}</p>
                             {{/if}}
-                            <br/>
-                        </li>
-                    {{/each}}
-                </ul>
-            {{else}}
-                <p>{{ jaNeiSvar utenlandsoppholdIPerioden.skalOppholdeSegIUtlandetIPerioden }}</p>
-            {{/if}}
+                        {{/if}}
+                        <br/>
+                    </li>
+                {{/each}}
+            </ul>
+        {{else}}
+            <p>{{ jaNeiSvar utenlandsoppholdIPerioden.skalOppholdeSegIUtlandetIPerioden }}</p>
         {{/if}}
-        <p class="sporsmalstekst">Skal du ha ferie i perioden du søker om?</p>
+
+        <p class="sporsmalstekst">Skal du ha ferie i perioden du søker om pleiepenger?</p>
         {{# if ferieuttakIPerioden.skalTaUtFerieIPerioden }}
             <p>Du opplyser at du skal ha ferie</p>
             <ul>
