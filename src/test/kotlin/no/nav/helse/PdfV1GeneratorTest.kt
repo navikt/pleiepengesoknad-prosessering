@@ -15,7 +15,7 @@ class PdfV1GeneratorTest {
     private companion object {
         private val generator = PdfV1Generator()
         private val barnetsIdent = Fodselsnummer("02119970078")
-        private val barnetsNavn = "Ole Dole"
+        private val barnetsNavn = "OLE DOLE"
         private val fødselsdato = LocalDate.now().minusDays(10)
     }
 
@@ -29,8 +29,8 @@ class PdfV1GeneratorTest {
             søker = Søker(
                 aktørId = "123456",
                 fornavn = "Ærling",
-                mellomnavn = "Øverbø",
-                etternavn = "Ånsnes",
+                mellomnavn = "ØVERBØ",
+                etternavn = "ÅNSNES",
                 fødselsnummer = "29099012345"
             ),
             barn = Barn(
