@@ -59,32 +59,6 @@ fun MeldingV1.tilK9PleiepengesøknadSyktBarn(): Søknad {
     return søknad
 }
 
-fun PreprossesertMeldingV1.tilK9PleiepengesøknadSyktBarn(): Søknad {
-    val søknadsPeriode = Periode(fraOgMed, tilOgMed)
-    val søknad = Søknad(
-        SøknadId.of(søknadId),
-        k9FormatVersjon,
-        mottatt,
-        søker.tilK9Søker(),
-        PleiepengerSyktBarn(
-            søknadsPeriode,
-            byggK9DataBruktTilUtledning(),
-            barn.tilK9Barn(),
-            byggK9ArbeidAktivitet(),
-            beredskap?.tilK9Beredskap(søknadsPeriode),
-            nattevåk?.tilK9Nattevåk(søknadsPeriode),
-            tilsynsordning?.tilK9Tilsynsordning(søknadsPeriode),
-            byggK9Arbeidstid(),
-            byggK9Uttak(søknadsPeriode),
-            byggK9Omsorg(),
-            ferieuttakIPerioden?.tilK9LovbestemtFerie(),
-            medlemskap.tilK9Bosteder(),
-            utenlandsoppholdIPerioden.tilK9Utenlandsopphold(søknadsPeriode)
-        )
-    )
-    return søknad
-}
-
 fun MeldingV1.byggK9Omsorg(): Omsorg = Omsorg(
     barnRelasjon?.utskriftsvennlig ?: "Forelder",
     skalBekrefteOmsorg,
@@ -99,11 +73,7 @@ fun PreprossesertMeldingV1.byggK9Omsorg(): Omsorg = Omsorg(
 
 fun Barn.tilK9Barn(): K9Barn = K9Barn(NorskIdentitetsnummer.of(this.fødselsnummer), (this.fødselsdato))
 
-fun PreprossesertBarn.tilK9Barn(): K9Barn = K9Barn(NorskIdentitetsnummer.of(this.fødselsnummer), (this.fødselsdato))
-
 fun Søker.tilK9Søker(): K9Søker = K9Søker(NorskIdentitetsnummer.of(fødselsnummer))
-
-fun PreprossesertSøker.tilK9Søker(): K9Søker = K9Søker(NorskIdentitetsnummer.of(fødselsnummer))
 
 fun Frilans.tilK9Frilanser(): Frilanser = Frilanser(startdato, jobberFortsattSomFrilans)
 
@@ -187,23 +157,7 @@ fun MeldingV1.byggK9DataBruktTilUtledning(): DataBruktTilUtledning = DataBruktTi
     bekrefterPeriodeOver8Uker
 )
 
-fun PreprossesertMeldingV1.byggK9DataBruktTilUtledning(): DataBruktTilUtledning = DataBruktTilUtledning(
-    harForstattRettigheterOgPlikter,
-    harBekreftetOpplysninger,
-    samtidigHjemme,
-    harMedsøker,
-    bekrefterPeriodeOver8Uker
-)
-
 fun MeldingV1.byggK9Uttak(periode: Periode): Uttak? {
-    val perioder = mutableMapOf<Periode, UttakPeriodeInfo>()
-
-    perioder[periode] = UttakPeriodeInfo(Duration.ofHours(7).plusMinutes(30))
-
-    return Uttak(perioder)
-}
-
-fun PreprossesertMeldingV1.byggK9Uttak(periode: Periode): Uttak? {
     val perioder = mutableMapOf<Periode, UttakPeriodeInfo>()
 
     perioder[periode] = UttakPeriodeInfo(Duration.ofHours(7).plusMinutes(30))

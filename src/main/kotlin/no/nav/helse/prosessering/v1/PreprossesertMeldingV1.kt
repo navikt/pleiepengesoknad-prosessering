@@ -36,7 +36,7 @@ data class PreprossesertMeldingV1(
     val harForstattRettigheterOgPlikter: Boolean,
     val harBekreftetOpplysninger: Boolean,
     val harVærtEllerErVernepliktig: Boolean? = null,
-    val k9FormatSøknad: Søknad? = null
+    val k9FormatSøknad: Søknad
 ) {
     internal constructor(
         melding: MeldingV1,
