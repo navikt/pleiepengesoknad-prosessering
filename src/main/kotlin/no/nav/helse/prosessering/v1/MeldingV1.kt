@@ -35,5 +35,5 @@ data class MeldingV1 (
     val barnRelasjon: BarnRelasjon? = null,
     val barnRelasjonBeskrivelse: String? = null,
     val harVærtEllerErVernepliktig: Boolean,
-    val k9FormatSøknad: Søknad? = null
+    val k9FormatSøknad: Søknad
 )

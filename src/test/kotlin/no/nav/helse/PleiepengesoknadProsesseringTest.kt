@@ -560,7 +560,8 @@ class PleiepengesoknadProsesseringTest {
             samtidigHjemme = true,
             harVærtEllerErVernepliktig = false,
             harBekreftetOpplysninger = true,
-            harForståttRettigheterOgPlikter = true
+            harForståttRettigheterOgPlikter = true,
+            k9FormatSøknad = SøknadUtils.defaultK9FormatPSB()
         )
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)

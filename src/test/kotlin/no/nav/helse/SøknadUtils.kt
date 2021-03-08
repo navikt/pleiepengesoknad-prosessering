@@ -216,7 +216,8 @@ internal object SøknadUtils {
                 )
             )
         ),
-        harVærtEllerErVernepliktig = true
+        harVærtEllerErVernepliktig = true,
+        k9FormatSøknad = defaultK9FormatPSB()
     )
 
     fun defaultK9FormatPSB(søknadId: UUID= UUID.randomUUID()) = Søknad(

@@ -217,7 +217,8 @@ class PdfV1GeneratorTest {
             beskrivelseOmsorgsrollen = "Jeg er far og skal passe på barnet i hele perioden.",
             harVærtEllerErVernepliktig = true,
             barnRelasjon = BarnRelasjon.ANNET,
-            barnRelasjonBeskrivelse = "Blaabla annet"
+            barnRelasjonBeskrivelse = "Blaabla annet",
+            k9FormatSøknad = SøknadUtils.defaultK9FormatPSB()
         )
     }
 
@@ -403,7 +404,8 @@ class PdfV1GeneratorTest {
         selvstendigVirksomheter = selvstendigVirksomheter,
         barnRelasjon = BarnRelasjon.FAR,
         barnRelasjonBeskrivelse = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec iaculis tempus molestie",
-        harVærtEllerErVernepliktig = true
+        harVærtEllerErVernepliktig = true,
+        k9FormatSøknad = SøknadUtils.defaultK9FormatPSB()
     )
 
     private fun genererOppsummeringsPdfer(writeBytes: Boolean) {

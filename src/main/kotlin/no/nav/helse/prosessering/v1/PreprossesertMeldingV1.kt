@@ -46,7 +46,6 @@ data class PreprossesertMeldingV1(
         barnetsNavn: String?,
         barnetsNorskeIdent: NorskIdent?,
         barnetsFødselsdato: LocalDate?,
-        k9FormatSøknad: Søknad? = null // TODO: 03/02/2021 Fjern nullable etter prodsetting.
     ) : this(
         språk = melding.språk,
         søknadId = melding.søknadId,
@@ -75,6 +74,6 @@ data class PreprossesertMeldingV1(
         beskrivelseOmsorgsrollen = melding.beskrivelseOmsorgsrollen,
         samtidigHjemme = melding.samtidigHjemme,
         harVærtEllerErVernepliktig = melding.harVærtEllerErVernepliktig,
-        k9FormatSøknad = melding.k9FormatSøknad ?: k9FormatSøknad
+        k9FormatSøknad = melding.k9FormatSøknad
     )
 }
