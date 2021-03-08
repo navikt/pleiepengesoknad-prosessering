@@ -4,7 +4,6 @@ import no.nav.helse.CorrelationId
 import no.nav.helse.aktoer.AktoerId
 import no.nav.helse.felles.tilTpsNavn
 import no.nav.helse.joark.JoarkGateway
-import no.nav.helse.k9format.tilK9PleiepengesøknadSyktBarn
 import no.nav.helse.kafka.*
 import no.nav.helse.kafka.KafkaConfig
 import no.nav.helse.kafka.ManagedKafkaStreams

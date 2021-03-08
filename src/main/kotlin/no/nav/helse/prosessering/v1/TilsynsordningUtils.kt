@@ -1,7 +1,7 @@
 package no.nav.helse.prosessering.v1
 
 import no.nav.helse.felles.TilsynsordningJa
-import no.nav.helse.k9format.DAGER_PER_UKE
+
 import java.time.Duration
 
 internal val NormalArbeidsdag = Duration.ofHours(7).plusMinutes(30)
@@ -34,7 +34,7 @@ internal fun TilsynsordningJa.prosentAvNormalArbeidsuke(): Double {
     else (100.00 / NormalArbeidsuke.seconds) * tilsyn.seconds
 }
 
-fun TilsynsordningJa.snittTilsynsTimerPerDag(): Duration = summerTilsynsdager().dividedBy(DAGER_PER_UKE.toLong())
+fun TilsynsordningJa.snittTilsynsTimerPerDag(): Duration = summerTilsynsdager().dividedBy(5.toLong())
 
 private fun TilsynsordningJa.summerTilsynsdager() = Duration.ZERO
     .plusOmIkkeNullOgAvkortTilNormalArbeidsdag(mandag)
