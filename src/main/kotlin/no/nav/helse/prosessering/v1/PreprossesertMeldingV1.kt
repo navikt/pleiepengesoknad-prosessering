@@ -82,6 +82,12 @@ data class PreprossesertSøker(
         etternavn = soker.etternavn,
         aktørId = aktoerId.id
     )
+
+    override fun toString(): String {
+        return "PreprossesertSøker()"
+    }
+
+
 }
 
 data class PreprossesertBarn(
@@ -105,6 +111,6 @@ data class PreprossesertBarn(
     )
 
     override fun toString(): String {
-        return "PreprossesertBarn(navn=$navn, aktoerId=$aktørId, fodselsdato=$fødselsdato)"
+        return "PreprossesertBarn()"
     }
 }

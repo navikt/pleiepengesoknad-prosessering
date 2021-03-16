@@ -1,8 +1,6 @@
 package no.nav.helse.prosessering.v1
 
-import com.fasterxml.jackson.annotation.JsonAlias
 import com.fasterxml.jackson.annotation.JsonFormat
-import com.fasterxml.jackson.annotation.JsonProperty
 import java.net.URI
 import java.time.Duration
 import java.time.LocalDate
@@ -62,7 +60,11 @@ data class Virksomhet(
     val yrkesaktivSisteTreFerdigliknedeÅrene: YrkesaktivSisteTreFerdigliknedeÅrene? = null,
     val varigEndring: VarigEndring? = null,
     val regnskapsfører: Regnskapsfører? = null
-)
+) {
+    override fun toString(): String {
+        return "Virksomhet()"
+    }
+}
 
 data class Land(val landkode: String, val landnavn: String)
 
@@ -96,7 +98,7 @@ data class Søker(
     val etternavn: String
 ) {
     override fun toString(): String {
-        return "Soker(aktoerId='${aktørId}', fornavn='$fornavn', mellomnavn=$mellomnavn, etternavn='$etternavn')"
+        return "Soker(aktoerId='*****', fornavn='$fornavn', mellomnavn=$mellomnavn, etternavn='$etternavn')"
     }
 }
 
@@ -108,7 +110,7 @@ data class Barn(
     val aktørId: String?
 ) {
     override fun toString(): String {
-        return "Barn(navn=$navn, aktoerId=$aktørId, fodselsdato=$fødselsdato)"
+        return "Barn(navn=$navn, aktoerId=*****, fodselsdato=$fødselsdato)"
     }
 }
 
@@ -124,7 +126,11 @@ data class Organisasjon(
     val skalJobbeProsent: Double,
     val vetIkkeEkstrainfo: String? = null,
     val arbeidsform: Arbeidsform
-)
+) {
+    override fun toString(): String {
+        return "Organisasjon()"
+    }
+}
 
 enum class Arbeidsform(val utskriftsvennlig: String){
     FAST("Fast antall timer per uke"),
