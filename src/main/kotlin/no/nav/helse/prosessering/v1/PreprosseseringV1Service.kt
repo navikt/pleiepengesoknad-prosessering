@@ -115,7 +115,7 @@ internal class PreprosseseringV1Service(
     ): String? {
 
         return when {
-            // Dersom barnet har navn, returner navnet.
+            // Dersom barnet har navn, returnemar navnet.
             !barn.navn.isNullOrBlank() -> barn.navn
 
             // Dersom barnet har et norsk ident...

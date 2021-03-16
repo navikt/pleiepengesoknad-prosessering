@@ -1,8 +1,10 @@
 package no.nav.helse.prosessering.v1
 
+import com.fasterxml.jackson.annotation.JsonFormat
 import no.nav.helse.felles.*
 import no.nav.k9.søknad.Søknad
 import java.net.URI
+import java.time.Duration
 import java.time.LocalDate
 import java.time.ZonedDateTime
 
