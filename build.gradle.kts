@@ -7,7 +7,7 @@ val k9FormatVersion = "3.0.0.f5ec313"
 val slf4jVersion = ext.get("slf4jVersion").toString()
 val kotlinxCoroutinesVersion = ext.get("kotlinxCoroutinesVersion").toString()
 
-val openhtmltopdfVersion = "1.0.6"
+val openhtmltopdfVersion = "1.0.7"
 val kafkaEmbeddedEnvVersion = "2.2.3"
 val kafkaVersion = "2.3.0" // Alligned med version fra kafka-embedded-env
 val handlebarsVersion = "4.1.2"
