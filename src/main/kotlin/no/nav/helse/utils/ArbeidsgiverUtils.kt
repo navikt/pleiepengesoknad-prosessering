@@ -1,7 +1,7 @@
 package no.nav.helse.prosessering.v1
 
 import no.nav.helse.felles.Organisasjon
-import no.nav.k9.søknad.felles.aktivitet.Organisasjonsnummer
+import no.nav.k9.søknad.felles.opptjening.Organisasjonsnummer
 import java.math.BigDecimal
 import java.math.RoundingMode
 

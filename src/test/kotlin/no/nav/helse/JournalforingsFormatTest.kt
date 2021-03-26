@@ -43,7 +43,7 @@ class JournalforingsFormatTest {
               "norskIdentitetsnummer": "10987654321",
               "fødselsdato": null
             },
-            "arbeidAktivitet": {
+            "opptjeningAktivitet": {
               "selvstendigNæringsdrivende": [
                 {
                   "perioder": {
@@ -85,10 +85,12 @@ class JournalforingsFormatTest {
               ],
               "frilanser": {
                 "startdato": "2020-01-01",
+                "sluttdato": null,
                 "jobberFortsattSomFrilans": true
               }
             },
             "beredskap": {
+              "perioderSomSkalSlettes": null,
               "perioder": {
                 "2020-01-01/2020-01-05": {
                   "tilleggsinformasjon": "Jeg skal være i beredskap. Basta!"
@@ -99,6 +101,7 @@ class JournalforingsFormatTest {
               }
             },
             "nattevåk": {
+              "perioderSomSkalSlettes": null,
               "perioder": {
                 "2020-01-01/2020-01-05": {
                   "tilleggsinformasjon": "Jeg skal ha nattevåk. Basta!"
@@ -124,12 +127,13 @@ class JournalforingsFormatTest {
                   "norskIdentitetsnummer": "12345678910",
                   "organisasjonsnummer": "926032925",
                   "arbeidstidInfo": {
-                    "jobberNormaltTimerPerDag": "PT8H",
                     "perioder": {
                       "2018-01-01/2020-01-05": {
+                         "jobberNormaltTimerPerDag": "PT8H",
                         "faktiskArbeidTimerPerDag": "PT4H"
                       },
                       "2020-01-06/2020-01-10": {
+                         "jobberNormaltTimerPerDag": "PT8H",
                         "faktiskArbeidTimerPerDag": "PT2H"
                       }
                     }
@@ -155,12 +159,14 @@ class JournalforingsFormatTest {
               "beskrivelseAvOmsorgsrollen" : "Blabla beskrivelse"
             },
             "lovbestemtFerie": {
-              "perioder": [
-                "2020-01-01/2020-01-05",
-                "2020-01-06/2020-01-10"
-              ]
+              "perioderSomSkalSlettes": null,
+              "perioder": {
+                "2020-01-01/2020-01-05":  {},
+                "2020-01-06/2020-01-10": {}
+              }
             },
             "bosteder": {
+              "perioderSomSkalSlettes": null,
               "perioder": {
                 "2020-01-01/2020-01-05": {
                   "land": "ESP"
