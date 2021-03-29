@@ -40,7 +40,6 @@ internal class PreprosseseringStream(
             builder
                 .stream<String, TopicEntry<MeldingV1>>(fromTopic.name, Consumed.with(fromTopic.keySerde, fromTopic.valueSerde))
                 .filter { _, entry -> 1 == entry.metadata.version }
-                .filter{_, entry -> entry.metadata.correlationId != "generated-d5257af5-490e-40c8-9a3c-2f2428828fa1"}
                 .mapValues { soknadId, entry  ->
                     process(NAME, soknadId, entry) {
                         logger.info("Preprosesserer søknad.")
