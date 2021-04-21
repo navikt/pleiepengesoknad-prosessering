@@ -101,9 +101,17 @@ class JournalforingsFormatTest {
           },
             "frilans": {
               "startdato": "2018-02-01",
-              "jobberFortsattSomFrilans": true
+              "jobberFortsattSomFrilans": true,
+              "arbeidsforhold": {
+                  "skalJobbe": "nei",
+                  "arbeidsform": "FAST",
+                  "jobberNormaltTimer": 40.0,
+                  "skalJobbeTimer": 0.0,
+                  "skalJobbeProsent": 0.0
+              },
             },
             "selvstendigVirksomheter" : [],
+            "selvstendigArbeidsforhold": null,
           "skalBekrefteOmsorg": true,
           "skalPassePaBarnetIHelePerioden": true,
           "beskrivelseOmsorgsrollen": "En kort beskrivelse",

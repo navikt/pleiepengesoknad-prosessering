@@ -1,6 +1,7 @@
 package no.nav.helse.prosessering.v1
 
 import com.fasterxml.jackson.annotation.JsonFormat
+import com.fasterxml.jackson.annotation.JsonValue
 import java.net.URI
 import java.time.Duration
 import java.time.LocalDate
@@ -29,6 +30,7 @@ data class MeldingV1 (
     val nattevåk: Nattevåk?,
     val frilans: Frilans?,
     val selvstendigVirksomheter: List<Virksomhet> = listOf(),
+    val selvstendigArbeidsforhold: Arbeidsforhold? = null,
     val skalBekrefteOmsorg: Boolean? = null, // TODO: Fjern optional når prodsatt.
     val skalPassePaBarnetIHelePerioden: Boolean? = null, // TODO: Fjern optional når prodsatt.
     val beskrivelseOmsorgsrollen: String? = null, // TODO: Fjern optional når prodsatt.
@@ -185,7 +187,8 @@ data class Nattevåk(
 data class Frilans(
     @JsonFormat(pattern = "yyyy-MM-dd")
     val startdato: LocalDate,
-    val jobberFortsattSomFrilans: Boolean
+    val jobberFortsattSomFrilans: Boolean,
+    val arbeidsforhold: Arbeidsforhold? = null // TODO: 21/04/2021 Fjern nullable etter lansering.
 )
 
 data class Beredskap(
@@ -261,4 +264,19 @@ data class Ferieuttak(
     override fun toString(): String {
         return "Ferieuttak(fraOgMed=$fraOgMed, tilOgMed=$tilOgMed)"
     }
+}
+
+data class Arbeidsforhold(
+    val skalJobbe:SkalJobbe,
+    val arbeidsform: Arbeidsform,
+    val jobberNormaltTimer: Double,
+    val skalJobbeTimer: Double,
+    val skalJobbeProsent: Double
+)
+
+enum class SkalJobbe(@JsonValue val verdi: String) {
+    JA("ja"),
+    NEI("nei"),
+    REDUSERT("redusert"),
+    VET_IKKE("vetIkke"),
 }

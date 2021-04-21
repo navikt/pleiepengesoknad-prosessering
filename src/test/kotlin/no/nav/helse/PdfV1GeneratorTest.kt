@@ -176,7 +176,14 @@ class PdfV1GeneratorTest {
             ),
             frilans = Frilans(
                 startdato = LocalDate.now().minusYears(3),
-                jobberFortsattSomFrilans = true
+                jobberFortsattSomFrilans = true,
+                arbeidsforhold = Arbeidsforhold(
+                    skalJobbe = SkalJobbe.NEI,
+                    arbeidsform = Arbeidsform.FAST,
+                    jobberNormaltTimer = 40.0,
+                    skalJobbeTimer = 0.0,
+                    skalJobbeProsent = 0.0
+                )
             ),
             selvstendigVirksomheter = listOf(
                 Virksomhet(
@@ -209,6 +216,13 @@ class PdfV1GeneratorTest {
                         telefon = "65484578"
                     )
                 )
+            ),
+            selvstendigArbeidsforhold = Arbeidsforhold(
+                skalJobbe = SkalJobbe.REDUSERT,
+                arbeidsform = Arbeidsform.VARIERENDE,
+                jobberNormaltTimer = 40.0,
+                skalJobbeTimer = 20.0,
+                skalJobbeProsent = 50.0
             ),
             bekrefterPeriodeOver8Uker = true,
             skalBekrefteOmsorg = true,
