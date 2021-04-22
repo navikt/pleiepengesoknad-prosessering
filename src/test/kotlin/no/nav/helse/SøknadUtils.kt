@@ -40,7 +40,7 @@ internal object SøknadUtils {
                     "Gyldig",
                     jobberNormaltTimer = 4.0,
                     skalJobbeProsent = 50.0,
-                    skalJobbe = "redusert",
+                    skalJobbe = SkalJobbe.REDUSERT,
                     arbeidsform = Arbeidsform.VARIERENDE
                 ),
                 Organisasjon(
@@ -48,7 +48,7 @@ internal object SøknadUtils {
                     "Gyldig",
                     jobberNormaltTimer = 40.0,
                     skalJobbeProsent = 40.0,
-                    skalJobbe = "ja",
+                    skalJobbe = SkalJobbe.JA,
                     arbeidsform = Arbeidsform.VARIERENDE
                 ),
                 Organisasjon(
@@ -56,7 +56,7 @@ internal object SøknadUtils {
                     "Gyldig",
                     jobberNormaltTimer = 8.0,
                     skalJobbeProsent = 0.0,
-                    skalJobbe = "nei",
+                    skalJobbe = SkalJobbe.NEI,
                     arbeidsform = Arbeidsform.VARIERENDE
                 ),
                 Organisasjon(
@@ -64,7 +64,7 @@ internal object SøknadUtils {
                     "Gyldig",
                     jobberNormaltTimer = 40.0,
                     skalJobbeProsent = 40.0,
-                    skalJobbe = "vetIkke",
+                    skalJobbe = SkalJobbe.VET_IKKE,
                     arbeidsform = Arbeidsform.VARIERENDE
                 )
             )

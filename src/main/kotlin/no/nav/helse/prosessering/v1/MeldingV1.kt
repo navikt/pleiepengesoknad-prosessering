@@ -1,7 +1,7 @@
 package no.nav.helse.prosessering.v1
 
+import com.fasterxml.jackson.annotation.JsonAlias
 import com.fasterxml.jackson.annotation.JsonFormat
-import com.fasterxml.jackson.annotation.JsonValue
 import java.net.URI
 import java.time.Duration
 import java.time.LocalDate
@@ -123,7 +123,7 @@ data class Arbeidsgivere(
 data class Organisasjon(
     val organisasjonsnummer: String,
     val navn: String?,
-    val skalJobbe: String,
+    val skalJobbe: SkalJobbe,
     val jobberNormaltTimer: Double,
     val skalJobbeProsent: Double,
     val vetIkkeEkstrainfo: String? = null,
@@ -267,16 +267,16 @@ data class Ferieuttak(
 }
 
 data class Arbeidsforhold(
-    val skalJobbe:SkalJobbe,
+    val skalJobbe: SkalJobbe,
     val arbeidsform: Arbeidsform,
     val jobberNormaltTimer: Double,
     val skalJobbeTimer: Double,
     val skalJobbeProsent: Double
 )
 
-enum class SkalJobbe(@JsonValue val verdi: String) {
-    JA("ja"),
-    NEI("nei"),
-    REDUSERT("redusert"),
-    VET_IKKE("vetIkke"),
+enum class SkalJobbe {
+    @JsonAlias("ja") JA,
+    @JsonAlias("nei") NEI,
+    @JsonAlias("nei") REDUSERT,
+    @JsonAlias("vetIkke") VET_IKKE
 }

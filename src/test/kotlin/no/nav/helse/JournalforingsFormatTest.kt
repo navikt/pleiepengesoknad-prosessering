@@ -44,7 +44,7 @@ class JournalforingsFormatTest {
                 "organisasjoner": [{
                     "organisasjonsnummer": "1212",
                     "navn": "Nei",
-                    "skalJobbe": "nei",
+                    "skalJobbe": "NEI",
                     "jobberNormaltTimer": 0.0,
                     "skalJobbeProsent": 0.0,
                     "vetIkkeEkstrainfo": null,
@@ -52,7 +52,7 @@ class JournalforingsFormatTest {
                 },{
                     "organisasjonsnummer": "54321",
                     "navn": "Navn",
-                    "skalJobbe": "redusert",
+                    "skalJobbe": "REDUSERT",
                     "skalJobbeProsent": 22.512,
                     "vetIkkeEkstrainfo": null,
                     "jobberNormaltTimer": 0.0,
@@ -103,7 +103,7 @@ class JournalforingsFormatTest {
               "startdato": "2018-02-01",
               "jobberFortsattSomFrilans": true,
               "arbeidsforhold": {
-                  "skalJobbe": "nei",
+                  "skalJobbe": "NEI",
                   "arbeidsform": "FAST",
                   "jobberNormaltTimer": 40.0,
                   "skalJobbeTimer": 0.0,
@@ -150,7 +150,7 @@ class JournalforingsFormatTest {
                     jobberNormaltTimer = 0.0,
                     skalJobbeProsent = 0.0,
                     vetIkkeEkstrainfo = null,
-                    skalJobbe = "nei",
+                    skalJobbe = SkalJobbe.NEI,
                     arbeidsform = Arbeidsform.TURNUS
                 ),
                 Organisasjon(
@@ -159,7 +159,7 @@ class JournalforingsFormatTest {
                     skalJobbeProsent = 22.512,
                     jobberNormaltTimer = 0.0,
                     vetIkkeEkstrainfo = null,
-                    skalJobbe = "redusert",
+                    skalJobbe = SkalJobbe.REDUSERT,
                     arbeidsform = Arbeidsform.FAST
                 )
             )

@@ -3,6 +3,7 @@ package no.nav.helse.k9format
 import no.nav.helse.prosessering.v1.Arbeidsform
 import no.nav.helse.prosessering.v1.Arbeidsgivere
 import no.nav.helse.prosessering.v1.Organisasjon
+import no.nav.helse.prosessering.v1.SkalJobbe
 import no.nav.k9.søknad.JsonUtils
 import no.nav.k9.søknad.felles.Periode
 import org.slf4j.Logger
@@ -21,7 +22,7 @@ internal class ArbeidTest  {
                     "Gyldig",
                     jobberNormaltTimer = 4.0,
                     skalJobbeProsent = 50.0,
-                    skalJobbe = "redusert",
+                    skalJobbe = SkalJobbe.REDUSERT,
                     arbeidsform = Arbeidsform.VARIERENDE
                 )
             )
