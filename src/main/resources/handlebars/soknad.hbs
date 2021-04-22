@@ -248,30 +248,30 @@
             <p class="sporsmalstekst">Jobber du fremdeles som frilanser?</p>
             <p>{{ jaNeiSvar søknad.frilans.jobberFortsattSomFrilans }}</p>
 
-            <p class="sporsmalstekst">Hvordan jobber du som frilanser?</p>
-            {{#eq frilanserArbeidsforholdd.skalJobbe "ja"}}
-                <p>Skal jobbe som vanlig. Jobber vanligvis {{frilanserArbeidsforhold.jobberNormaltTimer}} timer i uka
-                    ({{frilanserArbeidsforhold.arbeidsform}}).
-                </p>
-            {{/eq}}
-            {{#eq frilanserArbeidsforhold.skalJobbe "nei"}}
-                <p>Skal ikke jobbe. Jobber vanligvis {{frilanserArbeidsforhold.jobberNormaltTimer}} timer i uka
-                    ({{frilanserArbeidsforhold.arbeidsform}}).
-                </p>
-            {{/eq}}
-            {{#eq frilanserArbeidsforhold.skalJobbe "redusert"}}
-                <p>Skal jobbe {{frilanserArbeidsforhol.skalJobbeProsent}} prosent av {{frilanserArbeidsforhold.jobberNormaltTimer}} timer i uka.
-                    Jobber vanligvis {{frilanserArbeidsforhold.jobberNormaltTimer}} timer i uka ({{frilanserArbeidsforhold.arbeidsform}}).
-                </p>
-            {{/eq}}
-            {{#eq frilanserArbeidsforhold.skalJobbe "vetIkke"}}
-                <p>Jeg vet ikke om jeg skal jobbe her i perioden jeg søker for, men jeg melder fra hvis jeg skal gjøre det.
-                    Jobber vanligvis {{frilanserArbeidsforhold.jobberNormaltTimer}} timer i uka
-                    ({{frilanserArbeidsforhold.arbeidsform}}).
-                </p>
-            {{/eq}}
-
-
+            {{#if søknad.frilans.arbeidsforhold}}
+                <p class="sporsmalstekst">Hvordan jobber du som frilanser?</p>
+                {{#eq frilanserArbeidsforholdd.skalJobbe "ja"}}
+                    <p>Skal jobbe som vanlig. Jobber vanligvis {{frilanserArbeidsforhold.jobberNormaltTimer}} timer i uka
+                        ({{frilanserArbeidsforhold.arbeidsform}}).
+                    </p>
+                {{/eq}}
+                {{#eq frilanserArbeidsforhold.skalJobbe "nei"}}
+                    <p>Skal ikke jobbe. Jobber vanligvis {{frilanserArbeidsforhold.jobberNormaltTimer}} timer i uka
+                        ({{frilanserArbeidsforhold.arbeidsform}}).
+                    </p>
+                {{/eq}}
+                {{#eq frilanserArbeidsforhold.skalJobbe "redusert"}}
+                    <p>Skal jobbe {{frilanserArbeidsforhol.skalJobbeProsent}} prosent av {{frilanserArbeidsforhold.jobberNormaltTimer}} timer i uka.
+                        Jobber vanligvis {{frilanserArbeidsforhold.jobberNormaltTimer}} timer i uka ({{frilanserArbeidsforhold.arbeidsform}}).
+                    </p>
+                {{/eq}}
+                {{#eq frilanserArbeidsforhold.skalJobbe "vetIkke"}}
+                    <p>Jeg vet ikke om jeg skal jobbe her i perioden jeg søker for, men jeg melder fra hvis jeg skal gjøre det.
+                        Jobber vanligvis {{frilanserArbeidsforhold.jobberNormaltTimer}} timer i uka
+                        ({{frilanserArbeidsforhold.arbeidsform}}).
+                    </p>
+                {{/eq}}
+            {{/if}}
         {{/if}}
     </section>
 
