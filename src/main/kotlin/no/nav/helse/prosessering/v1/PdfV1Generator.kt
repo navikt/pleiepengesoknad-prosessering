@@ -265,6 +265,7 @@ internal class PdfV1Generator {
 private fun Arbeidsforhold.somMap(): Map<String, Any?> = mapOf(
     "skalJobbe" to skalJobbe,
     "skalJobbeProsent" to skalJobbeProsent.avrundetMedEnDesimal(),
+    "inntektstapProsent" to skalJobbeProsent.skalJobbeProsentTilInntektstap(),
     "jobberNormaltTimer" to jobberNormaltTimer,
     "arbeidsform" to arbeidsform.utskriftsvennlig.toLowerCase()
 )
