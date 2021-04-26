@@ -41,9 +41,6 @@ internal class PdfV1Generator {
             registerHelper("eq", Helper<String> { context, options ->
                 if (context == options.param(0)) options.fn() else options.inverse()
             })
-            registerHelper("skalJobbeEq", Helper<SkalJobbe> { context, options ->
-                if (context.name == options.param(0)) options.fn() else options.inverse()
-            })
             registerHelper("fritekst", Helper<String> { context, _ ->
                 if (context == null) "" else {
                     val text = Handlebars.Utils.escapeExpression(context)
@@ -263,7 +260,7 @@ internal class PdfV1Generator {
 }
 
 private fun Arbeidsforhold.somMap(): Map<String, Any?> = mapOf(
-    "skalJobbe" to skalJobbe,
+    "skalJobbe" to skalJobbe.verdi,
     "skalJobbeProsent" to skalJobbeProsent.avrundetMedEnDesimal(),
     "inntektstapProsent" to skalJobbeProsent.skalJobbeProsentTilInntektstap(),
     "jobberNormaltTimer" to jobberNormaltTimer,
@@ -279,7 +276,7 @@ private fun List<Organisasjon>.somMap() = map {
     mapOf<String, Any?>(
         "navn" to it.navn,
         "organisasjonsnummer" to it.formaterOrganisasjonsnummer(),
-        "skal_jobbe" to it.skalJobbe,
+        "skal_jobbe" to it.skalJobbe.verdi,
         "skal_jobbe_prosent" to skalJobbeProsent.formatertMedEnDesimal(),
         "inntektstap_prosent" to inntektstapProsent.formatertMedEnDesimal(),
         "jobber_normaltimer" to jobberNormaltimer,

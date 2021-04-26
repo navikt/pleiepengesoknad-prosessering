@@ -274,9 +274,9 @@ data class Arbeidsforhold(
     val skalJobbeProsent: Double
 )
 
-enum class SkalJobbe {
-    @JsonAlias("ja") JA,
-    @JsonAlias("nei") NEI,
-    @JsonAlias("nei") REDUSERT,
-    @JsonAlias("vetIkke") VET_IKKE
+enum class SkalJobbe(val verdi: String) {
+    @JsonAlias("ja") JA("ja"),
+    @JsonAlias("nei") NEI("nei"),
+    @JsonAlias("redusert") REDUSERT("redusert"),
+    @JsonAlias("vetIkke") VET_IKKE("vetIkke")
 }
