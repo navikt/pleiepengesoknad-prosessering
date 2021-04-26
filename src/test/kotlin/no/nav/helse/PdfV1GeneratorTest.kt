@@ -45,7 +45,7 @@ class PdfV1GeneratorTest {
                     Organisasjon(
                         organisasjonsnummer = "952352655",
                         navn = "Arbeidsgiver 1",
-                        skalJobbe = "ja",
+                        skalJobbe = SkalJobbe.JA,
                         skalJobbeProsent = 100.0,
                         jobberNormaltTimer = 37.5,
                         arbeidsform = Arbeidsform.FAST
@@ -53,7 +53,7 @@ class PdfV1GeneratorTest {
                     Organisasjon(
                         organisasjonsnummer = "952352655",
                         navn = "Arbeidsgiver 2",
-                        skalJobbe = "nei",
+                        skalJobbe = SkalJobbe.NEI,
                         skalJobbeProsent = 0.0,
                         jobberNormaltTimer = 37.5,
                         arbeidsform = Arbeidsform.VARIERENDE
@@ -61,7 +61,7 @@ class PdfV1GeneratorTest {
                     Organisasjon(
                         organisasjonsnummer = "952352655",
                         navn = "Arbeidsgiver 3",
-                        skalJobbe = "vetIkke",
+                        skalJobbe = SkalJobbe.VET_IKKE,
                         jobberNormaltTimer = 30.0,
                         skalJobbeProsent = 50.0,
                         vetIkkeEkstrainfo = "Vondt i hode, skulker, kne og tå, kne og tå",
@@ -70,7 +70,7 @@ class PdfV1GeneratorTest {
                     Organisasjon(
                         organisasjonsnummer = "952352655",
                         navn = "Arbeidsgiver 4",
-                        skalJobbe = "redusert",
+                        skalJobbe = SkalJobbe.REDUSERT,
                         jobberNormaltTimer = 30.0,
                         skalJobbeProsent = 50.0,
                         arbeidsform = Arbeidsform.TURNUS
@@ -177,7 +177,14 @@ class PdfV1GeneratorTest {
             ),
             frilans = Frilans(
                 startdato = LocalDate.now().minusYears(3),
-                jobberFortsattSomFrilans = true
+                jobberFortsattSomFrilans = true,
+                arbeidsforhold = Arbeidsforhold(
+                    skalJobbe = SkalJobbe.NEI,
+                    arbeidsform = Arbeidsform.FAST,
+                    jobberNormaltTimer = 40.0,
+                    skalJobbeTimer = 0.0,
+                    skalJobbeProsent = 0.0
+                )
             ),
             selvstendigVirksomheter = listOf(
                 Virksomhet(
@@ -211,6 +218,13 @@ class PdfV1GeneratorTest {
                     )
                 )
             ),
+            selvstendigArbeidsforhold = Arbeidsforhold(
+                skalJobbe = SkalJobbe.REDUSERT,
+                arbeidsform = Arbeidsform.VARIERENDE,
+                jobberNormaltTimer = 40.0,
+                skalJobbeTimer = 20.0,
+                skalJobbeProsent = 50.0
+            ),
             bekrefterPeriodeOver8Uker = true,
             skalBekrefteOmsorg = true,
             skalPassePaBarnetIHelePerioden = true,
@@ -231,7 +245,7 @@ class PdfV1GeneratorTest {
                 navn = "NAV",
                 jobberNormaltTimer = 30.0,
                 skalJobbeProsent = 50.0,
-                skalJobbe = "redusert",
+                skalJobbe = SkalJobbe.REDUSERT,
                 arbeidsform = Arbeidsform.FAST
             ),
             Organisasjon(
@@ -239,7 +253,7 @@ class PdfV1GeneratorTest {
                 navn = "Kiwi",
                 jobberNormaltTimer = 30.0,
                 skalJobbeProsent = 50.0,
-                skalJobbe = "redusert",
+                skalJobbe = SkalJobbe.REDUSERT,
                 arbeidsform = Arbeidsform.VARIERENDE
             ),
             Organisasjon(
@@ -247,7 +261,7 @@ class PdfV1GeneratorTest {
                 navn = "Bjerkheim gård",
                 jobberNormaltTimer = 30.0,
                 skalJobbeProsent = 50.0,
-                skalJobbe = "redusert",
+                skalJobbe = SkalJobbe.REDUSERT,
                 arbeidsform = Arbeidsform.TURNUS
             ),
             Organisasjon(
@@ -255,7 +269,7 @@ class PdfV1GeneratorTest {
                 navn = "Hopp i havet",
                 jobberNormaltTimer = 30.0,
                 skalJobbeProsent = 50.0,
-                skalJobbe = "redusert",
+                skalJobbe = SkalJobbe.REDUSERT,
                 arbeidsform = Arbeidsform.FAST
             )
         ),
@@ -547,7 +561,7 @@ class PdfV1GeneratorTest {
                         navn = "NAV",
                         jobberNormaltTimer = 30.0,
                         skalJobbeProsent = 50.0,
-                        skalJobbe = "vetIkke",
+                        skalJobbe = SkalJobbe.VET_IKKE,
                         arbeidsform = Arbeidsform.FAST
                     ),
                     Organisasjon(
@@ -555,7 +569,7 @@ class PdfV1GeneratorTest {
                         navn = "Kiwi",
                         jobberNormaltTimer = 30.0,
                         skalJobbeProsent = 50.0,
-                        skalJobbe = "redusert",
+                        skalJobbe = SkalJobbe.REDUSERT,
                         arbeidsform = Arbeidsform.TURNUS
                     )
                 )
@@ -609,7 +623,7 @@ class PdfV1GeneratorTest {
                     Organisasjon(
                         organisasjonsnummer = "952352655",
                         navn = "Hopp i havet",
-                        skalJobbe = "redusert",
+                        skalJobbe = SkalJobbe.REDUSERT,
                         jobberNormaltTimer = 30.0,
                         skalJobbeProsent = 50.0,
                         arbeidsform = Arbeidsform.VARIERENDE
@@ -629,7 +643,7 @@ class PdfV1GeneratorTest {
                     Organisasjon(
                         organisasjonsnummer = "952352655",
                         navn = "Hopp i havet",
-                        skalJobbe = "vetIkke",
+                        skalJobbe = SkalJobbe.VET_IKKE,
                         jobberNormaltTimer = 30.0,
                         skalJobbeProsent = 0.0,
                         vetIkkeEkstrainfo = "Vondt i hode, skulker, kne og tå, kne og tå",
@@ -650,7 +664,7 @@ class PdfV1GeneratorTest {
                     Organisasjon(
                         organisasjonsnummer = "952352655",
                         navn = "Hopp i havet",
-                        skalJobbe = "ja",
+                        skalJobbe = SkalJobbe.JA,
                         jobberNormaltTimer = 30.0,
                         skalJobbeProsent = 100.0,
                         arbeidsform = Arbeidsform.VARIERENDE
@@ -670,7 +684,7 @@ class PdfV1GeneratorTest {
                     Organisasjon(
                         organisasjonsnummer = "952352655",
                         navn = "Hopp i havet",
-                        skalJobbe = "nei",
+                        skalJobbe = SkalJobbe.NEI,
                         jobberNormaltTimer = 30.0,
                         skalJobbeProsent = 0.0,
                         arbeidsform = Arbeidsform.VARIERENDE
@@ -690,7 +704,7 @@ class PdfV1GeneratorTest {
                     Organisasjon(
                         organisasjonsnummer = "952352655",
                         navn = "Arbeidsgiver 1",
-                        skalJobbe = "ja",
+                        skalJobbe = SkalJobbe.JA,
                         jobberNormaltTimer = 30.0,
                         skalJobbeProsent = 100.0,
                         arbeidsform = Arbeidsform.VARIERENDE
@@ -698,7 +712,7 @@ class PdfV1GeneratorTest {
                     Organisasjon(
                         organisasjonsnummer = "952352655",
                         navn = "Arbeidsgiver 2",
-                        skalJobbe = "nei",
+                        skalJobbe = SkalJobbe.NEI,
                         skalJobbeProsent = 0.0,
                         jobberNormaltTimer = 30.0,
                         arbeidsform = Arbeidsform.VARIERENDE
@@ -706,7 +720,7 @@ class PdfV1GeneratorTest {
                     Organisasjon(
                         organisasjonsnummer = "952352655",
                         navn = "Arbeidsgiver 3",
-                        skalJobbe = "vetIkke",
+                        skalJobbe = SkalJobbe.VET_IKKE,
                         jobberNormaltTimer = 30.0,
                         skalJobbeProsent = 50.0,
                         vetIkkeEkstrainfo = "Vondt i hode, skulker, kne og tå, kne og tå",
@@ -715,7 +729,7 @@ class PdfV1GeneratorTest {
                     Organisasjon(
                         organisasjonsnummer = "952352655",
                         navn = "Arbeidsgiver 4",
-                        skalJobbe = "redusert",
+                        skalJobbe = SkalJobbe.REDUSERT,
                         jobberNormaltTimer = 30.0,
                         skalJobbeProsent = 50.0,
                         arbeidsform = Arbeidsform.VARIERENDE

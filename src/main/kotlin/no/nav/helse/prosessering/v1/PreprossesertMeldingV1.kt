@@ -28,6 +28,7 @@ data class PreprossesertMeldingV1(
     val harMedsøker: Boolean,
     val frilans: Frilans? = null,
     val selvstendigVirksomheter: List<Virksomhet> = listOf(),
+    val selvstendigArbeidsforhold: Arbeidsforhold? = null,
     val barnRelasjon: BarnRelasjon? = null,
     val barnRelasjonBeskrivelse: String? = null,
     val skalBekrefteOmsorg: Boolean? = null, //TODO: Fjerne optinal når prodsatt
@@ -64,6 +65,7 @@ data class PreprossesertMeldingV1(
         bekrefterPeriodeOver8Uker = melding.bekrefterPeriodeOver8Uker,
         frilans = melding.frilans,
         selvstendigVirksomheter = melding.selvstendigVirksomheter,
+        selvstendigArbeidsforhold = melding.selvstendigArbeidsforhold,
         harForstattRettigheterOgPlikter = melding.harForståttRettigheterOgPlikter,
         harBekreftetOpplysninger = melding.harBekreftetOpplysninger,
         utenlandsoppholdIPerioden = melding.utenlandsoppholdIPerioden,

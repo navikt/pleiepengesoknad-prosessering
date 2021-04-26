@@ -1,5 +1,6 @@
 package no.nav.helse.prosessering.v1
 
+import com.fasterxml.jackson.annotation.JsonAlias
 import com.fasterxml.jackson.annotation.JsonFormat
 import no.nav.helse.felles.*
 import no.nav.k9.søknad.Søknad
@@ -31,6 +32,7 @@ data class MeldingV1 (
     val nattevåk: Nattevåk?,
     val frilans: Frilans?,
     val selvstendigVirksomheter: List<Virksomhet> = listOf(),
+    val selvstendigArbeidsforhold: Arbeidsforhold? = null,
     val skalBekrefteOmsorg: Boolean? = null, // TODO: Fjern optional når prodsatt.
     val skalPassePaBarnetIHelePerioden: Boolean? = null, // TODO: Fjern optional når prodsatt.
     val beskrivelseOmsorgsrollen: String? = null, // TODO: Fjern optional når prodsatt.

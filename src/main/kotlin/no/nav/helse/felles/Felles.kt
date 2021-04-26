@@ -1,5 +1,6 @@
 package no.nav.helse.felles
 
+import com.fasterxml.jackson.annotation.JsonAlias
 import com.fasterxml.jackson.annotation.JsonFormat
 import no.nav.helse.aktoer.AktoerId
 import no.nav.helse.aktoer.NorskIdent
@@ -92,7 +93,7 @@ data class Arbeidsgivere(
 data class Organisasjon(
     val organisasjonsnummer: String,
     val navn: String?,
-    val skalJobbe: String,
+    val skalJobbe: SkalJobbe,
     val jobberNormaltTimer: Double,
     val skalJobbeProsent: Double,
     val vetIkkeEkstrainfo: String? = null,
@@ -156,7 +157,8 @@ data class Nattevåk(
 data class Frilans(
     @JsonFormat(pattern = "yyyy-MM-dd")
     val startdato: LocalDate,
-    val jobberFortsattSomFrilans: Boolean
+    val jobberFortsattSomFrilans: Boolean,
+    val arbeidsforhold: Arbeidsforhold? = null
 )
 
 data class Beredskap(
@@ -286,4 +288,19 @@ data class PreprossesertBarn(
     override fun toString(): String {
         return "PreprossesertBarn()"
     }
+}
+
+data class Arbeidsforhold(
+    val skalJobbe: SkalJobbe,
+    val arbeidsform: Arbeidsform,
+    val jobberNormaltTimer: Double,
+    val skalJobbeTimer: Double,
+    val skalJobbeProsent: Double
+)
+
+enum class SkalJobbe(val verdi: String) {
+    @JsonAlias("ja") JA("ja"),
+    @JsonAlias("nei") NEI("nei"),
+    @JsonAlias("redusert") REDUSERT("redusert"),
+    @JsonAlias("vetIkke") VET_IKKE("vetIkke")
 }

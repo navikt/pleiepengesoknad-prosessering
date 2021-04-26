@@ -1,28 +1,28 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8" />
+    <meta charset="UTF-8"/>
     <title>Søknad om pleiepenger for sykt barn eller person over 18 år</title>
-    <meta name="subject" content="Søknad om pleiepenger for sykt barn eller person over 18 år" />
-    <meta name="author" content="nav.no" />
+    <meta name="subject" content="Søknad om pleiepenger for sykt barn eller person over 18 år"/>
+    <meta name="author" content="nav.no"/>
     <meta name="description"
-          content="Søknad om pleiepenger for sykt barn eller person over 18 år mottatt {{soknad_mottatt_dag}} {{ soknad_mottatt }}" />
+          content="Søknad om pleiepenger for sykt barn eller person over 18 år mottatt {{soknad_mottatt_dag}} {{ soknad_mottatt }}"/>
     <bookmarks>
-        <bookmark name="Søker" href="#søker" />
-        <bookmark name="Barn" href="#barn" />
-        <bookmark name="Relasjon til barnet" href="#relasjonTilBarnet" />
-        <bookmark name="Perioder" href="#perioder" />
-        <bookmark name="Utenlandsopphold" href="#utenlandsopphold" />
-        <bookmark name="Arbeidsforhold" href="#arbeidsforhold" />
-        <bookmark name="Omsorgstilbud" href="#omsorgstilbud" />
-        <bookmark name="Verneplikt" href="#verneplikt" />
-        <bookmark name="Nattevåk" href="#nattevaak" />
-        <bookmark name="Beredskap" href="#beredskap" />
-        <bookmark name="Frilans" href="#frilans" />
-        <bookmark name="Selvstendig" href="#selvstendig" />
-        <bookmark name="Medlemskap" href="#medlemskap" />
-        <bookmark name="Vedlegg" href="#vedlegg" />
-        <bookmark name="Samtykke" href="#samtykke" />
+        <bookmark name="Søker" href="#søker"/>
+        <bookmark name="Barn" href="#barn"/>
+        <bookmark name="Relasjon til barnet" href="#relasjonTilBarnet"/>
+        <bookmark name="Perioder" href="#perioder"/>
+        <bookmark name="Utenlandsopphold" href="#utenlandsopphold"/>
+        <bookmark name="Arbeidsforhold" href="#arbeidsforhold"/>
+        <bookmark name="Omsorgstilbud" href="#omsorgstilbud"/>
+        <bookmark name="Verneplikt" href="#verneplikt"/>
+        <bookmark name="Nattevåk" href="#nattevaak"/>
+        <bookmark name="Beredskap" href="#beredskap"/>
+        <bookmark name="Frilans" href="#frilans"/>
+        <bookmark name="Selvstendig" href="#selvstendig"/>
+        <bookmark name="Medlemskap" href="#medlemskap"/>
+        <bookmark name="Vedlegg" href="#vedlegg"/>
+        <bookmark name="Samtykke" href="#samtykke"/>
     </bookmarks>
     {{#block 'style-common' }} {{/block}}
 </head>
@@ -39,7 +39,7 @@
             {{ soker.navn }}
         </p>
         <p>
-            {{ soker.fodselsnummer }}<br />
+            {{ soker.fodselsnummer }}<br/>
         </p>
     </div>
     <div class="person" id="barn">
@@ -53,7 +53,7 @@
         </p>
         <p>
             {{# if barn.fodselsdato }}
-                {{ barn.fodselsdato }} <br />
+                {{ barn.fodselsdato }} <br/>
             {{/if}}
             {{# if barn.id }}
                 {{ barn.id }}
@@ -130,7 +130,8 @@
             <ul>
                 {{# each utenlandsoppholdIPerioden.opphold as |opphold|~}}
                     <li>
-                        <p>{{opphold.landnavn}}{{#if opphold.erUtenforEØS}} (utenfor EØS) {{/if}}: {{opphold.fraOgMed}} - {{opphold.tilOgMed}}</p>
+                        <p>{{opphold.landnavn}}{{#if opphold.erUtenforEØS}}
+                            (utenfor EØS) {{/if}}: {{opphold.fraOgMed}} - {{opphold.tilOgMed}}</p>
                         {{#if opphold.erUtenforEØS}}
                             {{#if opphold.erBarnetInnlagt}}
                                 <p><b>Er barnet innlagt?</b> {{ jaNeiSvar opphold.erBarnetInnlagt }}</p>
@@ -180,58 +181,61 @@
             <ul>
                 {{# each arbeidsgivere.organisasjoner as |org|~}}
                     <li><b>{{org.navn}} (orgnr: {{org.organisasjonsnummer}})</b>
-                    <ul>
-                        <li>
-                            {{#if org.skal_jobbe}}
-                                {{#eq org.skal_jobbe "ja"}}
-                                    Du skal jobbe som vanlig i perioden.
-                                {{/eq}}
+                        <ul>
+                            <li>
+                                {{#if org.skal_jobbe}}
+                                    {{#eq org.skal_jobbe "ja"}}
+                                        Du skal jobbe som vanlig i perioden.
+                                    {{/eq}}
 
-                                {{#eq org.skal_jobbe "nei"}}
-                                    Du skal ikke jobbe her i perioden.
-                                {{/eq}}
+                                    {{#eq org.skal_jobbe "nei"}}
+                                        Du skal ikke jobbe her i perioden.
+                                    {{/eq}}
 
-                                {{#eq org.skal_jobbe "redusert"}}
-                                    Du skal jobbe redusert i perioden.
-                                {{/eq}}
+                                    {{#eq org.skal_jobbe "redusert"}}
+                                        Du skal jobbe redusert i perioden.
+                                    {{/eq}}
 
-                                {{#eq org.skal_jobbe "vetIkke"}}
-                                    Du vet ikke om du skal jobbe her, men sier fra hvis det blir tilfelle.
-                                {{/eq}}
-                            {{/if}}
-                        </li>
+                                    {{#eq org.skal_jobbe "vetIkke"}}
+                                        Du vet ikke om du skal jobbe her, men sier fra hvis det blir tilfelle.
+                                    {{/eq}}
+                                {{/if}}
+                            </li>
 
-                        <li>
-                            {{#if org.skal_jobbe_prosent }}
-                                {{#unless org.jobber_normaltimer }}
-                                    Du jobbe {{org.skal_jobbe_prosent }}% av din stilling. Du får et
-                                    inntektstap på {{org.inntektstap_prosent}}%.
-                                {{/unless}}
-                            {{/if}}
-                        </li>
+                            <li>
+                                {{#if org.skal_jobbe_prosent }}
+                                    {{#unless org.jobber_normaltimer }}
+                                        Du jobbe {{org.skal_jobbe_prosent }}% av din stilling. Du får et
+                                        inntektstap på {{org.inntektstap_prosent}}%.
+                                    {{/unless}}
+                                {{/if}}
+                            </li>
                         <li>
                             {{#if org.skal_jobbe_prosent }}
                                 {{#if org.jobber_normaltimer }}
-                                    <li>Du jobber vanligvis {{org.jobber_normaltimer }} timer i uken hos denne arbeidsgiveren.</li>
-                                    <li>I perioden med pleiepenger skal du jobbe {{org.skal_jobbe_prosent }}%. Du får et inntektstap
+                                    <li>Du jobber vanligvis {{org.jobber_normaltimer }} timer i uken hos denne
+                                        arbeidsgiveren.
+                                    </li>
+                                    <li>I perioden med pleiepenger skal du jobbe {{org.skal_jobbe_prosent }}%. Du får et
+                                        inntektstap
                                         på {{org.inntektstap_prosent}}%.
                                     </li>
                                 {{/if}}
                             {{/if}}
-                        </li>
-                        <li>
-                            {{#if org.jobber_normaltimer}}
-                                {{#if org.vet_ikke_ekstra_info}}
-                                    Du jobber vanligvis {{org.jobber_normaltimer}} timer i uken.<br/>
+                            </li>
+                            <li>
+                                {{#if org.jobber_normaltimer}}
+                                    {{#if org.vet_ikke_ekstra_info}}
+                                        Du jobber vanligvis {{org.jobber_normaltimer}} timer i uken.<br/>
+                                    {{/if}}
                                 {{/if}}
+                            </li>
+
+                            {{#if org.arbeidsform}}
+                                <li>Arbeidsform: {{org.arbeidsform}}.</li>
                             {{/if}}
-                        </li>
 
-                        {{#if org.arbeidsform}}
-                            <li>Arbeidsform: {{org.arbeidsform}}.</li>
-                        {{/if}}
-
-                    </ul>
+                        </ul>
                     </li>
                 {{/each}}
             </ul>
@@ -247,6 +251,32 @@
             <p>{{ jaNeiSvar true }}</p>
             <p class="sporsmalstekst">Jobber du fremdeles som frilanser?</p>
             <p>{{ jaNeiSvar søknad.frilans.jobberFortsattSomFrilans }}</p>
+
+            {{#if søknad.frilans.arbeidsforhold}}
+                <p class="sporsmalstekst">Hvordan jobber du som frilanser?</p>
+                <ul>
+                    {{#eq frilanserArbeidsforhold.skalJobbe "ja"}}
+                        <li>Du skal jobbe som vanlig i perioden.</li>
+                    {{/eq}}
+                    {{#eq frilanserArbeidsforhold.skalJobbe "nei"}}
+                        <li>Du skal ikke jobbe her i perioden.</li>
+                    {{/eq}}
+                    {{#eq frilanserArbeidsforhold.skalJobbe "redusert"}}
+                        <li>Du skal jobbe redusert i perioden.</li>
+                    {{/eq}}
+                    {{#eq frilanserArbeidsforhold.skalJobbe "vetIkke"}}
+                        <li>Du vet ikke om du skal jobbe her, men sier fra hvis det blir tilfelle.</li>
+                    {{/eq}}
+                    <li>Du jobber vanligvis {{frilanserArbeidsforhold.jobberNormaltTimer}} timer i
+                        uka som frilanser.
+                    </li>
+                    <li>
+                        I perioden med pleiepenger skal du jobbe {{frilanserArbeidsforhold.skalJobbeProsent}}%.
+                        Du får et inntektstap på {{frilanserArbeidsforhold.inntektstapProsent}}%.
+                    </li>
+                    <li>Arbeidsform: {{frilanserArbeidsforhold.arbeidsform}}.</li>
+                </ul>
+            {{/if}}
         {{/if}}
     </section>
 
@@ -282,11 +312,13 @@
                     <p>Registrert i Norge</p>
                     <p>Organisasjonsnummeret: {{virksomhet.organisasjonsnummer}}</p>
                 {{else}}
-                    <p>Registrert i land: {{virksomhet.registrertIUtlandet.landnavn}} ({{virksomhet.registrertIUtlandet.landkode}})</p>
+                    <p>Registrert i land: {{virksomhet.registrertIUtlandet.landnavn}}
+                        ({{virksomhet.registrertIUtlandet.landkode}})</p>
                 {{/if}}
 
                 {{#if virksomhet.yrkesaktivSisteTreFerdigliknedeÅrene}}
-                    <p>Oppgi dato for når du ble yrkesaktiv: {{#dato virksomhet.yrkesaktivSisteTreFerdigliknedeÅrene.oppstartsdato}}{{/dato}}</p>
+                    <p>Oppgi dato for når du ble yrkesaktiv: {{#dato
+                            virksomhet.yrkesaktivSisteTreFerdigliknedeÅrene.oppstartsdato}}{{/dato}}</p>
                 {{/if}}
                 {{#if virksomhet.varigEndring}}
                     <h3>Varig endring</h3>
@@ -315,6 +347,34 @@
                     <hr/>
                 {{/if}}
             {{/each}}
+
+            <hr/>
+
+            {{#if selvstendigArbeidsforhold}}
+                <p class="sporsmalstekst">Hvordan jobber du som selvstending næringsdrivende?</p>
+                <ul>
+                    {{#eq selvstendigArbeidsforhold.skalJobbe "ja"}}
+                        <li>Du skal jobbe som vanlig i perioden.</li>
+                    {{/eq}}
+                    {{#eq selvstendigArbeidsforhold.skalJobbe "nei"}}
+                        <li>Du skal ikke jobbe her i perioden.</li>
+                    {{/eq}}
+                    {{#eq selvstendigArbeidsforhold.skalJobbe "redusert"}}
+                        <li>Du skal jobbe redusert i perioden.</li>
+                    {{/eq}}
+                    {{#eq selvstendigArbeidsforhold.skalJobbe "vetIkke"}}
+                        <li>Du vet ikke om du skal jobbe her, men sier fra hvis det blir tilfelle.</li>
+                    {{/eq}}
+                    <li>Du jobber vanligvis {{selvstendigArbeidsforhold.jobberNormaltTimer}} timer i
+                        uka som selvstendig næringsdrivende.
+                    </li>
+                    <li>
+                        I perioden med pleiepenger skal du jobbe {{selvstendigArbeidsforhold.skalJobbeProsent}}%.
+                        Du får et inntektstap på {{selvstendigArbeidsforhold.inntektstapProsent}}%.
+                    </li>
+                    <li>Arbeidsform: {{selvstendigArbeidsforhold.arbeidsform}}.</li>
+                </ul>
+            {{/if}}
         {{/if}}
     </section>
 
@@ -417,7 +477,8 @@
     <section id="nattevaak">
         {{# if nattevaak }}
             <h2>Nattevåk</h2>
-            <p class="sporsmalstekst">Må du være våken om natten for å pleie barnet, og derfor må være borte fra jobb dagen etter?</p>
+            <p class="sporsmalstekst">Må du være våken om natten for å pleie barnet, og derfor må være borte fra jobb
+                dagen etter?</p>
             <p>{{ jaNeiSvar nattevaak.har_nattevaak }}</p>
             {{# if nattevaak.tilleggsinformasjon }}
                 <div class="fritekst">
@@ -456,7 +517,7 @@
             </ul>
         {{else}}
             <p>Nei</p>{{/if}}
-        <hr />
+        <hr/>
         <p class="sporsmalstekst">Skal du bo i utlandet de neste 12 månedene?</p>
         {{# if medlemskap.skal_bo_i_utlandet_neste_12_mnd }}
             <p>Ja</p>
@@ -483,7 +544,7 @@
         <h2>Samtykke fra deg</h2>
         <p class="sporsmalstekst">Har du forstått dine rettigheter og plikter?</p>
         <p>{{ jaNeiSvar samtykke.har_forstatt_rettigheter_og_plikter }}</p>
-        <hr />
+        <hr/>
         <p class="sporsmalstekst">Har du bekreftet at opplysninger som er gitt er riktige?</p>
         <p>{{ jaNeiSvar samtykke.har_bekreftet_opplysninger }}</p>
     </section>

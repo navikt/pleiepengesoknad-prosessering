@@ -24,6 +24,7 @@ import no.nav.helse.felles.Medlemskap
 import no.nav.helse.felles.Nattevåk
 import no.nav.helse.felles.Næringstyper
 import no.nav.helse.felles.Organisasjon
+import no.nav.helse.felles.SkalJobbe
 import no.nav.helse.felles.Søker
 import no.nav.helse.felles.Tilsynsordning
 import no.nav.helse.felles.TilsynsordningJa
@@ -180,7 +181,7 @@ class PleiepengesoknadProsesseringTest {
                         "Jobb1",
                         skalJobbeProsent = jobb1SkalJobbeProsent,
                         jobberNormaltTimer = 37.5,
-                        skalJobbe = "redusert",
+                        skalJobbe = SkalJobbe.REDUSERT,
                         arbeidsform = Arbeidsform.VARIERENDE
                     ),
                     Organisasjon(
@@ -188,7 +189,7 @@ class PleiepengesoknadProsesseringTest {
                         "Jobb2",
                         skalJobbeProsent = jobb2SkalJobberProsent,
                         jobberNormaltTimer = 37.5,
-                        skalJobbe = "redusert",
+                        skalJobbe = SkalJobbe.REDUSERT,
                         arbeidsform = Arbeidsform.VARIERENDE
                     )
                 )
@@ -445,7 +446,7 @@ class PleiepengesoknadProsesseringTest {
                         "Jobb1",
                         skalJobbeProsent = 50.25,
                         jobberNormaltTimer = 5.0,
-                        skalJobbe = "redusert",
+                        skalJobbe = SkalJobbe.REDUSERT,
                         arbeidsform = Arbeidsform.VARIERENDE
                     ),
                     Organisasjon(
@@ -453,7 +454,7 @@ class PleiepengesoknadProsesseringTest {
                         "Jobb2",
                         skalJobbeProsent = 20.0,
                         jobberNormaltTimer = 3.75,
-                        skalJobbe = "redusert",
+                        skalJobbe = SkalJobbe.REDUSERT,
                         arbeidsform = Arbeidsform.VARIERENDE
                     )
                 )
