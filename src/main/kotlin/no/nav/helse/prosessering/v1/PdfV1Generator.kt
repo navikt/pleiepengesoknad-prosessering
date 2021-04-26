@@ -21,7 +21,7 @@ import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
 
-internal class PdfV1Generator  {
+internal class PdfV1Generator {
     private companion object {
         private val mapper = jacksonObjectMapper().pleiepengerKonfiguert()
 
@@ -82,6 +82,7 @@ internal class PdfV1Generator  {
             val base64string = Base64.getEncoder().encodeToString(bytes)
             return "data:image/png;base64,$base64string"
         }
+
         private fun loadImages() = mapOf(
             "Checkbox_off.png" to loadPng("Checkbox_off"),
             "Checkbox_on.png" to loadPng("Checkbox_on"),
@@ -97,71 +98,77 @@ internal class PdfV1Generator  {
         barnetsIdent: NorskIdent?,
         fødselsdato: LocalDate?,
         barnetsNavn: String?
-    ) : ByteArray {
-        soknadTemplate.apply(Context
-            .newBuilder(mapOf(
-                "søknad" to melding.somMap(),
-                "soknad_id" to melding.søknadId,
-                "soknad_mottatt_dag" to melding.mottatt.withZoneSameInstant(ZONE_ID).norskDag(),
-                "soknad_mottatt" to DATE_TIME_FORMATTER.format(melding.mottatt),
-                "har_medsoker" to melding.harMedsøker,
-                "harIkkeVedlegg" to melding.sjekkOmHarIkkeVedlegg(),
-                "samtidig_hjemme" to melding.samtidigHjemme,
-                "bekrefterPeriodeOver8Uker" to melding.bekrefterPeriodeOver8Uker,
-                "soker" to mapOf(
-                    "navn" to melding.søker.formatertNavn().capitalizeName(),
-                    "fodselsnummer" to melding.søker.fødselsnummer
-                ),
-                "barn" to mapOf(
-                    "navn" to barnetsNavn?.capitalizeName(),
-                    "fodselsdato" to fødselsdato?.format(DATE_FORMATTER),
-                    "id" to barnetsIdent?.getValue()
-                ),
-                "periode" to mapOf(
-                    "fra_og_med" to DATE_FORMATTER.format(melding.fraOgMed),
-                    "til_og_med" to DATE_FORMATTER.format(melding.tilOgMed),
-                    "virkedager" to DateUtils.antallVirkedager(melding.fraOgMed, melding.tilOgMed)
-                ),
-                "arbeidsgivere" to mapOf(
-                    "har_arbeidsgivere" to melding.arbeidsgivere.organisasjoner.isNotEmpty(),
-                    "aktuelle_arbeidsgivere" to melding.arbeidsgivere.organisasjoner.erAktuelleArbeidsgivere(),
-                    "organisasjoner" to melding.arbeidsgivere.organisasjoner.somMap()
-                ),
-                "medlemskap" to mapOf(
-                    "har_bodd_i_utlandet_siste_12_mnd" to melding.medlemskap.harBoddIUtlandetSiste12Mnd,
-                    "utenlandsopphold_siste_12_mnd" to melding.medlemskap.utenlandsoppholdSiste12Mnd.somMapBosted(),
-                    "skal_bo_i_utlandet_neste_12_mnd" to melding.medlemskap.skalBoIUtlandetNeste12Mnd,
-                    "utenlandsopphold_neste_12_mnd" to melding.medlemskap.utenlandsoppholdNeste12Mnd.somMapBosted()
-                ),
-                "samtykke" to mapOf(
-                    "har_forstatt_rettigheter_og_plikter" to melding.harForståttRettigheterOgPlikter,
-                    "har_bekreftet_opplysninger" to melding.harBekreftetOpplysninger
-                ),
-                "hjelp" to mapOf(
-                    "har_medsoker" to melding.harMedsøker,
-                    "ingen_arbeidsgivere" to melding.arbeidsgivere.organisasjoner.isEmpty(),
-                    "sprak" to melding.språk?.sprakTilTekst()
-                ),
-                "tilsynsordning" to tilsynsordning(melding.tilsynsordning),
-                "nattevaak" to nattevåk(melding.nattevåk),
-                "beredskap" to beredskap(melding.beredskap),
-                "utenlandsoppholdIPerioden" to mapOf(
-                    "skalOppholdeSegIUtlandetIPerioden" to melding.utenlandsoppholdIPerioden?.skalOppholdeSegIUtlandetIPerioden,
-                    "opphold" to melding.utenlandsoppholdIPerioden?.opphold?.somMapUtenlandsopphold()
-                ),
-                "ferieuttakIPerioden" to mapOf(
-                    "skalTaUtFerieIPerioden" to melding.ferieuttakIPerioden?.skalTaUtFerieIPerioden,
-                    "ferieuttak" to melding.ferieuttakIPerioden?.ferieuttak?.somMapFerieuttak()
-                ),
-                "skal_bekrefte_omsorg" to melding.skalBekrefteOmsorg,
-                "skal_passe_pa_barnet_i_hele_perioden" to melding.skalPassePaBarnetIHelePerioden,
-                "beskrivelse_omsorgsrollen" to melding.beskrivelseOmsorgsrollen,
-                "barnRelasjon" to melding.barnRelasjon?.utskriftsvennlig,
-                "barnRelasjonBeskrivelse" to melding.barnRelasjonBeskrivelse,
-                "harVærtEllerErVernepliktig" to melding.harVærtEllerErVernepliktig
-            ))
-            .resolver(MapValueResolver.INSTANCE)
-            .build()).let { html ->
+    ): ByteArray {
+        soknadTemplate.apply(
+            Context
+                .newBuilder(
+                    mapOf(
+                        "søknad" to melding.somMap(),
+                        "soknad_id" to melding.søknadId,
+                        "soknad_mottatt_dag" to melding.mottatt.withZoneSameInstant(ZONE_ID).norskDag(),
+                        "soknad_mottatt" to DATE_TIME_FORMATTER.format(melding.mottatt),
+                        "har_medsoker" to melding.harMedsøker,
+                        "harIkkeVedlegg" to melding.sjekkOmHarIkkeVedlegg(),
+                        "samtidig_hjemme" to melding.samtidigHjemme,
+                        "bekrefterPeriodeOver8Uker" to melding.bekrefterPeriodeOver8Uker,
+                        "soker" to mapOf(
+                            "navn" to melding.søker.formatertNavn().capitalizeName(),
+                            "fodselsnummer" to melding.søker.fødselsnummer
+                        ),
+                        "barn" to mapOf(
+                            "navn" to barnetsNavn?.capitalizeName(),
+                            "fodselsdato" to fødselsdato?.format(DATE_FORMATTER),
+                            "id" to barnetsIdent?.getValue()
+                        ),
+                        "periode" to mapOf(
+                            "fra_og_med" to DATE_FORMATTER.format(melding.fraOgMed),
+                            "til_og_med" to DATE_FORMATTER.format(melding.tilOgMed),
+                            "virkedager" to DateUtils.antallVirkedager(melding.fraOgMed, melding.tilOgMed)
+                        ),
+                        "arbeidsgivere" to mapOf(
+                            "har_arbeidsgivere" to melding.arbeidsgivere.organisasjoner.isNotEmpty(),
+                            "aktuelle_arbeidsgivere" to melding.arbeidsgivere.organisasjoner.erAktuelleArbeidsgivere(),
+                            "organisasjoner" to melding.arbeidsgivere.organisasjoner.somMap()
+                        ),
+                        "medlemskap" to mapOf(
+                            "har_bodd_i_utlandet_siste_12_mnd" to melding.medlemskap.harBoddIUtlandetSiste12Mnd,
+                            "utenlandsopphold_siste_12_mnd" to melding.medlemskap.utenlandsoppholdSiste12Mnd.somMapBosted(),
+                            "skal_bo_i_utlandet_neste_12_mnd" to melding.medlemskap.skalBoIUtlandetNeste12Mnd,
+                            "utenlandsopphold_neste_12_mnd" to melding.medlemskap.utenlandsoppholdNeste12Mnd.somMapBosted()
+                        ),
+                        "samtykke" to mapOf(
+                            "har_forstatt_rettigheter_og_plikter" to melding.harForståttRettigheterOgPlikter,
+                            "har_bekreftet_opplysninger" to melding.harBekreftetOpplysninger
+                        ),
+                        "hjelp" to mapOf(
+                            "har_medsoker" to melding.harMedsøker,
+                            "ingen_arbeidsgivere" to melding.arbeidsgivere.organisasjoner.isEmpty(),
+                            "sprak" to melding.språk?.sprakTilTekst()
+                        ),
+                        "tilsynsordning" to tilsynsordning(melding.tilsynsordning),
+                        "nattevaak" to nattevåk(melding.nattevåk),
+                        "beredskap" to beredskap(melding.beredskap),
+                        "utenlandsoppholdIPerioden" to mapOf(
+                            "skalOppholdeSegIUtlandetIPerioden" to melding.utenlandsoppholdIPerioden.skalOppholdeSegIUtlandetIPerioden,
+                            "opphold" to melding.utenlandsoppholdIPerioden.opphold.somMapUtenlandsopphold()
+                        ),
+                        "ferieuttakIPerioden" to mapOf(
+                            "skalTaUtFerieIPerioden" to melding.ferieuttakIPerioden?.skalTaUtFerieIPerioden,
+                            "ferieuttak" to melding.ferieuttakIPerioden?.ferieuttak?.somMapFerieuttak()
+                        ),
+                        "skal_bekrefte_omsorg" to melding.skalBekrefteOmsorg,
+                        "skal_passe_pa_barnet_i_hele_perioden" to melding.skalPassePaBarnetIHelePerioden,
+                        "beskrivelse_omsorgsrollen" to melding.beskrivelseOmsorgsrollen,
+                        "barnRelasjon" to melding.barnRelasjon?.utskriftsvennlig,
+                        "barnRelasjonBeskrivelse" to melding.barnRelasjonBeskrivelse,
+                        "harVærtEllerErVernepliktig" to melding.harVærtEllerErVernepliktig,
+                        "frilanserArbeidsforhold" to melding.frilans?.arbeidsforhold?.somMap(),
+                        "selvstendigArbeidsforhold" to melding.selvstendigArbeidsforhold?.somMap(),
+                    )
+                )
+                .resolver(MapValueResolver.INSTANCE)
+                .build()
+        ).let { html ->
             val outputStream = ByteArrayOutputStream()
 
             PdfRendererBuilder()
@@ -223,9 +230,27 @@ internal class PdfV1Generator  {
     }
 
     private fun PdfRendererBuilder.medFonter() =
-        useFont({ ByteArrayInputStream(REGULAR_FONT) }, "Source Sans Pro", 400, BaseRendererBuilder.FontStyle.NORMAL, false)
-        .useFont({ ByteArrayInputStream(BOLD_FONT) }, "Source Sans Pro", 700, BaseRendererBuilder.FontStyle.NORMAL, false)
-        .useFont({ ByteArrayInputStream(ITALIC_FONT) }, "Source Sans Pro", 400, BaseRendererBuilder.FontStyle.ITALIC, false)
+        useFont(
+            { ByteArrayInputStream(REGULAR_FONT) },
+            "Source Sans Pro",
+            400,
+            BaseRendererBuilder.FontStyle.NORMAL,
+            false
+        )
+            .useFont(
+                { ByteArrayInputStream(BOLD_FONT) },
+                "Source Sans Pro",
+                700,
+                BaseRendererBuilder.FontStyle.NORMAL,
+                false
+            )
+            .useFont(
+                { ByteArrayInputStream(ITALIC_FONT) },
+                "Source Sans Pro",
+                400,
+                BaseRendererBuilder.FontStyle.ITALIC,
+                false
+            )
 
     private fun MeldingV1.somMap() = mapper.convertValue(
         this,
@@ -234,39 +259,47 @@ internal class PdfV1Generator  {
     )
 }
 
+private fun Arbeidsforhold.somMap(): Map<String, Any?> = mapOf(
+    "skalJobbe" to skalJobbe.verdi,
+    "skalJobbeProsent" to skalJobbeProsent.avrundetMedEnDesimal(),
+    "inntektstapProsent" to skalJobbeProsent.skalJobbeProsentTilInntektstap(),
+    "jobberNormaltTimer" to jobberNormaltTimer,
+    "arbeidsform" to arbeidsform.utskriftsvennlig.toLowerCase()
+)
+
 private fun List<Organisasjon>.somMap() = map {
     val skalJobbeProsent = it.skalJobbeProsent.avrundetMedEnDesimal()
     val jobberNormaltimer = it.jobberNormaltTimer
     val inntektstapProsent = skalJobbeProsent.skalJobbeProsentTilInntektstap()
     val vetIkkeEkstrainfo = it.vetIkkeEkstrainfo
 
-    mapOf<String,Any?>(
+    mapOf<String, Any?>(
         "navn" to it.navn,
         "organisasjonsnummer" to it.formaterOrganisasjonsnummer(),
-        "skal_jobbe" to it.skalJobbe,
+        "skal_jobbe" to it.skalJobbe.verdi,
         "skal_jobbe_prosent" to skalJobbeProsent.formatertMedEnDesimal(),
         "inntektstap_prosent" to inntektstapProsent.formatertMedEnDesimal(),
         "jobber_normaltimer" to jobberNormaltimer,
         "vet_ikke_ekstra_info" to vetIkkeEkstrainfo,
-        "arbeidsform" to it.arbeidsform?.utskriftsvennlig
+        "arbeidsform" to it.arbeidsform.utskriftsvennlig
     )
 }
 
 private fun List<Bosted>.somMapBosted(): List<Map<String, Any?>> {
     val dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy").withZone(ZoneId.of("Europe/Oslo"))
     return map {
-        mapOf<String,Any?>(
+        mapOf<String, Any?>(
             "landnavn" to it.landnavn,
             "fraOgMed" to dateFormatter.format(it.fraOgMed),
             "tilOgMed" to dateFormatter.format(it.tilOgMed)
-            )
+        )
     }
 }
 
 private fun List<Utenlandsopphold>.somMapUtenlandsopphold(): List<Map<String, Any?>> {
     val dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy").withZone(ZoneId.of("Europe/Oslo"))
     return map {
-        mapOf<String,Any?>(
+        mapOf<String, Any?>(
             "landnavn" to it.landnavn,
             "landkode" to it.landkode,
             "fraOgMed" to dateFormatter.format(it.fraOgMed),
@@ -282,17 +315,17 @@ private fun List<Utenlandsopphold>.somMapUtenlandsopphold(): List<Map<String, An
 private fun List<Ferieuttak>.somMapFerieuttak(): List<Map<String, Any?>> {
     val dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy").withZone(ZoneId.of("Europe/Oslo"))
     return map {
-        mapOf<String,Any?>(
+        mapOf<String, Any?>(
             "fraOgMed" to dateFormatter.format(it.fraOgMed),
             "tilOgMed" to dateFormatter.format(it.tilOgMed)
-            )
+        )
     }
 }
 
-private fun List<Periode>.somMapPerioder(): List<Map<String, Any?>>{
+private fun List<Periode>.somMapPerioder(): List<Map<String, Any?>> {
     val dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy").withZone(ZoneId.of("Europe/Oslo"))
     return map {
-        mapOf<String,Any?>(
+        mapOf<String, Any?>(
             "fraOgMed" to dateFormatter.format(it.fraOgMed),
             "tilOgMed" to dateFormatter.format(it.tilOgMed)
         )
@@ -316,4 +349,4 @@ private fun String.sprakTilTekst() = when (this.toLowerCase()) {
     else -> this
 }
 
-private fun MeldingV1.sjekkOmHarIkkeVedlegg() : Boolean = !vedleggUrls.isNotEmpty()
+private fun MeldingV1.sjekkOmHarIkkeVedlegg(): Boolean = !vedleggUrls.isNotEmpty()

@@ -44,7 +44,7 @@ class JournalforingsFormatTest {
                 "organisasjoner": [{
                     "organisasjonsnummer": "1212",
                     "navn": "Nei",
-                    "skalJobbe": "nei",
+                    "skalJobbe": "NEI",
                     "jobberNormaltTimer": 0.0,
                     "skalJobbeProsent": 0.0,
                     "vetIkkeEkstrainfo": null,
@@ -52,7 +52,7 @@ class JournalforingsFormatTest {
                 },{
                     "organisasjonsnummer": "54321",
                     "navn": "Navn",
-                    "skalJobbe": "redusert",
+                    "skalJobbe": "REDUSERT",
                     "skalJobbeProsent": 22.512,
                     "vetIkkeEkstrainfo": null,
                     "jobberNormaltTimer": 0.0,
@@ -101,9 +101,17 @@ class JournalforingsFormatTest {
           },
             "frilans": {
               "startdato": "2018-02-01",
-              "jobberFortsattSomFrilans": true
+              "jobberFortsattSomFrilans": true,
+              "arbeidsforhold": {
+                  "skalJobbe": "NEI",
+                  "arbeidsform": "FAST",
+                  "jobberNormaltTimer": 40.0,
+                  "skalJobbeTimer": 0.0,
+                  "skalJobbeProsent": 0.0
+              },
             },
             "selvstendigVirksomheter" : [],
+            "selvstendigArbeidsforhold": null,
           "skalBekrefteOmsorg": true,
           "skalPassePaBarnetIHelePerioden": true,
           "beskrivelseOmsorgsrollen": "En kort beskrivelse",
@@ -142,7 +150,7 @@ class JournalforingsFormatTest {
                     jobberNormaltTimer = 0.0,
                     skalJobbeProsent = 0.0,
                     vetIkkeEkstrainfo = null,
-                    skalJobbe = "nei",
+                    skalJobbe = SkalJobbe.NEI,
                     arbeidsform = Arbeidsform.TURNUS
                 ),
                 Organisasjon(
@@ -151,7 +159,7 @@ class JournalforingsFormatTest {
                     skalJobbeProsent = 22.512,
                     jobberNormaltTimer = 0.0,
                     vetIkkeEkstrainfo = null,
-                    skalJobbe = "redusert",
+                    skalJobbe = SkalJobbe.REDUSERT,
                     arbeidsform = Arbeidsform.FAST
                 )
             )
@@ -191,7 +199,14 @@ class JournalforingsFormatTest {
         ferieuttakIPerioden = FerieuttakIPerioden(skalTaUtFerieIPerioden = false, ferieuttak = listOf()),
         frilans = Frilans(
             startdato = LocalDate.parse("2018-02-01"),
-            jobberFortsattSomFrilans = true
+            jobberFortsattSomFrilans = true,
+            arbeidsforhold = Arbeidsforhold(
+                skalJobbe = SkalJobbe.NEI,
+                arbeidsform = Arbeidsform.FAST,
+                jobberNormaltTimer = 40.0,
+                skalJobbeTimer = 0.0,
+                skalJobbeProsent = 0.0
+            )
         ),
         selvstendigVirksomheter = listOf(),
         skalBekrefteOmsorg = true,

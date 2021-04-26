@@ -1,5 +1,6 @@
 package no.nav.helse.prosessering.v1
 
+import com.fasterxml.jackson.annotation.JsonAlias
 import com.fasterxml.jackson.annotation.JsonFormat
 import java.net.URI
 import java.time.Duration
@@ -29,6 +30,7 @@ data class MeldingV1 (
     val nattevåk: Nattevåk?,
     val frilans: Frilans?,
     val selvstendigVirksomheter: List<Virksomhet> = listOf(),
+    val selvstendigArbeidsforhold: Arbeidsforhold? = null,
     val skalBekrefteOmsorg: Boolean? = null, // TODO: Fjern optional når prodsatt.
     val skalPassePaBarnetIHelePerioden: Boolean? = null, // TODO: Fjern optional når prodsatt.
     val beskrivelseOmsorgsrollen: String? = null, // TODO: Fjern optional når prodsatt.
@@ -121,7 +123,7 @@ data class Arbeidsgivere(
 data class Organisasjon(
     val organisasjonsnummer: String,
     val navn: String?,
-    val skalJobbe: String,
+    val skalJobbe: SkalJobbe,
     val jobberNormaltTimer: Double,
     val skalJobbeProsent: Double,
     val vetIkkeEkstrainfo: String? = null,
@@ -185,7 +187,8 @@ data class Nattevåk(
 data class Frilans(
     @JsonFormat(pattern = "yyyy-MM-dd")
     val startdato: LocalDate,
-    val jobberFortsattSomFrilans: Boolean
+    val jobberFortsattSomFrilans: Boolean,
+    val arbeidsforhold: Arbeidsforhold? = null
 )
 
 data class Beredskap(
@@ -261,4 +264,19 @@ data class Ferieuttak(
     override fun toString(): String {
         return "Ferieuttak(fraOgMed=$fraOgMed, tilOgMed=$tilOgMed)"
     }
+}
+
+data class Arbeidsforhold(
+    val skalJobbe: SkalJobbe,
+    val arbeidsform: Arbeidsform,
+    val jobberNormaltTimer: Double,
+    val skalJobbeTimer: Double,
+    val skalJobbeProsent: Double
+)
+
+enum class SkalJobbe(val verdi: String) {
+    @JsonAlias("ja") JA("ja"),
+    @JsonAlias("nei") NEI("nei"),
+    @JsonAlias("redusert") REDUSERT("redusert"),
+    @JsonAlias("vetIkke") VET_IKKE("vetIkke")
 }
