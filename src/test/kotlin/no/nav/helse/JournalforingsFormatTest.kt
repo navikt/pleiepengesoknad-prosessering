@@ -31,7 +31,9 @@ class JournalforingsFormatTest {
           },
           "ytelse": {
             "type": "PLEIEPENGER_SYKT_BARN",
-            "søknadsperiode": "2020-01-01/2020-01-10",
+            "søknadsperiode": ["2020-01-01/2020-01-10"],
+            "endringsperiode": [],
+            "infoFraPunsj": null,
             "dataBruktTilUtledning" : {
               "harForståttRettigheterOgPlikter" : true,
               "harBekreftetOpplysninger" : true,
@@ -90,7 +92,7 @@ class JournalforingsFormatTest {
               }
             },
             "beredskap": {
-              "perioderSomSkalSlettes": null,
+              "perioderSomSkalSlettes": {},
               "perioder": {
                 "2020-01-01/2020-01-05": {
                   "tilleggsinformasjon": "Jeg skal være i beredskap. Basta!"
@@ -101,7 +103,7 @@ class JournalforingsFormatTest {
               }
             },
             "nattevåk": {
-              "perioderSomSkalSlettes": null,
+              "perioderSomSkalSlettes": {},
               "perioder": {
                 "2020-01-01/2020-01-05": {
                   "tilleggsinformasjon": "Jeg skal ha nattevåk. Basta!"
@@ -119,7 +121,8 @@ class JournalforingsFormatTest {
                 "2020-01-06/2020-01-10": {
                   "etablertTilsynTimerPerDag": "PT4H"
                 }
-              }
+              },
+              "perioderSomSkalSlettes": {}
             },
             "arbeidstid": {
               "arbeidstakerList": [
@@ -151,22 +154,22 @@ class JournalforingsFormatTest {
                 "2020-01-06/2020-01-10": {
                   "timerPleieAvBarnetPerDag": "PT2H"
                 }
-              }
+              },
+              "perioderSomSkalSlettes": {}
             },
             "omsorg" : {
-              "relasjonTilBarnet" : "Forelder",
-              "samtykketOmsorgForBarnet" : true,
+              "relasjonTilBarnet" : "MOR",
               "beskrivelseAvOmsorgsrollen" : "Blabla beskrivelse"
             },
             "lovbestemtFerie": {
-              "perioderSomSkalSlettes": null,
+              "perioderSomSkalSlettes": {},
               "perioder": {
                 "2020-01-01/2020-01-05":  {},
                 "2020-01-06/2020-01-10": {}
               }
             },
             "bosteder": {
-              "perioderSomSkalSlettes": null,
+              "perioderSomSkalSlettes": {},
               "perioder": {
                 "2020-01-01/2020-01-05": {
                   "land": "ESP"
@@ -186,7 +189,8 @@ class JournalforingsFormatTest {
                   "land": "SWE",
                   "årsak": "barnetInnlagtIHelseinstitusjonForNorskOffentligRegning"
                 }
-              }
+              },
+              "perioderSomSkalSlettes": {}
             }
           }
         }
