@@ -177,7 +177,8 @@ class PdfV1GeneratorTest {
             ),
             frilans = Frilans(
                 startdato = LocalDate.now().minusYears(3),
-                jobberFortsattSomFrilans = true,
+                sluttdato = LocalDate.now(),
+                jobberFortsattSomFrilans = false,
                 arbeidsforhold = Arbeidsforhold(
                     skalJobbe = SkalJobbe.NEI,
                     arbeidsform = Arbeidsform.FAST,
@@ -297,7 +298,8 @@ class PdfV1GeneratorTest {
         ),
         frilans: Frilans = Frilans(
             startdato = LocalDate.now().minusYears(3),
-            jobberFortsattSomFrilans = true
+            sluttdato = LocalDate.now(),
+            jobberFortsattSomFrilans = false
         ),
         selvstendigVirksomheter: List<Virksomhet> = listOf(
             Virksomhet(

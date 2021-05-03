@@ -252,6 +252,11 @@
             <p class="sporsmalstekst">Jobber du fremdeles som frilanser?</p>
             <p>{{ jaNeiSvar søknad.frilans.jobberFortsattSomFrilans }}</p>
 
+            {{#unless  søknad.frilans.jobberFortsattSomFrilans}}
+                <p class="sporsmalstekst">Når sluttet du som frilanser?</p>
+                <p>{{#dato søknad.frilans.sluttdato}}{{/dato}}</p>
+            {{/unless}}
+
             {{#if søknad.frilans.arbeidsforhold}}
                 <p class="sporsmalstekst">Hvordan jobber du som frilanser?</p>
                 <ul>
