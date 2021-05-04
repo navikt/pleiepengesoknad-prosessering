@@ -6,10 +6,8 @@ import no.nav.helse.felles.*
 import no.nav.helse.prosessering.v1.*
 import no.nav.k9.søknad.Søknad
 import no.nav.k9.søknad.felles.Versjon
-import no.nav.k9.søknad.felles.opptjening.VirksomhetType
 import no.nav.k9.søknad.felles.opptjening.Frilanser
 import no.nav.k9.søknad.felles.opptjening.OpptjeningAktivitet
-import no.nav.k9.søknad.felles.opptjening.Organisasjonsnummer
 import no.nav.k9.søknad.felles.opptjening.SelvstendigNæringsdrivende
 import no.nav.k9.søknad.felles.personopplysninger.Bosteder
 import no.nav.k9.søknad.felles.personopplysninger.Utenlandsopphold.UtenlandsoppholdPeriodeInfo
@@ -17,7 +15,9 @@ import no.nav.k9.søknad.felles.personopplysninger.Utenlandsopphold.Utenlandsopp
 import no.nav.k9.søknad.felles.personopplysninger.Utenlandsopphold.UtenlandsoppholdÅrsak.BARNET_INNLAGT_I_HELSEINSTITUSJON_FOR_NORSK_OFFENTLIG_REGNING
 import no.nav.k9.søknad.felles.type.Landkode
 import no.nav.k9.søknad.felles.type.NorskIdentitetsnummer
+import no.nav.k9.søknad.felles.type.Organisasjonsnummer
 import no.nav.k9.søknad.felles.type.SøknadId
+import no.nav.k9.søknad.felles.type.VirksomhetType
 import no.nav.k9.søknad.ytelse.psb.v1.*
 import no.nav.k9.søknad.ytelse.psb.v1.Beredskap.BeredskapPeriodeInfo
 import no.nav.k9.søknad.ytelse.psb.v1.Nattevåk.NattevåkPeriodeInfo
