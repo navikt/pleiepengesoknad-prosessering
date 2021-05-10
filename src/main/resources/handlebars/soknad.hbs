@@ -384,6 +384,68 @@
     </section>
 
     <section id="omsorgstilbud">
+        {{#if omsorgstilbud}}
+            <h2>Omsorgstilbud</h2>
+            <p class="sporsmalstekst">Skal barnet være i et omsorgstilbud i perioden du har søkt om?</p>
+
+            {{#eq omsorgstilbud.vetPerioden "VET_HELE_PERIODEN" }}
+                <p>Ja, jeg vet hele perioden.</p>
+            {{/eq}}
+
+            {{#eq omsorgstilbud.vetPerioden "USIKKER" }}
+                <p>Barnet skal i omsorgstilbud, men jeg er usikker på hvor mye.</p> <br/>
+
+                <p class="sporsmalstekst">Vet du et minimum antall timer barnet skal være i et omsorgstilbud per
+                    uke?</p>
+                {{#if omsorgstilbud.vetMinAntallTimer}}
+                    Ja.
+                {{else}}
+                    Nei.
+                {{/if}}
+            {{/eq}}
+
+            {{#if omsorgstilbud.tilsyn}}
+                <hr/>
+                <p><span class="sporsmalstekst">Mandag: </span>
+                    {{# if omsorgstilbud.tilsyn.mandag }}
+                        {{omsorgstilbud.tilsyn.mandag}}
+                    {{ else }}
+                        <span class="ikke_satt">Nei</span>
+                    {{/if}}
+                </p>
+                <p><span class="sporsmalstekst">Tirsdag: </span>
+                    {{# if omsorgstilbud.tilsyn.tirsdag }}
+                        {{omsorgstilbud.tilsyn.tirsdag}}
+                    {{ else }}
+                        <span class="ikke_satt">Nei</span>
+                    {{/if}}
+                </p>
+                <p><span class="sporsmalstekst">Onsdag: </span>
+                    {{# if omsorgstilbud.tilsyn.onsdag }}
+                        {{omsorgstilbud.tilsyn.onsdag}}
+                    {{ else }}
+                        <span class="ikke_satt">Nei</span>
+                    {{/if}}
+                </p>
+                <p><span class="sporsmalstekst">Torsdag: </span>
+                    {{# if omsorgstilbud.tilsyn.torsdag }}
+                        {{omsorgstilbud.tilsyn.torsdag}}
+                    {{ else }}
+                        <span class="ikke_satt">Nei</span>
+                    {{/if}}
+                </p>
+                <p><span class="sporsmalstekst">Fredag: </span>
+                    {{# if omsorgstilbud.tilsyn.fredag }}
+                        {{omsorgstilbud.tilsyn.fredag}}
+                    {{ else }}
+                        <span class="ikke_satt">Nei</span>
+                    {{/if}}
+                </p>
+                <br/>
+            {{/if}}
+        {{/if}}
+
+        <!-- TODO: Utgår -->
         {{# if tilsynsordning }}
             <h2>Omsorgstilbud</h2>
             <p class="sporsmalstekst">Skal barnet være i et omsorgstilbud i perioden du har søkt om?</p>

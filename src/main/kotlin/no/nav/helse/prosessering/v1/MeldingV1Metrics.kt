@@ -2,6 +2,7 @@ package no.nav.helse.prosessering.v1
 
 import io.prometheus.client.Counter
 import io.prometheus.client.Histogram
+import no.nav.helse.felles.VetPeriode
 
 val opplastedeVedleggHistogram = Histogram.build()
     .buckets(0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0)
@@ -77,10 +78,20 @@ val ingenInntektCounter = Counter.build()
 internal fun MeldingV1.reportMetrics() {
     opplastedeVedleggHistogram.observe(vedleggUrls.size.toDouble())
 
-    when (tilsynsordning?.svar) {
-        "ja" -> omsorgstilbudCounter.labels("omsorgstilbud", "ja").inc()
-        "nei" -> omsorgstilbudCounter.labels("omsorgstilbud", "nei").inc()
-        else -> omsorgstilbudCounter.labels("omsorgstilbud", "vetIkke").inc()
+    when (omsorgstilbud) {
+        null -> omsorgstilbudCounter.labels("omsorgstilbud", "nei").inc()
+        else -> {
+            when (omsorgstilbud.vetPerioden) {
+                VetPeriode.VET_HELE_PERIODEN -> omsorgstilbudCounter.labels("omsorgstilbud", "ja").inc()
+                VetPeriode.USIKKER -> {
+                    if(omsorgstilbud.vetMinAntallTimer == true && omsorgstilbud.tilsyn != null) {
+                        omsorgstilbudCounter.labels("omsorgstilbud", "usikkerMinAntallTimer").inc()
+                    } else {
+                        omsorgstilbudCounter.labels("omsorgstilbud", "usikkerNei").inc()
+                    }
+                }
+            }
+        }
     }
 
     when (beredskap?.beredskap) {

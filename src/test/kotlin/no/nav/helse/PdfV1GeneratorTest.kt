@@ -303,7 +303,12 @@ class PdfV1GeneratorTest {
         ),
         selvstendigVirksomheter: List<Virksomhet> = listOf(
             Virksomhet(
-                næringstyper = listOf(Næringstyper.ANNEN, Næringstyper.FISKE, Næringstyper.JORDBRUK_SKOGBRUK, Næringstyper.DAGMAMMA),
+                næringstyper = listOf(
+                    Næringstyper.ANNEN,
+                    Næringstyper.FISKE,
+                    Næringstyper.JORDBRUK_SKOGBRUK,
+                    Næringstyper.DAGMAMMA
+                ),
                 fiskerErPåBladB = true,
                 fraOgMed = LocalDate.now(),
                 tilOgMed = LocalDate.now().plusDays(10),
@@ -828,6 +833,69 @@ class PdfV1GeneratorTest {
                 soknadId = id, harMedsøker = true, organisasjoner = listOf(
                 ), barn = Barn(fødselsnummer = null, fødselsdato = null, navn = null, aktørId = null),
                 vedleggUrls = listOf(URI("noe"))
+            ),
+            barnetsIdent = null,
+            barnetsNavn = barnetsNavn,
+            fødselsdato = null
+        )
+        if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
+
+
+        id = "24-omsorgstilbud-med-tilsyn"
+        pdf = generator.generateSoknadOppsummeringPdf(
+            melding = SøknadUtils.defaultSøknad.copy(
+                tilsynsordning = null,
+                omsorgstilbud = Omsorgstilbud(
+                    tilsyn = Tilsynsuke(
+                        mandag = Duration.ofHours(7).plusMinutes(30),
+                        tirsdag = Duration.ofHours(7),
+                        onsdag = null,
+                        torsdag = Duration.ofHours(4).plusMinutes(30),
+                        fredag = Duration.ofHours(7).plusMinutes(30),
+                    ),
+                    vetPerioden = VetPeriode.VET_HELE_PERIODEN,
+                    vetMinAntallTimer = null
+                )
+            ),
+            barnetsIdent = null,
+            barnetsNavn = barnetsNavn,
+            fødselsdato = null
+        )
+        if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
+
+
+        id = "25-omsorgstilbud-med-usikker-tilsyn-vet-min-antall-timer"
+        pdf = generator.generateSoknadOppsummeringPdf(
+            melding = SøknadUtils.defaultSøknad.copy(
+                tilsynsordning = null,
+                omsorgstilbud = Omsorgstilbud(
+                    tilsyn = Tilsynsuke(
+                        mandag = Duration.ofHours(2).plusMinutes(30),
+                        tirsdag = Duration.ofHours(2).plusMinutes(30),
+                        onsdag = Duration.ofHours(2).plusMinutes(30),
+                        torsdag = Duration.ofHours(2).plusMinutes(30),
+                        fredag = Duration.ofHours(2).plusMinutes(30),
+                    ),
+                    vetPerioden = VetPeriode.USIKKER,
+                    vetMinAntallTimer = true
+                )
+            ),
+            barnetsIdent = null,
+            barnetsNavn = barnetsNavn,
+            fødselsdato = null
+        )
+        if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
+
+
+        id = "26-omsorgstilbud-med-usikker-tilsyn-vet-ikke-min-antall-timer"
+        pdf = generator.generateSoknadOppsummeringPdf(
+            melding = SøknadUtils.defaultSøknad.copy(
+                tilsynsordning = null,
+                omsorgstilbud = Omsorgstilbud(
+                    tilsyn = null,
+                    vetPerioden = VetPeriode.USIKKER,
+                    vetMinAntallTimer = false
+                )
             ),
             barnetsIdent = null,
             barnetsNavn = barnetsNavn,

@@ -27,7 +27,8 @@ data class MeldingV1 (
     val samtidigHjemme: Boolean? = null,
     val harForståttRettigheterOgPlikter : Boolean,
     val harBekreftetOpplysninger : Boolean,
-    val tilsynsordning: Tilsynsordning?,
+    val tilsynsordning: Tilsynsordning? = null, // TODO: 10/05/2021 utgår
+    val omsorgstilbud: Omsorgstilbud? = null,
     val beredskap: Beredskap?,
     val nattevåk: Nattevåk?,
     val frilans: Frilans?,

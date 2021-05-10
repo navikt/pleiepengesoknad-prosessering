@@ -117,6 +117,7 @@ data class Medlemskap(
     val utenlandsoppholdNeste12Mnd: List<Bosted> = listOf()
 )
 
+// TODO: 10/05/2021 utgår
 data class TilsynsordningJa(
     val mandag: Duration?,
     val tirsdag: Duration?,
@@ -130,6 +131,7 @@ data class TilsynsordningJa(
     }
 }
 
+// TODO: 10/05/2021 utgår
 data class TilsynsordningVetIkke(
     val svar: String,
     val annet: String? = null
@@ -139,10 +141,30 @@ data class TilsynsordningVetIkke(
     }
 }
 
+// TODO: 10/05/2021 utgår
 data class Tilsynsordning(
     val svar: String,
     val ja: TilsynsordningJa?,
     val vetIkke: TilsynsordningVetIkke?
+)
+
+data class Omsorgstilbud(
+    val tilsyn: Tilsynsuke? = null,
+    val vetPerioden: VetPeriode,
+    val vetMinAntallTimer: Boolean? = null
+)
+
+enum class VetPeriode {
+    VET_HELE_PERIODEN,
+    USIKKER
+}
+
+data class Tilsynsuke(
+    val mandag: Duration? = null,
+    val tirsdag: Duration? = null,
+    val onsdag: Duration? = null,
+    val torsdag: Duration? = null,
+    val fredag: Duration? = null
 )
 
 data class Nattevåk(

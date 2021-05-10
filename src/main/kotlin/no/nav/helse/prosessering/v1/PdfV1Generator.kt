@@ -149,6 +149,7 @@ internal class PdfV1Generator {
                             "sprak" to melding.språk?.sprakTilTekst()
                         ),
                         "tilsynsordning" to tilsynsordning(melding.tilsynsordning),
+                        "omsorgstilbud" to melding.omsorgstilbud?.somMap(),
                         "nattevaak" to nattevåk(melding.nattevåk),
                         "beredskap" to beredskap(melding.beredskap),
                         "utenlandsoppholdIPerioden" to mapOf(
@@ -209,6 +210,20 @@ internal class PdfV1Generator {
         }
     }
 
+    private fun Omsorgstilbud.somMap() = mapOf(
+        "tilsyn" to tilsyn?.somMap(),
+        "vetPerioden" to vetPerioden.name,
+        "vetMinAntallTimer" to vetMinAntallTimer
+    )
+
+    private fun Tilsynsuke.somMap() = mapOf<String, Any?>(
+        "mandag" to mandag?.somTekst(),
+        "tirsdag" to tirsdag?.somTekst(),
+        "onsdag" to onsdag?.somTekst(),
+        "torsdag" to torsdag?.somTekst(),
+        "fredag" to fredag?.somTekst()
+    )
+
     private fun tilsynsordning(tilsynsordning: Tilsynsordning?) = when {
         tilsynsordning == null -> null
         "ja" == tilsynsordning.svar -> mapOf(
@@ -233,9 +248,27 @@ internal class PdfV1Generator {
     }
 
     private fun PdfRendererBuilder.medFonter() =
-        useFont({ ByteArrayInputStream(REGULAR_FONT) }, "Source Sans Pro", 400, BaseRendererBuilder.FontStyle.NORMAL, false)
-        .useFont({ ByteArrayInputStream(BOLD_FONT) }, "Source Sans Pro", 700, BaseRendererBuilder.FontStyle.NORMAL, false)
-        .useFont({ ByteArrayInputStream(ITALIC_FONT) }, "Source Sans Pro", 400, BaseRendererBuilder.FontStyle.ITALIC, false)
+        useFont(
+            { ByteArrayInputStream(REGULAR_FONT) },
+            "Source Sans Pro",
+            400,
+            BaseRendererBuilder.FontStyle.NORMAL,
+            false
+        )
+            .useFont(
+                { ByteArrayInputStream(BOLD_FONT) },
+                "Source Sans Pro",
+                700,
+                BaseRendererBuilder.FontStyle.NORMAL,
+                false
+            )
+            .useFont(
+                { ByteArrayInputStream(ITALIC_FONT) },
+                "Source Sans Pro",
+                400,
+                BaseRendererBuilder.FontStyle.ITALIC,
+                false
+            )
 
     private fun MeldingV1.somMap() = mapper.convertValue(
         this,
