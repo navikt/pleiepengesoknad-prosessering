@@ -212,7 +212,7 @@ internal class PdfV1Generator {
 
     private fun Omsorgstilbud.somMap() = mapOf(
         "tilsyn" to tilsyn?.somMap(),
-        "vetPerioden" to vetPerioden.name,
+        "vetPeriode" to vetPeriode.name,
         "vetMinAntallTimer" to vetMinAntallTimer
     )
 

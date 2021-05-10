@@ -150,7 +150,7 @@ data class Tilsynsordning(
 
 data class Omsorgstilbud(
     val tilsyn: Tilsynsuke? = null,
-    val vetPerioden: VetPeriode,
+    val vetPeriode: VetPeriode,
     val vetMinAntallTimer: Boolean? = null
 )
 

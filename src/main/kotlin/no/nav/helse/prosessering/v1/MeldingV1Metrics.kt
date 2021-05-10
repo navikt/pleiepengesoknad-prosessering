@@ -81,7 +81,7 @@ internal fun MeldingV1.reportMetrics() {
     when (omsorgstilbud) {
         null -> omsorgstilbudCounter.labels("omsorgstilbud", "nei").inc()
         else -> {
-            when (omsorgstilbud.vetPerioden) {
+            when (omsorgstilbud.vetPeriode) {
                 VetPeriode.VET_HELE_PERIODEN -> omsorgstilbudCounter.labels("omsorgstilbud", "ja").inc()
                 VetPeriode.USIKKER -> {
                     if(omsorgstilbud.vetMinAntallTimer == true && omsorgstilbud.tilsyn != null) {

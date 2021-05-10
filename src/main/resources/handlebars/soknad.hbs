@@ -388,11 +388,11 @@
             <h2>Omsorgstilbud</h2>
             <p class="sporsmalstekst">Skal barnet være i et omsorgstilbud i perioden du har søkt om?</p>
 
-            {{#eq omsorgstilbud.vetPerioden "VET_HELE_PERIODEN" }}
+            {{#eq omsorgstilbud.vetPeriode "VET_HELE_PERIODEN" }}
                 <p>Ja, jeg vet hele perioden.</p>
             {{/eq}}
 
-            {{#eq omsorgstilbud.vetPerioden "USIKKER" }}
+            {{#eq omsorgstilbud.vetPeriode "USIKKER" }}
                 <p>Barnet skal i omsorgstilbud, men jeg er usikker på hvor mye.</p> <br/>
 
                 <p class="sporsmalstekst">Vet du et minimum antall timer barnet skal være i et omsorgstilbud per

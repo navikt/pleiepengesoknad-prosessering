@@ -3,7 +3,6 @@ package no.nav.helse
 import no.nav.helse.aktoer.Fodselsnummer
 import no.nav.helse.felles.*
 import no.nav.helse.prosessering.v1.*
-import org.junit.Ignore
 import java.io.File
 import java.net.URI
 import java.time.Duration
@@ -853,7 +852,7 @@ class PdfV1GeneratorTest {
                         torsdag = Duration.ofHours(4).plusMinutes(30),
                         fredag = Duration.ofHours(7).plusMinutes(30),
                     ),
-                    vetPerioden = VetPeriode.VET_HELE_PERIODEN,
+                    vetPeriode = VetPeriode.VET_HELE_PERIODEN,
                     vetMinAntallTimer = null
                 )
             ),
@@ -876,7 +875,7 @@ class PdfV1GeneratorTest {
                         torsdag = Duration.ofHours(2).plusMinutes(30),
                         fredag = Duration.ofHours(2).plusMinutes(30),
                     ),
-                    vetPerioden = VetPeriode.USIKKER,
+                    vetPeriode = VetPeriode.USIKKER,
                     vetMinAntallTimer = true
                 )
             ),
@@ -893,7 +892,7 @@ class PdfV1GeneratorTest {
                 tilsynsordning = null,
                 omsorgstilbud = Omsorgstilbud(
                     tilsyn = null,
-                    vetPerioden = VetPeriode.USIKKER,
+                    vetPeriode = VetPeriode.USIKKER,
                     vetMinAntallTimer = false
                 )
             ),
