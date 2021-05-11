@@ -384,23 +384,24 @@
     </section>
 
     <section id="omsorgstilbud">
+        <h2>Omsorgstilbud</h2>
+        <p class="sporsmalstekst">Skal barnet være i et omsorgstilbud i hele eller deler av perioden du søker om?</p>
         {{#if omsorgstilbud}}
-            <h2>Omsorgstilbud</h2>
-            <p class="sporsmalstekst">Skal barnet være i et omsorgstilbud i perioden du har søkt om?</p>
+            <p>Ja.</p>
 
+            <br/><p class="sporsmalstekst">Vet du hvor mye barnet skal være i omsorgstilbudet?</p>
             {{#eq omsorgstilbud.vetPeriode "VET_HELE_PERIODEN" }}
-                <p>Ja, jeg vet hele perioden.</p>
+                <p>Ja.</p>
             {{/eq}}
 
             {{#eq omsorgstilbud.vetPeriode "USIKKER" }}
-                <p>Barnet skal i omsorgstilbud, men jeg er usikker på hvor mye.</p> <br/>
+                <p>Nei, jeg er usikker på hvor mye.</p> <br/>
 
-                <p class="sporsmalstekst">Vet du et minimum antall timer barnet skal være i et omsorgstilbud per
-                    uke?</p>
+                <br/><p class="sporsmalstekst">Vet du hvor mye barnet vanligvis klarer å være i omsorgstilbudet</p>
                 {{#if omsorgstilbud.vetMinAntallTimer}}
                     Ja.
                 {{else}}
-                    Nei.
+                    <p>Nei.</p>
                 {{/if}}
             {{/eq}}
 
@@ -443,6 +444,9 @@
                 </p>
                 <br/>
             {{/if}}
+
+        {{else}}
+            <p>Nei.</p>
         {{/if}}
 
         <!-- TODO: Utgår -->

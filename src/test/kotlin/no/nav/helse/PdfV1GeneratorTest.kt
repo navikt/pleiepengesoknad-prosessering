@@ -825,7 +825,6 @@ class PdfV1GeneratorTest {
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
-
         id = "23-har-lastet-opp-vedlegg"
         pdf = generator.generateSoknadOppsummeringPdf(
             melding = gyldigMelding(
@@ -838,7 +837,6 @@ class PdfV1GeneratorTest {
             fødselsdato = null
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
-
 
         id = "24-omsorgstilbud-med-tilsyn"
         pdf = generator.generateSoknadOppsummeringPdf(
@@ -862,7 +860,6 @@ class PdfV1GeneratorTest {
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
-
         id = "25-omsorgstilbud-med-usikker-tilsyn-vet-min-antall-timer"
         pdf = generator.generateSoknadOppsummeringPdf(
             melding = SøknadUtils.defaultSøknad.copy(
@@ -885,7 +882,6 @@ class PdfV1GeneratorTest {
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
-
         id = "26-omsorgstilbud-med-usikker-tilsyn-vet-ikke-min-antall-timer"
         pdf = generator.generateSoknadOppsummeringPdf(
             melding = SøknadUtils.defaultSøknad.copy(
@@ -895,6 +891,18 @@ class PdfV1GeneratorTest {
                     vetPeriode = VetPeriode.USIKKER,
                     vetMinAntallTimer = false
                 )
+            ),
+            barnetsIdent = null,
+            barnetsNavn = barnetsNavn,
+            fødselsdato = null
+        )
+        if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
+
+        id = "27-uten-omsorgstilbud"
+        pdf = generator.generateSoknadOppsummeringPdf(
+            melding = SøknadUtils.defaultSøknad.copy(
+                tilsynsordning = null,
+                omsorgstilbud = null
             ),
             barnetsIdent = null,
             barnetsNavn = barnetsNavn,
