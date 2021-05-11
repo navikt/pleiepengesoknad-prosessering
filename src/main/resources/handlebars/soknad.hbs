@@ -387,11 +387,11 @@
         <h2>Omsorgstilbud</h2>
         <p class="sporsmalstekst">Skal barnet være i et omsorgstilbud i hele eller deler av perioden du søker om?</p>
         {{#if omsorgstilbud}}
-            <p>Ja.</p>
+            <p>Ja</p>
 
             <br/><p class="sporsmalstekst">Vet du hvor mye barnet skal være i omsorgstilbudet?</p>
             {{#eq omsorgstilbud.vetPeriode "VET_HELE_PERIODEN" }}
-                <p>Ja.</p>
+                <p>Ja</p>
             {{/eq}}
 
             {{#eq omsorgstilbud.vetPeriode "USIKKER" }}
@@ -399,14 +399,14 @@
 
                 <br/><p class="sporsmalstekst">Vet du hvor mye barnet vanligvis klarer å være i omsorgstilbudet</p>
                 {{#if omsorgstilbud.vetMinAntallTimer}}
-                    Ja.
+                    Ja
                 {{else}}
-                    <p>Nei.</p>
+                    <p>Nei</p>
                 {{/if}}
             {{/eq}}
 
+        <br/>
             {{#if omsorgstilbud.tilsyn}}
-                <hr/>
                 <p><span class="sporsmalstekst">Mandag: </span>
                     {{# if omsorgstilbud.tilsyn.mandag }}
                         {{omsorgstilbud.tilsyn.mandag}}
@@ -446,7 +446,7 @@
             {{/if}}
 
         {{else}}
-            <p>Nei.</p>
+            <p>Nei</p>
         {{/if}}
 
         <!-- TODO: Utgår -->
