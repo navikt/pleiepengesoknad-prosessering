@@ -149,17 +149,23 @@ data class Tilsynsordning(
 )
 
 data class Omsorgstilbud(
-    val tilsyn: Tilsynsuke? = null,
-    val vetPeriode: VetPeriode,
-    val vetMinAntallTimer: Boolean? = null
+    val vetOmsorgstilbud: VetOmsorgstilbud,
+    val fasteDager: OmsorgstilbudFasteDager? = null,
+    val enkeltDager: List<Omsorgsdag>? = null
 )
 
-enum class VetPeriode {
-    VET_HELE_PERIODEN,
-    USIKKER
+data class Omsorgsdag(
+    val dato: LocalDate,
+    val tid: Duration
+)
+
+enum class VetOmsorgstilbud {
+    VET_ALLE_TIMER,
+    VET_NOEN_TIMER,
+    VET_IKKE
 }
 
-data class Tilsynsuke(
+data class OmsorgstilbudFasteDager(
     val mandag: Duration? = null,
     val tirsdag: Duration? = null,
     val onsdag: Duration? = null,

@@ -843,15 +843,14 @@ class PdfV1GeneratorTest {
             melding = SøknadUtils.defaultSøknad.copy(
                 tilsynsordning = null,
                 omsorgstilbud = Omsorgstilbud(
-                    tilsyn = Tilsynsuke(
+                    fasteDager = OmsorgstilbudFasteDager(
                         mandag = Duration.ofHours(7).plusMinutes(30),
                         tirsdag = Duration.ofHours(7),
                         onsdag = null,
                         torsdag = Duration.ofHours(4).plusMinutes(30),
                         fredag = Duration.ofHours(7).plusMinutes(30),
                     ),
-                    vetPeriode = VetPeriode.VET_HELE_PERIODEN,
-                    vetMinAntallTimer = null
+                    vetOmsorgstilbud = VetOmsorgstilbud.VET_ALLE_TIMER
                 )
             ),
             barnetsIdent = null,
@@ -865,15 +864,14 @@ class PdfV1GeneratorTest {
             melding = SøknadUtils.defaultSøknad.copy(
                 tilsynsordning = null,
                 omsorgstilbud = Omsorgstilbud(
-                    tilsyn = Tilsynsuke(
+                    fasteDager = OmsorgstilbudFasteDager(
                         mandag = Duration.ofHours(2).plusMinutes(30),
                         tirsdag = Duration.ofHours(2).plusMinutes(30),
                         onsdag = Duration.ofHours(2).plusMinutes(30),
                         torsdag = Duration.ofHours(2).plusMinutes(30),
                         fredag = Duration.ofHours(2).plusMinutes(30),
                     ),
-                    vetPeriode = VetPeriode.USIKKER,
-                    vetMinAntallTimer = true
+                    vetOmsorgstilbud = VetOmsorgstilbud.VET_NOEN_TIMER
                 )
             ),
             barnetsIdent = null,
@@ -887,9 +885,8 @@ class PdfV1GeneratorTest {
             melding = SøknadUtils.defaultSøknad.copy(
                 tilsynsordning = null,
                 omsorgstilbud = Omsorgstilbud(
-                    tilsyn = null,
-                    vetPeriode = VetPeriode.USIKKER,
-                    vetMinAntallTimer = false
+                    fasteDager = null,
+                    vetOmsorgstilbud = VetOmsorgstilbud.VET_IKKE
                 )
             ),
             barnetsIdent = null,

@@ -2,7 +2,7 @@ package no.nav.helse.prosessering.v1
 
 import io.prometheus.client.Counter
 import io.prometheus.client.Histogram
-import no.nav.helse.felles.VetPeriode
+import no.nav.helse.felles.VetOmsorgstilbud
 
 val opplastedeVedleggHistogram = Histogram.build()
     .buckets(0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0)
@@ -81,15 +81,10 @@ internal fun MeldingV1.reportMetrics() {
     when (omsorgstilbud) {
         null -> omsorgstilbudCounter.labels("omsorgstilbud", "nei").inc()
         else -> {
-            when (omsorgstilbud.vetPeriode) {
-                VetPeriode.VET_HELE_PERIODEN -> omsorgstilbudCounter.labels("omsorgstilbud", "ja").inc()
-                VetPeriode.USIKKER -> {
-                    if(omsorgstilbud.vetMinAntallTimer == true && omsorgstilbud.tilsyn != null) {
-                        omsorgstilbudCounter.labels("omsorgstilbud", "usikkerMinAntallTimer").inc()
-                    } else {
-                        omsorgstilbudCounter.labels("omsorgstilbud", "usikkerNei").inc()
-                    }
-                }
+            when(omsorgstilbud.vetOmsorgstilbud) {
+                VetOmsorgstilbud.VET_ALLE_TIMER -> omsorgstilbudCounter.labels("omsorgstilbud", "vetAlleTimer").inc()
+                VetOmsorgstilbud.VET_NOEN_TIMER -> omsorgstilbudCounter.labels("omsorgstilbud", "vetNoenTimer").inc()
+                VetOmsorgstilbud.VET_IKKE -> omsorgstilbudCounter.labels("omsorgstilbud", "vetIkke").inc()
             }
         }
     }

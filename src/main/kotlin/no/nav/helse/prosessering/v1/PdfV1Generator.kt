@@ -211,12 +211,11 @@ internal class PdfV1Generator {
     }
 
     private fun Omsorgstilbud.somMap() = mapOf(
-        "tilsyn" to tilsyn?.somMap(),
-        "vetPeriode" to vetPeriode.name,
-        "vetMinAntallTimer" to vetMinAntallTimer
+        "fasteDager" to fasteDager?.somMap(),
+        "vetOmsorgstilbud" to vetOmsorgstilbud.name,
     )
 
-    private fun Tilsynsuke.somMap() = mapOf<String, Any?>(
+    private fun OmsorgstilbudFasteDager.somMap() = mapOf<String, Any?>(
         "mandag" to mandag?.somTekst(),
         "tirsdag" to tirsdag?.somTekst(),
         "onsdag" to onsdag?.somTekst(),

@@ -389,55 +389,61 @@
         {{#if omsorgstilbud}}
             <p>Ja</p>
 
-            <br/><p class="sporsmalstekst">Vet du hvor mye barnet skal være i omsorgstilbudet?</p>
-            {{#eq omsorgstilbud.vetPeriode "VET_HELE_PERIODEN" }}
+            <br/>
+            <p class="sporsmalstekst">Vet du hvor mye barnet skal være i omsorgstilbudet?</p>
+            {{#eq omsorgstilbud.vetOmsorgstilbud "VET_ALLE_TIMER" }}
                 <p>Ja</p>
             {{/eq}}
 
-            {{#eq omsorgstilbud.vetPeriode "USIKKER" }}
+            {{#eq omsorgstilbud.vetOmsorgstilbud "VET_NOEN_TIMER" }}
                 <p>Nei, jeg er usikker på hvor mye.</p> <br/>
 
-                <br/><p class="sporsmalstekst">Vet du hvor mye barnet vanligvis klarer å være i omsorgstilbudet</p>
-                {{#if omsorgstilbud.vetMinAntallTimer}}
-                    Ja
+                <br/>
+                <p class="sporsmalstekst">Vet du hvor mye barnet vanligvis klarer å være i omsorgstilbudet</p>
+                {{#if omsorgstilbud.fasteDager}}
+                    <p>Ja</p>
                 {{else}}
                     <p>Nei</p>
                 {{/if}}
             {{/eq}}
 
-        <br/>
-            {{#if omsorgstilbud.tilsyn}}
+            {{#eq omsorgstilbud.vetOmsorgstilbud "VET_IKKE" }}
+                <p>Nei</p>
+            {{/eq}}
+
+            <br/>
+            {{#if omsorgstilbud.fasteDager}}
                 <p><span class="sporsmalstekst">Mandag: </span>
-                    {{# if omsorgstilbud.tilsyn.mandag }}
-                        {{omsorgstilbud.tilsyn.mandag}}
+                    {{# if omsorgstilbud.fasteDager.mandag }}
+                        {{omsorgstilbud.fasteDager.mandag}}
                     {{ else }}
                         <span class="ikke_satt">Nei</span>
                     {{/if}}
                 </p>
                 <p><span class="sporsmalstekst">Tirsdag: </span>
-                    {{# if omsorgstilbud.tilsyn.tirsdag }}
-                        {{omsorgstilbud.tilsyn.tirsdag}}
+                    {{# if omsorgstilbud.fasteDager.tirsdag }}
+                        {{omsorgstilbud.fasteDager.tirsdag}}
                     {{ else }}
                         <span class="ikke_satt">Nei</span>
                     {{/if}}
                 </p>
                 <p><span class="sporsmalstekst">Onsdag: </span>
-                    {{# if omsorgstilbud.tilsyn.onsdag }}
-                        {{omsorgstilbud.tilsyn.onsdag}}
+                    {{# if omsorgstilbud.fasteDager.onsdag }}
+                        {{omsorgstilbud.fasteDager.onsdag}}
                     {{ else }}
                         <span class="ikke_satt">Nei</span>
                     {{/if}}
                 </p>
                 <p><span class="sporsmalstekst">Torsdag: </span>
-                    {{# if omsorgstilbud.tilsyn.torsdag }}
-                        {{omsorgstilbud.tilsyn.torsdag}}
+                    {{# if omsorgstilbud.fasteDager.torsdag }}
+                        {{omsorgstilbud.fasteDager.torsdag}}
                     {{ else }}
                         <span class="ikke_satt">Nei</span>
                     {{/if}}
                 </p>
                 <p><span class="sporsmalstekst">Fredag: </span>
-                    {{# if omsorgstilbud.tilsyn.fredag }}
-                        {{omsorgstilbud.tilsyn.fredag}}
+                    {{# if omsorgstilbud.fasteDager.fredag }}
+                        {{omsorgstilbud.fasteDager.fredag}}
                     {{ else }}
                         <span class="ikke_satt">Nei</span>
                     {{/if}}
