@@ -22,7 +22,8 @@ data class PreprossesertMeldingV1(
     val ferieuttakIPerioden: FerieuttakIPerioden?,
     val beredskap: Beredskap?,
     val nattevåk: Nattevåk?,
-    val tilsynsordning: Tilsynsordning?,
+    val tilsynsordning: Tilsynsordning?, // TODO: 10/05/2021 utgår
+    val omsorgstilbud: Omsorgstilbud? = null,
     val harMedsøker: Boolean,
     val frilans: Frilans? = null,
     val selvstendigVirksomheter: List<Virksomhet> = listOf(),
@@ -55,6 +56,7 @@ data class PreprossesertMeldingV1(
         beredskap = melding.beredskap,
         nattevåk = melding.nattevåk,
         tilsynsordning = melding.tilsynsordning,
+        omsorgstilbud = melding.omsorgstilbud,
         harMedsøker = melding.harMedsøker,
         bekrefterPeriodeOver8Uker = melding.bekrefterPeriodeOver8Uker,
         frilans = melding.frilans,
