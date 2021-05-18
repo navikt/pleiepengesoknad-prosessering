@@ -1,11 +1,11 @@
 package no.nav.helse
 
 import io.prometheus.client.CollectorRegistry
-import no.nav.helse.felles.PreprossesertBarn
+import no.nav.helse.felles.Barn
 import no.nav.helse.prosessering.v1.*
 import no.nav.helse.utils.aarSiden
 import no.nav.helse.utils.erUnderEttAar
-import no.nav.helse.utils.fodseldato
+import no.nav.helse.utils.fødselsdato
 import no.nav.helse.utils.ukerSiden
 import org.junit.Before
 import java.time.LocalDate
@@ -28,11 +28,11 @@ class BarnTest {
     @Test
     fun `Test barnets alder i aar`() {
         for (i in 0..18) {
-            assertEquals(barn(i.toLong()).fodseldato()!!.aarSiden(), i.toDouble())
+            assertEquals(barn(i.toLong()).fødselsdato().aarSiden(), i.toDouble())
         }
 
         for (i in 19..99) {
-            assertTrue(barn(i.toLong()).fodseldato()!!.aarSiden() > 18.00)
+            assertTrue(barn(i.toLong()).fødselsdato().aarSiden() > 18.00)
         }
     }
 
@@ -47,17 +47,15 @@ class BarnTest {
         assertFalse(fodseldato.aarSiden().erUnderEttAar())
     }
 
-    private fun barn(forventetAlder : Long) : PreprossesertBarn {
+    private fun barn(forventetAlder : Long) : Barn {
         val fodselsdato = if (forventetAlder == 0L) now.minusDays(1) else now.minusYears(forventetAlder)
         val dag = fodselsdato.dayOfMonth.toString().padStart(2, '0')
         val maned = fodselsdato.monthValue.toString().padStart(2, '0')
         val ar = fodselsdato.year.toString().substring(2,4)
         val fodselsnummer = "$dag$maned${ar}12345"
-        return PreprossesertBarn(
+        return Barn(
             fødselsnummer = fodselsnummer,
-            fødselsdato = null,
-            navn = null,
-            aktørId = null
+            navn = "Ola Nordmann"
         )
     }
 }

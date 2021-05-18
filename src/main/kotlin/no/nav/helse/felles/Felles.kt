@@ -2,12 +2,8 @@ package no.nav.helse.felles
 
 import com.fasterxml.jackson.annotation.JsonAlias
 import com.fasterxml.jackson.annotation.JsonFormat
-import no.nav.helse.aktoer.AktoerId
-import no.nav.helse.aktoer.NorskIdent
-import no.nav.helse.tpsproxy.TpsNavn
 import java.time.Duration
 import java.time.LocalDate
-
 
 enum class BarnRelasjon(val utskriftsvennlig: String) {
     MOR("Du er mor til barnet"),
@@ -75,11 +71,8 @@ data class Søker(
 }
 
 data class Barn(
-    val fødselsnummer: String?,
-    val navn : String?,
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    val fødselsdato: LocalDate?,
-    val aktørId: String?
+    val fødselsnummer: String,
+    val navn : String
 ) {
     override fun toString(): String {
         return "Barn()"
@@ -266,59 +259,17 @@ data class Ferieuttak(
     }
 }
 
-
-data class PreprossesertSøker(
-    val fødselsnummer: String,
-    val fornavn: String,
-    val mellomnavn: String?,
-    val etternavn: String,
-    val aktørId: String
-) {
-    internal constructor(soker: Søker, aktoerId: AktoerId) : this(
-        fødselsnummer = soker.fødselsnummer,
-        fornavn = soker.fornavn,
-        mellomnavn = soker.mellomnavn,
-        etternavn = soker.etternavn,
-        aktørId = aktoerId.id
-    )
-
-    override fun toString(): String {
-        return "PreprossesertSøker()"
-    }
-
-
-}
-
-fun PreprossesertSøker.tilTpsNavn(): TpsNavn = TpsNavn(
+fun Søker.tilTpsNavn(): Navn = Navn(
     fornavn = fornavn,
     mellomnavn = mellomnavn,
     etternavn = etternavn
 )
 
-data class PreprossesertBarn(
-    val fødselsnummer: String?,
-    val navn: String?,
-    val fødselsdato: LocalDate?,
-    val aktørId: String?
-) {
-
-    internal constructor(
-        barn: Barn,
-        barnetsNavn: String?,
-        barnetsNorskeIdent: NorskIdent?,
-        aktoerId: AktoerId?,
-        fødselsdato: LocalDate?
-    ) : this(
-        fødselsnummer = barn.fødselsnummer ?: barnetsNorskeIdent?.getValue(),
-        navn = barnetsNavn,
-        fødselsdato = fødselsdato,
-        aktørId = aktoerId?.id
-    )
-
-    override fun toString(): String {
-        return "PreprossesertBarn()"
-    }
-}
+data class Navn(
+    val fornavn: String,
+    val mellomnavn: String?,
+    val etternavn: String
+)
 
 data class Arbeidsforhold(
     val skalJobbe: SkalJobbe,

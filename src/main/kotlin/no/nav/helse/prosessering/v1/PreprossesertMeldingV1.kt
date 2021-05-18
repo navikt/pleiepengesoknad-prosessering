@@ -1,7 +1,5 @@
 package no.nav.helse.prosessering.v1
 
-import no.nav.helse.aktoer.AktoerId
-import no.nav.helse.aktoer.NorskIdent
 import no.nav.helse.felles.*
 import no.nav.k9.søknad.Søknad
 import java.net.URI
@@ -15,8 +13,8 @@ data class PreprossesertMeldingV1(
     val mottatt: ZonedDateTime,
     val fraOgMed: LocalDate,
     val tilOgMed: LocalDate,
-    val søker: PreprossesertSøker,
-    val barn: PreprossesertBarn,
+    val søker: Søker,
+    val barn: Barn,
     val arbeidsgivere: Arbeidsgivere,
     val medlemskap: Medlemskap,
     val bekrefterPeriodeOver8Uker: Boolean? = null,
@@ -42,12 +40,7 @@ data class PreprossesertMeldingV1(
 ) {
     internal constructor(
         melding: MeldingV1,
-        dokumentUrls: List<List<URI>>,
-        sokerAktoerId: AktoerId,
-        barnAktoerId: AktoerId?,
-        barnetsNavn: String?,
-        barnetsNorskeIdent: NorskIdent?,
-        barnetsFødselsdato: LocalDate?,
+        dokumentUrls: List<List<URI>>
     ) : this(
         språk = melding.språk,
         søknadId = melding.søknadId,
@@ -55,8 +48,8 @@ data class PreprossesertMeldingV1(
         mottatt = melding.mottatt,
         fraOgMed = melding.fraOgMed,
         tilOgMed = melding.tilOgMed,
-        søker = PreprossesertSøker(melding.søker, sokerAktoerId),
-        barn = PreprossesertBarn(melding.barn, barnetsNavn, barnetsNorskeIdent, barnAktoerId, barnetsFødselsdato),
+        søker = melding.søker,
+        barn = melding.barn,
         arbeidsgivere = melding.arbeidsgivere,
         medlemskap = melding.medlemskap,
         beredskap = melding.beredskap,

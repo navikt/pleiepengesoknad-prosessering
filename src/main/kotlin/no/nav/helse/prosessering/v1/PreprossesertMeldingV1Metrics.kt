@@ -2,16 +2,10 @@ package no.nav.helse.prosessering.v1
 
 import io.prometheus.client.Counter
 import io.prometheus.client.Histogram
-import no.nav.helse.felles.PreprossesertBarn
 import no.nav.helse.utils.*
-import no.nav.helse.utils.aarSiden
-import no.nav.helse.utils.fodseldato
+import no.nav.helse.utils.`fødselsdato`
 import no.nav.helse.utils.tilJaEllerNei
-import no.nav.helse.utils.ukerSiden
-import java.time.LocalDate
-import java.time.ZoneId
 import java.time.temporal.ChronoUnit
-import kotlin.math.absoluteValue
 
 val periodeSoknadGjelderIUkerHistogram = Histogram.build()
     .buckets(0.00, 1.00, 4.00, 8.00, 12.00, 16.00, 20.00, 24.00, 28.00, 32.00, 36.00, 40.00, 44.00, 48.00, 52.00)
@@ -57,14 +51,15 @@ val barnetsAlderIUkerCounter = Counter.build()
     .register()
 
 internal fun PreprossesertMeldingV1.reportMetrics() {
-    val barnetsFodselsdato = barn.fodseldato() ?: barn.fødselsdato
-    if (barnetsFodselsdato != null) {
-        val barnetsAlder = barnetsFodselsdato.aarSiden()
-        barnetsAlderHistogram.observe(barnetsAlder)
-        if (barnetsAlder.erUnderEttAar()) {
-            barnetsAlderIUkerCounter.labels(barnetsFodselsdato.ukerSiden()).inc()
-        }
+    val barnetsFodselsdato = barn.fødselsdato()
+
+    val barnetsAlder = barnetsFodselsdato.aarSiden()
+    barnetsAlderHistogram.observe(barnetsAlder)
+
+    if (barnetsAlder.erUnderEttAar()) {
+        barnetsAlderIUkerCounter.labels(barnetsFodselsdato.ukerSiden()).inc()
     }
+
     valgteArbeidsgivereHistogram.observe(arbeidsgivere.organisasjoner.size.toDouble())
     idTypePaaBarnCounter.labels(barn.idType()).inc()
     periodeSoknadGjelderIUkerHistogram.observe(ChronoUnit.WEEKS.between(fraOgMed, tilOgMed).toDouble())

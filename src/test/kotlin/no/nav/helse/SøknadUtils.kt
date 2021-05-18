@@ -60,9 +60,7 @@ internal object SøknadUtils {
         ),
         barn = Barn(
             navn = "Ole Dole",
-            fødselsnummer = "19066672169",
-            fødselsdato = LocalDate.parse("2011-02-18"),
-            aktørId = "123456"
+            fødselsnummer = "02119970078"
         ),
         arbeidsgivere = Arbeidsgivere(
             organisasjoner = listOf(

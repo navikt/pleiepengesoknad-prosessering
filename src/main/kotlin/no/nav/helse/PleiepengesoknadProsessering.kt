@@ -13,10 +13,7 @@ import io.ktor.routing.*
 import io.ktor.util.*
 import io.prometheus.client.CollectorRegistry
 import io.prometheus.client.hotspot.DefaultExports
-import no.nav.helse.aktoer.AktoerGateway
-import no.nav.helse.aktoer.AktoerService
 import no.nav.helse.auth.AccessTokenClientResolver
-import no.nav.helse.barn.BarnOppslag
 import no.nav.helse.dokument.DokumentGateway
 import no.nav.helse.dokument.DokumentService
 import no.nav.helse.dusseldorf.ktor.auth.clients
@@ -33,7 +30,6 @@ import no.nav.helse.joark.JoarkGateway
 import no.nav.helse.prosessering.v1.PdfV1Generator
 import no.nav.helse.prosessering.v1.PreprosseseringV1Service
 import no.nav.helse.prosessering.v1.asynkron.AsynkronProsesseringV1Service
-import no.nav.helse.tpsproxy.TpsProxyV1Gateway
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.net.URI
@@ -57,13 +53,6 @@ fun Application.pleiepengesoknadProsessering() {
 
     val accessTokenClientResolver = AccessTokenClientResolver(environment.config.clients())
 
-    val aktoerGateway = AktoerGateway(
-        baseUrl = configuration.getAktoerRegisterBaseUrl(),
-        accessTokenClient = accessTokenClientResolver.aktoerRegisterAccessTokenClient()
-    )
-
-    val aktoerService = AktoerService(aktoerGateway)
-
     val dokumentGateway = DokumentGateway(
         baseUrl = configuration.getK9DokumentBaseUrl(),
         accessTokenClient = accessTokenClientResolver.dokumentAccessTokenClient(),
@@ -72,16 +61,9 @@ fun Application.pleiepengesoknadProsessering() {
     )
     val dokumentService = DokumentService(dokumentGateway)
 
-    val tpsProxyV1Gateway = TpsProxyV1Gateway(
-        baseUrl = configuration.getTpsProxyV1Url(),
-        accessTokenClient = accessTokenClientResolver.tpsProxyAccessTokenClient()
-    )
-
     val preprosseseringV1Service = PreprosseseringV1Service(
-        aktoerService = aktoerService,
         pdfV1Generator = PdfV1Generator(),
-        dokumentService = dokumentService,
-        barnOppslag = BarnOppslag(tpsProxyV1Gateway)
+        dokumentService = dokumentService
     )
 
 
@@ -122,7 +104,6 @@ fun Application.pleiepengesoknadProsessering() {
                 healthChecks = mutableSetOf(
                     dokumentGateway,
                     joarkGateway,
-                    aktoerGateway,
                     HttpRequestHealthCheck(
                         mapOf(
                             Url.healthURL(configuration.getK9DokumentBaseUrl()) to HttpRequestHealthConfig(

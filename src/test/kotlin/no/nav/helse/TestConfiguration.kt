@@ -11,15 +11,11 @@ object TestConfiguration {
         wireMockServer: WireMockServer? = null,
         kafkaEnvironment: KafkaEnvironment? = null,
         port : Int = 8080,
-        aktoerRegisterBaseUrl : String? = wireMockServer?.getAktoerRegisterBaseUrl(),
-        tpsProxyBaseUrl : String? = wireMockServer?.getTpsProxyBaseUrl(),
         k9JoarkBaseUrl : String? = wireMockServer?.getK9JoarkBaseUrl(),
         k9DokumentBaseUrl : String? = wireMockServer?.getK9DokumentBaseUrl()
     ) : Map<String, String>{
         val map = mutableMapOf(
             Pair("ktor.deployment.port","$port"),
-            Pair("nav.aktoer_register_base_url","$aktoerRegisterBaseUrl"),
-            Pair("nav.tps_proxy_v1_base_url","$tpsProxyBaseUrl"),
             Pair("nav.k9_joark_base_url","$k9JoarkBaseUrl"),
             Pair("nav.k9_dokument_base_url","$k9DokumentBaseUrl")
         )
