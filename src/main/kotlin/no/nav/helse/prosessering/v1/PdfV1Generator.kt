@@ -116,9 +116,8 @@ internal class PdfV1Generator {
                             "fodselsnummer" to melding.søker.fødselsnummer
                         ),
                         "barn" to mapOf(
-                            "navn" to melding.barn.navn.capitalizeName(),
-                            "fodselsdato" to melding.barn.fødselsdato().format(DATE_FORMATTER),
-                            "id" to melding.barn.fødselsnummer
+                            "id" to melding.barn.fødselsnummer,
+                            "navn" to melding.barn.navn.capitalizeName()
                         ),
                         "periode" to mapOf(
                             "fra_og_med" to DATE_FORMATTER.format(melding.fraOgMed),
