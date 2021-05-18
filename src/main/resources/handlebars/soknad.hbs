@@ -402,6 +402,10 @@
                 {{/if}}
             {{/eq}}
 
+            {{#eq omsorgstilbud.vetOmsorgstilbud "VET_IKKE" }}
+                <p>Nei</p>
+            {{/eq}}
+
             {{#if omsorgstilbud.fasteDager}}
                 <hr/>
                 <p><span class="sporsmalstekst">Mandag: </span>
