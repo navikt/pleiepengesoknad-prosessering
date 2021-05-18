@@ -25,7 +25,8 @@ data class MeldingV1 (
     val samtidigHjemme: Boolean? = null,
     val harForståttRettigheterOgPlikter : Boolean,
     val harBekreftetOpplysninger : Boolean,
-    val tilsynsordning: Tilsynsordning?,
+    val tilsynsordning: Tilsynsordning?, // TODO: 10/05/2021 utgår
+    val omsorgstilbud: Omsorgstilbud? = null,
     val beredskap: Beredskap?,
     val nattevåk: Nattevåk?,
     val frilans: Frilans?,
@@ -147,6 +148,32 @@ data class Medlemskap(
     val utenlandsoppholdNeste12Mnd: List<Bosted> = listOf()
 )
 
+data class Omsorgstilbud(
+    val vetOmsorgstilbud: VetOmsorgstilbud,
+    val fasteDager: OmsorgstilbudFasteDager? = null,
+    val enkeltDager: List<Omsorgsdag>? = null
+)
+
+enum class VetOmsorgstilbud {
+    VET_ALLE_TIMER,
+    VET_NOEN_TIMER,
+    VET_IKKE
+}
+
+data class Omsorgsdag(
+    val dato: LocalDate,
+    val tid: Duration
+)
+
+data class OmsorgstilbudFasteDager(
+    val mandag: Duration? = null,
+    val tirsdag: Duration? = null,
+    val onsdag: Duration? = null,
+    val torsdag: Duration? = null,
+    val fredag: Duration? = null
+)
+
+// TODO: 10/05/2021 utgår
 data class TilsynsordningJa(
     val mandag: Duration?,
     val tirsdag: Duration?,
@@ -160,6 +187,7 @@ data class TilsynsordningJa(
     }
 }
 
+// TODO: 10/05/2021 utgår
 data class TilsynsordningVetIkke(
     val svar: String,
     val annet: String? = null
@@ -169,6 +197,7 @@ data class TilsynsordningVetIkke(
     }
 }
 
+// TODO: 10/05/2021 utgår
 data class Tilsynsordning(
     val svar: String,
     val ja: TilsynsordningJa?,

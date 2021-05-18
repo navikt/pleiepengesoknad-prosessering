@@ -146,6 +146,7 @@ internal class PdfV1Generator {
                             "sprak" to melding.språk?.sprakTilTekst()
                         ),
                         "tilsynsordning" to tilsynsordning(melding.tilsynsordning),
+                        "omsorgstilbud" to melding.omsorgstilbud?.somMap(),
                         "nattevaak" to nattevåk(melding.nattevåk),
                         "beredskap" to beredskap(melding.beredskap),
                         "utenlandsoppholdIPerioden" to mapOf(
@@ -205,6 +206,19 @@ internal class PdfV1Generator {
             )
         }
     }
+
+    private fun Omsorgstilbud.somMap() = mapOf(
+        "fasteDager" to fasteDager?.somMap(),
+        "vetOmsorgstilbud" to vetOmsorgstilbud.name
+    )
+
+    private fun OmsorgstilbudFasteDager.somMap() = mapOf<String, Any?>(
+        "mandag" to mandag?.somTekst(),
+        "tirsdag" to tirsdag?.somTekst(),
+        "onsdag" to onsdag?.somTekst(),
+        "torsdag" to torsdag?.somTekst(),
+        "fredag" to fredag?.somTekst()
+    )
 
     private fun tilsynsordning(tilsynsordning: Tilsynsordning?) = when {
         tilsynsordning == null -> null

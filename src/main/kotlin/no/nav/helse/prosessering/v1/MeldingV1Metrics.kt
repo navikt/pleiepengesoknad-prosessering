@@ -77,10 +77,15 @@ private val ingenInntektCounter = Counter.build()
 internal fun MeldingV1.reportMetrics() {
     opplastedeVedleggHistogram.observe(vedleggUrls.size.toDouble())
 
-    when (tilsynsordning?.svar) {
-        "ja" -> omsorgstilbudCounter.labels("omsorgstilbud", "ja").inc()
-        "nei" -> omsorgstilbudCounter.labels("omsorgstilbud", "nei").inc()
-        else -> omsorgstilbudCounter.labels("omsorgstilbud", "vetIkke").inc()
+    when (omsorgstilbud) {
+        null -> omsorgstilbudCounter.labels("omsorgstilbud", "nei").inc()
+        else -> {
+            when(omsorgstilbud.vetOmsorgstilbud) {
+                VetOmsorgstilbud.VET_ALLE_TIMER -> omsorgstilbudCounter.labels("omsorgstilbud", "vetAlleTimer").inc()
+                VetOmsorgstilbud.VET_NOEN_TIMER -> omsorgstilbudCounter.labels("omsorgstilbud", "vetNoenTimer").inc()
+                VetOmsorgstilbud.VET_IKKE -> omsorgstilbudCounter.labels("omsorgstilbud", "vetIkke").inc()
+            }
+        }
     }
 
     when (beredskap?.beredskap) {
