@@ -12,11 +12,18 @@ internal fun Double.erUnderEttAar() = 0.0 == this
 internal fun Barn.idType(): String = "fodselsnummer"
 
 internal fun Barn.fødselsdato(): LocalDate {
-    val dag = fødselsnummer.substring(0, 2).toInt()
-    val maned = fødselsnummer.substring(2, 4).toInt()
-    val ar = "20${fødselsnummer.substring(4, 6)}".toInt()
-    return LocalDate.of(ar, maned, dag)
+    val dag = if (fødselsnummer.erDnummer()) {
+        val førsteSiffer = fødselsnummer.substring(0,1).toInt().minus(4)
+        "$førsteSiffer${fødselsnummer[1]}".toInt()
+    } else {
+        fødselsnummer.dagdel().toInt()
+    }
+
+    val måned = fødselsnummer.månedsdel().toInt()
+    val år = fødselsnummer.årsdel().tosifretÅrTilFiresifretÅr().toInt()
+    return LocalDate.of(år, måned, dag)
 }
+
 
 internal fun LocalDate.aarSiden(): Double {
     val alder = ChronoUnit.YEARS.between(this, LocalDate.now(ZONE_ID))

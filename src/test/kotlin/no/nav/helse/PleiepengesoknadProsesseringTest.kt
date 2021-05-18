@@ -79,6 +79,7 @@ class PleiepengesoknadProsesseringTest {
         private val gyldigFodselsnummerA = "02119970078"
         private val gyldigFodselsnummerB = "19066672169"
         private val gyldigFodselsnummerC = "20037473937"
+        private val dNummerA = "55125314561"
 
         private var engine = newEngine(kafkaEnvironment).apply {
             start(wait = true)
@@ -248,6 +249,24 @@ class PleiepengesoknadProsesseringTest {
         )
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
+        cleanupConsumer
+            .hentCleanupMelding(melding.søknadId)
+            .assertJournalførtFormat()
+    }
+
+    @Test
+    fun `Bruk barnets dnummer id`() {
+
+        val defaultBarn = SøknadUtils.defaultSøknad.barn
+        val melding = SøknadUtils.defaultSøknad.copy(
+            søknadId = UUID.randomUUID().toString(),
+            barn = defaultBarn.copy(fødselsnummer = dNummerA, navn = "Barn med D-nummer")
+        )
+
+        kafkaTestProducer.leggSoknadTilProsessering(melding)
+        val preprosessertMelding: TopicEntry<PreprossesertMeldingV1> =
+            kafkaTestConsumer.hentPreprosessertMelding(melding.søknadId)
+        assertEquals("Barn med D-nummer", preprosessertMelding.data.barn.navn)
         cleanupConsumer
             .hentCleanupMelding(melding.søknadId)
             .assertJournalførtFormat()
