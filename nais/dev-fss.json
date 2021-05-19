@@ -11,9 +11,6 @@
   "env": {
     "K9_JOARK_BASE_URL": "https://k9-joark.nais.preprod.local",
     "K9_DOKUMENT_BASE_URL": "https://k9-dokument.nais.preprod.local",
-    "AKTOER_REGISTER_BASE_URL": "https://app-q1.adeo.no/aktoerregister",
-    "TPS_PROXY_V1_URL": "https://tps-proxy-q1.nais.preprod.local/api/v1",
-    "NAIS_STS_DISCOVERY_ENDPOINT": "https://security-token-service.nais.preprod.local/rest/v1/sts/.well-known/openid-configuration",
     "AZURE_CLIENT_ID": "a6aef297-b9c9-4cac-82be-060d4fa68bb8",
     "AZURE_V2_DISCOVERY_ENDPOINT": "https://login.microsoftonline.com/966ac572-f5b7-4bbe-aa88-c76419c0f851/v2.0/.well-known/openid-configuration",
     "LAGRE_DOKUMENT_SCOPES": "97f0b1bc-6aa9-4d44-a3c7-60b4318fbec4/.default",

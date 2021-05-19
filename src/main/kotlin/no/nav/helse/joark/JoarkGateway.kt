@@ -11,7 +11,6 @@ import com.github.kittinunf.fuel.httpPost
 import io.ktor.http.*
 import no.nav.helse.CorrelationId
 import no.nav.helse.HttpError
-import no.nav.helse.aktoer.AktoerId
 import no.nav.helse.dusseldorf.ktor.client.buildURL
 import no.nav.helse.dusseldorf.ktor.health.HealthCheck
 import no.nav.helse.dusseldorf.ktor.health.Healthy
@@ -20,7 +19,7 @@ import no.nav.helse.dusseldorf.ktor.health.UnHealthy
 import no.nav.helse.dusseldorf.ktor.metrics.Operation
 import no.nav.helse.dusseldorf.oauth2.client.AccessTokenClient
 import no.nav.helse.dusseldorf.oauth2.client.CachedAccessTokenClient
-import no.nav.helse.tpsproxy.TpsNavn
+import no.nav.helse.felles.Navn
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.ByteArrayInputStream
@@ -56,9 +55,9 @@ class JoarkGateway(
     }
 
     suspend fun journalfoer(
-        aktoerId: AktoerId,
+        aktoerId: String,
         norskIdent: String,
-        sokerNavn: TpsNavn,
+        sokerNavn: Navn,
         mottatt: ZonedDateTime,
         dokumenter: List<List<URI>>,
         correlationId: CorrelationId
@@ -67,7 +66,7 @@ class JoarkGateway(
         val authorizationHeader = cachedAccessTokenClient.getAccessToken(journalforeScopes).asAuthoriationHeader()
 
         val joarkRequest = JoarkRequest(
-            aktoerId = aktoerId.id,
+            aktoerId = aktoerId,
             norskIdent = norskIdent,
             mottatt = mottatt,
             sokerNavn = sokerNavn,
@@ -116,7 +115,7 @@ class JoarkGateway(
 private data class JoarkRequest(
     val norskIdent: String,
     val aktoerId: String,
-    val sokerNavn: TpsNavn,
+    val sokerNavn: Navn,
     val mottatt: ZonedDateTime,
     val dokumenter: List<List<URI>>
 )

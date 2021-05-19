@@ -9,11 +9,11 @@ import com.github.jknack.handlebars.context.MapValueResolver
 import com.github.jknack.handlebars.io.ClassPathTemplateLoader
 import com.openhtmltopdf.outputdevice.helper.BaseRendererBuilder
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder
-import no.nav.helse.aktoer.NorskIdent
 import no.nav.helse.dusseldorf.ktor.core.fromResources
 import no.nav.helse.felles.*
 import no.nav.helse.pleiepengerKonfiguert
 import no.nav.helse.utils.DateUtils
+import no.nav.helse.utils.fødselsdato
 import no.nav.helse.utils.norskDag
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
@@ -97,10 +97,7 @@ internal class PdfV1Generator {
     }
 
     internal fun generateSoknadOppsummeringPdf(
-        melding: MeldingV1,
-        barnetsIdent: NorskIdent?,
-        fødselsdato: LocalDate?,
-        barnetsNavn: String?
+        melding: MeldingV1
     ): ByteArray {
         soknadTemplate.apply(
             Context
@@ -119,9 +116,8 @@ internal class PdfV1Generator {
                             "fodselsnummer" to melding.søker.fødselsnummer
                         ),
                         "barn" to mapOf(
-                            "navn" to barnetsNavn?.capitalizeName(),
-                            "fodselsdato" to fødselsdato?.format(DATE_FORMATTER),
-                            "id" to barnetsIdent?.getValue()
+                            "id" to melding.barn.fødselsnummer,
+                            "navn" to melding.barn.navn.capitalizeName()
                         ),
                         "periode" to mapOf(
                             "fra_og_med" to DATE_FORMATTER.format(melding.fraOgMed),

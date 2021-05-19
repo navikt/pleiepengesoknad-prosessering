@@ -1,7 +1,6 @@
 package no.nav.helse.prosessering.v1.asynkron
 
 import no.nav.helse.CorrelationId
-import no.nav.helse.aktoer.AktoerId
 import no.nav.helse.felles.tilTpsNavn
 import no.nav.helse.joark.JoarkGateway
 import no.nav.helse.kafka.*
@@ -51,7 +50,7 @@ internal class JournalforingsStream(
                         logger.info("Journalfører dokumenter.")
                         val journaPostId = joarkGateway.journalfoer(
                             mottatt = entry.data.mottatt,
-                            aktoerId = AktoerId(entry.data.søker.aktørId),
+                            aktoerId = entry.data.søker.aktørId,
                             sokerNavn = entry.data.søker.tilTpsNavn(),
                             correlationId = CorrelationId(entry.metadata.correlationId),
                             dokumenter = entry.data.dokumentUrls,

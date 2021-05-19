@@ -1,7 +1,6 @@
 package no.nav.helse.prosessering.v1.asynkron
 
 import no.nav.helse.CorrelationId
-import no.nav.helse.aktoer.AktoerId
 import no.nav.helse.dokument.DokumentService
 import no.nav.helse.kafka.*
 import no.nav.helse.kafka.KafkaConfig
@@ -12,7 +11,6 @@ import no.nav.k9.søknad.JsonUtils
 import org.apache.kafka.streams.StreamsBuilder
 import org.apache.kafka.streams.Topology
 import org.apache.kafka.streams.kstream.Consumed
-import org.apache.kafka.streams.kstream.Produced
 import org.slf4j.LoggerFactory
 
 internal class CleanupStream(
@@ -48,7 +46,7 @@ internal class CleanupStream(
 
                         dokumentService.slettDokumeter(
                             urlBolks = entry.data.melding.dokumentUrls,
-                            aktørId = AktoerId(entry.data.melding.søker.aktørId),
+                            aktørId = entry.data.melding.søker.aktørId,
                             correlationId = CorrelationId(entry.metadata.correlationId)
                         )
                         logger.info("Dokumenter slettet.")

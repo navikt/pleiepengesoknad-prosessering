@@ -1,7 +1,6 @@
 package no.nav.helse.dokument
 
 import no.nav.helse.CorrelationId
-import no.nav.helse.aktoer.AktoerId
 import no.nav.k9.søknad.Søknad
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -14,7 +13,7 @@ class DokumentService(
 ) {
     private suspend fun lagreDokument(
         dokument: DokumentGateway.Dokument,
-        aktoerId: AktoerId,
+        aktoerId: String,
         correlationId: CorrelationId
     ) : URI {
         return dokumentGateway.lagreDokmenter(
@@ -26,7 +25,7 @@ class DokumentService(
 
     internal suspend fun lagreSoknadsOppsummeringPdf(
         pdf : ByteArray,
-        aktoerId: AktoerId,
+        aktoerId: String,
         correlationId: CorrelationId,
         dokumentbeskrivelse: String
     ) : URI {
@@ -43,7 +42,7 @@ class DokumentService(
 
     internal suspend fun lagreSoknadsMelding(
         k9FormatSøknad: Søknad,
-        aktoerId: AktoerId,
+        aktoerId: String,
         correlationId: CorrelationId
     ) : URI {
         return lagreDokument(
@@ -59,7 +58,7 @@ class DokumentService(
 
     internal suspend fun slettDokumeter(
         urlBolks: List<List<URI>>,
-        aktørId: AktoerId,
+        aktørId: String,
         correlationId : CorrelationId
     ) {
         val urls = mutableListOf<URI>()
