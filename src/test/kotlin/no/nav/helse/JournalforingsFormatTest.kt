@@ -23,6 +23,7 @@ class JournalforingsFormatTest {
             """
         {
           "søknadId": "$soknadId",
+          "journalposter": [],
           "versjon": "1.0.0",
           "språk": "nb",
           "mottattDato": "2020-01-01T10:00:00.000Z",
