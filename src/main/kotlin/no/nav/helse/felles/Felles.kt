@@ -275,7 +275,6 @@ data class Arbeidsforhold(
     val skalJobbe: SkalJobbe,
     val arbeidsform: Arbeidsform,
     val jobberNormaltTimer: Double,
-    val skalJobbeTimer: Double,
     val skalJobbeProsent: Double
 )
 

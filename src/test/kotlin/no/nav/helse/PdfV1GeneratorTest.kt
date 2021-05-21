@@ -180,7 +180,6 @@ class PdfV1GeneratorTest {
                     skalJobbe = SkalJobbe.NEI,
                     arbeidsform = Arbeidsform.FAST,
                     jobberNormaltTimer = 40.0,
-                    skalJobbeTimer = 0.0,
                     skalJobbeProsent = 0.0
                 )
             ),
@@ -220,7 +219,6 @@ class PdfV1GeneratorTest {
                 skalJobbe = SkalJobbe.REDUSERT,
                 arbeidsform = Arbeidsform.VARIERENDE,
                 jobberNormaltTimer = 40.0,
-                skalJobbeTimer = 20.0,
                 skalJobbeProsent = 50.0
             ),
             bekrefterPeriodeOver8Uker = true,
