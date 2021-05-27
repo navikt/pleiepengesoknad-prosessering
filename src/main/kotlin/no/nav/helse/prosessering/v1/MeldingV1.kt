@@ -17,7 +17,6 @@ data class MeldingV1 (
     val arbeidsgivere: Arbeidsgivere,
     var vedleggUrls : List<URI> = listOf(),
     val medlemskap: Medlemskap,
-    val bekrefterPeriodeOver8Uker: Boolean? = null,
     val utenlandsoppholdIPerioden: UtenlandsoppholdIPerioden,
     val ferieuttakIPerioden: FerieuttakIPerioden?,
     val harMedsøker : Boolean,

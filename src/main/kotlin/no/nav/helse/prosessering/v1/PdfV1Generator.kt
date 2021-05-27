@@ -110,7 +110,6 @@ internal class PdfV1Generator {
                         "har_medsoker" to melding.harMedsøker,
                         "harIkkeVedlegg" to melding.sjekkOmHarIkkeVedlegg(),
                         "samtidig_hjemme" to melding.samtidigHjemme,
-                        "bekrefterPeriodeOver8Uker" to melding.bekrefterPeriodeOver8Uker,
                         "soker" to mapOf(
                             "navn" to melding.søker.formatertNavn().capitalizeName(),
                             "fodselsnummer" to melding.søker.fødselsnummer

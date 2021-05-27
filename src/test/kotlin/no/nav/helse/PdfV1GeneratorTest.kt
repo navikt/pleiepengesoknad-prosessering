@@ -221,7 +221,6 @@ class PdfV1GeneratorTest {
                 jobberNormaltTimer = 40.0,
                 skalJobbeProsent = 50.0
             ),
-            bekrefterPeriodeOver8Uker = true,
             skalBekrefteOmsorg = true,
             skalPassePaBarnetIHelePerioden = true,
             beskrivelseOmsorgsrollen = "Jeg er far og skal passe på barnet i hele perioden.",
@@ -352,7 +351,6 @@ class PdfV1GeneratorTest {
         ),
         medlemskap = medlemskap,
         harMedsøker = harMedsøker,
-        bekrefterPeriodeOver8Uker = true,
         samtidigHjemme = samtidigHjemme,
         harForståttRettigheterOgPlikter = true,
         harBekreftetOpplysninger = true,
