@@ -279,8 +279,8 @@ data class Arbeidsforhold(
 )
 
 enum class SkalJobbe(val verdi: String) {
-    @JsonAlias("ja") JA("ja"),
-    @JsonAlias("nei") NEI("nei"),
-    @JsonAlias("redusert") REDUSERT("redusert"),
-    @JsonAlias("vetIkke") VET_IKKE("vetIkke")
+    @JsonAlias("ja") JA("ja"), // TODO: 28/05/2021 Fjern @JsonAlias etter prodsetting.
+    @JsonAlias("nei") NEI("nei"), // TODO: 28/05/2021 Fjern @JsonAlias etter prodsetting.
+    @JsonAlias("redusert") REDUSERT("redusert"), // TODO: 28/05/2021 Fjern @JsonAlias etter prodsetting.
+    @JsonAlias("vetIkke") VET_IKKE("vetIkke") // TODO: 28/05/2021 Fjern @JsonAlias etter prodsetting.
 }
