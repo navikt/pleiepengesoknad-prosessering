@@ -1,13 +1,12 @@
-package no.nav.helse.prosessering.v1
+package no.nav.helse.prosessering.v2
 
 import no.nav.helse.felles.TilsynsordningJa
-
 import java.time.Duration
 
 internal val NormalArbeidsdag = Duration.ofHours(7).plusMinutes(30)
 private val NormalArbeidsuke = Duration.ofHours(37).plusMinutes(30)
 
-internal fun Duration.somTekst(): String {
+internal fun Duration.somTekst() : String {
     val timer = seconds / 3600
     val minutter = (seconds % 3600) / 60
     val timerTeskst = when (timer) {
@@ -15,7 +14,7 @@ internal fun Duration.somTekst(): String {
         1L -> "$timer time"
         else -> "$timer timer"
     }
-    val minutterTekst = when (minutter) {
+    val minutterTekst = when(minutter) {
         0L -> ""
         1L -> "$minutter minutt"
         else -> "$minutter minutter"
@@ -27,23 +26,19 @@ internal fun Duration.somTekst(): String {
     return "$timerTeskst$mellomTekst$minutterTekst$avkortetTekst"
 }
 
-internal fun TilsynsordningJa.prosentAvNormalArbeidsuke(): Double {
-    val tilsyn = summerTilsynsdager()
+internal fun TilsynsordningJa.prosentAvNormalArbeidsuke() : Double {
+    val tilsyn = Duration.ZERO
+        .plusOmIkkeNullOgAvkortTilNormalArbeidsdag(mandag)
+        .plusOmIkkeNullOgAvkortTilNormalArbeidsdag(tirsdag)
+        .plusOmIkkeNullOgAvkortTilNormalArbeidsdag(onsdag)
+        .plusOmIkkeNullOgAvkortTilNormalArbeidsdag(torsdag)
+        .plusOmIkkeNullOgAvkortTilNormalArbeidsdag(fredag)
 
     return if (tilsyn.isZero) return 0.0
     else (100.00 / NormalArbeidsuke.seconds) * tilsyn.seconds
 }
 
-fun TilsynsordningJa.snittTilsynsTimerPerDag(): Duration = summerTilsynsdager().dividedBy(5.toLong())
-
-private fun TilsynsordningJa.summerTilsynsdager() = Duration.ZERO
-    .plusOmIkkeNullOgAvkortTilNormalArbeidsdag(mandag)
-    .plusOmIkkeNullOgAvkortTilNormalArbeidsdag(tirsdag)
-    .plusOmIkkeNullOgAvkortTilNormalArbeidsdag(onsdag)
-    .plusOmIkkeNullOgAvkortTilNormalArbeidsdag(torsdag)
-    .plusOmIkkeNullOgAvkortTilNormalArbeidsdag(fredag)
-
-fun Duration.plusOmIkkeNullOgAvkortTilNormalArbeidsdag(duration: Duration?): Duration {
+private fun Duration.plusOmIkkeNullOgAvkortTilNormalArbeidsdag(duration: Duration?): Duration {
     return when {
         duration == null -> this
         duration > NormalArbeidsdag -> plus(NormalArbeidsdag)

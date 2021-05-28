@@ -7,14 +7,36 @@ import io.ktor.http.*
 import io.ktor.server.engine.*
 import io.ktor.server.testing.*
 import io.ktor.util.*
-import io.prometheus.client.CollectorRegistry
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.time.delay
 import no.nav.common.KafkaEnvironment
 import no.nav.helse.dusseldorf.testsupport.wiremock.WireMockBuilder
+import no.nav.helse.felles.Arbeidsform
+import no.nav.helse.felles.Arbeidsgivere
+import no.nav.helse.felles.Barn
+import no.nav.helse.felles.Beredskap
+import no.nav.helse.felles.Bosted
+import no.nav.helse.felles.Ferieuttak
+import no.nav.helse.felles.FerieuttakIPerioden
+import no.nav.helse.felles.Frilans
+import no.nav.helse.felles.Land
+import no.nav.helse.felles.Medlemskap
+import no.nav.helse.felles.Nattevåk
+import no.nav.helse.felles.Næringstyper
+import no.nav.helse.felles.Organisasjon
+import no.nav.helse.felles.SkalJobbe
+import no.nav.helse.felles.Søker
+import no.nav.helse.felles.Tilsynsordning
+import no.nav.helse.felles.TilsynsordningJa
+import no.nav.helse.felles.TilsynsordningVetIkke
+import no.nav.helse.felles.Utenlandsopphold
+import no.nav.helse.felles.UtenlandsoppholdIPerioden
+import no.nav.helse.felles.Virksomhet
+import no.nav.helse.felles.Årsak
 import no.nav.helse.k9format.assertJournalførtFormat
-import no.nav.helse.prosessering.v1.*
-import no.nav.helse.prosessering.v1.asynkron.TopicEntry
+import no.nav.helse.kafka.TopicEntry
+import no.nav.helse.prosessering.v1.MeldingV1
+import no.nav.helse.prosessering.v1.PreprossesertMeldingV1
 import org.junit.AfterClass
 import org.junit.BeforeClass
 import org.slf4j.Logger
@@ -41,18 +63,16 @@ class PleiepengesoknadProsesseringTest {
         private val wireMockServer: WireMockServer = WireMockBuilder()
             .withNaisStsSupport()
             .withAzureSupport()
-            .navnOppslagConfig()
             .build()
             .stubK9DokumentHealth()
             .stubPleiepengerJoarkHealth()
             .stubJournalfor()
             .stubLagreDokument()
             .stubSlettDokument()
-            .stubAktoerRegister("29099012345", "123456")
 
         private val kafkaEnvironment = KafkaWrapper.bootstrap()
         private val kafkaTestConsumer = kafkaEnvironment.testConsumer()
-        private val journalførtConsumer = kafkaEnvironment.journalføringsKonsumer()
+        private val cleanupConsumer = kafkaEnvironment.cleanupConsumer()
         private val kafkaTestProducer = kafkaEnvironment.testProducer()
 
         // Se https://github.com/navikt/dusseldorf-ktor#f%C3%B8dselsnummer
@@ -85,16 +105,8 @@ class PleiepengesoknadProsesseringTest {
 
         internal fun restartEngine() {
             stopEngine()
-            CollectorRegistry.defaultRegistry.clear()
             engine = newEngine(kafkaEnvironment)
             engine.start(wait = true)
-        }
-
-        @BeforeClass
-        @JvmStatic
-        fun buildUp() {
-            wireMockServer.stubAktoerRegister(gyldigFodselsnummerA, "666666666")
-            wireMockServer.stubAktoerRegister(gyldigFodselsnummerB, "777777777")
         }
 
         @AfterClass
@@ -104,8 +116,10 @@ class PleiepengesoknadProsesseringTest {
             wireMockServer.stop()
             kafkaTestConsumer.close()
             kafkaTestProducer.close()
+            cleanupConsumer.close()
             stopEngine()
             kafkaEnvironment.tearDown()
+
             logger.info("Tear down complete")
         }
     }
@@ -136,8 +150,8 @@ class PleiepengesoknadProsesseringTest {
         )
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
-        journalførtConsumer
-            .hentJournalførtMelding(melding.søknadId)
+        cleanupConsumer
+            .hentCleanupMelding(melding.søknadId)
             .assertJournalførtFormat()
     }
 
@@ -184,8 +198,8 @@ class PleiepengesoknadProsesseringTest {
         assertEquals(jobb1SkalJobbeProsent, jobb1.skalJobbeProsent)
         assertEquals(jobb2SkalJobberProsent, jobb2.skalJobbeProsent)
 
-        journalførtConsumer
-            .hentJournalførtMelding(melding.søknadId)
+        cleanupConsumer
+            .hentCleanupMelding(melding.søknadId)
             .assertJournalførtFormat()
     }
 
@@ -201,8 +215,8 @@ class PleiepengesoknadProsesseringTest {
 
         wireMockServer.stubJournalfor(201) // Simulerer journalføring fungerer igjen
         restartEngine()
-        journalførtConsumer
-            .hentJournalførtMelding(melding.søknadId)
+        cleanupConsumer
+            .hentCleanupMelding(melding.søknadId)
             .assertJournalførtFormat()
     }
 
@@ -222,8 +236,8 @@ class PleiepengesoknadProsesseringTest {
         val melding = SøknadUtils.defaultSøknad
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
-        journalførtConsumer
-            .hentJournalførtMelding(melding.søknadId)
+        cleanupConsumer
+            .hentCleanupMelding(melding.søknadId)
             .assertJournalførtFormat()
     }
 
@@ -235,166 +249,51 @@ class PleiepengesoknadProsesseringTest {
         )
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
-        journalførtConsumer
-            .hentJournalførtMelding(melding.søknadId)
+        cleanupConsumer
+            .hentCleanupMelding(melding.søknadId)
             .assertJournalførtFormat()
     }
 
     @Test
-    fun `Bruk barnets dnummer id til å slå opp i tps-proxy dersom navnet mangler`() {
-        wireMockServer.stubAktoerRegister(dNummerA, "56789")
-        wireMockServer.stubTpsProxyGetNavn("KLØKTIG", "BLUNKENDE", "SUPERKONSOLL")
+    fun `Bruk barnets dnummer id`() {
 
         val defaultBarn = SøknadUtils.defaultSøknad.barn
         val melding = SøknadUtils.defaultSøknad.copy(
             søknadId = UUID.randomUUID().toString(),
-            barn = defaultBarn.copy(fødselsnummer = dNummerA, navn = null)
+            barn = defaultBarn.copy(fødselsnummer = dNummerA, navn = "Barn med D-nummer")
         )
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
         val preprosessertMelding: TopicEntry<PreprossesertMeldingV1> =
             kafkaTestConsumer.hentPreprosessertMelding(melding.søknadId)
-        assertEquals("KLØKTIG BLUNKENDE SUPERKONSOLL", preprosessertMelding.data.barn.navn)
-        journalførtConsumer
-            .hentJournalførtMelding(melding.søknadId)
-            .assertJournalførtFormat()
-    }
-
-    @Test
-    fun `Sjekker at dersom barnet ikke har mellomnavn så blir det ikke med i barnetsNavn`() {
-        wireMockServer.stubAktoerRegister(dNummerA, "56789")
-        wireMockServer.stubTpsProxyGetNavn("KLØKTIG", null, "SUPERKONSOLL")
-
-        val defaultBarn = SøknadUtils.defaultSøknad.barn
-        val melding = SøknadUtils.defaultSøknad.copy(
-            søknadId = UUID.randomUUID().toString(),
-            barn = defaultBarn.copy(fødselsnummer = dNummerA, navn = null)
-        )
-
-        kafkaTestProducer.leggSoknadTilProsessering(melding)
-        val preprosessertMelding: TopicEntry<PreprossesertMeldingV1> =
-            kafkaTestConsumer.hentPreprosessertMelding(melding.søknadId)
-        assertEquals("KLØKTIG SUPERKONSOLL", preprosessertMelding.data.barn.navn)
-        journalførtConsumer
-            .hentJournalførtMelding(melding.søknadId)
-            .assertJournalførtFormat()
-    }
-
-    @Test
-    fun `Melding lagt til prosessering selv om oppslag paa aktoer ID for barn feiler`() {
-        val melding = SøknadUtils.defaultSøknad.copy(
-            søknadId = UUID.randomUUID().toString()
-        )
-
-        wireMockServer.stubAktoerRegisterGetAktoerIdNotFound(gyldigFodselsnummerC)
-
-        kafkaTestProducer.leggSoknadTilProsessering(melding)
-        journalførtConsumer
-            .hentJournalførtMelding(melding.søknadId)
-            .assertJournalførtFormat()
-    }
-
-    @Test
-    fun `Bruk barnets fødselsnummer til å slå opp i tps-proxy dersom navnet mangler`() {
-        wireMockServer.stubTpsProxyGetNavn("KLØKTIG", "BLUNKENDE", "SUPERKONSOLL")
-        val defaultBarn = SøknadUtils.defaultSøknad.barn
-        val melding = SøknadUtils.defaultSøknad.copy(
-            søknadId = UUID.randomUUID().toString(),
-            barn = defaultBarn.copy(navn = null)
-        )
-
-        kafkaTestProducer.leggSoknadTilProsessering(melding)
-        val preprosessertMelding: TopicEntry<PreprossesertMeldingV1> =
-            kafkaTestConsumer.hentPreprosessertMelding(melding.søknadId)
-        assertEquals("KLØKTIG BLUNKENDE SUPERKONSOLL", preprosessertMelding.data.barn.navn)
-        journalførtConsumer
-            .hentJournalførtMelding(melding.søknadId)
-            .assertJournalførtFormat()
-    }
-
-    @Test
-    fun `Bruk barnets aktørId til å slå opp i tps-proxy dersom navnet mangler`() {
-        wireMockServer.stubAktoerRegister(dNummerA, "56789")
-        wireMockServer.stubTpsProxyGetNavn("KLØKTIG", "BLUNKENDE", "SUPERKONSOLL")
-
-        val defaultBarn = SøknadUtils.defaultSøknad.barn
-        val melding = SøknadUtils.defaultSøknad.copy(
-            søknadId = UUID.randomUUID().toString(),
-            barn = defaultBarn.copy(fødselsnummer = null, navn = null, aktørId = "56789")
-        )
-
-        kafkaTestProducer.leggSoknadTilProsessering(melding)
-        val preprosessertMelding: TopicEntry<PreprossesertMeldingV1> =
-            kafkaTestConsumer.hentPreprosessertMelding(melding.søknadId)
-        assertEquals("KLØKTIG BLUNKENDE SUPERKONSOLL", preprosessertMelding.data.barn.navn)
-        journalførtConsumer
-            .hentJournalførtMelding(melding.søknadId)
+        assertEquals("Barn med D-nummer", preprosessertMelding.data.barn.navn)
+        cleanupConsumer
+            .hentCleanupMelding(melding.søknadId)
             .assertJournalførtFormat()
     }
 
     @Test
     fun `Forvent barnets fodselsnummer dersom den er satt i melding`() {
-        wireMockServer.stubAktoerRegister(gyldigFodselsnummerB, "56789")
 
         val forventetFodselsNummer = gyldigFodselsnummerB
 
         val defaultBarn = SøknadUtils.defaultSøknad.barn
         val melding = SøknadUtils.defaultSøknad.copy(
             søknadId = UUID.randomUUID().toString(),
-            barn = defaultBarn.copy(fødselsnummer = forventetFodselsNummer, navn = null, aktørId = "56789")
+            barn = defaultBarn.copy(fødselsnummer = forventetFodselsNummer, navn = "KLØKTIG SUPERKONSOLL")
         )
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
         val preprosessertMelding: TopicEntry<PreprossesertMeldingV1> =
             kafkaTestConsumer.hentPreprosessertMelding(melding.søknadId)
         assertEquals(forventetFodselsNummer, preprosessertMelding.data.barn.fødselsnummer)
-        journalførtConsumer
-            .hentJournalførtMelding(melding.søknadId)
-            .assertJournalførtFormat()
-    }
-
-    @Test
-    fun `Forvent barnets fodselsnummer blir slått opp dersom den ikke er satt i melding`() {
-        wireMockServer.stubAktoerRegister(gyldigFodselsnummerB, "666")
-        val forventetFodselsNummer = gyldigFodselsnummerB
-
-        val defaultBarn = SøknadUtils.defaultSøknad.barn
-        val melding = SøknadUtils.defaultSøknad.copy(
-            søknadId = UUID.randomUUID().toString(),
-            barn = defaultBarn.copy(fødselsnummer = forventetFodselsNummer, navn = null, aktørId = "666")
-        )
-
-        kafkaTestProducer.leggSoknadTilProsessering(melding)
-        val preprosessertMelding: TopicEntry<PreprossesertMeldingV1> =
-            kafkaTestConsumer.hentPreprosessertMelding(melding.søknadId)
-        assertEquals(forventetFodselsNummer, preprosessertMelding.data.barn.fødselsnummer)
-        journalførtConsumer
-            .hentJournalførtMelding(melding.søknadId)
-            .assertJournalførtFormat()
-    }
-
-    @Test
-    fun `Forvent barnets fødselsdato`() {
-        wireMockServer.stubAktoerRegister(gyldigFodselsnummerB, "666")
-
-        val defaultBarn = SøknadUtils.defaultSøknad.barn
-        val melding = SøknadUtils.defaultSøknad.copy(
-            søknadId = UUID.randomUUID().toString(),
-            barn = defaultBarn.copy(fødselsdato = LocalDate.now(), navn = null, aktørId = "666")
-        )
-
-        kafkaTestProducer.leggSoknadTilProsessering(melding)
-        val preprosesssertMelding: TopicEntry<PreprossesertMeldingV1> =
-            kafkaTestConsumer.hentPreprosessertMelding(melding.søknadId)
-        assertEquals(LocalDate.now(), preprosesssertMelding.data.barn.fødselsdato)
-        journalførtConsumer
-            .hentJournalførtMelding(melding.søknadId)
+        cleanupConsumer
+            .hentCleanupMelding(melding.søknadId)
             .assertJournalførtFormat()
     }
 
     @Test
     fun `Forvent korrekt format på melding sendt på journalført topic`() {
-        wireMockServer.stubAktoerRegister(gyldigFodselsnummerB, "666")
 
         val melding = MeldingV1(
             språk = "nb",
@@ -412,9 +311,7 @@ class PleiepengesoknadProsesseringTest {
             harMedsøker = false,
             barn = Barn(
                 navn = "Bjarne",
-                fødselsnummer = gyldigFodselsnummerB,
-                fødselsdato = null,
-                aktørId = "666"
+                fødselsnummer = gyldigFodselsnummerB
             ),
             arbeidsgivere = Arbeidsgivere(
                 organisasjoner = listOf(
@@ -442,7 +339,7 @@ class PleiepengesoknadProsesseringTest {
             ),
             selvstendigVirksomheter = listOf(
                 Virksomhet(
-                    næringstyper = listOf(),
+                    næringstyper = listOf(Næringstyper.DAGMAMMA),
                     fraOgMed = LocalDate.parse("2020-01-01"),
                     næringsinntekt = 123456,
                     navnPåVirksomheten = "Virksomehet 1",
@@ -450,7 +347,7 @@ class PleiepengesoknadProsesseringTest {
                     organisasjonsnummer = "12345"
                 ),
                 Virksomhet(
-                    næringstyper = listOf(),
+                    næringstyper = listOf(Næringstyper.FISKE),
                     fraOgMed = LocalDate.parse("2020-02-01"),
                     tilOgMed = LocalDate.parse("2020-05-01"),
                     næringsinntekt = 123456,
@@ -535,15 +432,17 @@ class PleiepengesoknadProsesseringTest {
                     Ferieuttak(LocalDate.parse("2020-01-09"), LocalDate.parse("2020-01-10"))
                 )
             ),
+            samtidigHjemme = true,
             harVærtEllerErVernepliktig = false,
             harBekreftetOpplysninger = true,
-            harForståttRettigheterOgPlikter = true
+            harForståttRettigheterOgPlikter = true,
+            k9FormatSøknad = SøknadUtils.defaultK9FormatPSB()
         )
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
 
-        journalførtConsumer
-            .hentJournalførtMelding(melding.søknadId)
+        cleanupConsumer
+            .hentCleanupMelding(melding.søknadId)
             .assertJournalførtFormat()
     }
 
@@ -567,8 +466,8 @@ class PleiepengesoknadProsesseringTest {
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
 
-        journalførtConsumer
-            .hentJournalførtMelding(melding.søknadId)
+        cleanupConsumer
+            .hentCleanupMelding(melding.søknadId)
             .assertJournalførtFormat()
     }
 
@@ -585,8 +484,8 @@ class PleiepengesoknadProsesseringTest {
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
 
-        journalførtConsumer
-            .hentJournalførtMelding(melding.søknadId)
+        cleanupConsumer
+            .hentCleanupMelding(melding.søknadId)
             .assertJournalførtFormat()
     }
 
@@ -606,8 +505,8 @@ class PleiepengesoknadProsesseringTest {
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
 
-        journalførtConsumer
-            .hentJournalførtMelding(melding.søknadId)
+        cleanupConsumer
+            .hentCleanupMelding(melding.søknadId)
             .assertJournalførtFormat()
     }
 
@@ -626,8 +525,8 @@ class PleiepengesoknadProsesseringTest {
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
 
-        journalførtConsumer
-            .hentJournalførtMelding(melding.søknadId)
+        cleanupConsumer
+            .hentCleanupMelding(melding.søknadId)
             .assertJournalførtFormat()
     }
 
@@ -647,8 +546,8 @@ class PleiepengesoknadProsesseringTest {
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
 
-        journalførtConsumer
-            .hentJournalførtMelding(melding.søknadId)
+        cleanupConsumer
+            .hentCleanupMelding(melding.søknadId)
             .assertJournalførtFormat()
     }
 
@@ -661,8 +560,8 @@ class PleiepengesoknadProsesseringTest {
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
 
-        journalførtConsumer
-            .hentJournalførtMelding(melding.søknadId)
+        cleanupConsumer
+            .hentCleanupMelding(melding.søknadId)
             .assertJournalførtFormat()
     }
 

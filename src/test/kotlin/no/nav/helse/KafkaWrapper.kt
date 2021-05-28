@@ -2,13 +2,12 @@ package no.nav.helse
 
 import no.nav.common.JAASCredential
 import no.nav.common.KafkaEnvironment
+import no.nav.helse.kafka.TopicEntry
 import no.nav.helse.prosessering.Metadata
 import no.nav.helse.prosessering.v1.MeldingV1
 import no.nav.helse.prosessering.v1.PreprossesertMeldingV1
-import no.nav.helse.prosessering.v1.asynkron.TopicEntry
 import no.nav.helse.prosessering.v1.asynkron.Topics
 import no.nav.helse.prosessering.v1.asynkron.Topics.CLEANUP
-import no.nav.helse.prosessering.v1.asynkron.Topics.JOURNALFORT
 import no.nav.helse.prosessering.v1.asynkron.Topics.MOTTATT
 import no.nav.helse.prosessering.v1.asynkron.Topics.PREPROSSESERT
 import org.apache.kafka.clients.CommonClientConfigs
@@ -36,7 +35,6 @@ object KafkaWrapper {
             topicNames= listOf(
                 MOTTATT.name,
                 PREPROSSESERT.name,
-                JOURNALFORT.name,
                 CLEANUP.name
             )
         )
@@ -75,15 +73,16 @@ fun KafkaEnvironment.testConsumer() : KafkaConsumer<String, TopicEntry<Preprosse
     return consumer
 }
 
-fun KafkaEnvironment.journalføringsKonsumer(): KafkaConsumer<String, String> {
+fun KafkaEnvironment.cleanupConsumer(): KafkaConsumer<String, String> {
     val consumer = KafkaConsumer(
         testConsumerProperties("K9FordelKonsumer"),
         StringDeserializer(),
         StringDeserializer()
     )
-    consumer.subscribe(listOf(JOURNALFORT.name))
+    consumer.subscribe(listOf(CLEANUP.name))
     return consumer
 }
+
 
 fun KafkaEnvironment.testProducer() = KafkaProducer(
     testProducerProperties(),
@@ -110,7 +109,7 @@ fun KafkaConsumer<String, TopicEntry<PreprossesertMeldingV1>>.hentPreprosessertM
     throw IllegalStateException("Fant ikke preprosessert melding for søknad $soknadId etter $maxWaitInSeconds sekunder.")
 }
 
-fun KafkaConsumer<String, String>.hentJournalførtMelding(
+fun KafkaConsumer<String, String>.hentCleanupMelding(
     soknadId: String,
     maxWaitInSeconds: Long = 20
 ): String {
@@ -118,7 +117,7 @@ fun KafkaConsumer<String, String>.hentJournalførtMelding(
     while (System.currentTimeMillis() < end) {
         seekToBeginning(assignment())
         val entries = poll(Duration.ofSeconds(1))
-            .records(JOURNALFORT.name)
+            .records(CLEANUP.name)
             .filter { it.key() == soknadId }
 
         if (entries.isNotEmpty()) {

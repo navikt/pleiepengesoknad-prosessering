@@ -1,8 +1,7 @@
 package no.nav.helse.dokument
 
 import no.nav.helse.CorrelationId
-import no.nav.helse.aktoer.AktoerId
-import no.nav.helse.prosessering.v1.MeldingV1
+import no.nav.k9.søknad.Søknad
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.net.URI
@@ -14,19 +13,19 @@ class DokumentService(
 ) {
     private suspend fun lagreDokument(
         dokument: DokumentGateway.Dokument,
-        aktoerId: AktoerId,
+        aktørId: String,
         correlationId: CorrelationId
     ) : URI {
         return dokumentGateway.lagreDokmenter(
             dokumenter = setOf(dokument),
             correlationId = correlationId,
-            aktoerId = aktoerId
+            aktørId = aktørId
         ).first()
     }
 
     internal suspend fun lagreSoknadsOppsummeringPdf(
         pdf : ByteArray,
-        aktoerId: AktoerId,
+        aktørId: String,
         correlationId: CorrelationId,
         dokumentbeskrivelse: String
     ) : URI {
@@ -36,30 +35,30 @@ class DokumentService(
                 contentType = "application/pdf",
                 title = dokumentbeskrivelse
             ),
-            aktoerId = aktoerId,
+            aktørId = aktørId,
             correlationId = correlationId
         )
     }
 
     internal suspend fun lagreSoknadsMelding(
-        melding: MeldingV1,
-        aktoerId: AktoerId,
+        k9FormatSøknad: Søknad,
+        aktørId: String,
         correlationId: CorrelationId
     ) : URI {
         return lagreDokument(
             dokument = DokumentGateway.Dokument(
-                content = JournalforingsFormat.somJson(melding),
+                content = JournalforingsFormat.somJson(k9FormatSøknad),
                 contentType = "application/json",
                 title = "Søknad om pleiepenger som JSON"
             ),
-            aktoerId = aktoerId,
+            aktørId = aktørId,
             correlationId = correlationId
         )
     }
 
     internal suspend fun slettDokumeter(
         urlBolks: List<List<URI>>,
-        aktørId: AktoerId,
+        aktørId: String,
         correlationId : CorrelationId
     ) {
         val urls = mutableListOf<URI>()

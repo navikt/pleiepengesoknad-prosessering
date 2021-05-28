@@ -1,7 +1,7 @@
 package no.nav.helse.prosessering.v1
 
-import no.nav.helse.aktoer.AktoerId
-import no.nav.helse.aktoer.NorskIdent
+import no.nav.helse.felles.*
+import no.nav.k9.søknad.Søknad
 import java.net.URI
 import java.time.LocalDate
 import java.time.ZonedDateTime
@@ -13,16 +13,15 @@ data class PreprossesertMeldingV1(
     val mottatt: ZonedDateTime,
     val fraOgMed: LocalDate,
     val tilOgMed: LocalDate,
-    val søker: PreprossesertSøker,
-    val barn: PreprossesertBarn,
+    val søker: Søker,
+    val barn: Barn,
     val arbeidsgivere: Arbeidsgivere,
     val medlemskap: Medlemskap,
-    val bekrefterPeriodeOver8Uker: Boolean? = null,
     val utenlandsoppholdIPerioden: UtenlandsoppholdIPerioden,
     val ferieuttakIPerioden: FerieuttakIPerioden?,
     val beredskap: Beredskap?,
     val nattevåk: Nattevåk?,
-    val tilsynsordning: Tilsynsordning?, // TODO: 10/05/2021 utgår
+    val tilsynsordning: Tilsynsordning? = null, // TODO: 10/05/2021 utgår
     val omsorgstilbud: Omsorgstilbud? = null,
     val harMedsøker: Boolean,
     val frilans: Frilans? = null,
@@ -30,18 +29,17 @@ data class PreprossesertMeldingV1(
     val selvstendigArbeidsforhold: Arbeidsforhold? = null,
     val barnRelasjon: BarnRelasjon? = null,
     val barnRelasjonBeskrivelse: String? = null,
+    val skalBekrefteOmsorg: Boolean? = null, //TODO: Fjerne optinal når prodsatt
+    val beskrivelseOmsorgsrollen: String? = null, // TODO: Fjern optional når prodsatt
+    val samtidigHjemme: Boolean? = null,
     val harForstattRettigheterOgPlikter: Boolean,
     val harBekreftetOpplysninger: Boolean,
-    val harVærtEllerErVernepliktig: Boolean? = null
+    val harVærtEllerErVernepliktig: Boolean? = null,
+    val k9FormatSøknad: Søknad
 ) {
     internal constructor(
         melding: MeldingV1,
-        dokumentUrls: List<List<URI>>,
-        sokerAktoerId: AktoerId,
-        barnAktoerId: AktoerId?,
-        barnetsNavn: String?,
-        barnetsNorskeIdent: NorskIdent?,
-        barnetsFødselsdato: LocalDate?
+        dokumentUrls: List<List<URI>>
     ) : this(
         språk = melding.språk,
         søknadId = melding.søknadId,
@@ -49,8 +47,8 @@ data class PreprossesertMeldingV1(
         mottatt = melding.mottatt,
         fraOgMed = melding.fraOgMed,
         tilOgMed = melding.tilOgMed,
-        søker = PreprossesertSøker(melding.søker, sokerAktoerId),
-        barn = PreprossesertBarn(melding.barn, barnetsNavn, barnetsNorskeIdent, barnAktoerId, barnetsFødselsdato),
+        søker = melding.søker,
+        barn = melding.barn,
         arbeidsgivere = melding.arbeidsgivere,
         medlemskap = melding.medlemskap,
         beredskap = melding.beredskap,
@@ -58,7 +56,6 @@ data class PreprossesertMeldingV1(
         tilsynsordning = melding.tilsynsordning,
         omsorgstilbud = melding.omsorgstilbud,
         harMedsøker = melding.harMedsøker,
-        bekrefterPeriodeOver8Uker = melding.bekrefterPeriodeOver8Uker,
         frilans = melding.frilans,
         selvstendigVirksomheter = melding.selvstendigVirksomheter,
         selvstendigArbeidsforhold = melding.selvstendigArbeidsforhold,
@@ -68,53 +65,10 @@ data class PreprossesertMeldingV1(
         ferieuttakIPerioden = melding.ferieuttakIPerioden,
         barnRelasjon = melding.barnRelasjon,
         barnRelasjonBeskrivelse = melding.barnRelasjonBeskrivelse,
-        harVærtEllerErVernepliktig = melding.harVærtEllerErVernepliktig
+        skalBekrefteOmsorg = melding.skalBekrefteOmsorg,
+        beskrivelseOmsorgsrollen = melding.beskrivelseOmsorgsrollen,
+        samtidigHjemme = melding.samtidigHjemme,
+        harVærtEllerErVernepliktig = melding.harVærtEllerErVernepliktig,
+        k9FormatSøknad = melding.k9FormatSøknad
     )
-}
-
-data class PreprossesertSøker(
-    val fødselsnummer: String,
-    val fornavn: String,
-    val mellomnavn: String?,
-    val etternavn: String,
-    val aktørId: String
-) {
-    internal constructor(soker: Søker, aktoerId: AktoerId) : this(
-        fødselsnummer = soker.fødselsnummer,
-        fornavn = soker.fornavn,
-        mellomnavn = soker.mellomnavn,
-        etternavn = soker.etternavn,
-        aktørId = aktoerId.id
-    )
-
-    override fun toString(): String {
-        return "PreprossesertSøker()"
-    }
-
-
-}
-
-data class PreprossesertBarn(
-    val fødselsnummer: String?,
-    val navn: String?,
-    val fødselsdato: LocalDate?,
-    val aktørId: String?
-) {
-
-    internal constructor(
-        barn: Barn,
-        barnetsNavn: String?,
-        barnetsNorskeIdent: NorskIdent?,
-        aktoerId: AktoerId?,
-        fødselsdato: LocalDate?
-    ) : this(
-        fødselsnummer = barn.fødselsnummer ?: barnetsNorskeIdent?.getValue(),
-        navn = barnetsNavn,
-        fødselsdato = fødselsdato,
-        aktørId = aktoerId?.id
-    )
-
-    override fun toString(): String {
-        return "PreprossesertBarn()"
-    }
 }

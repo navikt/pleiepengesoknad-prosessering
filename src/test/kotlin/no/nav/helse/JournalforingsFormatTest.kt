@@ -14,205 +14,189 @@ import kotlin.test.Test
 class JournalforingsFormatTest {
 
     @Test
-    fun `Soknaden journalfoeres som JSON uten vedlegg`() {
-        val soknadId = UUID.randomUUID().toString()
-        val json = JournalforingsFormat.somJson(melding(soknadId))
+    fun `Søknaden journalfoeres som JSON uten vedlegg`() {
+        val soknadId = UUID.randomUUID()
+        val json = JournalforingsFormat.somJson(SøknadUtils.defaultK9FormatPSB(søknadId = soknadId))
         println(String(json))
-        JSONAssert.assertEquals("""
+        JSONAssert.assertEquals(
+            //language=json
+            """
         {
-            "språk": null,
-            "søknadId": "$soknadId",
-            "mottatt": "2018-01-02T03:04:05.000000006Z",
-            "fraOgMed": "2018-01-01",
-            "tilOgMed": "2018-02-02",
-            "vedleggUrls": [
-                "http://localhost:8080/1234", "http://localhost:8080/12345"],
-            "søker": {
-                "aktørId": "123456",
-                "fødselsnummer": "1212",
-                "fornavn": "Ola",
-                "mellomnavn": "Mellomnavn",
-                "etternavn": "Nordmann"
+          "søknadId": "$soknadId",
+          "journalposter": [],
+          "versjon": "1.0.0",
+          "språk": "nb",
+          "mottattDato": "2020-01-01T10:00:00.000Z",
+          "søker": {
+            "norskIdentitetsnummer": "12345678910"
+          },
+          "ytelse": {
+            "type": "PLEIEPENGER_SYKT_BARN",
+            "søknadsperiode": ["2020-01-01/2020-01-10"],
+            "endringsperiode": [],
+            "infoFraPunsj": null,
+            "dataBruktTilUtledning" : {
+              "harForståttRettigheterOgPlikter" : true,
+              "harBekreftetOpplysninger" : true,
+              "samtidigHjemme" : true,
+              "harMedsøker" : true,
+              "bekrefterPeriodeOver8Uker" : true
             },
             "barn": {
-                "fødselsnummer": "2323",
-                "navn": "Kari",
-                "fødselsdato": null,
-                "aktørId": null
+              "norskIdentitetsnummer": "10987654321",
+              "fødselsdato": null
             },
-            "arbeidsgivere": {
-                "organisasjoner": [{
-                    "organisasjonsnummer": "1212",
-                    "navn": "Nei",
-                    "skalJobbe": "NEI",
-                    "jobberNormaltTimer": 0.0,
-                    "skalJobbeProsent": 0.0,
-                    "vetIkkeEkstrainfo": null,
-                    "arbeidsform": "TURNUS"
-                },{
-                    "organisasjonsnummer": "54321",
-                    "navn": "Navn",
-                    "skalJobbe": "REDUSERT",
-                    "skalJobbeProsent": 22.512,
-                    "vetIkkeEkstrainfo": null,
-                    "jobberNormaltTimer": 0.0,
-                    "arbeidsform": "FAST"
-                }]
-            },
-            "medlemskap": {
-                "harBoddIUtlandetSiste12Mnd": true,
-                "utenlandsoppholdNeste12Mnd": [],
-                "skalBoIUtlandetNeste12Mnd": true,
-                "utenlandsoppholdSiste12Mnd": []
-            },
-            "harMedsøker": true,
-            "samtidigHjemme": null,
-            "bekrefterPeriodeOver8Uker": true,
-            "harBekreftetOpplysninger" : true,
-	        "harForståttRettigheterOgPlikter": true,
-            "tilsynsordning": {
-                "svar": "ja",
-                "ja": {
-                    "mandag": "PT5H",
-                    "tirsdag": "PT4H",
-                    "onsdag": "PT3H45M",
-                    "torsdag": "PT2H",
-                    "fredag": "PT1H30M",
-                    "tilleggsinformasjon": "Litt tilleggsinformasjon."
+            "opptjeningAktivitet": {
+              "selvstendigNæringsdrivende": [
+                {
+                  "perioder": {
+                    "2018-01-01/2020-01-01": {
+                      "virksomhetstyper": [
+                        "DAGMAMMA",
+                        "ANNEN"
+                      ],
+                      "regnskapsførerNavn": "Regnskapsfører Svensen",
+                      "regnskapsførerTlf": "+4799887766",
+                      "erVarigEndring": true,
+                      "endringDato": "2020-01-01",
+                      "endringBegrunnelse": "Grunnet Covid-19",
+                      "bruttoInntekt": 5000000,
+                      "erNyoppstartet": true,
+                      "registrertIUtlandet": false,
+                      "landkode": "NOR"
+                    }
+                  },
+                  "organisasjonsnummer": "12345678910112233444455667",
+                  "virksomhetNavn": "Mamsen Bamsen AS"
                 },
-                "vetIkke": null
+                {
+                  "perioder": {
+                    "2015-01-01/2017-01-01": {
+                      "virksomhetstyper": [
+                        "FISKE"
+                      ],
+                      "erVarigEndring": false,
+                      "bruttoInntekt": 500000,
+                      "erNyoppstartet": false,
+                      "registrertIUtlandet": true,
+                      "landkode": "ESP"
+                    }
+                  },
+                  "organisasjonsnummer": "54549049090490498048940940",
+                  "virksomhetNavn": "Something Fishy AS"
+                }
+              ],
+              "frilanser": {
+                "startdato": "2020-01-01",
+                "sluttdato": null,
+                "jobberFortsattSomFrilans": true
+              }
             },
             "beredskap": {
-                "beredskap": true,
-                "tilleggsinformasjon": "I Beredskap",
+              "perioderSomSkalSlettes": {},
+              "perioder": {
+                "2020-01-01/2020-01-05": {
+                  "tilleggsinformasjon": "Jeg skal være i beredskap. Basta!"
+                },
+                "2020-01-07/2020-01-10": {
+                  "tilleggsinformasjon": "Jeg skal være i beredskap i denne perioden også. Basta!"
+                }
+              }
             },
             "nattevåk": {
-                "harNattevåk": true,
-                "tilleggsinformasjon": "Har Nattevåk"
+              "perioderSomSkalSlettes": {},
+              "perioder": {
+                "2020-01-01/2020-01-05": {
+                  "tilleggsinformasjon": "Jeg skal ha nattevåk. Basta!"
+                },
+                "2020-01-07/2020-01-10": {
+                  "tilleggsinformasjon": "Jeg skal ha nattevåk i perioden også. Basta!"
+                }
+              }
             },
-             "utenlandsoppholdIPerioden": {
-                "skalOppholdeSegIUtlandetIPerioden": false,
-                "opphold": []
-            },
-          "ferieuttakIPerioden": {
-            "skalTaUtFerieIPerioden": false,
-            "ferieuttak": [
-            ]
-          },
-            "frilans": {
-              "startdato": "2018-02-01",
-              "jobberFortsattSomFrilans": true,
-              "arbeidsforhold": {
-                  "skalJobbe": "NEI",
-                  "arbeidsform": "FAST",
-                  "jobberNormaltTimer": 40.0,
-                  "skalJobbeTimer": 0.0,
-                  "skalJobbeProsent": 0.0
+            "tilsynsordning": {
+              "perioder": {
+                "2020-01-01/2020-01-05": {
+                  "etablertTilsynTimerPerDag": "PT8H"
+                },
+                "2020-01-06/2020-01-10": {
+                  "etablertTilsynTimerPerDag": "PT4H"
+                }
               },
+              "perioderSomSkalSlettes": {}
             },
-            "selvstendigVirksomheter" : [],
-            "selvstendigArbeidsforhold": null,
-          "skalBekrefteOmsorg": true,
-          "skalPassePaBarnetIHelePerioden": true,
-          "beskrivelseOmsorgsrollen": "En kort beskrivelse",
-          "barnRelasjon" : "FAR",
-          "barnRelasjonBeskrivelse" : null,
-          "harVærtEllerErVernepliktig" : true
+            "arbeidstid": {
+              "arbeidstakerList": [
+                {
+                  "norskIdentitetsnummer": "12345678910",
+                  "organisasjonsnummer": "926032925",
+                  "arbeidstidInfo": {
+                    "perioder": {
+                      "2018-01-01/2020-01-05": {
+                         "jobberNormaltTimerPerDag": "PT8H",
+                        "faktiskArbeidTimerPerDag": "PT4H"
+                      },
+                      "2020-01-06/2020-01-10": {
+                         "jobberNormaltTimerPerDag": "PT8H",
+                        "faktiskArbeidTimerPerDag": "PT2H"
+                      }
+                    }
+                  }
+                }
+              ],
+              "frilanserArbeidstidInfo": null,
+              "selvstendigNæringsdrivendeArbeidstidInfo": null
+            },
+            "uttak": {
+              "perioder": {
+                "2020-01-01/2020-01-05": {
+                  "timerPleieAvBarnetPerDag": "PT4H"
+                },
+                "2020-01-06/2020-01-10": {
+                  "timerPleieAvBarnetPerDag": "PT2H"
+                }
+              },
+              "perioderSomSkalSlettes": {}
+            },
+            "omsorg" : {
+              "relasjonTilBarnet" : "MOR",
+              "beskrivelseAvOmsorgsrollen" : "Blabla beskrivelse"
+            },
+            "lovbestemtFerie": {
+              "perioderSomSkalSlettes": {},
+              "perioder": {
+                "2020-01-01/2020-01-05":  {},
+                "2020-01-06/2020-01-10": {}
+              }
+            },
+            "bosteder": {
+              "perioderSomSkalSlettes": {},
+              "perioder": {
+                "2020-01-01/2020-01-05": {
+                  "land": "ESP"
+                },
+                "2020-01-06/2020-01-10": {
+                  "land": "NOR"
+                }
+              }
+            },
+            "utenlandsopphold": {
+              "perioder": {
+                "2020-01-01/2020-01-05": {
+                  "land": "CAN",
+                  "årsak": "barnetInnlagtIHelseinstitusjonDekketEtterAvtaleMedEtAnnetLandOmTrygd"
+                },
+                "2020-01-06/2020-01-10": {
+                  "land": "SWE",
+                  "årsak": "barnetInnlagtIHelseinstitusjonForNorskOffentligRegning"
+                }
+              },
+              "perioderSomSkalSlettes": {}
+            }
+          }
         }
-        """.trimIndent(), String(json), true)
+        """.trimIndent(), String(json), true
+        )
 
     }
-
-    private fun melding(soknadId: String) : MeldingV1 = MeldingV1(
-        søknadId = soknadId,
-        mottatt = ZonedDateTime.of(2018,1,2,3,4,5,6, ZoneId.of("UTC")),
-        fraOgMed = LocalDate.parse("2018-01-01"),
-        tilOgMed = LocalDate.parse("2018-02-02"),
-        søker = Søker(
-            aktørId = "123456",
-            fødselsnummer = "1212",
-            etternavn = "Nordmann",
-            mellomnavn = "Mellomnavn",
-            fornavn = "Ola"
-        ),
-        barn = Barn(
-            navn = "Kari",
-            fødselsnummer = "2323",
-            fødselsdato = null,
-            aktørId = null
-        ),
-        bekrefterPeriodeOver8Uker = true,
-        arbeidsgivere = Arbeidsgivere(
-            organisasjoner = listOf(
-                Organisasjon(
-                    "1212",
-                    "Nei",
-                    jobberNormaltTimer = 0.0,
-                    skalJobbeProsent = 0.0,
-                    vetIkkeEkstrainfo = null,
-                    skalJobbe = SkalJobbe.NEI,
-                    arbeidsform = Arbeidsform.TURNUS
-                ),
-                Organisasjon(
-                    "54321",
-                    "Navn",
-                    skalJobbeProsent = 22.512,
-                    jobberNormaltTimer = 0.0,
-                    vetIkkeEkstrainfo = null,
-                    skalJobbe = SkalJobbe.REDUSERT,
-                    arbeidsform = Arbeidsform.FAST
-                )
-            )
-        ),
-        vedleggUrls = listOf(
-            URI("http://localhost:8080/1234"),
-            URI("http://localhost:8080/12345")
-        ),
-        medlemskap = Medlemskap(
-            harBoddIUtlandetSiste12Mnd = true,
-            skalBoIUtlandetNeste12Mnd = true
-        ),
-        harMedsøker = true,
-        harBekreftetOpplysninger = true,
-        harForståttRettigheterOgPlikter = true,
-        tilsynsordning = Tilsynsordning(
-            svar = "ja",
-            ja = TilsynsordningJa(
-                mandag = Duration.ofHours(5),
-                tirsdag = Duration.ofHours(4),
-                onsdag = Duration.ofHours(3).plusMinutes(45),
-                torsdag = Duration.ofHours(2),
-                fredag = Duration.ofHours(1).plusMinutes(30),
-                tilleggsinformasjon = "Litt tilleggsinformasjon."
-            ),
-            vetIkke = null
-        ),
-        beredskap = Beredskap(
-            beredskap = true,
-            tilleggsinformasjon = "I Beredskap"
-        ),
-        nattevåk = Nattevåk(
-            harNattevåk = true,
-            tilleggsinformasjon = "Har Nattevåk"
-        ),
-        utenlandsoppholdIPerioden = UtenlandsoppholdIPerioden(skalOppholdeSegIUtlandetIPerioden = false, opphold = listOf()),
-        ferieuttakIPerioden = FerieuttakIPerioden(skalTaUtFerieIPerioden = false, ferieuttak = listOf()),
-        frilans = Frilans(
-            startdato = LocalDate.parse("2018-02-01"),
-            jobberFortsattSomFrilans = true,
-            arbeidsforhold = Arbeidsforhold(
-                skalJobbe = SkalJobbe.NEI,
-                arbeidsform = Arbeidsform.FAST,
-                jobberNormaltTimer = 40.0,
-                skalJobbeTimer = 0.0,
-                skalJobbeProsent = 0.0
-            )
-        ),
-        selvstendigVirksomheter = listOf(),
-        skalBekrefteOmsorg = true,
-        skalPassePaBarnetIHelePerioden = true,
-        beskrivelseOmsorgsrollen = "En kort beskrivelse",
-        barnRelasjon = BarnRelasjon.FAR,
-        harVærtEllerErVernepliktig = true
-    )
 }

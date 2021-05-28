@@ -52,9 +52,6 @@
             {{/if}}
         </p>
         <p>
-            {{# if barn.fodselsdato }}
-                {{ barn.fodselsdato }} <br/>
-            {{/if}}
             {{# if barn.id }}
                 {{ barn.id }}
             {{else}}
@@ -81,10 +78,6 @@
             <li>
                 <strong>{{ periode.fra_og_med }} - {{ periode.til_og_med }}</strong><br/>
                 <ul>
-                    {{#if bekrefterPeriodeOver8Uker}}
-                        <li>Du bekrefter at søknaden gjelder for en periode på mer enn 8 uker.</li>
-                    {{/if}}
-
                     {{# if hjelp.har_medsoker }}
                         <li>
                             Du opplyser at en medsøker skal søke for samme periode som deg.<br/>
@@ -252,6 +245,11 @@
             <p class="sporsmalstekst">Jobber du fremdeles som frilanser?</p>
             <p>{{ jaNeiSvar søknad.frilans.jobberFortsattSomFrilans }}</p>
 
+            {{#unless  søknad.frilans.jobberFortsattSomFrilans}}
+                <p class="sporsmalstekst">Når sluttet du som frilanser?</p>
+                <p>{{#dato søknad.frilans.sluttdato}}{{/dato}}</p>
+            {{/unless}}
+
             {{#if søknad.frilans.arbeidsforhold}}
                 <p class="sporsmalstekst">Hvordan jobber du som frilanser?</p>
                 <ul>
@@ -378,6 +376,12 @@
         {{/if}}
     </section>
 
+    <section id="verneplikt">
+        <h2>Verneplikt</h2>
+        <p class="sporsmalstekst">Utøvde du verneplikt på tidspunktet du søker pleiepenger fra?</p>
+        <p>{{ jaNeiSvar harVærtEllerErVernepliktig }}</p>
+    </section>
+
     <section id="omsorgstilbud">
         <h2>Omsorgstilbud</h2>
         <p class="sporsmalstekst">Skal barnet være i et omsorgstilbud i hele eller deler av perioden du søker om?</p>
@@ -394,7 +398,7 @@
                 <p>Nei, jeg er usikker på hvor mye.</p> <br/>
 
                 <br/>
-                <p class="sporsmalstekst">Vet du hvor mye barnet vanligvis klarer å være i omsorgstilbudet?</p>
+                <p class="sporsmalstekst">Er du sikker på noe av tiden barnet skal være i omsorgstilbudet?</p>
                 {{#if omsorgstilbud.fasteDager}}
                     <p>Ja</p>
                 {{else}}
@@ -406,8 +410,8 @@
                 <p>Nei</p>
             {{/eq}}
 
+            <br/>
             {{#if omsorgstilbud.fasteDager}}
-                <hr/>
                 <p><span class="sporsmalstekst">Mandag: </span>
                     {{# if omsorgstilbud.fasteDager.mandag }}
                         {{omsorgstilbud.fasteDager.mandag}}
@@ -447,11 +451,13 @@
             {{/if}}
 
         {{else}}
-            <p>Nei.</p>
+            <p>Nei</p>
         {{/if}}
 
         <!-- TODO: Utgår -->
         {{# if tilsynsordning }}
+            <h2>Omsorgstilbud</h2>
+            <p class="sporsmalstekst">Skal barnet være i et omsorgstilbud i perioden du har søkt om?</p>
             <!-- Sjekkbokser -->
             {{#eq tilsynsordning.tilsynsordning_svar "ja" }}
                 <p>Ja</p>
@@ -536,12 +542,6 @@
                 {{/if}}
             {{/eq}}
         {{/if}}
-    </section>
-
-    <section id="verneplikt">
-        <h2>Verneplikt</h2>
-        <p class="sporsmalstekst">Utøvde du verneplikt på tidspunktet du søker pleiepenger fra?</p>
-        <p>{{ jaNeiSvar harVærtEllerErVernepliktig }}</p>
     </section>
 
     <section id="nattevaak">

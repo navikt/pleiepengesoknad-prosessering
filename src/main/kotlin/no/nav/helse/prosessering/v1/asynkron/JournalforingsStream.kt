@@ -1,16 +1,14 @@
 package no.nav.helse.prosessering.v1.asynkron
 
 import no.nav.helse.CorrelationId
-import no.nav.helse.aktoer.AktoerId
+import no.nav.helse.felles.tilTpsNavn
 import no.nav.helse.joark.JoarkGateway
-import no.nav.helse.k9format.tilK9PleiepengeBarnSøknad
+import no.nav.helse.kafka.*
 import no.nav.helse.kafka.KafkaConfig
 import no.nav.helse.kafka.ManagedKafkaStreams
 import no.nav.helse.kafka.ManagedStreamHealthy
 import no.nav.helse.kafka.ManagedStreamReady
 import no.nav.helse.prosessering.v1.PreprossesertMeldingV1
-import no.nav.helse.prosessering.v1.PreprossesertSøker
-import no.nav.helse.tpsproxy.TpsNavn
 import org.apache.kafka.streams.StreamsBuilder
 import org.apache.kafka.streams.Topology
 import org.apache.kafka.streams.kstream.Consumed
@@ -52,7 +50,7 @@ internal class JournalforingsStream(
                         logger.info("Journalfører dokumenter.")
                         val journaPostId = joarkGateway.journalfoer(
                             mottatt = entry.data.mottatt,
-                            aktoerId = AktoerId(entry.data.søker.aktørId),
+                            aktoerId = entry.data.søker.aktørId,
                             sokerNavn = entry.data.søker.tilTpsNavn(),
                             correlationId = CorrelationId(entry.metadata.correlationId),
                             dokumenter = entry.data.dokumentUrls,
@@ -61,7 +59,7 @@ internal class JournalforingsStream(
                         logger.info("Dokumenter journalført med ID = ${journaPostId.journalPostId}.")
                         val journalfort = Journalfort(
                             journalpostId = journaPostId.journalPostId,
-                            søknad = entry.data.tilK9PleiepengeBarnSøknad()
+                            søknad = entry.data.k9FormatSøknad
                         )
                         Cleanup(
                             metadata = entry.metadata,
@@ -77,9 +75,3 @@ internal class JournalforingsStream(
 
     internal fun stop() = stream.stop(becauseOfError = false)
 }
-
-fun PreprossesertSøker.tilTpsNavn(): TpsNavn = TpsNavn(
-    fornavn = fornavn,
-    mellomnavn = mellomnavn,
-    etternavn = etternavn
-)

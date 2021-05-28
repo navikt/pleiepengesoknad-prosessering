@@ -2,17 +2,15 @@ package no.nav.helse.joark
 
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.PropertyNamingStrategy
+import com.fasterxml.jackson.databind.PropertyNamingStrategies
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.github.kittinunf.fuel.coroutines.awaitStringResponseResult
 import com.github.kittinunf.fuel.httpPost
-import io.ktor.http.HttpHeaders
-import io.ktor.http.Url
+import io.ktor.http.*
 import no.nav.helse.CorrelationId
 import no.nav.helse.HttpError
-import no.nav.helse.aktoer.AktoerId
 import no.nav.helse.dusseldorf.ktor.client.buildURL
 import no.nav.helse.dusseldorf.ktor.health.HealthCheck
 import no.nav.helse.dusseldorf.ktor.health.Healthy
@@ -21,7 +19,7 @@ import no.nav.helse.dusseldorf.ktor.health.UnHealthy
 import no.nav.helse.dusseldorf.ktor.metrics.Operation
 import no.nav.helse.dusseldorf.oauth2.client.AccessTokenClient
 import no.nav.helse.dusseldorf.oauth2.client.CachedAccessTokenClient
-import no.nav.helse.tpsproxy.TpsNavn
+import no.nav.helse.felles.Navn
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.ByteArrayInputStream
@@ -57,9 +55,9 @@ class JoarkGateway(
     }
 
     suspend fun journalfoer(
-        aktoerId: AktoerId,
+        aktoerId: String,
         norskIdent: String,
-        sokerNavn: TpsNavn,
+        sokerNavn: Navn,
         mottatt: ZonedDateTime,
         dokumenter: List<List<URI>>,
         correlationId: CorrelationId
@@ -68,7 +66,7 @@ class JoarkGateway(
         val authorizationHeader = cachedAccessTokenClient.getAccessToken(journalforeScopes).asAuthoriationHeader()
 
         val joarkRequest = JoarkRequest(
-            aktoerId = aktoerId.id,
+            aktoerId = aktoerId,
             norskIdent = norskIdent,
             mottatt = mottatt,
             sokerNavn = sokerNavn,
@@ -109,7 +107,7 @@ class JoarkGateway(
     private fun configuredObjectMapper() : ObjectMapper {
         val objectMapper = jacksonObjectMapper()
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-        objectMapper.propertyNamingStrategy = PropertyNamingStrategy.SNAKE_CASE
+        objectMapper.propertyNamingStrategy = PropertyNamingStrategies.SNAKE_CASE
         objectMapper.registerModule(JavaTimeModule())
         return objectMapper
     }
@@ -117,7 +115,7 @@ class JoarkGateway(
 private data class JoarkRequest(
     val norskIdent: String,
     val aktoerId: String,
-    val sokerNavn: TpsNavn,
+    val sokerNavn: Navn,
     val mottatt: ZonedDateTime,
     val dokumenter: List<List<URI>>
 )

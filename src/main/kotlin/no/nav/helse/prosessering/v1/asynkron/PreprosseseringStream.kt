@@ -1,5 +1,6 @@
 package no.nav.helse.prosessering.v1.asynkron
 
+import no.nav.helse.kafka.*
 import no.nav.helse.kafka.KafkaConfig
 import no.nav.helse.kafka.ManagedKafkaStreams
 import no.nav.helse.kafka.ManagedStreamHealthy

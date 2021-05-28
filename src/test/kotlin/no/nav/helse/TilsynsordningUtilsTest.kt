@@ -1,8 +1,9 @@
 package no.nav.helse
 
+import no.nav.helse.felles.TilsynsordningJa
 import no.nav.helse.prosessering.v1.NormalArbeidsdag
-import no.nav.helse.prosessering.v1.TilsynsordningJa
 import no.nav.helse.prosessering.v1.prosentAvNormalArbeidsuke
+import no.nav.helse.prosessering.v1.snittTilsynsTimerPerDag
 import java.time.Duration
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -54,5 +55,19 @@ class TilsynsordningUtilsTest {
             fredag = Duration.ofHours(1).plusMinutes(30)
         )
         assertEquals(20.0, tilsyn.prosentAvNormalArbeidsuke())
+    }
+
+
+    @Test
+    fun `Tilsynsordning til k9Tilsynsordning`() {
+        val tilsyn = TilsynsordningJa(
+            mandag = Duration.parse("PT7H30M"),
+            tirsdag = Duration.parse("PT4H30M"),
+            onsdag = Duration.parse("PT2H30M"),
+            torsdag = null,
+            fredag = Duration.parse("PT5H")
+        )
+
+        assertEquals("PT3H54M", tilsyn.snittTilsynsTimerPerDag().toString())
     }
 }

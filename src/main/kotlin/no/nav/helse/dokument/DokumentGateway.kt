@@ -2,7 +2,7 @@ package no.nav.helse.dokument
 
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.PropertyNamingStrategy
+import com.fasterxml.jackson.databind.PropertyNamingStrategies
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.github.kittinunf.fuel.coroutines.awaitStringResponseResult
 import com.github.kittinunf.fuel.httpDelete
@@ -14,8 +14,7 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import no.nav.helse.CorrelationId
 import no.nav.helse.HttpError
-import no.nav.helse.aktoer.AktoerId
-import no.nav.helse.dusseldorf.ktor.client.*
+import no.nav.helse.dusseldorf.ktor.client.buildURL
 import no.nav.helse.dusseldorf.ktor.core.Retry
 import no.nav.helse.dusseldorf.ktor.health.HealthCheck
 import no.nav.helse.dusseldorf.ktor.health.Healthy
@@ -77,7 +76,7 @@ class DokumentGateway(
 
     internal suspend fun lagreDokmenter(
         dokumenter: Set<Dokument>,
-        aktoerId: AktoerId,
+        aktørId: String,
         correlationId: CorrelationId
     ) : List<URI> {
         val authorizationHeader = cachedAccessTokenClient.getAccessToken(lagreDokumentScopes).asAuthoriationHeader()
@@ -89,7 +88,7 @@ class DokumentGateway(
                     requestLagreDokument(
                         dokument = it,
                         correlationId = correlationId,
-                        aktoerId = aktoerId,
+                        aktoerId = aktørId,
                         authorizationHeader = authorizationHeader
                     )
                 })
@@ -100,7 +99,7 @@ class DokumentGateway(
 
     internal suspend fun slettDokmenter(
         urls: List<URI>,
-        aktoerId: AktoerId,
+        aktoerId: String,
         correlationId: CorrelationId
     ) {
         val authorizationHeader = cachedAccessTokenClient.getAccessToken(sletteDokumentScopes).asAuthoriationHeader()
@@ -123,14 +122,14 @@ class DokumentGateway(
 
     private suspend fun requestSlettDokument(
         url: URI,
-        aktoerId: AktoerId,
+        aktoerId: String,
         correlationId: CorrelationId,
         authorizationHeader: String
     ) {
 
         val urlMedEier = Url.buildURL(
             baseUrl = url,
-            queryParameters = mapOf("eier" to listOf(aktoerId.id))
+            queryParameters = mapOf("eier" to listOf(aktoerId))
         ).toString()
 
         val httpRequest = urlMedEier
@@ -160,14 +159,14 @@ class DokumentGateway(
 
     private suspend fun requestLagreDokument(
         dokument: Dokument,
-        aktoerId: AktoerId,
+        aktoerId: String,
         correlationId: CorrelationId,
         authorizationHeader: String
     ) : URI {
 
         val urlMedEier = Url.buildURL(
             baseUrl = completeUrl,
-            queryParameters = mapOf("eier" to listOf(aktoerId.id))
+            queryParameters = mapOf("eier" to listOf(aktoerId))
         ).toString()
 
         val body = objectMapper.writeValueAsBytes(dokument)
@@ -207,7 +206,7 @@ class DokumentGateway(
     private fun configuredObjectMapper() : ObjectMapper {
         val objectMapper = jacksonObjectMapper()
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-        objectMapper.propertyNamingStrategy = PropertyNamingStrategy.SNAKE_CASE
+        objectMapper.propertyNamingStrategy = PropertyNamingStrategies.SNAKE_CASE
         return objectMapper
     }
 

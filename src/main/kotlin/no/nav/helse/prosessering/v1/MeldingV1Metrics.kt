@@ -2,73 +2,74 @@ package no.nav.helse.prosessering.v1
 
 import io.prometheus.client.Counter
 import io.prometheus.client.Histogram
+import no.nav.helse.felles.VetOmsorgstilbud
 
-private val opplastedeVedleggHistogram = Histogram.build()
+val opplastedeVedleggHistogram = Histogram.build()
     .buckets(0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0)
     .name("antall_oppplastede_vedlegg_histogram")
     .help("Antall vedlegg lastet opp i søknader")
     .register()
 
-private val omsorgstilbudCounter = Counter.build()
+val omsorgstilbudCounter = Counter.build()
     .name("omsorgstilbud_counter")
     .help("Teller for svar på ja på spørsmål om tilsynsordning i søknaden")
     .labelNames("spm", "svar")
     .register()
 
-private val beredskapCounter = Counter.build()
+val beredskapCounter = Counter.build()
     .name("beredskap_counter")
     .help("Teller for svar på ja på spørsmål om beredskap i søknaden")
     .labelNames("spm", "svar")
     .register()
 
-private val nattevaakCounter = Counter.build()
+val nattevaakCounter = Counter.build()
     .name("nattevaak_counter")
     .help("Teller for svar på ja på spørsmål om nattevåk i søknaden")
     .labelNames("spm", "svar")
     .register()
 
-private val frilansCounter = Counter.build()
+val frilansCounter = Counter.build()
     .name("frilansCounter")
     .help("Teller for frilans")
     .register()
 
-private val arbeidstakerCounter = Counter.build()
+val arbeidstakerCounter = Counter.build()
     .name("arbeidstakerCounter")
     .help("Teller for arbeidstaker")
     .register()
 
-private val selvstendigNæringsdrivendeOgFrilans = Counter.build()
+val selvstendigNæringsdrivendeOgFrilans = Counter.build()
     .name("selvstendigNaringsdrivendeOgFrilans")
     .help("Teller for selvstending næringsdrivende og frilans")
     .register()
 
-private val selvstendigNæringsdrivendeFrilansOgArbeidstaker = Counter.build()
+val selvstendigNæringsdrivendeFrilansOgArbeidstaker = Counter.build()
     .name("selvstendigNaringsdrivendeFrilansOgArbeidstaker")
     .help("Teller for selvstending næringsdrivende, frilans og arbeidstaker")
     .register()
 
-private val selvstendingNæringsdrivendeOgArbeidstaker = Counter.build()
+val selvstendingNæringsdrivendeOgArbeidstaker = Counter.build()
     .name("selvstendigNaringsdrivendeOgArbeidstaker")
     .help("Teller for selvstending næringsdrivende og arbeidstaker")
     .register()
 
-private val frilansOgArbeidstaker = Counter.build()
+val frilansOgArbeidstaker = Counter.build()
     .name("frilansOgArbeidstaker")
     .help("Teller for frilans og arbeidstaker")
     .register()
 
-private val selvstendigVirksomhetCounter = Counter.build()
+val selvstendigVirksomhetCounter = Counter.build()
     .name("selvstendigNaringsdrivendeCounter")
     .help("Teller for selvstending næringsdrivende")
     .register()
 
-private val arbeidsgivereCounter = Counter.build()
+val arbeidsgivereCounter = Counter.build()
     .name("arbeidsgivereCounter")
     .help("Teller for arbeidsgivere")
     .labelNames("antallArbeidsgivere", "skalJobbe")
     .register()
 
-private val ingenInntektCounter = Counter.build()
+val ingenInntektCounter = Counter.build()
     .name("ingenInntektCounter")
     .help("Teller for valg av verken arbeidsgiver, frilanser, eller selvstendig næringsdrivende")
     .labelNames()
