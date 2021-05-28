@@ -803,6 +803,64 @@ class PdfV1GeneratorTest {
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
+        id = "24-omsorgstilbud-med-tilsyn"
+        pdf = generator.generateSoknadOppsummeringPdf(
+            melding = SøknadUtils.defaultSøknad.copy(
+                tilsynsordning = null,
+                omsorgstilbud = Omsorgstilbud(
+                    fasteDager = OmsorgstilbudFasteDager(
+                        mandag = Duration.ofHours(7).plusMinutes(30),
+                        tirsdag = Duration.ofHours(7),
+                        onsdag = null,
+                        torsdag = Duration.ofHours(4).plusMinutes(30),
+                        fredag = Duration.ofHours(7).plusMinutes(30),
+                    ),
+                    vetOmsorgstilbud = VetOmsorgstilbud.VET_ALLE_TIMER
+                )
+            )
+        )
+        if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
+
+
+        id = "25-omsorgstilbud-med-usikker-tilsyn-vet-min-antall-timer"
+        pdf = generator.generateSoknadOppsummeringPdf(
+            melding = SøknadUtils.defaultSøknad.copy(
+                tilsynsordning = null,
+                omsorgstilbud = Omsorgstilbud(
+                    fasteDager = OmsorgstilbudFasteDager(
+                        mandag = Duration.ofHours(2).plusMinutes(30),
+                        tirsdag = Duration.ofHours(2).plusMinutes(30),
+                        onsdag = Duration.ofHours(2).plusMinutes(30),
+                        torsdag = Duration.ofHours(2).plusMinutes(30),
+                        fredag = Duration.ofHours(2).plusMinutes(30),
+                    ),
+                    vetOmsorgstilbud = VetOmsorgstilbud.VET_NOEN_TIMER
+                )
+            )
+        )
+        if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
+
+
+        id = "26-omsorgstilbud-med-usikker-tilsyn-vet-ikke-min-antall-timer"
+        pdf = generator.generateSoknadOppsummeringPdf(
+            melding = SøknadUtils.defaultSøknad.copy(
+                tilsynsordning = null,
+                omsorgstilbud = Omsorgstilbud(
+                    fasteDager = null,
+                    vetOmsorgstilbud = VetOmsorgstilbud.VET_IKKE
+                )
+            )
+        )
+        if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
+
+        id = "27-uten-omsorgstilbud"
+        pdf = generator.generateSoknadOppsummeringPdf(
+            melding = SøknadUtils.defaultSøknad.copy(
+                tilsynsordning = null,
+                omsorgstilbud = null
+            )
+        )
+        if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
     }
 
     private fun pdfPath(soknadId: String) = "${System.getProperty("user.dir")}/generated-pdf-$soknadId.pdf"
