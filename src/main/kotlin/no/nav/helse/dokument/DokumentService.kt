@@ -13,19 +13,19 @@ class DokumentService(
 ) {
     private suspend fun lagreDokument(
         dokument: DokumentGateway.Dokument,
-        aktoerId: String,
+        aktørId: String,
         correlationId: CorrelationId
     ) : URI {
         return dokumentGateway.lagreDokmenter(
             dokumenter = setOf(dokument),
             correlationId = correlationId,
-            aktoerId = aktoerId
+            aktørId = aktørId
         ).first()
     }
 
     internal suspend fun lagreSoknadsOppsummeringPdf(
         pdf : ByteArray,
-        aktoerId: String,
+        aktørId: String,
         correlationId: CorrelationId,
         dokumentbeskrivelse: String
     ) : URI {
@@ -35,14 +35,14 @@ class DokumentService(
                 contentType = "application/pdf",
                 title = dokumentbeskrivelse
             ),
-            aktoerId = aktoerId,
+            aktørId = aktørId,
             correlationId = correlationId
         )
     }
 
     internal suspend fun lagreSoknadsMelding(
         k9FormatSøknad: Søknad,
-        aktoerId: String,
+        aktørId: String,
         correlationId: CorrelationId
     ) : URI {
         return lagreDokument(
@@ -51,7 +51,7 @@ class DokumentService(
                 contentType = "application/json",
                 title = "Søknad om pleiepenger som JSON"
             ),
-            aktoerId = aktoerId,
+            aktørId = aktørId,
             correlationId = correlationId
         )
     }

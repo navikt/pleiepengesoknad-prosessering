@@ -51,9 +51,6 @@ internal class CleanupStream(
                         )
                         logger.info("Dokumenter slettet.")
                         logger.info("Videresender journalført melding")
-                        val journalførtMelding = entry.data.journalførtMelding
-                        // TODO: 16/02/2021 Må fjernes før prodsetting
-                        logger.info(JsonUtils.getObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(journalførtMelding))
                     }
                 }
             return builder.build()

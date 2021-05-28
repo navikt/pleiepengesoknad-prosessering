@@ -76,7 +76,7 @@ class DokumentGateway(
 
     internal suspend fun lagreDokmenter(
         dokumenter: Set<Dokument>,
-        aktoerId: String,
+        aktørId: String,
         correlationId: CorrelationId
     ) : List<URI> {
         val authorizationHeader = cachedAccessTokenClient.getAccessToken(lagreDokumentScopes).asAuthoriationHeader()
@@ -88,7 +88,7 @@ class DokumentGateway(
                     requestLagreDokument(
                         dokument = it,
                         correlationId = correlationId,
-                        aktoerId = aktoerId,
+                        aktoerId = aktørId,
                         authorizationHeader = authorizationHeader
                     )
                 })

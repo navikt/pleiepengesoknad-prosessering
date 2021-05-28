@@ -24,19 +24,19 @@ internal class PreprosseseringV1Service(
 
         val correlationId = CorrelationId(metadata.correlationId)
 
-        val sokerAktoerId = melding.søker.aktørId
+        val søkerAktørId = melding.søker.aktørId
 
         logger.trace("Genererer Oppsummerings-PDF av søknaden.")
 
-        val soknadOppsummeringPdf = pdfV1Generator.generateSoknadOppsummeringPdf(melding)
+        val søknadOppsummeringPdf = pdfV1Generator.generateSoknadOppsummeringPdf(melding)
 
         logger.trace("Generering av Oppsummerings-PDF OK.")
         logger.trace("Mellomlagrer Oppsummerings-PDF.")
 
         val soknadOppsummeringPdfUrl = dokumentService.lagreSoknadsOppsummeringPdf(
-            pdf = soknadOppsummeringPdf,
+            pdf = søknadOppsummeringPdf,
             correlationId = correlationId,
-            aktoerId = sokerAktoerId,
+            aktørId = søkerAktørId,
             dokumentbeskrivelse = "Søknad om pleiepenger"
         )
 
@@ -46,7 +46,7 @@ internal class PreprosseseringV1Service(
 
         val soknadJsonUrl = dokumentService.lagreSoknadsMelding(
             k9FormatSøknad = melding.k9FormatSøknad,
-            aktoerId = sokerAktoerId,
+            aktørId = søkerAktørId,
             correlationId = correlationId
         )
 
