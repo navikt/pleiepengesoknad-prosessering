@@ -189,10 +189,7 @@ internal class PdfV1Generator {
         }
     }
 
-    private fun MeldingV1.harFlereAktiveVirksomehterSatt(): Boolean {
-        return if(this.selvstendigVirksomheter.isEmpty())  false
-        else (this.selvstendigVirksomheter.first().harFlereAktiveVirksomheter != null)
-    }
+    private fun MeldingV1.harFlereAktiveVirksomehterSatt() = (this.selvstendigVirksomheter.firstOrNull()?.harFlereAktiveVirksomheter != null)
 
     private fun nattevåk(nattevaak: Nattevåk?) = when {
         nattevaak == null -> null
