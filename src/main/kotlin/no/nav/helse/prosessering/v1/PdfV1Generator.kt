@@ -15,6 +15,7 @@ import no.nav.helse.pleiepengerKonfiguert
 import no.nav.helse.utils.DateUtils
 import no.nav.helse.utils.fødselsdato
 import no.nav.helse.utils.norskDag
+import no.nav.k9.søknad.Søknad
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.time.Duration
@@ -164,7 +165,7 @@ internal class PdfV1Generator {
                         "frilanserArbeidsforhold" to melding.frilans?.arbeidsforhold?.somMap(),
                         "selvstendigArbeidsforhold" to melding.selvstendigArbeidsforhold?.somMap(),
                         "hjelper" to mapOf( // TODO: 04/06/2021 Kan fjerne hjelpemetoden når feltet er prodsatt i api og front
-                            "harFlereAktiveVirksomheterErSatt" to (melding.selvstendigVirksomheter.first().harFlereAktiveVirksomheter != null)
+                            "harFlereAktiveVirksomheterErSatt" to melding.harFlereAktiveVirksomehterSatt()
                         )
                     )
                 )
@@ -186,6 +187,11 @@ internal class PdfV1Generator {
                 it.toByteArray()
             }
         }
+    }
+
+    private fun MeldingV1.harFlereAktiveVirksomehterSatt(): Boolean {
+        return if(this.selvstendigVirksomheter.isEmpty())  false
+        else (this.selvstendigVirksomheter.first().harFlereAktiveVirksomheter != null)
     }
 
     private fun nattevåk(nattevaak: Nattevåk?) = when {
