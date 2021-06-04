@@ -13,50 +13,8 @@ enum class BarnRelasjon(val utskriftsvennlig: String) {
     ANNET("Annet")
 }
 
-data class Virksomhet(
-    val næringstyper: List<Næringstyper>,
-    val fiskerErPåBladB: Boolean? = null,
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    val fraOgMed: LocalDate,
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    val tilOgMed: LocalDate? = null,
-    val næringsinntekt: Int? = null,
-    val navnPåVirksomheten: String,
-    val organisasjonsnummer: String? = null,
-    val registrertINorge: Boolean,
-    val registrertIUtlandet: Land? = null,
-    val yrkesaktivSisteTreFerdigliknedeÅrene: YrkesaktivSisteTreFerdigliknedeÅrene? = null,
-    val varigEndring: VarigEndring? = null,
-    val regnskapsfører: Regnskapsfører? = null
-) {
-    override fun toString(): String {
-        return "Virksomhet()"
-    }
-}
 
 data class Land(val landkode: String, val landnavn: String)
-
-enum class Næringstyper(val beskrivelse: String) {
-    FISKE("Fiske"),
-    JORDBRUK_SKOGBRUK("Jordbruk/skogbruk"),
-    DAGMAMMA("Dagmamma eller familiebarnehage i eget hjem"),
-    ANNEN("Annen");
-}
-
-data class YrkesaktivSisteTreFerdigliknedeÅrene(
-    val oppstartsdato: LocalDate
-)
-
-data class VarigEndring(
-    val dato: LocalDate,
-    val inntektEtterEndring: Int,
-    val forklaring: String
-)
-
-data class Regnskapsfører(
-    val navn: String,
-    val telefon: String
-)
 
 data class Søker(
     val aktørId: String,

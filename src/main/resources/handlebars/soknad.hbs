@@ -282,12 +282,42 @@
         {{#if søknad.selvstendigVirksomheter}}
             <h2>Selvstendig næringsdrivende</h2>
             {{# each søknad.selvstendigVirksomheter as |virksomhet|~}}
+
+                {{#if virksomhet.næringsinntekt}}
+                    <p>Næringsinntekt: {{virksomhet.næringsinntekt}},-</p>
+                {{/if}}
+
+                {{#if virksomhet.yrkesaktivSisteTreFerdigliknedeÅrene}}
+                    <p>Oppgi dato for når du ble yrkesaktiv:{{#dato virksomhet.yrkesaktivSisteTreFerdigliknedeÅrene.oppstartsdato}}{{/dato}}</p>
+                {{/if}}
+
+                {{#if virksomhet.varigEndring}}
+                    <h3>Varig endring</h3>
+                    <ul>
+                        <li>
+                            <p>Dato for når varig endring oppsto: {{#dato virksomhet.varigEndring.dato}}{{/dato}}</p>
+                            <p>Næringsinntekt etter endringen: {{virksomhet.varigEndring.inntektEtterEndring}}</p>
+                            <div class="fritekst">
+                                <p class="sporsmalstekst">Din forklaring om varig endring:</p>
+                                <p class="fritekst_textarea">{{virksomhet.varigEndring.forklaring}}</p>
+                            </div>
+                        </li>
+                    </ul>
+                {{/if}}
+
+                {{#if virksomhet.harFlereAktiveVirksomheter}}
+                    <p class="sporsmalstekst">Har du flere enn én næringsvirksomhet som er aktiv?</p>
+                    {{jaNeiSvar virksomhet.harFlereAktiveVirksomheter}}
+                {{/if}}
+
+                <h3>Næringsvirksomhet som du har lagt inn:</h3>
                 <h3>{{virksomhet.navnPåVirksomheten}} (startet {{#dato virksomhet.fraOgMed}}{{/dato}},
                     {{#if virksomhet.tilOgMed}}
                         avsluttet {{#dato virksomhet.tilOgMed}}{{/dato}})
                     {{else}}
                         er pågående)
                     {{/if}}</h3>
+
                 <p>Næringstype:
                     {{# each virksomhet.næringstyper as |næringstype|~}}
                         {{#if @first}}
@@ -303,9 +333,7 @@
                             {{/if}}
                         {{/eq}}
                     {{/each}}</p>
-                {{#if virksomhet.næringsinntekt}}
-                    <p>Næringsinntekt: {{virksomhet.næringsinntekt}},-</p>
-                {{/if}}
+
                 {{#if virksomhet.registrertINorge}}
                     <p>Registrert i Norge</p>
                     <p>Organisasjonsnummeret: {{virksomhet.organisasjonsnummer}}</p>
@@ -314,23 +342,7 @@
                         ({{virksomhet.registrertIUtlandet.landkode}})</p>
                 {{/if}}
 
-                {{#if virksomhet.yrkesaktivSisteTreFerdigliknedeÅrene}}
-                    <p>Oppgi dato for når du ble yrkesaktiv: {{#dato
-                            virksomhet.yrkesaktivSisteTreFerdigliknedeÅrene.oppstartsdato}}{{/dato}}</p>
-                {{/if}}
-                {{#if virksomhet.varigEndring}}
-                    <h3>Varig endring</h3>
-                    <ul>
-                        <li>
-                            <p>Dato for når varig endring oppsto: {{#dato virksomhet.varigEndring.dato}}{{/dato}}</p>
-                            <p>Næringsinntekt etter endringen: {{virksomhet.varigEndring.inntektEtterEndring}}</p>
-                            <div class="fritekst">
-                                <p class="sporsmalstekst">Din forklaring om varig endring:</p>
-                                <p class="fritekst_textarea">{{virksomhet.varigEndring.forklaring}}</p>
-                            </div>
-                        </li>
-                    </ul>
-                {{/if}}
+
                 {{#if virksomhet.regnskapsfører}}
                     <h3>Regnskapsfører:</h3>
                     <ul>
@@ -349,7 +361,7 @@
             <hr/>
 
             {{#if selvstendigArbeidsforhold}}
-                <p class="sporsmalstekst">Hvordan jobber du som selvstending næringsdrivende?</p>
+                <p class="sporsmalstekst">Hvordan jobber du som selvstendig næringsdrivende?</p>
                 <ul>
                     {{#eq selvstendigArbeidsforhold.skalJobbe "ja"}}
                         <li>Du skal jobbe som vanlig i perioden.</li>
