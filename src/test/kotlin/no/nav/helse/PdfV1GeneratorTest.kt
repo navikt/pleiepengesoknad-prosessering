@@ -190,7 +190,8 @@ class PdfV1GeneratorTest {
                     tilOgMed = LocalDate.now().plusDays(10),
                     navnPåVirksomheten = "Kjells Møbelsnekkeri",
                     registrertINorge = true,
-                    organisasjonsnummer = "111111"
+                    organisasjonsnummer = "111111",
+                    harFlereAktiveVirksomheter = true
                 ),
                 Virksomhet(
                     næringstyper = listOf(Næringstyper.JORDBRUK_SKOGBRUK, Næringstyper.DAGMAMMA, Næringstyper.FISKE),
@@ -212,7 +213,8 @@ class PdfV1GeneratorTest {
                     regnskapsfører = Regnskapsfører(
                         navn = "Bjarne Regnskap",
                         telefon = "65484578"
-                    )
+                    ),
+                    harFlereAktiveVirksomheter = true
                 )
             ),
             selvstendigArbeidsforhold = Arbeidsforhold(
