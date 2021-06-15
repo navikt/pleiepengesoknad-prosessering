@@ -1,6 +1,5 @@
 package no.nav.helse.prosessering.v2
 
-import no.nav.helse.felles.TilsynsordningJa
 import java.time.Duration
 
 internal val NormalArbeidsdag = Duration.ofHours(7).plusMinutes(30)
@@ -24,24 +23,4 @@ internal fun Duration.somTekst() : String {
     val avkortetTekst = if (this > NormalArbeidsdag) " (avkortet til 7 timer og 30 minutter)" else ""
 
     return "$timerTeskst$mellomTekst$minutterTekst$avkortetTekst"
-}
-
-internal fun TilsynsordningJa.prosentAvNormalArbeidsuke() : Double {
-    val tilsyn = Duration.ZERO
-        .plusOmIkkeNullOgAvkortTilNormalArbeidsdag(mandag)
-        .plusOmIkkeNullOgAvkortTilNormalArbeidsdag(tirsdag)
-        .plusOmIkkeNullOgAvkortTilNormalArbeidsdag(onsdag)
-        .plusOmIkkeNullOgAvkortTilNormalArbeidsdag(torsdag)
-        .plusOmIkkeNullOgAvkortTilNormalArbeidsdag(fredag)
-
-    return if (tilsyn.isZero) return 0.0
-    else (100.00 / NormalArbeidsuke.seconds) * tilsyn.seconds
-}
-
-private fun Duration.plusOmIkkeNullOgAvkortTilNormalArbeidsdag(duration: Duration?): Duration {
-    return when {
-        duration == null -> this
-        duration > NormalArbeidsdag -> plus(NormalArbeidsdag)
-        else -> plus(duration)
-    }
 }

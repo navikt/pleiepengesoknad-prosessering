@@ -68,37 +68,6 @@ data class Medlemskap(
     val utenlandsoppholdNeste12Mnd: List<Bosted> = listOf()
 )
 
-// TODO: 10/05/2021 utgår
-data class TilsynsordningJa(
-    val mandag: Duration?,
-    val tirsdag: Duration?,
-    val onsdag: Duration?,
-    val torsdag: Duration?,
-    val fredag: Duration?,
-    val tilleggsinformasjon: String? = null
-) {
-    override fun toString(): String {
-        return "TilsynsordningJa(mandag=$mandag, tirsdag=$tirsdag, onsdag=$onsdag, torsdag=$torsdag, fredag=$fredag)"
-    }
-}
-
-// TODO: 10/05/2021 utgår
-data class TilsynsordningVetIkke(
-    val svar: String,
-    val annet: String? = null
-) {
-    override fun toString(): String {
-        return "TilsynsordningVetIkke(svar='$svar')"
-    }
-}
-
-// TODO: 10/05/2021 utgår
-data class Tilsynsordning(
-    val svar: String,
-    val ja: TilsynsordningJa?,
-    val vetIkke: TilsynsordningVetIkke?
-)
-
 data class Omsorgstilbud(
     val vetOmsorgstilbud: VetOmsorgstilbud,
     val fasteDager: OmsorgstilbudFasteDager? = null,

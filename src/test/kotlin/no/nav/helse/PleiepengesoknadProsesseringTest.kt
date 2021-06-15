@@ -26,9 +26,6 @@ import no.nav.helse.felles.Næringstyper
 import no.nav.helse.felles.Organisasjon
 import no.nav.helse.felles.SkalJobbe
 import no.nav.helse.felles.Søker
-import no.nav.helse.felles.Tilsynsordning
-import no.nav.helse.felles.TilsynsordningJa
-import no.nav.helse.felles.TilsynsordningVetIkke
 import no.nav.helse.felles.Utenlandsopphold
 import no.nav.helse.felles.UtenlandsoppholdIPerioden
 import no.nav.helse.felles.Virksomhet
@@ -52,10 +49,8 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 
 
-@KtorExperimentalAPI
 class PleiepengesoknadProsesseringTest {
 
-    @KtorExperimentalAPI
     private companion object {
 
         private val logger: Logger = LoggerFactory.getLogger(PleiepengesoknadProsesseringTest::class.java)
@@ -413,18 +408,6 @@ class PleiepengesoknadProsesseringTest {
                 harNattevåk = true,
                 tilleggsinformasjon = "Har Nattevåk"
             ),
-            tilsynsordning = Tilsynsordning(
-                svar = "ja",
-                ja = TilsynsordningJa(
-                    mandag = Duration.parse("PT7H30M"),
-                    tirsdag = Duration.parse("PT7H30M"),
-                    onsdag = Duration.parse("PT7H30M"),
-                    torsdag = Duration.parse("PT7H30M"),
-                    fredag = Duration.parse("PT7H30M"),
-                    tilleggsinformasjon = "Annet."
-                ),
-                vetIkke = null
-            ),
             ferieuttakIPerioden = FerieuttakIPerioden(
                 skalTaUtFerieIPerioden = true,
                 ferieuttak = listOf(
@@ -437,125 +420,6 @@ class PleiepengesoknadProsesseringTest {
             harBekreftetOpplysninger = true,
             harForståttRettigheterOgPlikter = true,
             k9FormatSøknad = SøknadUtils.defaultK9FormatPSB()
-        )
-
-        kafkaTestProducer.leggSoknadTilProsessering(melding)
-
-        cleanupConsumer
-            .hentCleanupMelding(melding.søknadId)
-            .assertJournalførtFormat()
-    }
-
-    @Test
-    fun `tilsynsordning ja`() {
-        val melding = SøknadUtils.defaultSøknad.copy(
-            søknadId = UUID.randomUUID().toString(),
-            tilsynsordning = Tilsynsordning(
-                svar = "ja",
-                ja = TilsynsordningJa(
-                    mandag = Duration.ofHours(5),
-                    tirsdag = Duration.ofHours(4),
-                    onsdag = Duration.ofHours(3).plusMinutes(45),
-                    torsdag = Duration.ofHours(2),
-                    fredag = Duration.ofHours(1).plusMinutes(30),
-                    tilleggsinformasjon = "Litt tilleggsinformasjon."
-                ),
-                vetIkke = null
-            )
-        )
-
-        kafkaTestProducer.leggSoknadTilProsessering(melding)
-
-        cleanupConsumer
-            .hentCleanupMelding(melding.søknadId)
-            .assertJournalførtFormat()
-    }
-
-    @Test
-    fun `tilsynsordning nei`() {
-        val melding = SøknadUtils.defaultSøknad.copy(
-            søknadId = UUID.randomUUID().toString(),
-            tilsynsordning = Tilsynsordning(
-                svar = "nei",
-                ja = null,
-                vetIkke = null
-            )
-        )
-
-        kafkaTestProducer.leggSoknadTilProsessering(melding)
-
-        cleanupConsumer
-            .hentCleanupMelding(melding.søknadId)
-            .assertJournalførtFormat()
-    }
-
-    @Test
-    fun `tilsynsordning vet_ikke`() {
-        val melding = SøknadUtils.defaultSøknad.copy(
-            søknadId = UUID.randomUUID().toString(),
-            tilsynsordning = Tilsynsordning(
-                svar = "vetIkke",
-                ja = null,
-                vetIkke = TilsynsordningVetIkke(
-                    svar = "vetIkke",
-                    annet = "annet"
-                )
-            )
-        )
-
-        kafkaTestProducer.leggSoknadTilProsessering(melding)
-
-        cleanupConsumer
-            .hentCleanupMelding(melding.søknadId)
-            .assertJournalførtFormat()
-    }
-
-    @Test
-    fun `tilsynsordning vet_ikke uten annet felt satt`() {
-        val melding = SøknadUtils.defaultSøknad.copy(
-            søknadId = UUID.randomUUID().toString(),
-            tilsynsordning = Tilsynsordning(
-                svar = "vetIkke",
-                ja = null,
-                vetIkke = TilsynsordningVetIkke(
-                    svar = "hva som helst?"
-                )
-            )
-        )
-
-        kafkaTestProducer.leggSoknadTilProsessering(melding)
-
-        cleanupConsumer
-            .hentCleanupMelding(melding.søknadId)
-            .assertJournalførtFormat()
-    }
-
-    @Test
-    fun `tilsynsordning vet_ikke med annet felt satt`() {
-        val melding = SøknadUtils.defaultSøknad.copy(
-            søknadId = UUID.randomUUID().toString(),
-            tilsynsordning = Tilsynsordning(
-                svar = "vetIkke",
-                ja = null,
-                vetIkke = TilsynsordningVetIkke(
-                    svar = "hva som helst?",
-                    annet = "annet grunn"
-                )
-            )
-        )
-
-        kafkaTestProducer.leggSoknadTilProsessering(melding)
-
-        cleanupConsumer
-            .hentCleanupMelding(melding.søknadId)
-            .assertJournalførtFormat()
-    }
-
-    @Test
-    fun `Søknad uten tilsynsordning satt`() {
-        val melding = SøknadUtils.defaultSøknad.copy(
-            søknadId = UUID.randomUUID().toString(),
-            tilsynsordning = null
         )
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
