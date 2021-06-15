@@ -476,9 +476,9 @@
             {{#if omsorgstilbud.enkeltDager}}
                 <p><span class="sporsmalstekst">Enkeltdager med omsorgstilbud</span> </p>
                 <ul>
-                    {{#each omsorgstilbud.enkeltDager as |dag|~}}
+                    {{#each omsorgstilbud.enkeltDager as |enkeltdag|~}}
                         <li>
-                            <p>{{dag.dato}} - {{dag.tid}}</p>
+                            <p>{{enkeltdag.dag}} {{enkeltdag.dato}}:    {{enkeltdag.tid}}</p>
                         </li>
                     {{/each}}
                 </ul>

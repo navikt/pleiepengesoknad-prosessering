@@ -667,7 +667,8 @@ class PdfV1GeneratorTest {
                         Omsorgsdag(dato = LocalDate.parse("2021-01-02"), tid = Duration.ofHours(4).plusMinutes(45)),
                         Omsorgsdag(dato = LocalDate.parse("2021-01-03"), tid = Duration.ofHours(6).plusMinutes(30)),
                         Omsorgsdag(dato = LocalDate.parse("2021-02-01"), tid = Duration.ofHours(13)),
-                        Omsorgsdag(dato = LocalDate.parse("2021-02-01"), tid = Duration.ofHours(4))
+                        Omsorgsdag(dato = LocalDate.parse("2021-02-01"), tid = Duration.ofHours(4)),
+                        Omsorgsdag(dato = LocalDate.parse("2021-03-01"), tid = Duration.ofHours(1))
                     )
                 )
             )
