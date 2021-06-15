@@ -1,26 +1,27 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
-val dusseldorfKtorVersion = "1.5.1.fa7db77"
+val dusseldorfKtorVersion = "2.1.6.0-ef0acb6"
 val ktorVersion = ext.get("ktorVersion").toString()
 val k9FormatVersion = "5.1.40"
 val slf4jVersion = ext.get("slf4jVersion").toString()
 val kotlinxCoroutinesVersion = ext.get("kotlinxCoroutinesVersion").toString()
 
-val openhtmltopdfVersion = "1.0.6"
-val kafkaEmbeddedEnvVersion = "2.2.3"
-val kafkaVersion = "2.3.0" // Alligned med version fra kafka-embedded-env
-val handlebarsVersion = "4.1.2"
+val openhtmltopdfVersion = "1.0.7"
+val kafkaEmbeddedEnvVersion = ext.get("kafkaEmbeddedEnvVersion").toString()
+val kafkaVersion = ext.get("kafkaVersion").toString() // Alligned med version fra kafka-embedded-env
+val handlebarsVersion = "4.2.0"
+val fuelVersion = "2.3.1"
 
 val mainClass = "no.nav.helse.PleiepengesoknadProsesseringKt"
 
 plugins {
-    kotlin("jvm") version "1.4.30"
-    id("com.github.johnrengelman.shadow") version "6.0.0"
+    kotlin("jvm") version "1.5.10"
+    id("com.github.johnrengelman.shadow") version "7.0.0"
 }
 
 buildscript {
-    apply("https://raw.githubusercontent.com/navikt/dusseldorf-ktor/fa7db77d8923aefbe52adf44ef02636d1c7bc7f2/gradle/dusseldorf-ktor.gradle.kts")
+    apply("https://raw.githubusercontent.com/navikt/dusseldorf-ktor/ef0acb6425e85073932e8d021e33849110f58159/gradle/dusseldorf-ktor.gradle.kts")
 }
 
 dependencies {
@@ -31,6 +32,10 @@ dependencies {
     implementation("no.nav.helse:dusseldorf-ktor-health:$dusseldorfKtorVersion")
     implementation("no.nav.helse:dusseldorf-ktor-auth:$dusseldorfKtorVersion")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-slf4j:$kotlinxCoroutinesVersion")
+    implementation("com.github.kittinunf.fuel:fuel:$fuelVersion")
+    implementation("com.github.kittinunf.fuel:fuel-coroutines:$fuelVersion"){
+        exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-core")
+    }
 
     implementation("no.nav.k9:soknad:$k9FormatVersion")
 
@@ -70,11 +75,11 @@ repositories {
     }
 
     mavenCentral()
-    jcenter()
 
+    maven("https://jitpack.io")
     maven("https://dl.bintray.com/kotlin/ktor")
     maven("https://kotlin.bintray.com/kotlinx")
-    maven("http://packages.confluent.io/maven/")
+    maven("https://packages.confluent.io/maven/")
 }
 
 
@@ -101,5 +106,5 @@ tasks.withType<ShadowJar> {
 }
 
 tasks.withType<Wrapper> {
-    gradleVersion = "6.7.1"
+    gradleVersion = "7.0.2"
 }
