@@ -113,18 +113,6 @@ internal object SøknadUtils {
         harMedsøker = true,
         harBekreftetOpplysninger = true,
         harForståttRettigheterOgPlikter = true,
-        tilsynsordning = Tilsynsordning(
-            svar = "ja",
-            ja = TilsynsordningJa(
-                mandag = Duration.ofHours(5),
-                tirsdag = Duration.ofHours(4),
-                onsdag = Duration.ofHours(3).plusMinutes(45),
-                torsdag = Duration.ofHours(2),
-                fredag = Duration.ofHours(1).plusMinutes(30),
-                tilleggsinformasjon = "Litt tilleggsinformasjon."
-            ),
-            vetIkke = null
-        ),
         beredskap = Beredskap(
             beredskap = true,
             tilleggsinformasjon = "I Beredskap"

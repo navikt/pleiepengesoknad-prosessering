@@ -144,7 +144,6 @@ internal class PdfV1Generator {
                             "ingen_arbeidsgivere" to melding.arbeidsgivere.organisasjoner.isEmpty(),
                             "sprak" to melding.språk?.sprakTilTekst()
                         ),
-                        "tilsynsordning" to tilsynsordning(melding.tilsynsordning),
                         "omsorgstilbud" to melding.omsorgstilbud?.somMap(),
                         "nattevaak" to nattevåk(melding.nattevåk),
                         "beredskap" to beredskap(melding.beredskap),
@@ -223,29 +222,6 @@ internal class PdfV1Generator {
         "torsdag" to torsdag?.somTekst(),
         "fredag" to fredag?.somTekst()
     )
-
-    private fun tilsynsordning(tilsynsordning: Tilsynsordning?) = when {
-        tilsynsordning == null -> null
-        "ja" == tilsynsordning.svar -> mapOf(
-            "tilsynsordning_svar" to "ja",
-            "mandag" to tilsynsordning.ja?.mandag?.somTekst(),
-            "tirsdag" to tilsynsordning.ja?.tirsdag?.somTekst(),
-            "onsdag" to tilsynsordning.ja?.onsdag?.somTekst(),
-            "torsdag" to tilsynsordning.ja?.torsdag?.somTekst(),
-            "fredag" to tilsynsordning.ja?.fredag?.somTekst(),
-            "tilleggsinformasjon" to tilsynsordning.ja?.tilleggsinformasjon,
-            "prosent_av_normal_arbeidsuke" to tilsynsordning.ja?.prosentAvNormalArbeidsuke()?.formatertMedEnDesimal()
-        )
-        "vetIkke" == tilsynsordning.svar -> mapOf(
-            "tilsynsordning_svar" to "vetIkke",
-            "svar" to tilsynsordning.vetIkke?.svar,
-            "annet" to tilsynsordning.vetIkke?.annet
-        )
-        "nei" == tilsynsordning.svar -> mapOf(
-            "tilsynsordning_svar" to "nei"
-        )
-        else -> null
-    }
 
     private fun PdfRendererBuilder.medFonter() =
         useFont(
