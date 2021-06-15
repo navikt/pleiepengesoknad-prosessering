@@ -13,15 +13,10 @@ import no.nav.helse.dusseldorf.ktor.core.fromResources
 import no.nav.helse.felles.*
 import no.nav.helse.pleiepengerKonfiguert
 import no.nav.helse.utils.DateUtils
-import no.nav.helse.utils.fødselsdato
 import no.nav.helse.utils.norskDag
-import no.nav.k9.søknad.Søknad
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
-import java.time.Duration
-import java.time.LocalDate
-import java.time.ZoneId
-import java.time.ZonedDateTime
+import java.time.*
 import java.time.format.DateTimeFormatter
 import java.util.*
 
@@ -212,8 +207,19 @@ internal class PdfV1Generator {
 
     private fun Omsorgstilbud.somMap() = mapOf(
         "fasteDager" to fasteDager?.somMap(),
+        "enkeltDager" to enkeltDager?.somMap(),
         "vetOmsorgstilbud" to vetOmsorgstilbud.name,
+        "tidPerMåned" to beregnTidPerMåned()
     )
+
+    private fun List<Omsorgsdag>.somMap(): List<Map<String, Any?>> {
+        return map {
+            mapOf<String, Any?>(
+                "dato" to it.dato,
+                "tid" to it.tid.somTekst(avkort = false)
+            )
+        }
+    }
 
     private fun OmsorgstilbudFasteDager.somMap() = mapOf<String, Any?>(
         "mandag" to mandag?.somTekst(),

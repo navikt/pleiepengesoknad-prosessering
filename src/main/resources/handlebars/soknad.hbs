@@ -462,6 +462,29 @@
                 <br/>
             {{/if}}
 
+            {{#if omsorgstilbud.tidPerMåned}}
+                <p><span class="sporsmalstekst">Tid med omsorgstilbud per måned</span> </p>
+                <ul>
+                    {{#each omsorgstilbud.tidPerMåned as |tidPerMåned|~}}
+                        <li>
+                            <p>{{tidPerMåned.måned}} - Totalt {{tidPerMåned.tid}}</p>
+                        </li>
+                    {{/each}}
+                </ul>
+            {{/if}}
+
+            {{#if omsorgstilbud.enkeltDager}}
+                <p><span class="sporsmalstekst">Enkeltdager med omsorgstilbud</span> </p>
+                <ul>
+                    {{#each omsorgstilbud.enkeltDager as |dag|~}}
+                        <li>
+                            <p>{{dag.dato}} - {{dag.tid}}</p>
+                        </li>
+                    {{/each}}
+                </ul>
+            {{/if}}
+
+
         {{else}}
             <p>Nei</p>
         {{/if}}
