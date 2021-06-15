@@ -49,10 +49,8 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 
 
-@KtorExperimentalAPI
 class PleiepengesoknadProsesseringTest {
 
-    @KtorExperimentalAPI
     private companion object {
 
         private val logger: Logger = LoggerFactory.getLogger(PleiepengesoknadProsesseringTest::class.java)
