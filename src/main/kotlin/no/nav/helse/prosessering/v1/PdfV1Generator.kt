@@ -159,7 +159,8 @@ internal class PdfV1Generator {
                         "frilanserArbeidsforhold" to melding.frilans?.arbeidsforhold?.somMap(),
                         "selvstendigArbeidsforhold" to melding.selvstendigArbeidsforhold?.somMap(),
                         "hjelper" to mapOf( // TODO: 04/06/2021 Kan fjerne hjelpemetoden når feltet er prodsatt i api og front
-                            "harFlereAktiveVirksomheterErSatt" to melding.harFlereAktiveVirksomehterSatt()
+                            "harFlereAktiveVirksomheterErSatt" to melding.harFlereAktiveVirksomehterSatt(),
+                            "harVærtEllerErVernepliktigErSatt" to erBooleanSatt(melding.harVærtEllerErVernepliktig)
                         )
                     )
                 )
@@ -184,6 +185,8 @@ internal class PdfV1Generator {
     }
 
     private fun MeldingV1.harFlereAktiveVirksomehterSatt() = (this.selvstendigVirksomheter.firstOrNull()?.harFlereAktiveVirksomheter != null)
+
+    private fun erBooleanSatt(verdi: Boolean?) = verdi != null
 
     private fun nattevåk(nattevaak: Nattevåk?) = when {
         nattevaak == null -> null
