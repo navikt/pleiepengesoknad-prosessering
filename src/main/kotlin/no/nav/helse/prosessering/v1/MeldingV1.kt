@@ -46,6 +46,6 @@ data class MeldingV1 (
     val beskrivelseOmsorgsrollen: String? = null, // TODO: Fjern optional når prodsatt.
     val barnRelasjon: BarnRelasjon? = null,
     val barnRelasjonBeskrivelse: String? = null,
-    val harVærtEllerErVernepliktig: Boolean,
+    val harVærtEllerErVernepliktig: Boolean? = null,
     val k9FormatSøknad: Søknad
 )
