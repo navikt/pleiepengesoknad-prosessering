@@ -650,17 +650,10 @@ class PdfV1GeneratorTest {
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
-        id = "20-omsorgstilbud-med-tilsyn"
+        id = "20-omsorgstilbud-med-tilsyn-enkeltdager"
         pdf = generator.generateSoknadOppsummeringPdf(
             melding = SøknadUtils.defaultSøknad.copy(
                 omsorgstilbud = Omsorgstilbud(
-                    fasteDager = OmsorgstilbudFasteDager(
-                        mandag = Duration.ofHours(7).plusMinutes(30),
-                        tirsdag = Duration.ofHours(7),
-                        onsdag = null,
-                        torsdag = Duration.ofHours(4).plusMinutes(30),
-                        fredag = Duration.ofHours(7).plusMinutes(30),
-                    ),
                     vetOmsorgstilbud = VetOmsorgstilbud.VET_ALLE_TIMER,
                     enkeltDager = listOf(
                         Omsorgsdag(dato = LocalDate.parse("2021-01-01"), tid = Duration.ofHours(4)),
