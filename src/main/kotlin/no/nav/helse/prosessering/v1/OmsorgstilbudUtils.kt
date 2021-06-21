@@ -29,7 +29,9 @@ internal fun Duration.somTekst(avkort: Boolean = true): String {
 }
 
 fun Omsorgstilbud.beregnTidPerMåned(): List<Map<String, Any?>>? {
-    return enkeltDager?.groupBy { it.dato.month.tilNorskMåned() }?.mapValues { it.value.sumTid()?.somTekst(false)}?.map {
+    val dagerPerMåned = enkeltDager?.groupBy { it.dato.month.tilNorskMåned() }
+    val sumTidPerMåned = dagerPerMåned?.mapValues { it.value.sumTid().somTekst(avkort = false) }
+    return sumTidPerMåned?.map {
         mapOf(
             "måned" to it.key,
             "tid" to it.value
@@ -54,7 +56,7 @@ fun Month.tilNorskMåned(): String {
     }
 }
 
-fun List<Omsorgsdag>.sumTid(): Duration? {
+fun List<Omsorgsdag>.sumTid(): Duration {
     var totalTid = Duration.ZERO
     forEach {
         totalTid = totalTid.plus(it.tid)
