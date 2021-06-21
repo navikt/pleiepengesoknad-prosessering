@@ -57,9 +57,9 @@ fun Month.tilNorskMåned(): String {
 }
 
 fun List<Omsorgsdag>.sumTid(): Duration {
-    var totalTid = Duration.ZERO
+    var sumTid = Duration.ZERO
     forEach {
-        totalTid = totalTid.plus(it.tid)
+        sumTid = sumTid.plus(it.tid)
     }
-    return totalTid
+    return sumTid
 }
