@@ -16,6 +16,7 @@ import no.nav.helse.utils.DateUtils
 import no.nav.helse.utils.somNorskDag
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
+import java.io.File
 import java.time.*
 import java.time.format.DateTimeFormatter
 import java.util.*
@@ -30,6 +31,8 @@ internal class PdfV1Generator {
         private val REGULAR_FONT = "$ROOT/fonts/SourceSansPro-Regular.ttf".fromResources().readBytes()
         private val BOLD_FONT = "$ROOT/fonts/SourceSansPro-Bold.ttf".fromResources().readBytes()
         private val ITALIC_FONT = "$ROOT/fonts/SourceSansPro-Italic.ttf".fromResources().readBytes()
+
+        private val sRGB = "$ROOT/sRGB.icc".fromResources().readBytes()
 
 
         private val images = loadImages()
@@ -175,6 +178,7 @@ internal class PdfV1Generator {
                 .usePdfAConformance(PdfRendererBuilder.PdfAConformance.PDFA_1_B)
                 .withHtmlContent(html, "")
                 .medFonter()
+                .useColorProfile(sRGB)
                 .toStream(outputStream)
                 .buildPdfRenderer()
                 .createPDF()
