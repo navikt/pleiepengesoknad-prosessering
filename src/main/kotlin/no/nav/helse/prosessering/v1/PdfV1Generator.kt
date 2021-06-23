@@ -13,9 +13,7 @@ import no.nav.helse.dusseldorf.ktor.core.fromResources
 import no.nav.helse.felles.*
 import no.nav.helse.pleiepengerKonfiguert
 import no.nav.helse.utils.DateUtils
-import no.nav.helse.utils.fødselsdato
 import no.nav.helse.utils.norskDag
-import no.nav.k9.søknad.Søknad
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.time.Duration
@@ -23,7 +21,6 @@ import java.time.LocalDate
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
-import java.util.*
 
 internal class PdfV1Generator {
     private companion object {
@@ -36,12 +33,9 @@ internal class PdfV1Generator {
         private val BOLD_FONT = "$ROOT/fonts/SourceSansPro-Bold.ttf".fromResources().readBytes()
         private val ITALIC_FONT = "$ROOT/fonts/SourceSansPro-Italic.ttf".fromResources().readBytes()
 
+        private val sRGBColorSpace = "$ROOT/sRGB.icc".fromResources().readBytes()
 
-        private val images = loadImages()
         private val handlebars = Handlebars(ClassPathTemplateLoader("/$ROOT")).apply {
-            registerHelper("image", Helper<String> { context, _ ->
-                if (context == null) "" else images[context]
-            })
             registerHelper("eq", Helper<String> { context, options ->
                 if (context == options.param(0)) options.fn() else options.inverse()
             })
@@ -80,21 +74,6 @@ internal class PdfV1Generator {
         private val ZONE_ID = ZoneId.of("Europe/Oslo")
         private val DATE_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy").withZone(ZONE_ID)
         private val DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm").withZone(ZONE_ID)
-
-        private fun loadPng(name: String): String {
-            val bytes = "$ROOT/images/$name.png".fromResources().readBytes()
-            val base64string = Base64.getEncoder().encodeToString(bytes)
-            return "data:image/png;base64,$base64string"
-        }
-
-        private fun loadImages() = mapOf(
-            "Checkbox_off.png" to loadPng("Checkbox_off"),
-            "Checkbox_on.png" to loadPng("Checkbox_on"),
-            "Hjelp.png" to loadPng("Hjelp"),
-            "Navlogo.png" to loadPng("Navlogo"),
-            "Personikon.png" to loadPng("Personikon"),
-            "Fritekst.png" to loadPng("Fritekst")
-        )
     }
 
     internal fun generateSoknadOppsummeringPdf(
@@ -177,8 +156,10 @@ internal class PdfV1Generator {
             PdfRendererBuilder()
                 .useFastMode()
                 .usePdfUaAccessbility(true)
+                .usePdfAConformance(PdfRendererBuilder.PdfAConformance.PDFA_1_B)
                 .withHtmlContent(html, "")
                 .medFonter()
+                .useColorProfile(sRGBColorSpace)
                 .toStream(outputStream)
                 .buildPdfRenderer()
                 .createPDF()
