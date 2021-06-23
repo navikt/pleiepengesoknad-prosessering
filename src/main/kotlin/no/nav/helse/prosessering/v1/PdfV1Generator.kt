@@ -79,7 +79,7 @@ internal class PdfV1Generator {
         private fun loadPng(name: String): String {
             val bytes = "$ROOT/images/$name.png".fromResources().readBytes()
             val base64string = Base64.getEncoder().encodeToString(bytes)
-            return "data:image/jpeg;base64,$base64string"
+            return "data:image/png;base64,$base64string"
         }
 
         private fun loadImages() = mapOf(
