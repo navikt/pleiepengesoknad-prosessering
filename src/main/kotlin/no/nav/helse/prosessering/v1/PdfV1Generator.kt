@@ -172,6 +172,7 @@ internal class PdfV1Generator {
             PdfRendererBuilder()
                 .useFastMode()
                 .usePdfUaAccessbility(true)
+                .usePdfAConformance(PdfRendererBuilder.PdfAConformance.PDFA_1_B)
                 .withHtmlContent(html, "")
                 .medFonter()
                 .toStream(outputStream)
