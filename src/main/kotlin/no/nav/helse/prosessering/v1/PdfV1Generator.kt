@@ -18,7 +18,6 @@ import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.time.*
 import java.time.format.DateTimeFormatter
-import java.util.*
 
 internal class PdfV1Generator {
     private companion object {
