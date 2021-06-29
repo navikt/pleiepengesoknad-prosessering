@@ -166,68 +166,60 @@
         <h2>Arbeidssituasjonen din</h2>
         {{# if hjelp.ingen_arbeidsgivere }}
             <ul>
-                <li class="ikke_satt">Du har ikke angitt noen arbeidsgivere i søknaden.</li>
+                <li class="ikke_satt">Du har ikke angitt noen arbeidsgivere i søknaden</li>
             </ul>
         {{/if}}
 
         {{# if arbeidsgivere.har_arbeidsgivere }}
             <ul>
-                {{# each arbeidsgivere.organisasjoner as |org|~}}
-                    <li><b>{{org.navn}} (orgnr: {{org.organisasjonsnummer}})</b>
+                {{#each arbeidsgivere.organisasjoner as |org|~}}
+                    <li><b>{{org.navn}} (orgnr: {{org.organisasjonsnummer}})</b></li>
+                    <li class="li-style-none">Du har oppgitt at du</li>
+                    <li class="li-style-none">
                         <ul>
+                            <li>
+                                {{#if org.jobber_normaltimer}}
+                                    vanligvis jobber {{org.jobber_normaltimer}} timer per uke
+                                    {{#if org.arbeidsform}}
+                                        ({{org.arbeidsform}})
+                                    {{/if}}<br/>
+                                {{/if}}
+                            </li>
                             <li>
                                 {{#if org.skal_jobbe}}
                                     {{#eq org.skal_jobbe "ja"}}
-                                        Du skal jobbe som vanlig i perioden.
+                                        {{#if org.jobber_normaltimer}}
+                                            skal jobbe som vanlig i pleiepengeperioden, {{org.jobber_normaltimer}}
+                                            timer per uke
+                                        {{/if}}
                                     {{/eq}}
 
                                     {{#eq org.skal_jobbe "nei"}}
-                                        Du skal ikke jobbe her i perioden.
+                                        ikke skal jobbe i pleiepengeperioden
                                     {{/eq}}
 
                                     {{#eq org.skal_jobbe "redusert"}}
-                                        Du skal jobbe redusert i perioden.
+                                        {{#if org.skal_jobbe_prosent }}
+                                            {{#if org.jobber_normaltimer }}
+                                                skal jobbe {{org.skal_jobbe_prosent }} prosent
+                                                av {{org.jobber_normaltimer}} timer per uke i pleiepengeperioden
+                                            {{/if}}
+                                        {{/if}}
                                     {{/eq}}
 
                                     {{#eq org.skal_jobbe "vetIkke"}}
-                                        Du vet ikke om du skal jobbe her, men sier fra hvis det blir tilfelle.
+                                        er usikker på om du skal jobbe i pleiepengeperioden, men at du melder fra hvis
+                                        du starter å jobbe
                                     {{/eq}}
                                 {{/if}}
                             </li>
-
-                            <li>
-                                {{#if org.skal_jobbe_prosent }}
-                                    {{#unless org.jobber_normaltimer }}
-                                        Du jobbe {{org.skal_jobbe_prosent }}% av din stilling. Du får et
-                                        inntektstap på {{org.inntektstap_prosent}}%.
-                                    {{/unless}}
-                                {{/if}}
-                            </li>
-                        <li>
-                            {{#if org.skal_jobbe_prosent }}
-                                {{#if org.jobber_normaltimer }}
-                                    <li>Du jobber vanligvis {{org.jobber_normaltimer }} timer i uken hos denne
-                                        arbeidsgiveren.
-                                    </li>
-                                    <li>I perioden med pleiepenger skal du jobbe {{org.skal_jobbe_prosent }}%. Du får et
-                                        inntektstap
-                                        på {{org.inntektstap_prosent}}%.
-                                    </li>
-                                {{/if}}
-                            {{/if}}
-                            </li>
-                            <li>
-                                {{#if org.jobber_normaltimer}}
-                                    {{#if org.vet_ikke_ekstra_info}}
-                                        Du jobber vanligvis {{org.jobber_normaltimer}} timer i uken.<br/>
+                            <!-- TODO: Fjerne info om inntektstap i prosent?
+                                <li>
+                                    {{#if org.skal_jobbe_prosent }}
+                                        Du får et inntektstap på {{org.inntektstap_prosent}} prosent.
                                     {{/if}}
-                                {{/if}}
-                            </li>
-
-                            {{#if org.arbeidsform}}
-                                <li>Arbeidsform: {{org.arbeidsform}}.</li>
-                            {{/if}}
-
+                                </li>
+                            -->
                         </ul>
                     </li>
                 {{/each}}
@@ -252,27 +244,39 @@
 
             {{#if søknad.frilans.arbeidsforhold}}
                 <p class="sporsmalstekst">Hvordan jobber du som frilanser?</p>
+                <p>Du har oppgitt at du som frilanser</p>
                 <ul>
+                    <li>jobber vanligvis {{frilanserArbeidsforhold.jobberNormaltTimer}} timer per uke
+                        ({{frilanserArbeidsforhold.arbeidsform}})
+                    </li>
+
                     {{#eq frilanserArbeidsforhold.skalJobbe "ja"}}
-                        <li>Du skal jobbe som vanlig i perioden.</li>
+                        <li>
+                            skal jobbe som vanlig i pleiepengeperioden, {{frilanserArbeidsforhold.jobberNormaltTimer}}
+                            timer per uke
+                        </li>
                     {{/eq}}
                     {{#eq frilanserArbeidsforhold.skalJobbe "nei"}}
-                        <li>Du skal ikke jobbe her i perioden.</li>
+                        <li>ikke skal jobbe i pleiepengeperioden</li>
                     {{/eq}}
                     {{#eq frilanserArbeidsforhold.skalJobbe "redusert"}}
-                        <li>Du skal jobbe redusert i perioden.</li>
+                        <li>
+                            skal jobbe {{frilanserArbeidsforhold.skalJobbeProsent}} prosent
+                            av {{frilanserArbeidsforhold.jobberNormaltTimer}} timer per uke i pleiepengeperioden
+                        </li>
                     {{/eq}}
                     {{#eq frilanserArbeidsforhold.skalJobbe "vetIkke"}}
-                        <li>Du vet ikke om du skal jobbe her, men sier fra hvis det blir tilfelle.</li>
+                        <li>
+                            er usikker på om du skal jobbe i pleiepengeperioden, men at du melder fra hvis du starter å
+                            jobbe
+                        </li>
                     {{/eq}}
-                    <li>Du jobber vanligvis {{frilanserArbeidsforhold.jobberNormaltTimer}} timer i
-                        uka som frilanser.
-                    </li>
+
+                    <!-- TODO: Fjerne info inntektstap?
                     <li>
-                        I perioden med pleiepenger skal du jobbe {{frilanserArbeidsforhold.skalJobbeProsent}}%.
-                        Du får et inntektstap på {{frilanserArbeidsforhold.inntektstapProsent}}%.
+                        Du får et inntektstap på {{frilanserArbeidsforhold.inntektstapProsent}} prosent.
                     </li>
-                    <li>Arbeidsform: {{frilanserArbeidsforhold.arbeidsform}}.</li>
+                    -->
                 </ul>
             {{/if}}
         {{/if}}
@@ -288,7 +292,8 @@
                 {{/if}}
 
                 {{#if virksomhet.yrkesaktivSisteTreFerdigliknedeÅrene}}
-                    <p>Oppgi dato for når du ble yrkesaktiv:{{#dato virksomhet.yrkesaktivSisteTreFerdigliknedeÅrene.oppstartsdato}}{{/dato}}</p>
+                    <p>Oppgi dato for når du ble yrkesaktiv:{{#dato
+                            virksomhet.yrkesaktivSisteTreFerdigliknedeÅrene.oppstartsdato}}{{/dato}}</p>
                 {{/if}}
 
                 {{#if virksomhet.varigEndring}}
@@ -362,27 +367,33 @@
 
             {{#if selvstendigArbeidsforhold}}
                 <p class="sporsmalstekst">Hvordan jobber du som selvstendig næringsdrivende?</p>
+                <p>Du har oppgitt at du som selvstendig næringsdrivende</p>
                 <ul>
+                    <li>
+                        vanligvis jobber {{selvstendigArbeidsforhold.jobberNormaltTimer}} timer per uke
+                        ({{selvstendigArbeidsforhold.arbeidsform}})
+                    </li>
                     {{#eq selvstendigArbeidsforhold.skalJobbe "ja"}}
-                        <li>Du skal jobbe som vanlig i perioden.</li>
+                        <li>
+                            skal jobbe som vanlig i pleiepengeperioden, {{selvstendigArbeidsforhold.jobberNormaltTimer}}
+                            timer per uke
+                        </li>
                     {{/eq}}
                     {{#eq selvstendigArbeidsforhold.skalJobbe "nei"}}
-                        <li>Du skal ikke jobbe her i perioden.</li>
+                        <li>ikke skal jobbe i pleiepengeperioden</li>
                     {{/eq}}
                     {{#eq selvstendigArbeidsforhold.skalJobbe "redusert"}}
-                        <li>Du skal jobbe redusert i perioden.</li>
+                        <li>
+                            skal jobbe {{selvstendigArbeidsforhold.skalJobbeProsent}} prosent
+                            av {{selvstendigArbeidsforhold.jobberNormaltTimer}} timer per uke
+                        </li>
                     {{/eq}}
                     {{#eq selvstendigArbeidsforhold.skalJobbe "vetIkke"}}
-                        <li>Du vet ikke om du skal jobbe her, men sier fra hvis det blir tilfelle.</li>
+                        <li>
+                            er usikker på om du skal jobbe i pleiepengeperioden, men at du melder fra hvis du starter å
+                            jobbe
+                        </li>
                     {{/eq}}
-                    <li>Du jobber vanligvis {{selvstendigArbeidsforhold.jobberNormaltTimer}} timer i
-                        uka som selvstendig næringsdrivende.
-                    </li>
-                    <li>
-                        I perioden med pleiepenger skal du jobbe {{selvstendigArbeidsforhold.skalJobbeProsent}}%.
-                        Du får et inntektstap på {{selvstendigArbeidsforhold.inntektstapProsent}}%.
-                    </li>
-                    <li>Arbeidsform: {{selvstendigArbeidsforhold.arbeidsform}}.</li>
                 </ul>
             {{/if}}
         {{/if}}
