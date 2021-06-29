@@ -172,8 +172,9 @@
 
 
         {{#if arbeidsgivere.har_arbeidsgivere }}
-            <ul>
-                {{#each arbeidsgivere.organisasjoner as |org|~}}
+
+            {{#each arbeidsgivere.organisasjoner as |org|~}}
+                <ul>
                     <li><b>{{org.navn}} (orgnr: {{org.organisasjonsnummer}})</b></li>
                     <li class="li-style-none">Du har oppgitt at du</li>
                     <li class="li-style-none">
@@ -216,8 +217,8 @@
                             </li>
                         </ul>
                     </li>
-                {{/each}}
-            </ul>
+                </ul>
+            {{/each}}
         {{/if}}
 
         {{#if søknad.frilans.arbeidsforhold}}
@@ -226,7 +227,7 @@
                 <li class="li-style-none">Du har oppgitt at du som frilanser</li>
                 <li class="li-style-none">
                     <ul>
-                        <li>jobber vanligvis {{frilanserArbeidsforhold.jobberNormaltTimer}} timer per uke
+                        <li>vanligvis jobber {{frilanserArbeidsforhold.jobberNormaltTimer}} timer per uke
                             ({{frilanserArbeidsforhold.arbeidsform}})
                         </li>
 

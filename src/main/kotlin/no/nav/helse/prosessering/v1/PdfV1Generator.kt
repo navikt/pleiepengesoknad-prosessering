@@ -10,7 +10,18 @@ import com.github.jknack.handlebars.io.ClassPathTemplateLoader
 import com.openhtmltopdf.outputdevice.helper.BaseRendererBuilder
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder
 import no.nav.helse.dusseldorf.ktor.core.fromResources
-import no.nav.helse.felles.*
+import no.nav.helse.felles.Arbeidsforhold
+import no.nav.helse.felles.Beredskap
+import no.nav.helse.felles.Bosted
+import no.nav.helse.felles.Ferieuttak
+import no.nav.helse.felles.Nattevåk
+import no.nav.helse.felles.Næringstyper
+import no.nav.helse.felles.Omsorgstilbud
+import no.nav.helse.felles.OmsorgstilbudFasteDager
+import no.nav.helse.felles.Organisasjon
+import no.nav.helse.felles.Periode
+import no.nav.helse.felles.Søker
+import no.nav.helse.felles.Utenlandsopphold
 import no.nav.helse.pleiepengerKonfiguert
 import no.nav.helse.utils.DateUtils
 import no.nav.helse.utils.norskDag
@@ -241,7 +252,7 @@ private fun Arbeidsforhold.somMap(): Map<String, Any?> = mapOf(
     "skalJobbeProsent" to skalJobbeProsent.avrundetMedEnDesimal(),
     "inntektstapProsent" to skalJobbeProsent.skalJobbeProsentTilInntektstap(),
     "jobberNormaltTimer" to jobberNormaltTimer,
-    "arbeidsform" to arbeidsform.utskriftsvennlig.toLowerCase()
+    "arbeidsform" to arbeidsform.utskriftsvennlig.lowercase()
 )
 
 private fun List<Organisasjon>.somMap() = map {
@@ -258,7 +269,7 @@ private fun List<Organisasjon>.somMap() = map {
         "inntektstap_prosent" to inntektstapProsent.formatertMedEnDesimal(),
         "jobber_normaltimer" to jobberNormaltimer,
         "vet_ikke_ekstra_info" to vetIkkeEkstrainfo,
-        "arbeidsform" to it.arbeidsform?.utskriftsvennlig
+        "arbeidsform" to it.arbeidsform?.utskriftsvennlig?.lowercase()
     )
 }
 
