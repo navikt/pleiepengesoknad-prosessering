@@ -105,7 +105,6 @@ internal class PdfV1Generator {
                         ),
                         "arbeidsgivere" to mapOf(
                             "har_arbeidsgivere" to melding.arbeidsgivere.organisasjoner.isNotEmpty(),
-                            "aktuelle_arbeidsgivere" to melding.arbeidsgivere.organisasjoner.erAktuelleArbeidsgivere(),
                             "organisasjoner" to melding.arbeidsgivere.organisasjoner.somMap()
                         ),
                         "medlemskap" to mapOf(
