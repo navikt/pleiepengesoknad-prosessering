@@ -212,14 +212,11 @@
                                         du starter å jobbe
                                     {{/eq}}
                                 {{/if}}
+                            <li>
+                                {{#if org.skal_jobbe_prosent }}
+                                    Du får et inntektstap på {{org.inntektstap_prosent}} prosent.
+                                {{/if}}
                             </li>
-                            <!-- TODO: Fjerne info om inntektstap i prosent?
-                                <li>
-                                    {{#if org.skal_jobbe_prosent }}
-                                        Du får et inntektstap på {{org.inntektstap_prosent}} prosent.
-                                    {{/if}}
-                                </li>
-                            -->
                         </ul>
                     </li>
                 {{/each}}
@@ -271,12 +268,9 @@
                             jobbe
                         </li>
                     {{/eq}}
-
-                    <!-- TODO: Fjerne info inntektstap?
                     <li>
                         Du får et inntektstap på {{frilanserArbeidsforhold.inntektstapProsent}} prosent.
                     </li>
-                    -->
                 </ul>
             {{/if}}
         {{/if}}
@@ -394,6 +388,9 @@
                             jobbe
                         </li>
                     {{/eq}}
+                    <li>
+                        Du får et inntektstap på {{selvstendigArbeidsforhold.inntektstapProsent}} prosent.
+                    </li>
                 </ul>
             {{/if}}
         {{/if}}
