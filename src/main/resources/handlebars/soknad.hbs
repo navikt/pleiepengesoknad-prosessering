@@ -301,10 +301,10 @@
     <section id="frilans">
         {{# if søknad.frilans }}
             <h2>Frilans</h2>
+            <p class="sporsmalstekst">Er du frilanser i perioden du søker for?</p>
+            <p>{{ jaNeiSvar true }}</p>
             <p class="sporsmalstekst">Når startet du som frilanser?</p>
             <p>{{#dato søknad.frilans.startdato}}{{/dato}}</p>
-            <p class="sporsmalstekst">Har du jobbet og hatt inntekt som frilanser de siste 4 ukene?</p>
-            <p>{{ jaNeiSvar true }}</p>
             <p class="sporsmalstekst">Jobber du fremdeles som frilanser?</p>
             <p>{{ jaNeiSvar søknad.frilans.jobberFortsattSomFrilans }}</p>
 
