@@ -320,8 +320,6 @@ private fun List<Periode>.somMapPerioder(): List<Map<String, Any?>> {
     }
 }
 
-private fun List<Organisasjon>.erAktuelleArbeidsgivere() = any { it.skalJobbeProsent != null }
-
 private fun Duration.tilString(): String = when (this.toMinutesPart()) {
     0 -> "${this.toHoursPart()} timer"
     else -> "${this.toHoursPart()} timer og ${this.toMinutesPart()} minutter"
