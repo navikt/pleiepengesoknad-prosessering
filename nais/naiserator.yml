@@ -7,6 +7,10 @@ metadata:
     team: {{team}}
 spec:
   image: {{ image }}
+  azure:
+    application:
+      enabled: true
+      tenant: {{tenant}}
   port: 8080
   liveness:
     path: isalive
