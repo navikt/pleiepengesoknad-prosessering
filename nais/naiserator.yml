@@ -41,7 +41,7 @@ spec:
     enabled: true
     path: /metrics
   envFrom:
-    - secre: {{app}}
+    - secret: {{app}}
   webproxy: true
   env:
   {{#each env}}
