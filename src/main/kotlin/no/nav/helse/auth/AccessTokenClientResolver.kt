@@ -1,7 +1,6 @@
 package no.nav.helse.auth
 
 import no.nav.helse.dusseldorf.ktor.auth.Client
-import no.nav.helse.dusseldorf.ktor.auth.ClientSecretClient
 import no.nav.helse.dusseldorf.ktor.auth.PrivateKeyClient
 import no.nav.helse.dusseldorf.oauth2.client.FromCertificateHexThumbprint
 import no.nav.helse.dusseldorf.oauth2.client.FromJwk

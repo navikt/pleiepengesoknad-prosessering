@@ -9,8 +9,20 @@ import com.github.jknack.handlebars.context.MapValueResolver
 import com.github.jknack.handlebars.io.ClassPathTemplateLoader
 import com.openhtmltopdf.outputdevice.helper.BaseRendererBuilder
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder
+import com.openhtmltopdf.util.XRLog
 import no.nav.helse.dusseldorf.ktor.core.fromResources
-import no.nav.helse.felles.*
+import no.nav.helse.felles.Arbeidsforhold
+import no.nav.helse.felles.Beredskap
+import no.nav.helse.felles.Bosted
+import no.nav.helse.felles.Ferieuttak
+import no.nav.helse.felles.Nattevåk
+import no.nav.helse.felles.Næringstyper
+import no.nav.helse.felles.Omsorgstilbud
+import no.nav.helse.felles.OmsorgstilbudFasteDager
+import no.nav.helse.felles.Organisasjon
+import no.nav.helse.felles.Periode
+import no.nav.helse.felles.Søker
+import no.nav.helse.felles.Utenlandsopphold
 import no.nav.helse.pleiepengerKonfiguert
 import no.nav.helse.utils.DateUtils
 import no.nav.helse.utils.somNorskDag
@@ -18,6 +30,7 @@ import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.time.*
 import java.time.format.DateTimeFormatter
+import java.util.logging.Level
 
 internal class PdfV1Generator {
     private companion object {
@@ -77,6 +90,7 @@ internal class PdfV1Generator {
     internal fun generateSoknadOppsummeringPdf(
         melding: MeldingV1
     ): ByteArray {
+        XRLog.listRegisteredLoggers().forEach { logger -> XRLog.setLevel(logger, Level.WARNING) }
         soknadTemplate.apply(
             Context
                 .newBuilder(
@@ -103,7 +117,6 @@ internal class PdfV1Generator {
                         ),
                         "arbeidsgivere" to mapOf(
                             "har_arbeidsgivere" to melding.arbeidsgivere.organisasjoner.isNotEmpty(),
-                            "aktuelle_arbeidsgivere" to melding.arbeidsgivere.organisasjoner.erAktuelleArbeidsgivere(),
                             "organisasjoner" to melding.arbeidsgivere.organisasjoner.somMap()
                         ),
                         "medlemskap" to mapOf(
@@ -252,7 +265,7 @@ private fun Arbeidsforhold.somMap(): Map<String, Any?> = mapOf(
     "skalJobbeProsent" to skalJobbeProsent.avrundetMedEnDesimal(),
     "inntektstapProsent" to skalJobbeProsent.skalJobbeProsentTilInntektstap(),
     "jobberNormaltTimer" to jobberNormaltTimer,
-    "arbeidsform" to arbeidsform.utskriftsvennlig.toLowerCase()
+    "arbeidsform" to arbeidsform.utskriftsvennlig.lowercase()
 )
 
 private fun List<Organisasjon>.somMap() = map {
@@ -269,7 +282,7 @@ private fun List<Organisasjon>.somMap() = map {
         "inntektstap_prosent" to inntektstapProsent.formatertMedEnDesimal(),
         "jobber_normaltimer" to jobberNormaltimer,
         "vet_ikke_ekstra_info" to vetIkkeEkstrainfo,
-        "arbeidsform" to it.arbeidsform?.utskriftsvennlig
+        "arbeidsform" to it.arbeidsform?.utskriftsvennlig?.lowercase()
     )
 }
 
@@ -319,8 +332,6 @@ private fun List<Periode>.somMapPerioder(): List<Map<String, Any?>> {
         )
     }
 }
-
-private fun List<Organisasjon>.erAktuelleArbeidsgivere() = any { it.skalJobbeProsent != null }
 
 private fun Duration.tilString(): String = when (this.toMinutesPart()) {
     0 -> "${this.toHoursPart()} timer"

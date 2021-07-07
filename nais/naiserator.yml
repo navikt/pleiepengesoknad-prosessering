@@ -7,6 +7,10 @@ metadata:
     team: {{team}}
 spec:
   image: {{ image }}
+  azure:
+    application:
+      enabled: true
+      tenant: {{tenant}}
   port: 8080
   liveness:
     path: isalive
@@ -38,6 +42,8 @@ spec:
     path: /metrics
   vault:
     enabled: true
+  envFrom:
+    - secret: {{app}}
   webproxy: true
   env:
   {{#each env}}

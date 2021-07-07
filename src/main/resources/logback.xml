@@ -9,6 +9,8 @@
     <logger name="nav" level="INFO"/>
     <logger name="no.nav" level="INFO"/>
     <logger name="io.ktor.auth.jwt" level="TRACE" />
+    <logger name="org.apache.kafka.streams.processor.internals.TaskManager" level="WARN"/>
+
 
     <root level="INFO">
         <appender-ref ref="STDOUT_JSON"/>
