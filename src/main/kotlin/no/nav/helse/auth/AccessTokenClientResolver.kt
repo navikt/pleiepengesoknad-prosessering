@@ -1,9 +1,10 @@
 package no.nav.helse.auth
 
 import no.nav.helse.dusseldorf.ktor.auth.Client
-import no.nav.helse.dusseldorf.ktor.auth.ClientSecretClient
 import no.nav.helse.dusseldorf.ktor.auth.PrivateKeyClient
-import no.nav.helse.dusseldorf.oauth2.client.*
+import no.nav.helse.dusseldorf.oauth2.client.FromCertificateHexThumbprint
+import no.nav.helse.dusseldorf.oauth2.client.FromJwk
+import no.nav.helse.dusseldorf.oauth2.client.SignedJwtAccessTokenClient
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -24,7 +25,7 @@ internal class AccessTokenClientResolver(
         clientId = azureV2Client.clientId(),
         tokenEndpoint = azureV2Client.tokenEndpoint(),
         privateKeyProvider = FromJwk(azureV2Client.privateKeyJwk),
-        keyIdProvider = DirectKeyId(azureV2Client.certificateHexThumbprint)
+        keyIdProvider = FromCertificateHexThumbprint(azureV2Client.certificateHexThumbprint)
     )
 
     internal fun dokumentAccessTokenClient() = azureV2AccessTokenClient
