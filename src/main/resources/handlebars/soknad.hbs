@@ -415,7 +415,7 @@
             <p>Ja</p>
 
             <br/>
-            <p class="sporsmalstekst">Vet du hvor mye barnet skal være i omsorgstilbudet?</p>
+            <p class="sporsmalstekst">Kan du oppgi tiden barnet skal være i omsorgstilbudet?</p>
             {{#eq omsorgstilbud.vetOmsorgstilbud "VET_ALLE_TIMER" }}
                 <p>Ja</p>
             {{/eq}}
@@ -438,35 +438,36 @@
 
             <br/>
             {{#if omsorgstilbud.fasteDager}}
-                <p><span class="sporsmalstekst">Mandag: </span>
+                <p class="sporsmalstekst">Tid i omsorgstilbud hver uke i søknadsperioden</p>
+                <p><span class="sporsmalstekst">Mandager: </span>
                     {{# if omsorgstilbud.fasteDager.mandag }}
                         {{omsorgstilbud.fasteDager.mandag}}
                     {{ else }}
                         <span class="ikke_satt">0 timer</span>
                     {{/if}}
                 </p>
-                <p><span class="sporsmalstekst">Tirsdag: </span>
+                <p><span class="sporsmalstekst">Tirsdager: </span>
                     {{# if omsorgstilbud.fasteDager.tirsdag }}
                         {{omsorgstilbud.fasteDager.tirsdag}}
                     {{ else }}
                         <span class="ikke_satt">0 timer</span>
                     {{/if}}
                 </p>
-                <p><span class="sporsmalstekst">Onsdag: </span>
+                <p><span class="sporsmalstekst">Onsdager: </span>
                     {{# if omsorgstilbud.fasteDager.onsdag }}
                         {{omsorgstilbud.fasteDager.onsdag}}
                     {{ else }}
                         <span class="ikke_satt">0 timer</span>
                     {{/if}}
                 </p>
-                <p><span class="sporsmalstekst">Torsdag: </span>
+                <p><span class="sporsmalstekst">Torsdager: </span>
                     {{# if omsorgstilbud.fasteDager.torsdag }}
                         {{omsorgstilbud.fasteDager.torsdag}}
                     {{ else }}
                         <span class="ikke_satt">0 timer</span>
                     {{/if}}
                 </p>
-                <p><span class="sporsmalstekst">Fredag: </span>
+                <p><span class="sporsmalstekst">Fredager: </span>
                     {{# if omsorgstilbud.fasteDager.fredag }}
                         {{omsorgstilbud.fasteDager.fredag}}
                     {{ else }}
@@ -475,6 +476,29 @@
                 </p>
                 <br/>
             {{/if}}
+
+            {{#if omsorgstilbud.tidPerMåned}}
+                <p><span class="sporsmalstekst">Tid i omsorgstilbud per måned</span> </p>
+                <ul>
+                    {{#each omsorgstilbud.tidPerMåned as |tidPerMåned|~}}
+                        <li>
+                            <p>{{tidPerMåned.måned}} - totalt {{tidPerMåned.tid}}</p>
+                        </li>
+                    {{/each}}
+                </ul>
+            {{/if}}
+
+            {{#if omsorgstilbud.enkeltDager}}
+                <p><span class="sporsmalstekst">Dager med omsorgstilbud</span> </p>
+                <ul>
+                    {{#each omsorgstilbud.enkeltDager as |enkeltdag|~}}
+                        <li>
+                            <p>{{enkeltdag.dag}} {{enkeltdag.dato}}:    {{enkeltdag.tid}}</p>
+                        </li>
+                    {{/each}}
+                </ul>
+            {{/if}}
+
 
         {{else}}
             <p>Nei</p>

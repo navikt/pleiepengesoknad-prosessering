@@ -1,5 +1,6 @@
 package no.nav.helse.utils
 
+import java.time.DayOfWeek
 import java.time.DayOfWeek.*
 import java.time.LocalDate
 import java.time.ZonedDateTime
@@ -26,7 +27,9 @@ object DateUtils {
     private fun LocalDate.erLordagEllerSondag() = dayOfWeek == SATURDAY || dayOfWeek == SUNDAY
 }
 
-internal fun ZonedDateTime.norskDag() = when(dayOfWeek) {
+internal fun ZonedDateTime.somNorskDag() = dayOfWeek.somNorskDag()
+
+internal fun DayOfWeek.somNorskDag() = when(this) {
     MONDAY -> "Mandag"
     TUESDAY -> "Tirsdag"
     WEDNESDAY -> "Onsdag"

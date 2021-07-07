@@ -11,21 +11,10 @@ import com.openhtmltopdf.outputdevice.helper.BaseRendererBuilder
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder
 import com.openhtmltopdf.util.XRLog
 import no.nav.helse.dusseldorf.ktor.core.fromResources
-import no.nav.helse.felles.Arbeidsforhold
-import no.nav.helse.felles.Beredskap
-import no.nav.helse.felles.Bosted
-import no.nav.helse.felles.Ferieuttak
-import no.nav.helse.felles.Nattevåk
-import no.nav.helse.felles.Næringstyper
-import no.nav.helse.felles.Omsorgstilbud
-import no.nav.helse.felles.OmsorgstilbudFasteDager
-import no.nav.helse.felles.Organisasjon
-import no.nav.helse.felles.Periode
-import no.nav.helse.felles.Søker
-import no.nav.helse.felles.Utenlandsopphold
+import no.nav.helse.felles.*
 import no.nav.helse.pleiepengerKonfiguert
 import no.nav.helse.utils.DateUtils
-import no.nav.helse.utils.norskDag
+import no.nav.helse.utils.somNorskDag
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.time.Duration
@@ -47,6 +36,7 @@ internal class PdfV1Generator {
         private val ITALIC_FONT = "$ROOT/fonts/SourceSansPro-Italic.ttf".fromResources().readBytes()
 
         private val sRGBColorSpace = "$ROOT/sRGB.icc".fromResources().readBytes()
+
 
         private val handlebars = Handlebars(ClassPathTemplateLoader("/$ROOT")).apply {
             registerHelper("eq", Helper<String> { context, options ->
@@ -99,7 +89,7 @@ internal class PdfV1Generator {
                     mapOf(
                         "søknad" to melding.somMap(),
                         "soknad_id" to melding.søknadId,
-                        "soknad_mottatt_dag" to melding.mottatt.withZoneSameInstant(ZONE_ID).norskDag(),
+                        "soknad_mottatt_dag" to melding.mottatt.withZoneSameInstant(ZONE_ID).somNorskDag(),
                         "soknad_mottatt" to DATE_TIME_FORMATTER.format(melding.mottatt),
                         "har_medsoker" to melding.harMedsøker,
                         "harIkkeVedlegg" to melding.sjekkOmHarIkkeVedlegg(),
@@ -209,8 +199,20 @@ internal class PdfV1Generator {
 
     private fun Omsorgstilbud.somMap() = mapOf(
         "fasteDager" to fasteDager?.somMap(),
+        "enkeltDager" to enkeltDager?.somMap(),
         "vetOmsorgstilbud" to vetOmsorgstilbud.name,
+        "tidPerMåned" to beregnTidPerMåned()
     )
+
+    private fun List<Omsorgsdag>.somMap(): List<Map<String, Any?>> {
+        return map {
+            mapOf<String, Any?>(
+                "dato" to DATE_FORMATTER.format(it.dato),
+                "dag" to it.dato.dayOfWeek.somNorskDag(),
+                "tid" to it.tid.somTekst(avkort = false)
+            )
+        }
+    }
 
     private fun OmsorgstilbudFasteDager.somMap() = mapOf<String, Any?>(
         "mandag" to mandag?.somTekst(),
