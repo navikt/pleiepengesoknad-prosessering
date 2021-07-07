@@ -12,8 +12,6 @@
   "env": {
     "K9_JOARK_BASE_URL": "https://k9-joark.nais.adeo.no",
     "K9_DOKUMENT_BASE_URL": "https://k9-dokument.nais.adeo.no",
-    "AZURE_CLIENT_ID": "84ef0905-64b3-440b-8f6a-0d88ef81a0f0",
-    "AZURE_V2_DISCOVERY_ENDPOINT": "https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b/v2.0/.well-known/openid-configuration",
     "LAGRE_DOKUMENT_SCOPES": "0c5a6709-ba2a-42b7-bbfc-9b9f844e2ee2/.default",
     "SLETTE_DOKUMENT_SCOPES": "0c5a6709-ba2a-42b7-bbfc-9b9f844e2ee2/.default",
     "JOURNALFORE_SCOPES": "cb751642-883c-48d3-9f82-06cc72c3e4b9/.default",

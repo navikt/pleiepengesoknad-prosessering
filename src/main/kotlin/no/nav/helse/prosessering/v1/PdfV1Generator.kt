@@ -9,6 +9,7 @@ import com.github.jknack.handlebars.context.MapValueResolver
 import com.github.jknack.handlebars.io.ClassPathTemplateLoader
 import com.openhtmltopdf.outputdevice.helper.BaseRendererBuilder
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder
+import com.openhtmltopdf.util.XRLog
 import no.nav.helse.dusseldorf.ktor.core.fromResources
 import no.nav.helse.felles.Arbeidsforhold
 import no.nav.helse.felles.Beredskap
@@ -32,6 +33,7 @@ import java.time.LocalDate
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
+import java.util.logging.Level
 
 internal class PdfV1Generator {
     private companion object {
@@ -90,6 +92,7 @@ internal class PdfV1Generator {
     internal fun generateSoknadOppsummeringPdf(
         melding: MeldingV1
     ): ByteArray {
+        XRLog.listRegisteredLoggers().forEach { logger -> XRLog.setLevel(logger, Level.WARNING) }
         soknadTemplate.apply(
             Context
                 .newBuilder(
