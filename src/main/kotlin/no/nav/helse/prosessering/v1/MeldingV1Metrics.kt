@@ -99,7 +99,7 @@ internal fun MeldingV1.reportMetrics() {
         false -> nattevaakCounter.labels("nattevåk", "nei").inc()
     }
 
-    val skalJobbeString = arbeidsgivere.organisasjoner.map { it.skalJobbe.name.toLowerCase() }.sorted().joinToString("|")
+    val skalJobbeString = arbeidsgivere.organisasjoner.map { it.skalJobbe.name.lowercase() }.sorted().joinToString("|")
     arbeidsgivereCounter.labels(arbeidsgivere.organisasjoner.size.toString(), skalJobbeString).inc()
 
     when {
