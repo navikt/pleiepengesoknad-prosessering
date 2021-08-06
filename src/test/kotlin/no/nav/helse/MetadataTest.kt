@@ -17,8 +17,7 @@ internal class MetadataTest {
         private val reserialisert = """
             {
                 "version": 1,
-                "correlationId": "foo",
-                "requestId": "bar"
+                "correlationId": "foo"
             }
             """.trimIndent()
     }
@@ -28,7 +27,6 @@ internal class MetadataTest {
         val metadata: Metadata = mapper.readValue(reserialisert)
         assertEquals(1, metadata.version)
         assertEquals("foo", metadata.correlationId)
-        assertEquals("bar", metadata.requestId)
 
         JSONAssert.assertEquals(reserialisert, mapper.writeValueAsString(metadata), true)
     }
