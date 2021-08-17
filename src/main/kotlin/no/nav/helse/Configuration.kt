@@ -1,17 +1,14 @@
 package no.nav.helse
 
-import io.ktor.config.ApplicationConfig
-import io.ktor.util.KtorExperimentalAPI
+import io.ktor.config.*
 import no.nav.helse.dusseldorf.ktor.core.getOptionalString
 import no.nav.helse.dusseldorf.ktor.core.getRequiredList
 import no.nav.helse.dusseldorf.ktor.core.getRequiredString
 import no.nav.helse.kafka.KafkaConfig
-import java.lang.IllegalArgumentException
 import java.net.URI
 import java.time.Duration
 import java.time.temporal.ChronoUnit
 
-@KtorExperimentalAPI
 data class Configuration(private val config: ApplicationConfig) {
 
     fun getk9JoarkBaseUrl() = URI(config.getRequiredString("nav.k9_joark_base_url", secret = false))
@@ -31,7 +28,7 @@ data class Configuration(private val config: ApplicationConfig) {
                 }
             }
 
-            val autoOffsetReset = when(val offsetReset = config.getOptionalString(key = "nav.kafka.auto_offset_reset", secret = false)?.toLowerCase()) {
+            val autoOffsetReset = when(val offsetReset = config.getOptionalString(key = "nav.kafka.auto_offset_reset", secret = false)?.lowercase()) {
                 null -> "none"
                 "none" -> offsetReset
                 "latest" -> offsetReset

@@ -22,6 +22,7 @@ import java.time.LocalDate
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
+import java.util.*
 import java.util.logging.Level
 
 internal class PdfV1Generator {
@@ -57,7 +58,7 @@ internal class PdfV1Generator {
                 DATE_FORMATTER.format(LocalDate.parse(context))
             })
             registerHelper("storForbokstav", Helper<String> { context, _ ->
-                context.capitalize()
+                context.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
             })
             registerHelper("tidspunkt", Helper<String> { context, _ ->
                 DATE_TIME_FORMATTER.format(ZonedDateTime.parse(context))
@@ -332,9 +333,11 @@ private fun Duration.tilString(): String = when (this.toMinutesPart()) {
 
 private fun Søker.formatertNavn() = if (mellomnavn != null) "$fornavn $mellomnavn $etternavn" else "$fornavn $etternavn"
 
-fun String.capitalizeName(): String = split(" ").joinToString(" ") { it.toLowerCase().capitalize() }
+fun String.capitalizeName(): String = split(" ").joinToString(" ") { name: String ->
+    name.lowercase().replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
+}
 
-private fun String.sprakTilTekst() = when (this.toLowerCase()) {
+private fun String.sprakTilTekst() = when (this.lowercase()) {
     "nb" -> "bokmål"
     "nn" -> "nynorsk"
     else -> this
