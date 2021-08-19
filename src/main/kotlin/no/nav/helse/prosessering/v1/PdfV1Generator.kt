@@ -11,7 +11,22 @@ import com.openhtmltopdf.outputdevice.helper.BaseRendererBuilder
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder
 import com.openhtmltopdf.util.XRLog
 import no.nav.helse.dusseldorf.ktor.core.fromResources
-import no.nav.helse.felles.*
+import no.nav.helse.felles.Arbeidsforhold
+import no.nav.helse.felles.Beredskap
+import no.nav.helse.felles.Bosted
+import no.nav.helse.felles.Ferieuttak
+import no.nav.helse.felles.HistoriskOmsorgstilbud
+import no.nav.helse.felles.Nattevåk
+import no.nav.helse.felles.Næringstyper
+import no.nav.helse.felles.Omsorgsdag
+import no.nav.helse.felles.Omsorgstilbud
+import no.nav.helse.felles.OmsorgstilbudUkedager
+import no.nav.helse.felles.OmsorgstilbudV2
+import no.nav.helse.felles.Organisasjon
+import no.nav.helse.felles.Periode
+import no.nav.helse.felles.PlanlagtOmsorgstilbud
+import no.nav.helse.felles.Søker
+import no.nav.helse.felles.Utenlandsopphold
 import no.nav.helse.pleiepengerKonfiguert
 import no.nav.helse.utils.DateUtils
 import no.nav.helse.utils.somNorskDag
@@ -128,6 +143,7 @@ internal class PdfV1Generator {
                             "sprak" to melding.språk?.sprakTilTekst()
                         ),
                         "omsorgstilbud" to melding.omsorgstilbud?.somMap(),
+                        "omsorgstilbudV2" to melding.omsorgstilbudV2?.somMap(),
                         "nattevaak" to nattevåk(melding.nattevåk),
                         "beredskap" to beredskap(melding.beredskap),
                         "utenlandsoppholdIPerioden" to mapOf(
@@ -174,7 +190,8 @@ internal class PdfV1Generator {
         }
     }
 
-    private fun MeldingV1.harFlereAktiveVirksomehterSatt() = (this.selvstendigVirksomheter.firstOrNull()?.harFlereAktiveVirksomheter != null)
+    private fun MeldingV1.harFlereAktiveVirksomehterSatt() =
+        (this.selvstendigVirksomheter.firstOrNull()?.harFlereAktiveVirksomheter != null)
 
     private fun erBooleanSatt(verdi: Boolean?) = verdi != null
 
@@ -200,9 +217,12 @@ internal class PdfV1Generator {
 
     private fun Omsorgstilbud.somMap() = mapOf(
         "fasteDager" to fasteDager?.somMap(),
-        "enkeltDager" to enkeltDager?.somMap(),
         "vetOmsorgstilbud" to vetOmsorgstilbud.name,
-        "tidPerMåned" to beregnTidPerMåned()
+    )
+
+    private fun OmsorgstilbudV2.somMap() = mapOf(
+        "historisk" to historisk?.somMap(),
+        "planlagt" to planlagt?.somMap()
     )
 
     private fun List<Omsorgsdag>.somMap(): List<Map<String, Any?>> {
@@ -215,7 +235,17 @@ internal class PdfV1Generator {
         }
     }
 
-    private fun OmsorgstilbudFasteDager.somMap() = mapOf<String, Any?>(
+    private fun HistoriskOmsorgstilbud.somMap(): Map<String, Any?> = mutableMapOf(
+        "enkeltdager" to enkeltdager.somMap(),
+    )
+
+    private fun PlanlagtOmsorgstilbud.somMap(): Map<String, Any?> = mutableMapOf(
+        "enkeltdager" to enkeltdager?.somMap(),
+        "ukedager" to ukedager?.somMap(),
+        "vetOmsorgstilbud" to vetOmsorgstilbud.name
+    )
+
+    private fun OmsorgstilbudUkedager.somMap() = mapOf<String, Any?>(
         "mandag" to mandag?.somTekst(),
         "tirsdag" to tirsdag?.somTekst(),
         "onsdag" to onsdag?.somTekst(),

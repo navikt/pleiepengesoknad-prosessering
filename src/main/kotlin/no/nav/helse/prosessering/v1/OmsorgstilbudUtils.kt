@@ -2,7 +2,6 @@ package no.nav.helse.prosessering.v1
 
 
 import no.nav.helse.felles.Omsorgsdag
-import no.nav.helse.felles.Omsorgstilbud
 import java.time.Duration
 import java.time.Month
 
@@ -26,17 +25,6 @@ internal fun Duration.somTekst(avkort: Boolean = true): String {
     val avkortetTekst = if (this > NormalArbeidsdag && avkort) " (avkortet til 7 timer og 30 minutter)" else ""
 
     return "$timerTeskst$mellomTekst$minutterTekst$avkortetTekst"
-}
-
-fun Omsorgstilbud.beregnTidPerMåned(): List<Map<String, Any?>>? {
-    val dagerPerMåned = enkeltDager?.groupBy { it.dato.month.tilNorskMåned() }
-    val sumTidPerMåned = dagerPerMåned?.mapValues { it.value.sumTid().somTekst(avkort = false) }
-    return sumTidPerMåned?.map {
-        mapOf(
-            "måned" to it.key,
-            "tid" to it.value
-        )
-    }
 }
 
 fun Month.tilNorskMåned(): String {
