@@ -479,16 +479,23 @@
 
         {{else}}
             {{#if omsorgstilbudV2}}
-                <p class="sporsmalstekst">Har barnet vært i et omsorgstilbud i hele eller deler av perioden?</p>
+                <p class="sporsmalstekst">Har barnet vært noe i et omsorgstilbud i perioden {{omsorgstilbudV2.søknadsperiodeFraOgMed}} til {{omsorgstilbudV2.dagensDato}}?</p>
                 {{#if omsorgstilbudV2.historisk}}
                     <p>Ja</p>
                     <br/>
 
                     <p class="sporsmalstekst">Tid barnet har vært i omsorgstilbud:</p>
                     <ul>
-                        {{#each omsorgstilbudV2.historisk.enkeltdager as |enkeltdag|~}}
+                        {{#each omsorgstilbudV2.historisk.enkeltdagerPerUke as |enkeltdagerPerUke|~}}
                             <li>
-                                <p>{{enkeltdag.dag}} {{enkeltdag.dato}}:    {{enkeltdag.tid}}</p>
+                                <p>Uke {{enkeltdagerPerUke.uke}}</p>
+                                <ul>
+                                    {{#each enkeltdagerPerUke.dager as |enkeltdag|~}}
+                                        <li>
+                                            <p>{{enkeltdag.dag}} {{enkeltdag.dato}}:    {{enkeltdag.tid}}</p>
+                                        </li>
+                                    {{/each}}
+                                </ul>
                             </li>
                         {{/each}}
                     </ul>
@@ -498,7 +505,7 @@
                     <br/>
                 {{/if}}
 
-                <p class="sporsmalstekst">Skal barnet være i et omsorgstilbud i hele eller deler av perioden?</p>
+                <p class="sporsmalstekst">Skal barnet være noe i et omsorgstilbud i perioden {{omsorgstilbudV2.morgendagensDato}} til {{omsorgstilbudV2.søknadsperiodeTilOgMed}}?</p>
                 {{#if omsorgstilbudV2.planlagt}}
                     <p>Ja</p>
                     <br/>
@@ -509,15 +516,20 @@
                         <br/>
 
                         <p class="sporsmalstekst">Tid barnet skal være i omsorgstilbudet:</p>
-                        {{#if omsorgstilbudV2.planlagt.enkeltdager}}
-                            <ul>
-                                {{#each omsorgstilbudV2.planlagt.enkeltdager as |enkeltdag|~}}
-                                    <li>
-                                        <p>{{enkeltdag.dag}} {{enkeltdag.dato}}:    {{enkeltdag.tid}}</p>
-                                    </li>
-                                {{/each}}
-                            </ul>
-                        {{/if}}
+                        <ul>
+                            {{#each omsorgstilbudV2.planlagt.enkeltdagerPerUke as |enkeltdagerPerUke|~}}
+                                <li>
+                                    <p>Uke {{enkeltdagerPerUke.uke}}</p>
+                                    <ul>
+                                        {{#each enkeltdagerPerUke.dager as |enkeltdag|~}}
+                                            <li>
+                                                <p>{{enkeltdag.dag}} {{enkeltdag.dato}}:    {{enkeltdag.tid}}</p>
+                                            </li>
+                                        {{/each}}
+                                    </ul>
+                                </li>
+                            {{/each}}
+                        </ul>
 
                         {{#if omsorgstilbudV2.planlagt.ukedager}}
                             <p><span class="sporsmalstekst">Mandager: </span>
@@ -566,7 +578,7 @@
                 {{else}}
                     <p>Nei</p>
                 {{/if}}
-            {{else}}
+                {{else}}
                 <p class="sporsmalstekst">Skal barnet være i et omsorgstilbud i hele eller deler av perioden du søker om?</p>
                 <p>Nei</p>
             {{/if}}

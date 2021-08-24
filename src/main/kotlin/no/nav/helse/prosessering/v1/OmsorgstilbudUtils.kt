@@ -8,6 +8,8 @@ import java.time.Month
 internal val NormalArbeidsdag = Duration.ofHours(7).plusMinutes(30)
 
 internal fun Duration.somTekst(avkort: Boolean = true): String {
+    if(this.isZero) return "0 timer og 0 minutter"
+
     val timer = seconds / 3600
     val minutter = (seconds % 3600) / 60
     val timerTeskst = when (timer) {

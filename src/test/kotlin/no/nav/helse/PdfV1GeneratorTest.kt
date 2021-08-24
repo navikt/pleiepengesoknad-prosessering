@@ -1,37 +1,6 @@
 package no.nav.helse
 
-import no.nav.helse.felles.Arbeidsforhold
-import no.nav.helse.felles.Arbeidsform
-import no.nav.helse.felles.Arbeidsgivere
-import no.nav.helse.felles.Barn
-import no.nav.helse.felles.BarnRelasjon
-import no.nav.helse.felles.Beredskap
-import no.nav.helse.felles.Bosted
-import no.nav.helse.felles.Ferieuttak
-import no.nav.helse.felles.FerieuttakIPerioden
-import no.nav.helse.felles.Frilans
-import no.nav.helse.felles.HistoriskOmsorgstilbud
-import no.nav.helse.felles.Land
-import no.nav.helse.felles.Medlemskap
-import no.nav.helse.felles.Nattevåk
-import no.nav.helse.felles.Næringstyper
-import no.nav.helse.felles.Omsorgsdag
-import no.nav.helse.felles.Omsorgstilbud
-import no.nav.helse.felles.OmsorgstilbudUkedager
-import no.nav.helse.felles.OmsorgstilbudV2
-import no.nav.helse.felles.Organisasjon
-import no.nav.helse.felles.Periode
-import no.nav.helse.felles.PlanlagtOmsorgstilbud
-import no.nav.helse.felles.Regnskapsfører
-import no.nav.helse.felles.SkalJobbe
-import no.nav.helse.felles.Søker
-import no.nav.helse.felles.Utenlandsopphold
-import no.nav.helse.felles.UtenlandsoppholdIPerioden
-import no.nav.helse.felles.VarigEndring
-import no.nav.helse.felles.VetOmsorgstilbud
-import no.nav.helse.felles.Virksomhet
-import no.nav.helse.felles.YrkesaktivSisteTreFerdigliknedeÅrene
-import no.nav.helse.felles.Årsak
+import no.nav.helse.felles.*
 import no.nav.helse.prosessering.v1.MeldingV1
 import no.nav.helse.prosessering.v1.PdfV1Generator
 import java.io.File
@@ -807,7 +776,8 @@ class PdfV1GeneratorTest {
                         enkeltdager = listOf(
                             Omsorgsdag(LocalDate.now().plusDays(1), Duration.ofHours(7).plusMinutes(30)),
                             Omsorgsdag(LocalDate.now().plusDays(2), Duration.ofHours(7).plusMinutes(30)),
-                            Omsorgsdag(LocalDate.now().plusDays(3), Duration.ofHours(7).plusMinutes(30))
+                            Omsorgsdag(LocalDate.now().plusDays(3), Duration.ofHours(7).plusMinutes(30)),
+                            Omsorgsdag(LocalDate.now().plusDays(4), Duration.ofHours(0))
                         ),
                         vetOmsorgstilbud = VetOmsorgstilbud.VET_ALLE_TIMER
                     )
