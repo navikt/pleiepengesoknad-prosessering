@@ -515,6 +515,11 @@
                         <p>Ja</p>
                         <br/>
 
+                        <p><span class="sporsmalstekst">Er tiden barnet skal være i omsorgstilbudet lik for hver dag i perioden du søker om? Det
+                            vil si at alle mandger er like, alle tirsdager er like og så videre</span></p>
+                        <p>{{ jaNeiSvar omsorgstilbudV2.planlagt.vetLikeDager }}</p>
+                        <br/>
+
                         <p class="sporsmalstekst">Tid barnet skal være i omsorgstilbudet:</p>
                         <ul>
                             {{#each omsorgstilbudV2.planlagt.enkeltdagerPerUke as |enkeltdagerPerUke|~}}

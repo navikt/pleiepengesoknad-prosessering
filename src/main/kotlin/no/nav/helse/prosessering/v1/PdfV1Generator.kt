@@ -242,7 +242,8 @@ internal class PdfV1Generator {
     private fun PlanlagtOmsorgstilbud.somMap(): Map<String, Any?> = mutableMapOf(
         "enkeltdagerPerUke" to enkeltdager?.somMapPerUke(),
         "ukedager" to ukedager?.somMap(),
-        "vetOmsorgstilbud" to vetOmsorgstilbud.name
+        "vetOmsorgstilbud" to vetOmsorgstilbud.name,
+        "vetLikeDager" to (ukedager != null)
     )
 
     private fun OmsorgstilbudUkedager.somMap() = mapOf<String, Any?>(
