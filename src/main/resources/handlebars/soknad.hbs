@@ -479,7 +479,9 @@
 
         {{else}}
             {{#if omsorgstilbudV2}}
-                <p class="sporsmalstekst">Har barnet vært noe i et omsorgstilbud i perioden {{omsorgstilbudV2.søknadsperiodeFraOgMed}} til {{omsorgstilbudV2.dagensDato}}?</p>
+                {{#if omsorgstilbudV2.periodenStarterIFortid}}
+                    <p class="sporsmalstekst">Har barnet vært noe i et omsorgstilbud i perioden {{omsorgstilbudV2.søknadsperiodeFraOgMed}} til {{omsorgstilbudV2.igårDato}}?</p>
+                {{/if}}
                 {{#if omsorgstilbudV2.historisk}}
                     <p>Ja</p>
                     <br/>
@@ -505,7 +507,7 @@
                     <br/>
                 {{/if}}
 
-                <p class="sporsmalstekst">Skal barnet være noe i et omsorgstilbud i perioden {{omsorgstilbudV2.morgendagensDato}} til {{omsorgstilbudV2.søknadsperiodeTilOgMed}}?</p>
+                <p class="sporsmalstekst">Skal barnet være noe i et omsorgstilbud i perioden {{omsorgstilbudV2.dagensDato}} til {{omsorgstilbudV2.søknadsperiodeTilOgMed}}?</p>
                 {{#if omsorgstilbudV2.planlagt}}
                     <p>Ja</p>
                     <br/>
