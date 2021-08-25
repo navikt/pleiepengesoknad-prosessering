@@ -206,16 +206,20 @@ internal class PdfV1Generator {
         "vetOmsorgstilbud" to vetOmsorgstilbud.name,
     )
 
-    private fun OmsorgstilbudV2.somMap(fraOgMed: LocalDate, tilOgMed: LocalDate) = mapOf(
-        "historisk" to historisk?.somMap(),
-        "planlagt" to planlagt?.somMap(),
-        "søknadsperiodeFraOgMed" to DATE_FORMATTER.format(fraOgMed),
-        "søknadsperiodeTilOgMed" to DATE_FORMATTER.format(tilOgMed),
-        "dagensDato" to DATE_FORMATTER.format(LocalDate.now()),
-        "igårDato" to DATE_FORMATTER.format(LocalDate.now().minusDays(1)),
-        "periodenStarterIFortid" to (fraOgMed.isBefore(LocalDate.now())),
-        "periodenAvsluttesIFremtiden" to (tilOgMed.isAfter(LocalDate.now().minusDays(1)))
-    )
+    private fun OmsorgstilbudV2.somMap(fraOgMed: LocalDate, tilOgMed: LocalDate): Map<String, Any?> {
+        val DAGENS_DATO = LocalDate.now()
+        val GÅRSDAGENS_DATO = DAGENS_DATO.minusDays(1)
+        return mapOf(
+            "historisk" to historisk?.somMap(),
+            "planlagt" to planlagt?.somMap(),
+            "søknadsperiodeFraOgMed" to DATE_FORMATTER.format(fraOgMed),
+            "søknadsperiodeTilOgMed" to DATE_FORMATTER.format(tilOgMed),
+            "periodenAvsluttesIFremtiden" to (tilOgMed.isAfter(GÅRSDAGENS_DATO)),
+            "fremtidFraOgMed" to if(fraOgMed.isAfter(DAGENS_DATO)) DATE_FORMATTER.format(fraOgMed) else DATE_FORMATTER.format(DAGENS_DATO),
+            "periodenStarterIFortid" to (fraOgMed.isBefore(DAGENS_DATO)),
+            "fortidTilOgMed" to if(tilOgMed.isBefore(DAGENS_DATO)) DATE_FORMATTER.format(tilOgMed) else DATE_FORMATTER.format(GÅRSDAGENS_DATO)
+        )
+    }
 
     private fun List<Omsorgsdag>.somMap(): List<Map<String, Any?>> {
         return map {
