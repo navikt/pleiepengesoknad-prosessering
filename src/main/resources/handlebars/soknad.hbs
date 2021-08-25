@@ -506,8 +506,9 @@
                     <p>Nei</p>
                     <br/>
                 {{/if}}
-
-                <p class="sporsmalstekst">Skal barnet være noe i et omsorgstilbud i perioden {{omsorgstilbudV2.dagensDato}} til {{omsorgstilbudV2.søknadsperiodeTilOgMed}}?</p>
+                {{#if omsorgstilbudV2.periodenAvsluttesIFremtiden}}
+                    <p class="sporsmalstekst">Skal barnet være noe i et omsorgstilbud i perioden {{omsorgstilbudV2.dagensDato}} til {{omsorgstilbudV2.søknadsperiodeTilOgMed}}?</p>
+                {{/if}}
                 {{#if omsorgstilbudV2.planlagt}}
                     <p>Ja</p>
                     <br/>
@@ -518,7 +519,7 @@
                         <br/>
 
                         <p><span class="sporsmalstekst">Er tiden barnet skal være i omsorgstilbudet lik for hver dag i perioden du søker om? Det
-                            vil si at alle mandger er like, alle tirsdager er like og så videre</span></p>
+                            vil si at alle mandager er like, alle tirsdager er like og så videre</span></p>
                         <p>{{ jaNeiSvar omsorgstilbudV2.planlagt.vetLikeDager }}</p>
                         <br/>
 

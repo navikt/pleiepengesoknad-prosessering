@@ -764,6 +764,8 @@ class PdfV1GeneratorTest {
         id = "27-oomsorgstilbud-v2-med-historisk-og-planlagte-enkeltdager"
         pdf = generator.generateSoknadOppsummeringPdf(
             melding = SøknadUtils.defaultSøknad.copy(
+                fraOgMed = LocalDate.now().minusDays(1),
+                tilOgMed = LocalDate.now(),
                 omsorgstilbudV2 = OmsorgstilbudV2(
                     historisk = HistoriskOmsorgstilbud(
                         enkeltdager = listOf(

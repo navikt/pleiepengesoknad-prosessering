@@ -213,7 +213,8 @@ internal class PdfV1Generator {
         "søknadsperiodeTilOgMed" to DATE_FORMATTER.format(tilOgMed),
         "dagensDato" to DATE_FORMATTER.format(LocalDate.now()),
         "igårDato" to DATE_FORMATTER.format(LocalDate.now().minusDays(1)),
-        "periodenStarterIFortid" to (fraOgMed.isBefore(LocalDate.now()))
+        "periodenStarterIFortid" to (fraOgMed.isBefore(LocalDate.now())),
+        "periodenAvsluttesIFremtiden" to (tilOgMed.isAfter(LocalDate.now().minusDays(1)))
     )
 
     private fun List<Omsorgsdag>.somMap(): List<Map<String, Any?>> {
