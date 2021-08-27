@@ -104,7 +104,8 @@ data class HistoriskOmsorgstilbud(
 data class PlanlagtOmsorgstilbud(
     val enkeltdager: List<Omsorgsdag>? = null,
     val ukedager: OmsorgstilbudUkedager? = null,
-    val vetOmsorgstilbud: VetOmsorgstilbud
+    val vetOmsorgstilbud: VetOmsorgstilbud,
+    val erLiktHverDag: Boolean? = null
 )
 
 data class Nattevåk(

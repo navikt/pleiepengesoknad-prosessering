@@ -232,7 +232,10 @@ internal class PdfV1Generator {
     }
 
     private fun List<Omsorgsdag>.somMapPerUke(): List<Map<String, Any>> {
-        val omsorgsdagerPerUke = this.groupBy { it.dato.get(WeekFields.of(Locale.getDefault()).weekOfYear())}
+        val omsorgsdagerPerUke = this.groupBy {
+            val uketall = it.dato.get(WeekFields.of(Locale.getDefault()).weekOfYear())
+            if(uketall == 0) 53 else uketall
+        }
         return omsorgsdagerPerUke.map {
             mapOf(
                 "uke" to it.key,
@@ -249,7 +252,9 @@ internal class PdfV1Generator {
         "enkeltdagerPerUke" to enkeltdager?.somMapPerUke(),
         "ukedager" to ukedager?.somMap(),
         "vetOmsorgstilbud" to vetOmsorgstilbud.name,
-        "vetLikeDager" to (ukedager != null)
+        "vetLikeDager" to (ukedager != null),
+        "erLiktHverDag" to  erLiktHverDag,
+        "harSvartPåErLiktHverDag" to  (erLiktHverDag != null)
     )
 
     private fun OmsorgstilbudUkedager.somMap() = mapOf<String, Any?>(

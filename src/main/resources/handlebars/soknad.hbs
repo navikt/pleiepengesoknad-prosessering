@@ -518,10 +518,11 @@
                         {{#eq omsorgstilbudV2.planlagt.vetOmsorgstilbud "VET_ALLE_TIMER" }}
                             <p>Ja</p>
                             <br/>
-
-                            <p><span class="sporsmalstekst">Er tiden barnet skal være i omsorgstilbudet lik for hver dag i perioden du søker om? Det
-                                vil si at alle mandager er like, alle tirsdager er like og så videre</span></p>
-                            <p>{{ jaNeiSvar omsorgstilbudV2.planlagt.vetLikeDager }}</p>
+                            {{#if omsorgstilbudV2.planlagt.harSvartPåErLiktHverDag}}
+                                <p><span class="sporsmalstekst">Er tiden barnet skal være i omsorgstilbudet lik for hver dag i perioden du søker om? Det
+                                    vil si at alle mandager er like, alle tirsdager er like og så videre</span></p>
+                                <p>{{ jaNeiSvar omsorgstilbudV2.planlagt.erLiktHverDag }}</p>
+                            {{/if}}
                             <br/>
 
                             <p class="sporsmalstekst">Tid barnet skal være i omsorgstilbudet:</p>

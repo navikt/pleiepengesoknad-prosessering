@@ -764,9 +764,12 @@ class PdfV1GeneratorTest {
         id = "27-oomsorgstilbud-v2-med-historisk-og-planlagte-enkeltdager"
         pdf = generator.generateSoknadOppsummeringPdf(
             melding = SøknadUtils.defaultSøknad.copy(
+                fraOgMed = LocalDate.parse("2021-01-01"),
+                tilOgMed = LocalDate.parse("2021-12-01"),
                 omsorgstilbudV2 = OmsorgstilbudV2(
                     historisk = HistoriskOmsorgstilbud(
                         enkeltdager = listOf(
+                            Omsorgsdag(LocalDate.parse("2021-01-01"), Duration.ofHours(7).plusMinutes(30)),
                             Omsorgsdag(LocalDate.now().minusDays(3), Duration.ofHours(7).plusMinutes(30)),
                             Omsorgsdag(LocalDate.now().minusDays(2), Duration.ofHours(7).plusMinutes(30)),
                             Omsorgsdag(LocalDate.now().minusDays(1), Duration.ofHours(7).plusMinutes(30))
@@ -779,7 +782,8 @@ class PdfV1GeneratorTest {
                             Omsorgsdag(LocalDate.now().plusDays(3), Duration.ofHours(7).plusMinutes(30)),
                             Omsorgsdag(LocalDate.now().plusDays(4), Duration.ofHours(0))
                         ),
-                        vetOmsorgstilbud = VetOmsorgstilbud.VET_ALLE_TIMER
+                        vetOmsorgstilbud = VetOmsorgstilbud.VET_ALLE_TIMER,
+                        erLiktHverDag = false
                     )
                 )
             )
