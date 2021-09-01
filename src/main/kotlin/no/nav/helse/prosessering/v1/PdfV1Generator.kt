@@ -11,21 +11,10 @@ import com.openhtmltopdf.outputdevice.helper.BaseRendererBuilder
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder
 import com.openhtmltopdf.util.XRLog
 import no.nav.helse.dusseldorf.ktor.core.fromResources
-import no.nav.helse.felles.Arbeidsforhold
-import no.nav.helse.felles.Beredskap
-import no.nav.helse.felles.Bosted
-import no.nav.helse.felles.Ferieuttak
-import no.nav.helse.felles.Nattevåk
-import no.nav.helse.felles.Næringstyper
-import no.nav.helse.felles.Omsorgstilbud
-import no.nav.helse.felles.OmsorgstilbudFasteDager
-import no.nav.helse.felles.Organisasjon
-import no.nav.helse.felles.Periode
-import no.nav.helse.felles.Søker
-import no.nav.helse.felles.Utenlandsopphold
+import no.nav.helse.felles.*
 import no.nav.helse.pleiepengerKonfiguert
 import no.nav.helse.utils.DateUtils
-import no.nav.helse.utils.norskDag
+import no.nav.helse.utils.somNorskDag
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.time.Duration
@@ -33,6 +22,7 @@ import java.time.LocalDate
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
+import java.time.temporal.WeekFields
 import java.util.*
 import java.util.logging.Level
 
@@ -48,6 +38,7 @@ internal class PdfV1Generator {
         private val ITALIC_FONT = "$ROOT/fonts/SourceSansPro-Italic.ttf".fromResources().readBytes()
 
         private val sRGBColorSpace = "$ROOT/sRGB.icc".fromResources().readBytes()
+
 
         private val handlebars = Handlebars(ClassPathTemplateLoader("/$ROOT")).apply {
             registerHelper("eq", Helper<String> { context, options ->
@@ -100,7 +91,7 @@ internal class PdfV1Generator {
                     mapOf(
                         "søknad" to melding.somMap(),
                         "soknad_id" to melding.søknadId,
-                        "soknad_mottatt_dag" to melding.mottatt.withZoneSameInstant(ZONE_ID).norskDag(),
+                        "soknad_mottatt_dag" to melding.mottatt.withZoneSameInstant(ZONE_ID).somNorskDag(),
                         "soknad_mottatt" to DATE_TIME_FORMATTER.format(melding.mottatt),
                         "har_medsoker" to melding.harMedsøker,
                         "harIkkeVedlegg" to melding.sjekkOmHarIkkeVedlegg(),
@@ -138,6 +129,7 @@ internal class PdfV1Generator {
                             "sprak" to melding.språk?.sprakTilTekst()
                         ),
                         "omsorgstilbud" to melding.omsorgstilbud?.somMap(),
+                        "omsorgstilbudV2" to melding.omsorgstilbudV2?.somMap(melding.fraOgMed, melding.tilOgMed),
                         "nattevaak" to nattevåk(melding.nattevåk),
                         "beredskap" to beredskap(melding.beredskap),
                         "utenlandsoppholdIPerioden" to mapOf(
@@ -184,7 +176,8 @@ internal class PdfV1Generator {
         }
     }
 
-    private fun MeldingV1.harFlereAktiveVirksomehterSatt() = (this.selvstendigVirksomheter.firstOrNull()?.harFlereAktiveVirksomheter != null)
+    private fun MeldingV1.harFlereAktiveVirksomehterSatt() =
+        (this.selvstendigVirksomheter.firstOrNull()?.harFlereAktiveVirksomheter != null)
 
     private fun erBooleanSatt(verdi: Boolean?) = verdi != null
 
@@ -213,7 +206,58 @@ internal class PdfV1Generator {
         "vetOmsorgstilbud" to vetOmsorgstilbud.name,
     )
 
-    private fun OmsorgstilbudFasteDager.somMap() = mapOf<String, Any?>(
+    private fun OmsorgstilbudV2.somMap(fraOgMed: LocalDate, tilOgMed: LocalDate): Map<String, Any?> {
+        val DAGENS_DATO = LocalDate.now()
+        val GÅRSDAGENS_DATO = DAGENS_DATO.minusDays(1)
+        return mapOf(
+            "historisk" to historisk?.somMap(),
+            "planlagt" to planlagt?.somMap(),
+            "søknadsperiodeFraOgMed" to DATE_FORMATTER.format(fraOgMed),
+            "søknadsperiodeTilOgMed" to DATE_FORMATTER.format(tilOgMed),
+            "periodenAvsluttesIFremtiden" to (tilOgMed.isAfter(GÅRSDAGENS_DATO)),
+            "fremtidFraOgMed" to if(fraOgMed.isAfter(DAGENS_DATO)) DATE_FORMATTER.format(fraOgMed) else DATE_FORMATTER.format(DAGENS_DATO),
+            "periodenStarterIFortid" to (fraOgMed.isBefore(DAGENS_DATO)),
+            "fortidTilOgMed" to if(tilOgMed.isBefore(DAGENS_DATO)) DATE_FORMATTER.format(tilOgMed) else DATE_FORMATTER.format(GÅRSDAGENS_DATO)
+        )
+    }
+
+    private fun List<Omsorgsdag>.somMap(): List<Map<String, Any?>> {
+        return map {
+            mapOf<String, Any?>(
+                "dato" to DATE_FORMATTER.format(it.dato),
+                "dag" to it.dato.dayOfWeek.somNorskDag(),
+                "tid" to it.tid.somTekst(avkort = false)
+            )
+        }
+    }
+
+    private fun List<Omsorgsdag>.somMapPerUke(): List<Map<String, Any>> {
+        val omsorgsdagerPerUke = this.groupBy {
+            val uketall = it.dato.get(WeekFields.of(Locale.getDefault()).weekOfYear())
+            if(uketall == 0) 53 else uketall
+        }
+        return omsorgsdagerPerUke.map {
+            mapOf(
+                "uke" to it.key,
+                "dager" to it.value.somMap()
+            )
+        }
+    }
+
+    private fun HistoriskOmsorgstilbud.somMap(): Map<String, Any?> = mutableMapOf(
+        "enkeltdagerPerUke" to enkeltdager.somMapPerUke(),
+    )
+
+    private fun PlanlagtOmsorgstilbud.somMap(): Map<String, Any?> = mutableMapOf(
+        "enkeltdagerPerUke" to enkeltdager?.somMapPerUke(),
+        "ukedager" to ukedager?.somMap(),
+        "vetOmsorgstilbud" to vetOmsorgstilbud.name,
+        "vetLikeDager" to (ukedager != null),
+        "erLiktHverDag" to  erLiktHverDag,
+        "harSvartPåErLiktHverDag" to  (erLiktHverDag != null)
+    )
+
+    private fun OmsorgstilbudUkedager.somMap() = mapOf<String, Any?>(
         "mandag" to mandag?.somTekst(),
         "tirsdag" to tirsdag?.somTekst(),
         "onsdag" to onsdag?.somTekst(),

@@ -1,7 +1,8 @@
 package no.nav.helse
 
 import no.nav.helse.felles.*
-import no.nav.helse.prosessering.v1.*
+import no.nav.helse.prosessering.v1.MeldingV1
+import no.nav.helse.prosessering.v1.PdfV1Generator
 import java.io.File
 import java.net.URI
 import java.time.Duration
@@ -450,7 +451,7 @@ class PdfV1GeneratorTest {
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
-        id = "8-utenGrad"
+        id = "7-utenGrad"
         pdf = generator.generateSoknadOppsummeringPdf(
             melding = gyldigMelding(
                 soknadId = id,
@@ -460,7 +461,7 @@ class PdfV1GeneratorTest {
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
-        id = "9-utenDagerBorteFraJobb"
+        id = "8-utenDagerBorteFraJobb"
         pdf = generator.generateSoknadOppsummeringPdf(
             melding = gyldigMelding(
                 soknadId = id,
@@ -470,7 +471,7 @@ class PdfV1GeneratorTest {
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
-        id = "13-skalJobbeRedusert"
+        id = "9-skalJobbeRedusert"
         pdf = generator.generateSoknadOppsummeringPdf(
             melding = gyldigMelding(
                 soknadId = id, harMedsøker = true, organisasjoner = listOf(
@@ -487,7 +488,7 @@ class PdfV1GeneratorTest {
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
-        id = "14-skalJobbeVetIkke"
+        id = "10-skalJobbeVetIkke"
         pdf = generator.generateSoknadOppsummeringPdf(
             melding = gyldigMelding(
                 soknadId = id, harMedsøker = true, samtidigHjemme = true, organisasjoner = listOf(
@@ -505,7 +506,7 @@ class PdfV1GeneratorTest {
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
-        id = "15-skalJobbeJa"
+        id = "11-skalJobbeJa"
         pdf = generator.generateSoknadOppsummeringPdf(
             melding = gyldigMelding(
                 soknadId = id, harMedsøker = true, organisasjoner = listOf(
@@ -522,7 +523,7 @@ class PdfV1GeneratorTest {
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
-        id = "16-skalJobbeNei"
+        id = "12-skalJobbeNei"
         pdf = generator.generateSoknadOppsummeringPdf(
             melding = gyldigMelding(
                 soknadId = id, harMedsøker = true, organisasjoner = listOf(
@@ -539,7 +540,7 @@ class PdfV1GeneratorTest {
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
-        id = "17-flereArbeidsgivereSkalJobbeJaNeiVetIkkeRedusert"
+        id = "13-flereArbeidsgivereSkalJobbeJaNeiVetIkkeRedusert"
         pdf = generator.generateSoknadOppsummeringPdf(
             melding = gyldigMelding(
                 soknadId = id, harMedsøker = true, organisasjoner = listOf(
@@ -581,7 +582,7 @@ class PdfV1GeneratorTest {
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
-        id = "18-flerePlanlagteUtenlandsopphold"
+        id = "14-flerePlanlagteUtenlandsopphold"
         pdf = generator.generateSoknadOppsummeringPdf(
             melding = gyldigMelding(
                 soknadId = id,
@@ -602,11 +603,11 @@ class PdfV1GeneratorTest {
                     )
                 )
             ),
-            
-        )
+
+            )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
-        id = "19-barnHarIkkeIdBareFødselsdato"
+        id = "15-barnHarIkkeIdBareFødselsdato"
         pdf = generator.generateSoknadOppsummeringPdf(
             melding = gyldigMelding(
                 soknadId = id, harMedsøker = true, organisasjoner = listOf(
@@ -616,7 +617,7 @@ class PdfV1GeneratorTest {
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
 
-        id = "20-barnManglerIdOgFødselsdato"
+        id = "16-barnManglerIdOgFødselsdato"
         pdf = generator.generateSoknadOppsummeringPdf(
             melding = gyldigMelding(
                 soknadId = id, harMedsøker = true, organisasjoner = listOf()
@@ -624,7 +625,7 @@ class PdfV1GeneratorTest {
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
-        id = "21-har-du-jobbet-og-hatt-inntekt-som-frilanser"
+        id = "17-har-du-jobbet-og-hatt-inntekt-som-frilanser"
         pdf = generator.generateSoknadOppsummeringPdf(
             melding = gyldigMelding(
                 soknadId = id, harMedsøker = true, organisasjoner = listOf()
@@ -633,7 +634,7 @@ class PdfV1GeneratorTest {
 
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
-        id = "22-har-du-hatt-inntekt-som-selvstendig-næringsdrivende"
+        id = "18-har-du-hatt-inntekt-som-selvstendig-næringsdrivende"
         pdf = generator.generateSoknadOppsummeringPdf(
             melding = gyldigMelding(
                 soknadId = id, harMedsøker = true, organisasjoner = listOf()
@@ -641,7 +642,7 @@ class PdfV1GeneratorTest {
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
-        id = "23-har-lastet-opp-vedlegg"
+        id = "19-har-lastet-opp-vedlegg"
         pdf = generator.generateSoknadOppsummeringPdf(
             melding = gyldigMelding(
                 soknadId = id, harMedsøker = true, organisasjoner = listOf(),
@@ -650,28 +651,11 @@ class PdfV1GeneratorTest {
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
-        id = "24-omsorgstilbud-med-tilsyn"
+        id = "20-omsorgstilbud-med-usikker-tilsyn-vet-min-antall-timer"
         pdf = generator.generateSoknadOppsummeringPdf(
             melding = SøknadUtils.defaultSøknad.copy(
                 omsorgstilbud = Omsorgstilbud(
-                    fasteDager = OmsorgstilbudFasteDager(
-                        mandag = Duration.ofHours(7).plusMinutes(30),
-                        tirsdag = Duration.ofHours(7),
-                        onsdag = null,
-                        torsdag = Duration.ofHours(4).plusMinutes(30),
-                        fredag = Duration.ofHours(7).plusMinutes(30),
-                    ),
-                    vetOmsorgstilbud = VetOmsorgstilbud.VET_ALLE_TIMER
-                )
-            )
-        )
-        if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
-
-        id = "25-omsorgstilbud-med-usikker-tilsyn-vet-min-antall-timer"
-        pdf = generator.generateSoknadOppsummeringPdf(
-            melding = SøknadUtils.defaultSøknad.copy(
-                omsorgstilbud = Omsorgstilbud(
-                    fasteDager = OmsorgstilbudFasteDager(
+                    fasteDager = OmsorgstilbudUkedager(
                         mandag = Duration.ofHours(2).plusMinutes(30),
                         tirsdag = Duration.ofHours(2).plusMinutes(30),
                         onsdag = Duration.ofHours(2).plusMinutes(30),
@@ -684,7 +668,7 @@ class PdfV1GeneratorTest {
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
-        id = "26-omsorgstilbud-med-usikker-tilsyn-vet-ikke-min-antall-timer"
+        id = "21-omsorgstilbud-med-usikker-tilsyn-vet-ikke-min-antall-timer"
         pdf = generator.generateSoknadOppsummeringPdf(
             melding = SøknadUtils.defaultSøknad.copy(
                 omsorgstilbud = Omsorgstilbud(
@@ -695,7 +679,7 @@ class PdfV1GeneratorTest {
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
-        id = "27-uten-omsorgstilbud"
+        id = "22-uten-omsorgstilbud"
         pdf = generator.generateSoknadOppsummeringPdf(
             melding = SøknadUtils.defaultSøknad.copy(
                 omsorgstilbud = null
@@ -703,11 +687,11 @@ class PdfV1GeneratorTest {
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
-        id = "24-omsorgstilbud-med-tilsyn"
+        id = "23-omsorgstilbud-med-tilsyn"
         pdf = generator.generateSoknadOppsummeringPdf(
             melding = SøknadUtils.defaultSøknad.copy(
                 omsorgstilbud = Omsorgstilbud(
-                    fasteDager = OmsorgstilbudFasteDager(
+                    fasteDager = OmsorgstilbudUkedager(
                         mandag = Duration.ofHours(7).plusMinutes(30),
                         tirsdag = Duration.ofHours(7),
                         onsdag = null,
@@ -721,11 +705,11 @@ class PdfV1GeneratorTest {
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
 
-        id = "25-omsorgstilbud-med-usikker-tilsyn-vet-min-antall-timer"
+        id = "24-omsorgstilbud-med-usikker-tilsyn-vet-min-antall-timer"
         pdf = generator.generateSoknadOppsummeringPdf(
             melding = SøknadUtils.defaultSøknad.copy(
                 omsorgstilbud = Omsorgstilbud(
-                    fasteDager = OmsorgstilbudFasteDager(
+                    fasteDager = OmsorgstilbudUkedager(
                         mandag = Duration.ofHours(2).plusMinutes(30),
                         tirsdag = Duration.ofHours(2).plusMinutes(30),
                         onsdag = Duration.ofHours(2).plusMinutes(30),
@@ -739,7 +723,7 @@ class PdfV1GeneratorTest {
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
 
-        id = "26-omsorgstilbud-med-usikker-tilsyn-vet-ikke-min-antall-timer"
+        id = "25-omsorgstilbud-med-usikker-tilsyn-vet-ikke-min-antall-timer"
         pdf = generator.generateSoknadOppsummeringPdf(
             melding = SøknadUtils.defaultSøknad.copy(
                 omsorgstilbud = Omsorgstilbud(
@@ -750,10 +734,71 @@ class PdfV1GeneratorTest {
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
-        id = "27-uten-omsorgstilbud"
+        id = "26-omsorgstilbud-v2-med-historisk-og-planlagte-ukedager"
         pdf = generator.generateSoknadOppsummeringPdf(
             melding = SøknadUtils.defaultSøknad.copy(
-                omsorgstilbud = null
+                omsorgstilbud = null,
+                omsorgstilbudV2 = OmsorgstilbudV2(
+                    historisk = HistoriskOmsorgstilbud(
+                        enkeltdager = listOf(
+                            Omsorgsdag(LocalDate.now().minusDays(3), Duration.ofHours(7).plusMinutes(30)),
+                            Omsorgsdag(LocalDate.now().minusDays(2), Duration.ofHours(7).plusMinutes(30)),
+                            Omsorgsdag(LocalDate.now().minusDays(1), Duration.ofHours(7).plusMinutes(30)),
+                        )
+                    ),
+                    planlagt = PlanlagtOmsorgstilbud(
+                        ukedager = OmsorgstilbudUkedager(
+                            mandag = Duration.ofHours(7).plusMinutes(30),
+                            tirsdag = Duration.ofHours(7).plusMinutes(30),
+                            torsdag = Duration.ofHours(7).plusMinutes(30),
+                            fredag = Duration.ofHours(7).plusMinutes(30),
+                        ),
+                        vetOmsorgstilbud = VetOmsorgstilbud.VET_ALLE_TIMER
+                    )
+                )
+            )
+        )
+        if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
+
+
+        id = "27-oomsorgstilbud-v2-med-historisk-og-planlagte-enkeltdager"
+        pdf = generator.generateSoknadOppsummeringPdf(
+            melding = SøknadUtils.defaultSøknad.copy(
+                fraOgMed = LocalDate.parse("2021-01-01"),
+                tilOgMed = LocalDate.parse("2021-12-01"),
+                omsorgstilbudV2 = OmsorgstilbudV2(
+                    historisk = HistoriskOmsorgstilbud(
+                        enkeltdager = listOf(
+                            Omsorgsdag(LocalDate.parse("2021-01-01"), Duration.ofHours(7).plusMinutes(30)),
+                            Omsorgsdag(LocalDate.now().minusDays(3), Duration.ofHours(7).plusMinutes(30)),
+                            Omsorgsdag(LocalDate.now().minusDays(2), Duration.ofHours(7).plusMinutes(30)),
+                            Omsorgsdag(LocalDate.now().minusDays(1), Duration.ofHours(7).plusMinutes(30))
+                        )
+                    ),
+                    planlagt = PlanlagtOmsorgstilbud(
+                        enkeltdager = listOf(
+                            Omsorgsdag(LocalDate.now().plusDays(1), Duration.ofHours(7).plusMinutes(30)),
+                            Omsorgsdag(LocalDate.now().plusDays(2), Duration.ofHours(7).plusMinutes(30)),
+                            Omsorgsdag(LocalDate.now().plusDays(3), Duration.ofHours(7).plusMinutes(30)),
+                            Omsorgsdag(LocalDate.now().plusDays(4), Duration.ofHours(0))
+                        ),
+                        vetOmsorgstilbud = VetOmsorgstilbud.VET_ALLE_TIMER,
+                        erLiktHverDag = false
+                    )
+                )
+            )
+        )
+        if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
+
+        id = "28-omsorgstilbud-v2-vet-ikke-planlagt-tilsyn"
+        pdf = generator.generateSoknadOppsummeringPdf(
+            melding = SøknadUtils.defaultSøknad.copy(
+                omsorgstilbud = null,
+                omsorgstilbudV2 = OmsorgstilbudV2(
+                    planlagt = PlanlagtOmsorgstilbud(
+                        vetOmsorgstilbud = VetOmsorgstilbud.VET_IKKE
+                    )
+                )
             )
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)

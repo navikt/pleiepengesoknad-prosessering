@@ -70,8 +70,7 @@ data class Medlemskap(
 
 data class Omsorgstilbud(
     val vetOmsorgstilbud: VetOmsorgstilbud,
-    val fasteDager: OmsorgstilbudFasteDager? = null,
-    val enkeltDager: List<Omsorgsdag>? = null
+    val fasteDager: OmsorgstilbudUkedager? = null
 )
 
 data class Omsorgsdag(
@@ -85,12 +84,28 @@ enum class VetOmsorgstilbud {
     VET_IKKE
 }
 
-data class OmsorgstilbudFasteDager(
+data class OmsorgstilbudUkedager(
     val mandag: Duration? = null,
     val tirsdag: Duration? = null,
     val onsdag: Duration? = null,
     val torsdag: Duration? = null,
     val fredag: Duration? = null
+)
+
+data class OmsorgstilbudV2(
+    val historisk: HistoriskOmsorgstilbud? = null,
+    val planlagt: PlanlagtOmsorgstilbud? = null
+)
+
+data class HistoriskOmsorgstilbud(
+    val enkeltdager: List<Omsorgsdag>
+)
+
+data class PlanlagtOmsorgstilbud(
+    val enkeltdager: List<Omsorgsdag>? = null,
+    val ukedager: OmsorgstilbudUkedager? = null,
+    val vetOmsorgstilbud: VetOmsorgstilbud,
+    val erLiktHverDag: Boolean? = null
 )
 
 data class Nattevåk(

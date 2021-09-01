@@ -410,12 +410,12 @@
 
     <section id="omsorgstilbud">
         <h2>Omsorgstilbud</h2>
-        <p class="sporsmalstekst">Skal barnet være i et omsorgstilbud i hele eller deler av perioden du søker om?</p>
         {{#if omsorgstilbud}}
+            <p class="sporsmalstekst">Skal barnet være i et omsorgstilbud i hele eller deler av perioden du søker om?</p>
             <p>Ja</p>
 
             <br/>
-            <p class="sporsmalstekst">Vet du hvor mye barnet skal være i omsorgstilbudet?</p>
+            <p class="sporsmalstekst">Kan du oppgi tiden barnet skal være i omsorgstilbudet?</p>
             {{#eq omsorgstilbud.vetOmsorgstilbud "VET_ALLE_TIMER" }}
                 <p>Ja</p>
             {{/eq}}
@@ -438,35 +438,36 @@
 
             <br/>
             {{#if omsorgstilbud.fasteDager}}
-                <p><span class="sporsmalstekst">Mandag: </span>
+                <p class="sporsmalstekst">Tid i omsorgstilbud hver uke i søknadsperioden</p>
+                <p><span class="sporsmalstekst">Mandager: </span>
                     {{# if omsorgstilbud.fasteDager.mandag }}
                         {{omsorgstilbud.fasteDager.mandag}}
                     {{ else }}
                         <span class="ikke_satt">0 timer</span>
                     {{/if}}
                 </p>
-                <p><span class="sporsmalstekst">Tirsdag: </span>
+                <p><span class="sporsmalstekst">Tirsdager: </span>
                     {{# if omsorgstilbud.fasteDager.tirsdag }}
                         {{omsorgstilbud.fasteDager.tirsdag}}
                     {{ else }}
                         <span class="ikke_satt">0 timer</span>
                     {{/if}}
                 </p>
-                <p><span class="sporsmalstekst">Onsdag: </span>
+                <p><span class="sporsmalstekst">Onsdager: </span>
                     {{# if omsorgstilbud.fasteDager.onsdag }}
                         {{omsorgstilbud.fasteDager.onsdag}}
                     {{ else }}
                         <span class="ikke_satt">0 timer</span>
                     {{/if}}
                 </p>
-                <p><span class="sporsmalstekst">Torsdag: </span>
+                <p><span class="sporsmalstekst">Torsdager: </span>
                     {{# if omsorgstilbud.fasteDager.torsdag }}
                         {{omsorgstilbud.fasteDager.torsdag}}
                     {{ else }}
                         <span class="ikke_satt">0 timer</span>
                     {{/if}}
                 </p>
-                <p><span class="sporsmalstekst">Fredag: </span>
+                <p><span class="sporsmalstekst">Fredager: </span>
                     {{# if omsorgstilbud.fasteDager.fredag }}
                         {{omsorgstilbud.fasteDager.fredag}}
                     {{ else }}
@@ -477,7 +478,122 @@
             {{/if}}
 
         {{else}}
-            <p>Nei</p>
+            {{#if omsorgstilbudV2}}
+                {{#if omsorgstilbudV2.periodenStarterIFortid}}
+                    <p class="sporsmalstekst">Har barnet vært noe i et omsorgstilbud i perioden {{omsorgstilbudV2.søknadsperiodeFraOgMed}} til {{omsorgstilbudV2.fortidTilOgMed}}?</p>
+                    {{#if omsorgstilbudV2.historisk}}
+                        <p>Ja</p>
+                        <br/>
+
+                        <p class="sporsmalstekst">Tid barnet har vært i omsorgstilbud:</p>
+                        <ul>
+                            {{#each omsorgstilbudV2.historisk.enkeltdagerPerUke as |enkeltdagerPerUke|~}}
+                                <li>
+                                    <p>Uke {{enkeltdagerPerUke.uke}}</p>
+                                    <ul>
+                                        {{#each enkeltdagerPerUke.dager as |enkeltdag|~}}
+                                            <li>
+                                                <p>{{enkeltdag.dag}} {{enkeltdag.dato}}:    {{enkeltdag.tid}}</p>
+                                            </li>
+                                        {{/each}}
+                                    </ul>
+                                </li>
+                            {{/each}}
+                        </ul>
+
+                    {{else}}
+                        <p>Nei</p>
+                        <br/>
+                    {{/if}}
+                {{/if}}
+
+                {{#if omsorgstilbudV2.periodenAvsluttesIFremtiden}}
+                    <p class="sporsmalstekst">Skal barnet være noe i et omsorgstilbud i perioden {{omsorgstilbudV2.fremtidFraOgMed}} til {{omsorgstilbudV2.søknadsperiodeTilOgMed}}?</p>
+
+                    {{#if omsorgstilbudV2.planlagt}}
+                        <p>Ja</p>
+                        <br/>
+
+                        <p class="sporsmalstekst">Kan du oppgi tiden barnet skal være i omsorgstilbudet?</p>
+                        {{#eq omsorgstilbudV2.planlagt.vetOmsorgstilbud "VET_ALLE_TIMER" }}
+                            <p>Ja</p>
+                            <br/>
+                            {{#if omsorgstilbudV2.planlagt.harSvartPåErLiktHverDag}}
+                                <p><span class="sporsmalstekst">Er tiden barnet skal være i omsorgstilbudet lik for hver dag i perioden du søker om? Det
+                                    vil si at alle mandager er like, alle tirsdager er like og så videre</span></p>
+                                <p>{{ jaNeiSvar omsorgstilbudV2.planlagt.erLiktHverDag }}</p>
+                            {{/if}}
+                            <br/>
+
+                            <p class="sporsmalstekst">Tid barnet skal være i omsorgstilbudet:</p>
+                            <ul>
+                                {{#each omsorgstilbudV2.planlagt.enkeltdagerPerUke as |enkeltdagerPerUke|~}}
+                                    <li>
+                                        <p>Uke {{enkeltdagerPerUke.uke}}</p>
+                                        <ul>
+                                            {{#each enkeltdagerPerUke.dager as |enkeltdag|~}}
+                                                <li>
+                                                    <p>{{enkeltdag.dag}} {{enkeltdag.dato}}:    {{enkeltdag.tid}}</p>
+                                                </li>
+                                            {{/each}}
+                                        </ul>
+                                    </li>
+                                {{/each}}
+                            </ul>
+
+                            {{#if omsorgstilbudV2.planlagt.ukedager}}
+                                <p><span class="sporsmalstekst">Mandager: </span>
+                                    {{# if omsorgstilbudV2.planlagt.ukedager.mandag }}
+                                        {{omsorgstilbudV2.planlagt.ukedager.mandag}}
+                                    {{ else }}
+                                        <span class="ikke_satt">0 timer</span>
+                                    {{/if}}
+                                </p>
+                                <p><span class="sporsmalstekst">Tirsdager: </span>
+                                    {{# if omsorgstilbudV2.planlagt.ukedager.tirsdag }}
+                                        {{omsorgstilbudV2.planlagt.ukedager.tirsdag}}
+                                    {{ else }}
+                                        <span class="ikke_satt">0 timer</span>
+                                    {{/if}}
+                                </p>
+                                <p><span class="sporsmalstekst">Onsdager: </span>
+                                    {{# if omsorgstilbudV2.planlagt.ukedager.onsdag }}
+                                        {{omsorgstilbudV2.planlagt.ukedager.onsdag}}
+                                    {{ else }}
+                                        <span class="ikke_satt">0 timer</span>
+                                    {{/if}}
+                                </p>
+                                <p><span class="sporsmalstekst">Torsdager: </span>
+                                    {{# if omsorgstilbudV2.planlagt.ukedager.torsdag }}
+                                        {{omsorgstilbudV2.planlagt.ukedager.torsdag}}
+                                    {{ else }}
+                                        <span class="ikke_satt">0 timer</span>
+                                    {{/if}}
+                                </p>
+                                <p><span class="sporsmalstekst">Fredager: </span>
+                                    {{# if omsorgstilbudV2.planlagt.ukedager.fredag }}
+                                        {{omsorgstilbudV2.planlagt.ukedager.fredag}}
+                                    {{ else }}
+                                        <span class="ikke_satt">0 timer</span>
+                                    {{/if}}
+                                </p>
+                                <br/>
+                            {{/if}}
+                        {{/eq}}
+
+                        {{#eq omsorgstilbudV2.planlagt.vetOmsorgstilbud "VET_IKKE" }}
+                            <p>Nei</p>
+                        {{/eq}}
+
+                    {{else}}
+                        <p>Nei</p>
+                    {{/if}}
+                {{/if}}
+
+                {{else}}
+                <p class="sporsmalstekst">Skal barnet være i et omsorgstilbud i hele eller deler av perioden du søker om?</p>
+                <p>Nei</p>
+            {{/if}}
         {{/if}}
     </section>
 
