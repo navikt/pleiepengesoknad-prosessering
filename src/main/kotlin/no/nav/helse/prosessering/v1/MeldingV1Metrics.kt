@@ -78,13 +78,33 @@ val ingenInntektCounter = Counter.build()
 internal fun MeldingV1.reportMetrics() {
     opplastedeVedleggHistogram.observe(vedleggUrls.size.toDouble())
 
-    when (omsorgstilbud) {
+    when (omsorgstilbudV2) {
         null -> omsorgstilbudCounter.labels("omsorgstilbud", "nei").inc()
         else -> {
-            when(omsorgstilbud.vetOmsorgstilbud) {
-                VetOmsorgstilbud.VET_ALLE_TIMER -> omsorgstilbudCounter.labels("omsorgstilbud", "vetAlleTimer").inc()
-                VetOmsorgstilbud.VET_NOEN_TIMER -> omsorgstilbudCounter.labels("omsorgstilbud", "vetNoenTimer").inc()
-                VetOmsorgstilbud.VET_IKKE -> omsorgstilbudCounter.labels("omsorgstilbud", "vetIkke").inc()
+            omsorgstilbudV2.apply {
+                historisk?.let {
+                    if (it.enkeltdager.isNotEmpty()) {
+                        omsorgstilbudCounter.labels("omsorgstilbud", "historiskeEnkeltdager").inc()
+                    }
+                }
+
+                planlagt?.let {
+                    if (!it.enkeltdager.isNullOrEmpty()) {
+                        omsorgstilbudCounter.labels("omsorgstilbud", "planlagteEnkeltdager").inc()
+                    }
+
+                    if (it.erLiktHverDag !== null && it.erLiktHverDag) {
+                        omsorgstilbudCounter.labels("omsorgstilbud", "planlagteUkedagerErLiktHverDag").inc()
+                    }
+
+                    when (it.vetOmsorgstilbud) {
+                        VetOmsorgstilbud.VET_ALLE_TIMER -> omsorgstilbudCounter.labels("omsorgstilbud", "vetAlleTimer")
+                            .inc()
+                        VetOmsorgstilbud.VET_NOEN_TIMER -> omsorgstilbudCounter.labels("omsorgstilbud", "vetNoenTimer")
+                            .inc()
+                        VetOmsorgstilbud.VET_IKKE -> omsorgstilbudCounter.labels("omsorgstilbud", "vetIkke").inc()
+                    }
+                }
             }
         }
     }
