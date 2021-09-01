@@ -11,7 +11,21 @@ import com.openhtmltopdf.outputdevice.helper.BaseRendererBuilder
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder
 import com.openhtmltopdf.util.XRLog
 import no.nav.helse.dusseldorf.ktor.core.fromResources
-import no.nav.helse.felles.*
+import no.nav.helse.felles.Arbeidsforhold
+import no.nav.helse.felles.Beredskap
+import no.nav.helse.felles.Bosted
+import no.nav.helse.felles.Ferieuttak
+import no.nav.helse.felles.HistoriskOmsorgstilbud
+import no.nav.helse.felles.Nattevåk
+import no.nav.helse.felles.Næringstyper
+import no.nav.helse.felles.Omsorgsdag
+import no.nav.helse.felles.OmsorgstilbudUkedager
+import no.nav.helse.felles.OmsorgstilbudV2
+import no.nav.helse.felles.Organisasjon
+import no.nav.helse.felles.Periode
+import no.nav.helse.felles.PlanlagtOmsorgstilbud
+import no.nav.helse.felles.Søker
+import no.nav.helse.felles.Utenlandsopphold
 import no.nav.helse.pleiepengerKonfiguert
 import no.nav.helse.utils.DateUtils
 import no.nav.helse.utils.somNorskDag
@@ -128,7 +142,6 @@ internal class PdfV1Generator {
                             "ingen_arbeidsgivere" to melding.arbeidsgivere.organisasjoner.isEmpty(),
                             "sprak" to melding.språk?.sprakTilTekst()
                         ),
-                        "omsorgstilbud" to melding.omsorgstilbud?.somMap(),
                         "omsorgstilbudV2" to melding.omsorgstilbudV2?.somMap(melding.fraOgMed, melding.tilOgMed),
                         "nattevaak" to nattevåk(melding.nattevåk),
                         "beredskap" to beredskap(melding.beredskap),
@@ -200,11 +213,6 @@ internal class PdfV1Generator {
             )
         }
     }
-
-    private fun Omsorgstilbud.somMap() = mapOf(
-        "fasteDager" to fasteDager?.somMap(),
-        "vetOmsorgstilbud" to vetOmsorgstilbud.name,
-    )
 
     private fun OmsorgstilbudV2.somMap(fraOgMed: LocalDate, tilOgMed: LocalDate): Map<String, Any?> {
         val DAGENS_DATO = LocalDate.now()
