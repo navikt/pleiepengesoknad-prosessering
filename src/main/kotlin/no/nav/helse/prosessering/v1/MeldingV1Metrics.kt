@@ -115,7 +115,7 @@ internal fun MeldingV1.reportMetrics() {
         søknadsperiodeCounter.labels("fremtid").inc()
     }
 
-    søknadsperiodeLengdeHistogram.observe(ChronoUnit.WEEKS.between(fraOgMed, tilOgMed).toDouble())
+    søknadsperiodeLengdeHistogram.observe(ChronoUnit.WEEKS.between(fraOgMed, tilOgMed.plusDays(1)).toDouble())
 
     when (omsorgstilbudV2) {
         null -> omsorgstilbudCounter.labels("omsorgstilbud", "nei").inc()
