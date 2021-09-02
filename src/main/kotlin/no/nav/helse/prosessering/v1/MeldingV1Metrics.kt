@@ -4,6 +4,7 @@ import io.prometheus.client.Counter
 import io.prometheus.client.Histogram
 import no.nav.helse.felles.VetOmsorgstilbud
 import java.time.LocalDate
+import java.time.temporal.ChronoUnit
 
 val opplastedeVedleggHistogram = Histogram.build()
     .buckets(0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0)
@@ -114,12 +115,7 @@ internal fun MeldingV1.reportMetrics() {
         søknadsperiodeCounter.labels("fremtid").inc()
     }
 
-    søknadsperiodeLengdeHistogram.observe(
-        fraOgMed.datesUntil(tilOgMed.plusDays(1))
-            .count()
-            .div(7)
-            .toDouble()
-    )
+    søknadsperiodeLengdeHistogram.observe(ChronoUnit.WEEKS.between(fraOgMed, tilOgMed).toDouble())
 
     when (omsorgstilbudV2) {
         null -> omsorgstilbudCounter.labels("omsorgstilbud", "nei").inc()
@@ -142,8 +138,6 @@ internal fun MeldingV1.reportMetrics() {
 
                     when (it.vetOmsorgstilbud) {
                         VetOmsorgstilbud.VET_ALLE_TIMER -> omsorgstilbudCounter.labels("omsorgstilbud", "vetAlleTimer")
-                            .inc()
-                        VetOmsorgstilbud.VET_NOEN_TIMER -> omsorgstilbudCounter.labels("omsorgstilbud", "vetNoenTimer")
                             .inc()
                         VetOmsorgstilbud.VET_IKKE -> omsorgstilbudCounter.labels("omsorgstilbud", "vetIkke").inc()
                     }
