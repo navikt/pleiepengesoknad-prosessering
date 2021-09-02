@@ -111,7 +111,7 @@ internal fun MeldingV1.reportMetrics() {
         søknadsperiodeCounter.labels("fortidTilFremtid").inc()
     }
 
-    if (fraOgMed.erLikDagensDato() && (tilOgMed.erLikDagensDato() || tilOgMed.erEtterDagensDato())) {
+    if ((fraOgMed.erLikDagensDato() || fraOgMed.erEtterDagensDato()) && (tilOgMed.erLikDagensDato() || tilOgMed.erEtterDagensDato())) {
         søknadsperiodeCounter.labels("fremtid").inc()
     }
 
