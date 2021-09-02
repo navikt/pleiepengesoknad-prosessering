@@ -2,9 +2,12 @@ package no.nav.helse.prosessering.v1
 
 import io.prometheus.client.Counter
 import io.prometheus.client.Histogram
-import no.nav.helse.utils.*
-import no.nav.helse.utils.`fødselsdato`
+import no.nav.helse.utils.aarSiden
+import no.nav.helse.utils.erUnderEttAar
+import no.nav.helse.utils.fødselsdato
+import no.nav.helse.utils.idType
 import no.nav.helse.utils.tilJaEllerNei
+import no.nav.helse.utils.ukerSiden
 import java.time.temporal.ChronoUnit
 
 val periodeSoknadGjelderIUkerHistogram = Histogram.build()
@@ -17,13 +20,6 @@ val valgteArbeidsgivereHistogram = Histogram.build()
     .buckets(0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0)
     .name("antall_valgte_arbeidsgivere_histogram")
     .help("Antall arbeidsgivere valgt i søknadene")
-    .register()
-
-
-val gradHistogram = Histogram.build()
-    .buckets(20.0, 30.0, 40.0, 50.0, 60.0, 70.0, 80.0, 90.0, 100.0)
-    .name("grad_histogram")
-    .help("Graden søknaden gjelder")
     .register()
 
 val barnetsAlderHistogram = Histogram.build()
