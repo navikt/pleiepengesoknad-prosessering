@@ -4,8 +4,8 @@ import org.apache.kafka.clients.CommonClientConfigs
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.common.config.SaslConfigs
 import org.apache.kafka.common.config.SslConfigs
+import org.apache.kafka.common.security.auth.SecurityProtocol
 import org.apache.kafka.streams.StreamsConfig.*
-import org.apache.kafka.streams.Topology
 import org.apache.kafka.streams.errors.LogAndFailExceptionHandler
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -14,12 +14,12 @@ import java.time.Duration
 import java.util.*
 
 private val logger: Logger = LoggerFactory.getLogger(KafkaConfig::class.java)
-private const val ID_PREFIX = "srvpps-prosessering-"
+private const val ID_PREFIX = "pleiepengesoknad-prosessering-"
 
 internal class KafkaConfig(
     bootstrapServers: String,
-    credentials: Pair<String, String>,
     trustStore: Pair<String, String>?,
+    keyStore: Pair<String, String>?,
     exactlyOnce: Boolean,
     autoOffsetReset: String,
     internal val unreadyAfterStreamStoppedIn: Duration
@@ -28,8 +28,9 @@ internal class KafkaConfig(
         put(BOOTSTRAP_SERVERS_CONFIG, bootstrapServers)
         put(DEFAULT_DESERIALIZATION_EXCEPTION_HANDLER_CLASS_CONFIG, LogAndFailExceptionHandler::class.java)
         put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, autoOffsetReset)
-        medCredentials(credentials)
+        if(trustStore == null || keyStore == null) medCredentials(Pair("srvkafkaclient", "kafkaclient")) //For å skille mellom test/miljø
         medTrustStore(trustStore)
+        medKeyStore(keyStore)
         medProcessingGuarantee(exactlyOnce)
     }
 
@@ -52,7 +53,8 @@ private fun Properties.medProcessingGuarantee(exactlyOnce: Boolean) {
 private fun Properties.medTrustStore(trustStore: Pair<String, String>?) {
     trustStore?.let {
         try {
-            put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, "SASL_SSL")
+            put(SslConfigs.SSL_TRUSTSTORE_TYPE_CONFIG, "jks")
+            put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, SecurityProtocol.SSL.name)
             put(SslConfigs.SSL_TRUSTSTORE_LOCATION_CONFIG, File(it.first).absolutePath)
             put(SslConfigs.SSL_TRUSTSTORE_PASSWORD_CONFIG, it.second)
             logger.info("Truststore på '${it.first}' konfigurert.")
@@ -64,6 +66,18 @@ private fun Properties.medTrustStore(trustStore: Pair<String, String>?) {
         }
     }
 }
+
+private fun Properties.medKeyStore(keyStore: Pair<String, String>?) {
+    keyStore?.let {
+        try {
+            put(SslConfigs.SSL_KEYSTORE_TYPE_CONFIG, "PKCS12")
+            put(SslConfigs.SSL_KEYSTORE_LOCATION_CONFIG, File(it.first).absolutePath)
+            put(SslConfigs.SSL_KEYSTORE_PASSWORD_CONFIG, it.second)
+            logger.info("Keystore på '${it.first}' konfigurert.")
+        } catch (cause: Throwable) {}
+    }
+}
+
 private fun Properties.medCredentials(credentials: Pair<String, String>) {
     put(SaslConfigs.SASL_MECHANISM, "PLAIN")
     put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, "SASL_PLAINTEXT")

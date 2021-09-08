@@ -11,6 +11,8 @@ spec:
     application:
       enabled: true
       tenant: {{tenant}}
+  kafka:
+    pool: {{kafka-pool}}
   port: 8080
   liveness:
     path: isalive
