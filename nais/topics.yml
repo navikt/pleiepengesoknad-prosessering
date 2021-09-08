@@ -1,0 +1,72 @@
+apiVersion: kafka.nais.io/v1
+kind: Topic
+metadata:
+  name: privat-pleiepengesoknad-mottatt
+  namespace: dusseldorf
+  labels:
+    team: dusseldorf
+spec:
+  pool: {{kafka-pool}}
+  config: # optional; all fields are optional too; defaults shown
+    cleanupPolicy: delete  # delete, compact
+    minimumInSyncReplicas: 1
+    partitions: 1
+    replication: 3  # see min/max requirements
+    retentionBytes: -1  # -1 means unlimited
+    retentionHours: 730
+  acl:
+    - team: dusseldorf
+      application: pleiepengesoknad-mottak
+      access: write
+    - team: dusseldorf
+      application: pleiepengesoknad-prosessering
+      access: read
+
+---
+
+apiVersion: kafka.nais.io/v1
+kind: Topic
+metadata:
+  name: privat-pleiepengesoknad-preprosessert
+  namespace: dusseldorf
+  labels:
+    team: dusseldorf
+spec:
+  pool: {{kafka-pool}}
+  config:  # optional; all fields are optional too; defaults shown
+    cleanupPolicy: delete  # delete, compact
+    minimumInSyncReplicas: 1
+    partitions: 1
+    replication: 3  # see min/max requirements
+    retentionBytes: -1  # -1 means unlimited
+    retentionHours: 730
+  acl:
+    - team: dusseldorf
+      application: pleiepengesoknad-prosessering
+      access: readwrite
+
+---
+
+apiVersion: kafka.nais.io/v1
+kind: Topic
+metadata:
+  name: privat-pleiepengesoknad-cleanup
+  namespace: dusseldorf
+  labels:
+    team: dusseldorf
+spec:
+  pool: {{kafka-pool}}
+  config:  # optional; all fields are optional too; defaults shown
+    cleanupPolicy: delete  # delete, compact
+    minimumInSyncReplicas: 1
+    partitions: 1
+    replication: 3  # see min/max requirements
+    retentionBytes: -1  # -1 means unlimited
+    retentionHours: 730
+  acl:
+    - team: dusseldorf
+      application: pleiepengesoknad-prosessering
+      access: readwrite
+    - team: dusseldorf
+      application: sif-innsyn-api
+      access: read
