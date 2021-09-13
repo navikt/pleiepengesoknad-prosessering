@@ -3,6 +3,7 @@
   "cluster": "dev-fss",
   "namespace": "dusseldorf",
   "team": "dusseldorf",
+  "kafka-pool" : "nav-dev",
   "tenant" : "trygdeetaten.no",
   "minReplicas": "1",
   "maxReplicas": "2",
@@ -15,7 +16,6 @@
     "LAGRE_DOKUMENT_SCOPES": "97f0b1bc-6aa9-4d44-a3c7-60b4318fbec4/.default",
     "SLETTE_DOKUMENT_SCOPES": "97f0b1bc-6aa9-4d44-a3c7-60b4318fbec4/.default",
     "JOURNALFORE_SCOPES": "b32ae17c-0276-4006-9507-4ef49e0e5e20/.default",
-    "KAFKA_BOOTSTRAP_SERVERS": "b27apvl00045.preprod.local:8443,b27apvl00046.preprod.local:8443,b27apvl00047.preprod.local:8443",
     "KAFKA_AUTO_OFFSET_RESET": "latest"
   },
   "slack-channel": "sif-alerts-dev",
