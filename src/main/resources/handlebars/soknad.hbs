@@ -221,39 +221,90 @@
             {{/each}}
         {{/if}}
 
-        {{#if søknad.frilans.arbeidsforhold}}
+        {{#if frilans.arbeidsforhold}}
             <ul>
                 <li><b>Frilans</b></li>
-                <li class="li-style-none">Du har oppgitt at du som frilanser</li>
                 <li class="li-style-none">
                     <ul>
-                        <li>vanligvis jobber {{frilanserArbeidsforhold.jobberNormaltTimer}} timer per uke
-                            ({{frilanserArbeidsforhold.arbeidsform}})
-                        </li>
+                        <li class="sporsmalstekst">Arbeidsform: {{frilans.arbeidsforhold.arbeidsform}}</li>
+                        <li class="sporsmalstekst">Normaltimer per uke: {{frilans.arbeidsforhold.jobberNormaltTimer}}</li>
+                        <li class="sporsmalstekst">Er det et aktivt arbeidsforhold? {{ jaNeiSvar frilans.arbeidsforhold.erAktivtArbeidsforhold}}</li>
+                        {{#if frilans.arbeidsforhold.historisk}}
+                            <li class="li-style-none">
+                                <b>Historisk:</b>
+                                <ul>
+                                    <li>Jobber i perioden? {{frilans.arbeidsforhold.historisk.jobberIPerioden}}</li>
+                                    <li>Jobber som vanlig? {{ jaNeiSvar frilans.arbeidsforhold.historisk.jobberSomVanlig}}</li>
+                                    {{#if frilans.arbeidsforhold.historisk.enkeltdager}}
+                                        <li class="li-style-none"><b>Enkeltdager:</b>
+                                            <ul>
+                                                {{#each frilans.arbeidsforhold.historisk.enkeltdager as |enkeltdagerPerUke|~}}
+                                                    <li>
+                                                        <p>Uke {{enkeltdagerPerUke.uke}}</p>
+                                                        <ul>
+                                                            {{#each enkeltdagerPerUke.dager as |enkeltdag|~}}
+                                                                <li><p>{{enkeltdag.dag}} {{enkeltdag.dato}}:    {{enkeltdag.tid}}</p></li>
+                                                            {{/each}}
+                                                        </ul>
+                                                    </li>
+                                                {{/each}}
+                                            </ul>
+                                        </li>
+                                    {{/if}}
 
-                        {{#eq frilanserArbeidsforhold.skalJobbe "ja"}}
-                            <li>
-                                skal jobbe som vanlig i
-                                pleiepengeperioden, {{frilanserArbeidsforhold.jobberNormaltTimer}}
-                                timer per uke
+                                    {{#if frilans.arbeidsforhold.historisk.fasteDager}}
+                                        <li class="li-style-none"><b>Faste dager:</b>
+                                            <ul>
+                                                {{#if}}{{/if}}
+                                                <li>Mandag: {{frilans.arbeidsforhold.historisk.fasteDager.mandag}}</li>
+                                                <li>Tirsdag: {{frilans.arbeidsforhold.historisk.fasteDager.tirsdag}}</li>
+                                                <li>Onsdag: {{frilans.arbeidsforhold.historisk.fasteDager.onsdag}}</li>
+                                                <li>Torsdag: {{frilans.arbeidsforhold.historisk.fasteDager.torsdag}}</li>
+                                                <li>Fredag: {{frilans.arbeidsforhold.historisk.fasteDager.fredag}}</li>
+                                            </ul>
+                                        </li>
+                                    {{/if}}
+                                </ul>
                             </li>
-                        {{/eq}}
-                        {{#eq frilanserArbeidsforhold.skalJobbe "nei"}}
-                            <li>ikke skal jobbe i pleiepengeperioden</li>
-                        {{/eq}}
-                        {{#eq frilanserArbeidsforhold.skalJobbe "redusert"}}
-                            <li>
-                                skal jobbe {{frilanserArbeidsforhold.skalJobbeProsent}} prosent
-                                av {{frilanserArbeidsforhold.jobberNormaltTimer}} timer per uke i pleiepengeperioden
+                        {{/if}}
+                        {{#if frilans.arbeidsforhold.planlagt}}
+                            <li class="li-style-none">
+                                <b>Planlagt:</b>
+                                <ul>
+                                    <li>Jobber i perioden? {{frilans.arbeidsforhold.planlagt.jobberIPerioden}}</li>
+                                    <li>Jobber som vanlig? {{ jaNeiSvar frilans.arbeidsforhold.planlagt.jobberSomVanlig}}</li>
+                                    {{#if frilans.arbeidsforhold.planlagt.enkeltdager}}
+                                        <li class="li-style-none"><b>Enkeltdager:</b>
+                                            <ul>
+                                                {{#each frilans.arbeidsforhold.planlagt.enkeltdager as |enkeltdagerPerUke|~}}
+                                                    <li>
+                                                        <p>Uke {{enkeltdagerPerUke.uke}}</p>
+                                                        <ul>
+                                                            {{#each enkeltdagerPerUke.dager as |enkeltdag|~}}
+                                                                <li><p>{{enkeltdag.dag}} {{enkeltdag.dato}}:    {{enkeltdag.tid}}</p></li>
+                                                            {{/each}}
+                                                        </ul>
+                                                    </li>
+                                                {{/each}}
+                                            </ul>
+                                        </li>
+                                    {{/if}}
+
+                                    {{#if frilans.arbeidsforhold.planlagt.fasteDager}}
+                                        <li class="li-style-none"><b>Faste dager:</b>
+                                            <ul>
+                                                {{#if}}{{/if}}
+                                                <li>Mandag: {{frilans.arbeidsforhold.planlagt.fasteDager.mandag}}</li>
+                                                <li>Tirsdag: {{frilans.arbeidsforhold.planlagt.fasteDager.tirsdag}}</li>
+                                                <li>Onsdag: {{frilans.arbeidsforhold.planlagt.fasteDager.onsdag}}</li>
+                                                <li>Torsdag: {{frilans.arbeidsforhold.planlagt.fasteDager.torsdag}}</li>
+                                                <li>Fredag: {{frilans.arbeidsforhold.planlagt.fasteDager.fredag}}</li>
+                                            </ul>
+                                        </li>
+                                    {{/if}}
+                                </ul>
                             </li>
-                        {{/eq}}
-                        {{#eq frilanserArbeidsforhold.skalJobbe "vetIkke"}}
-                            <li>
-                                er usikker på om du skal jobbe i pleiepengeperioden, men at du melder fra hvis du
-                                starter å
-                                jobbe
-                            </li>
-                        {{/eq}}
+                        {{/if}}
                     </ul>
                 </li>
             </ul>
@@ -299,18 +350,18 @@
     </section>
 
     <section id="frilans">
-        {{# if søknad.frilans }}
+        {{# if frilans }}
             <h2>Frilans</h2>
             <p class="sporsmalstekst">Er du frilanser i perioden du søker for?</p>
             <p>{{ jaNeiSvar true }}</p>
             <p class="sporsmalstekst">Når startet du som frilanser?</p>
-            <p>{{#dato søknad.frilans.startdato}}{{/dato}}</p>
+            <p>{{frilans.startdato}}</p>
             <p class="sporsmalstekst">Jobber du fremdeles som frilanser?</p>
-            <p>{{ jaNeiSvar søknad.frilans.jobberFortsattSomFrilans }}</p>
+            <p>{{ jaNeiSvar frilans.jobberFortsattSomFrilans }}</p>
 
-            {{#unless  søknad.frilans.jobberFortsattSomFrilans}}
+            {{#unless frilans.jobberFortsattSomFrilans}}
                 <p class="sporsmalstekst">Når sluttet du som frilanser?</p>
-                <p>{{#dato søknad.frilans.sluttdato}}{{/dato}}</p>
+                <p>{{frilans.sluttdato}}</p>
             {{/unless}}
         {{/if}}
     </section>

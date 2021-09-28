@@ -1,36 +1,6 @@
 package no.nav.helse
 
-import no.nav.helse.felles.Arbeidsforhold
-import no.nav.helse.felles.Arbeidsform
-import no.nav.helse.felles.Arbeidsgivere
-import no.nav.helse.felles.Barn
-import no.nav.helse.felles.BarnRelasjon
-import no.nav.helse.felles.Beredskap
-import no.nav.helse.felles.Bosted
-import no.nav.helse.felles.Ferieuttak
-import no.nav.helse.felles.FerieuttakIPerioden
-import no.nav.helse.felles.Frilans
-import no.nav.helse.felles.HistoriskOmsorgstilbud
-import no.nav.helse.felles.Land
-import no.nav.helse.felles.Medlemskap
-import no.nav.helse.felles.Nattevåk
-import no.nav.helse.felles.Næringstyper
-import no.nav.helse.felles.Omsorgsdag
-import no.nav.helse.felles.OmsorgstilbudUkedager
-import no.nav.helse.felles.OmsorgstilbudV2
-import no.nav.helse.felles.Organisasjon
-import no.nav.helse.felles.Periode
-import no.nav.helse.felles.PlanlagtOmsorgstilbud
-import no.nav.helse.felles.Regnskapsfører
-import no.nav.helse.felles.SkalJobbe
-import no.nav.helse.felles.Søker
-import no.nav.helse.felles.Utenlandsopphold
-import no.nav.helse.felles.UtenlandsoppholdIPerioden
-import no.nav.helse.felles.VarigEndring
-import no.nav.helse.felles.VetOmsorgstilbud
-import no.nav.helse.felles.Virksomhet
-import no.nav.helse.felles.YrkesaktivSisteTreFerdigliknedeÅrene
-import no.nav.helse.felles.Årsak
+import no.nav.helse.felles.*
 import no.nav.helse.prosessering.v1.MeldingV1
 import no.nav.helse.prosessering.v1.PdfV1Generator
 import java.io.File
@@ -193,10 +163,37 @@ class PdfV1GeneratorTest {
                 sluttdato = LocalDate.now(),
                 jobberFortsattSomFrilans = false,
                 arbeidsforhold = Arbeidsforhold(
-                    skalJobbe = SkalJobbe.NEI,
                     arbeidsform = Arbeidsform.FAST,
                     jobberNormaltTimer = 40.0,
-                    skalJobbeProsent = 0.0
+                    erAktivtArbeidsforhold = true,
+                    historisk = ArbeidIPeriode(
+                        jobberIPerioden = JobberIPeriodeSvar.JA,
+                        jobberSomVanlig = false,
+                        enkeltdager = listOf(
+                            Enkeltdag(dato = LocalDate.now(), tid = Duration.ofHours(4)),
+                            Enkeltdag(dato = LocalDate.now().plusDays(3), tid = Duration.ofHours(4)),
+                            Enkeltdag(dato = LocalDate.now().plusWeeks(1), tid = Duration.ofHours(4))
+                        ),
+                        fasteDager = PlanUkedager(
+                            mandag = Duration.ofHours(4),
+                            tirsdag = Duration.ofHours(7),
+                            onsdag = null,
+                            torsdag = Duration.ofHours(5).plusMinutes(45),
+                            fredag = null
+                        )
+                    ),
+                    planlagt = ArbeidIPeriode(
+                        jobberIPerioden = JobberIPeriodeSvar.VET_IKKE,
+                        jobberSomVanlig = false,
+                        enkeltdager = null,
+                        fasteDager = PlanUkedager(
+                            mandag = Duration.ofHours(4),
+                            tirsdag = Duration.ofHours(7),
+                            onsdag = null,
+                            torsdag = Duration.ofHours(5).plusMinutes(45),
+                            fredag = null
+                        )
+                    )
                 )
             ),
             selvstendigVirksomheter = listOf(
@@ -234,10 +231,30 @@ class PdfV1GeneratorTest {
                 )
             ),
             selvstendigArbeidsforhold = Arbeidsforhold(
-                skalJobbe = SkalJobbe.REDUSERT,
-                arbeidsform = Arbeidsform.VARIERENDE,
+                arbeidsform = Arbeidsform.FAST,
                 jobberNormaltTimer = 40.0,
-                skalJobbeProsent = 50.0
+                erAktivtArbeidsforhold = true,
+                historisk = ArbeidIPeriode(
+                    jobberIPerioden = JobberIPeriodeSvar.JA,
+                    jobberSomVanlig = false,
+                    enkeltdager = listOf(
+                        Enkeltdag(dato = LocalDate.now(), tid = Duration.ofHours(4)
+                        )
+                    ),
+                    fasteDager = null
+                ),
+                planlagt = ArbeidIPeriode(
+                    jobberIPerioden = JobberIPeriodeSvar.JA,
+                    jobberSomVanlig = false,
+                    enkeltdager = null,
+                    fasteDager = PlanUkedager(
+                        mandag = Duration.ofHours(4),
+                        tirsdag = Duration.ofHours(7),
+                        onsdag = null,
+                        torsdag = Duration.ofHours(5).plusMinutes(45),
+                        fredag = null
+                    )
+                )
             ),
             skalBekrefteOmsorg = true,
             skalPassePaBarnetIHelePerioden = true,
@@ -245,7 +262,7 @@ class PdfV1GeneratorTest {
             harVærtEllerErVernepliktig = true,
             barnRelasjon = BarnRelasjon.ANNET,
             barnRelasjonBeskrivelse = "Blaabla annet",
-            k9FormatSøknad = SøknadUtils.defaultK9FormatPSB()
+            k9FormatSøknad = SøknadUtils.defaultK9FormatPSB(), omsorgstilbudV2 = null
         )
     }
 
@@ -689,13 +706,13 @@ class PdfV1GeneratorTest {
                 omsorgstilbudV2 = OmsorgstilbudV2(
                     historisk = HistoriskOmsorgstilbud(
                         enkeltdager = listOf(
-                            Omsorgsdag(LocalDate.now().minusDays(3), Duration.ofHours(7).plusMinutes(30)),
-                            Omsorgsdag(LocalDate.now().minusDays(2), Duration.ofHours(7).plusMinutes(30)),
-                            Omsorgsdag(LocalDate.now().minusDays(1), Duration.ofHours(7).plusMinutes(30)),
+                            Enkeltdag(LocalDate.now().minusDays(3), Duration.ofHours(7).plusMinutes(30)),
+                            Enkeltdag(LocalDate.now().minusDays(2), Duration.ofHours(7).plusMinutes(30)),
+                            Enkeltdag(LocalDate.now().minusDays(1), Duration.ofHours(7).plusMinutes(30)),
                         )
                     ),
                     planlagt = PlanlagtOmsorgstilbud(
-                        ukedager = OmsorgstilbudUkedager(
+                        ukedager = PlanUkedager(
                             mandag = Duration.ofHours(7).plusMinutes(30),
                             tirsdag = Duration.ofHours(7).plusMinutes(30),
                             torsdag = Duration.ofHours(7).plusMinutes(30),
@@ -717,18 +734,18 @@ class PdfV1GeneratorTest {
                 omsorgstilbudV2 = OmsorgstilbudV2(
                     historisk = HistoriskOmsorgstilbud(
                         enkeltdager = listOf(
-                            Omsorgsdag(LocalDate.parse("2021-01-01"), Duration.ofHours(7).plusMinutes(30)),
-                            Omsorgsdag(LocalDate.now().minusDays(3), Duration.ofHours(7).plusMinutes(30)),
-                            Omsorgsdag(LocalDate.now().minusDays(2), Duration.ofHours(7).plusMinutes(30)),
-                            Omsorgsdag(LocalDate.now().minusDays(1), Duration.ofHours(7).plusMinutes(30))
+                            Enkeltdag(LocalDate.parse("2021-01-01"), Duration.ofHours(7).plusMinutes(30)),
+                            Enkeltdag(LocalDate.now().minusDays(3), Duration.ofHours(7).plusMinutes(30)),
+                            Enkeltdag(LocalDate.now().minusDays(2), Duration.ofHours(7).plusMinutes(30)),
+                            Enkeltdag(LocalDate.now().minusDays(1), Duration.ofHours(7).plusMinutes(30))
                         )
                     ),
                     planlagt = PlanlagtOmsorgstilbud(
                         enkeltdager = listOf(
-                            Omsorgsdag(LocalDate.now().plusDays(1), Duration.ofHours(7).plusMinutes(30)),
-                            Omsorgsdag(LocalDate.now().plusDays(2), Duration.ofHours(7).plusMinutes(30)),
-                            Omsorgsdag(LocalDate.now().plusDays(3), Duration.ofHours(7).plusMinutes(30)),
-                            Omsorgsdag(LocalDate.now().plusDays(4), Duration.ofHours(0))
+                            Enkeltdag(LocalDate.now().plusDays(1), Duration.ofHours(7).plusMinutes(30)),
+                            Enkeltdag(LocalDate.now().plusDays(2), Duration.ofHours(7).plusMinutes(30)),
+                            Enkeltdag(LocalDate.now().plusDays(3), Duration.ofHours(7).plusMinutes(30)),
+                            Enkeltdag(LocalDate.now().plusDays(4), Duration.ofHours(0))
                         ),
                         vetOmsorgstilbud = VetOmsorgstilbud.VET_ALLE_TIMER,
                         erLiktHverDag = false

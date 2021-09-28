@@ -1,7 +1,7 @@
 package no.nav.helse.prosessering.v1
 
 
-import no.nav.helse.felles.Omsorgsdag
+import no.nav.helse.felles.Enkeltdag
 import java.time.Duration
 import java.time.Month
 
@@ -46,7 +46,7 @@ fun Month.tilNorskMåned(): String {
     }
 }
 
-fun List<Omsorgsdag>.sumTid(): Duration {
+fun List<Enkeltdag>.sumTid(): Duration {
     var sumTid = Duration.ZERO
     forEach {
         sumTid = sumTid.plus(it.tid)

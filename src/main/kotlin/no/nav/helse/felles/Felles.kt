@@ -68,12 +68,7 @@ data class Medlemskap(
     val utenlandsoppholdNeste12Mnd: List<Bosted> = listOf()
 )
 
-data class Omsorgstilbud(
-    val vetOmsorgstilbud: VetOmsorgstilbud,
-    val fasteDager: OmsorgstilbudUkedager? = null
-)
-
-data class Omsorgsdag(
+data class Enkeltdag(
     val dato: LocalDate,
     val tid: Duration
 )
@@ -83,7 +78,7 @@ enum class VetOmsorgstilbud {
     VET_IKKE
 }
 
-data class OmsorgstilbudUkedager(
+data class PlanUkedager(
     val mandag: Duration? = null,
     val tirsdag: Duration? = null,
     val onsdag: Duration? = null,
@@ -97,12 +92,12 @@ data class OmsorgstilbudV2(
 )
 
 data class HistoriskOmsorgstilbud(
-    val enkeltdager: List<Omsorgsdag>
+    val enkeltdager: List<Enkeltdag>
 )
 
 data class PlanlagtOmsorgstilbud(
-    val enkeltdager: List<Omsorgsdag>? = null,
-    val ukedager: OmsorgstilbudUkedager? = null,
+    val enkeltdager: List<Enkeltdag>? = null,
+    val ukedager: PlanUkedager? = null,
     val vetOmsorgstilbud: VetOmsorgstilbud,
     val erLiktHverDag: Boolean? = null
 )
@@ -213,11 +208,25 @@ data class Navn(
 )
 
 data class Arbeidsforhold(
-    val skalJobbe: SkalJobbe,
     val arbeidsform: Arbeidsform,
     val jobberNormaltTimer: Double,
-    val skalJobbeProsent: Double
+    val erAktivtArbeidsforhold: Boolean? = null,
+    val historisk: ArbeidIPeriode? = null,
+    val planlagt: ArbeidIPeriode? = null
 )
+
+data class ArbeidIPeriode(
+    val jobberIPerioden: JobberIPeriodeSvar,
+    val jobberSomVanlig: Boolean? = null,
+    val enkeltdager: List<Enkeltdag>? = null,
+    val fasteDager: PlanUkedager? = null
+)
+
+enum class JobberIPeriodeSvar(val pdfTekst: String) {
+    JA("Ja"),
+    NEI("Nei"),
+    VET_IKKE("Vet ikke")
+}
 
 enum class SkalJobbe(val verdi: String) {
     @JsonAlias("ja") JA("ja"), // TODO: 28/05/2021 Fjern @JsonAlias etter prodsetting.

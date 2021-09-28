@@ -11,22 +11,9 @@ import com.openhtmltopdf.outputdevice.helper.BaseRendererBuilder
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder
 import com.openhtmltopdf.util.XRLog
 import no.nav.helse.dusseldorf.ktor.core.fromResources
-import no.nav.helse.felles.Arbeidsforhold
-import no.nav.helse.felles.Beredskap
-import no.nav.helse.felles.Bosted
-import no.nav.helse.felles.Ferieuttak
-import no.nav.helse.felles.HistoriskOmsorgstilbud
-import no.nav.helse.felles.Nattevåk
-import no.nav.helse.felles.Næringstyper
-import no.nav.helse.felles.Omsorgsdag
-import no.nav.helse.felles.OmsorgstilbudUkedager
-import no.nav.helse.felles.OmsorgstilbudV2
-import no.nav.helse.felles.Organisasjon
-import no.nav.helse.felles.Periode
-import no.nav.helse.felles.PlanlagtOmsorgstilbud
-import no.nav.helse.felles.Søker
-import no.nav.helse.felles.Utenlandsopphold
+import no.nav.helse.felles.*
 import no.nav.helse.pleiepengerKonfiguert
+import no.nav.helse.prosessering.v1.PdfV1Generator.Companion.DATE_FORMATTER
 import no.nav.helse.utils.DateUtils
 import no.nav.helse.utils.somNorskDag
 import java.io.ByteArrayInputStream
@@ -41,7 +28,7 @@ import java.util.*
 import java.util.logging.Level
 
 internal class PdfV1Generator {
-    private companion object {
+    companion object {
         private val mapper = jacksonObjectMapper().pleiepengerKonfiguert()
 
         private const val ROOT = "handlebars"
@@ -91,8 +78,8 @@ internal class PdfV1Generator {
         private val soknadTemplate = handlebars.compile(SOKNAD)
 
         private val ZONE_ID = ZoneId.of("Europe/Oslo")
-        private val DATE_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy").withZone(ZONE_ID)
-        private val DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm").withZone(ZONE_ID)
+        val DATE_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy").withZone(ZONE_ID)
+        val DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm").withZone(ZONE_ID)
     }
 
     internal fun generateSoknadOppsummeringPdf(
@@ -161,6 +148,7 @@ internal class PdfV1Generator {
                         "harVærtEllerErVernepliktig" to melding.harVærtEllerErVernepliktig,
                         "frilanserArbeidsforhold" to melding.frilans?.arbeidsforhold?.somMap(),
                         "selvstendigArbeidsforhold" to melding.selvstendigArbeidsforhold?.somMap(),
+                        "frilans" to melding.frilans?.somMap(),
                         "hjelper" to mapOf( // TODO: 04/06/2021 Kan fjerne hjelpemetoden når feltet er prodsatt i api og front
                             "harFlereAktiveVirksomheterErSatt" to melding.harFlereAktiveVirksomehterSatt(),
                             "harVærtEllerErVernepliktigErSatt" to erBooleanSatt(melding.harVærtEllerErVernepliktig)
@@ -188,90 +176,6 @@ internal class PdfV1Generator {
             }
         }
     }
-
-    private fun MeldingV1.harFlereAktiveVirksomehterSatt() =
-        (this.selvstendigVirksomheter.firstOrNull()?.harFlereAktiveVirksomheter != null)
-
-    private fun erBooleanSatt(verdi: Boolean?) = verdi != null
-
-    private fun nattevåk(nattevaak: Nattevåk?) = when {
-        nattevaak == null -> null
-        else -> {
-            mapOf(
-                "har_nattevaak" to nattevaak.harNattevåk,
-                "tilleggsinformasjon" to nattevaak.tilleggsinformasjon
-            )
-        }
-    }
-
-    private fun beredskap(beredskap: Beredskap?) = when {
-        beredskap == null -> null
-        else -> {
-            mapOf(
-                "i_beredskap" to beredskap.beredskap,
-                "tilleggsinformasjon" to beredskap.tilleggsinformasjon
-            )
-        }
-    }
-
-    private fun OmsorgstilbudV2.somMap(fraOgMed: LocalDate, tilOgMed: LocalDate): Map<String, Any?> {
-        val DAGENS_DATO = LocalDate.now()
-        val GÅRSDAGENS_DATO = DAGENS_DATO.minusDays(1)
-        return mapOf(
-            "historisk" to historisk?.somMap(),
-            "planlagt" to planlagt?.somMap(),
-            "søknadsperiodeFraOgMed" to DATE_FORMATTER.format(fraOgMed),
-            "søknadsperiodeTilOgMed" to DATE_FORMATTER.format(tilOgMed),
-            "periodenAvsluttesIFremtiden" to (tilOgMed.isAfter(GÅRSDAGENS_DATO)),
-            "fremtidFraOgMed" to if(fraOgMed.isAfter(DAGENS_DATO)) DATE_FORMATTER.format(fraOgMed) else DATE_FORMATTER.format(DAGENS_DATO),
-            "periodenStarterIFortid" to (fraOgMed.isBefore(DAGENS_DATO)),
-            "fortidTilOgMed" to if(tilOgMed.isBefore(DAGENS_DATO)) DATE_FORMATTER.format(tilOgMed) else DATE_FORMATTER.format(GÅRSDAGENS_DATO)
-        )
-    }
-
-    private fun List<Omsorgsdag>.somMap(): List<Map<String, Any?>> {
-        return map {
-            mapOf<String, Any?>(
-                "dato" to DATE_FORMATTER.format(it.dato),
-                "dag" to it.dato.dayOfWeek.somNorskDag(),
-                "tid" to it.tid.somTekst(avkort = false)
-            )
-        }
-    }
-
-    private fun List<Omsorgsdag>.somMapPerUke(): List<Map<String, Any>> {
-        val omsorgsdagerPerUke = this.groupBy {
-            val uketall = it.dato.get(WeekFields.of(Locale.getDefault()).weekOfYear())
-            if(uketall == 0) 53 else uketall
-        }
-        return omsorgsdagerPerUke.map {
-            mapOf(
-                "uke" to it.key,
-                "dager" to it.value.somMap()
-            )
-        }
-    }
-
-    private fun HistoriskOmsorgstilbud.somMap(): Map<String, Any?> = mutableMapOf(
-        "enkeltdagerPerUke" to enkeltdager.somMapPerUke(),
-    )
-
-    private fun PlanlagtOmsorgstilbud.somMap(): Map<String, Any?> = mutableMapOf(
-        "enkeltdagerPerUke" to enkeltdager?.somMapPerUke(),
-        "ukedager" to ukedager?.somMap(),
-        "vetOmsorgstilbud" to vetOmsorgstilbud.name,
-        "vetLikeDager" to (ukedager != null),
-        "erLiktHverDag" to  erLiktHverDag,
-        "harSvartPåErLiktHverDag" to  (erLiktHverDag != null)
-    )
-
-    private fun OmsorgstilbudUkedager.somMap() = mapOf<String, Any?>(
-        "mandag" to mandag?.somTekst(),
-        "tirsdag" to tirsdag?.somTekst(),
-        "onsdag" to onsdag?.somTekst(),
-        "torsdag" to torsdag?.somTekst(),
-        "fredag" to fredag?.somTekst()
-    )
 
     private fun PdfRendererBuilder.medFonter() =
         useFont(
@@ -303,12 +207,110 @@ internal class PdfV1Generator {
     )
 }
 
+private fun MeldingV1.harFlereAktiveVirksomehterSatt() =
+    (this.selvstendigVirksomheter.firstOrNull()?.harFlereAktiveVirksomheter != null)
+
+private fun erBooleanSatt(verdi: Boolean?) = verdi != null
+
+private fun nattevåk(nattevaak: Nattevåk?) = when {
+    nattevaak == null -> null
+    else -> {
+        mapOf(
+            "har_nattevaak" to nattevaak.harNattevåk,
+            "tilleggsinformasjon" to nattevaak.tilleggsinformasjon
+        )
+    }
+}
+
+private fun beredskap(beredskap: Beredskap?) = when {
+    beredskap == null -> null
+    else -> {
+        mapOf(
+            "i_beredskap" to beredskap.beredskap,
+            "tilleggsinformasjon" to beredskap.tilleggsinformasjon
+        )
+    }
+}
+
+private fun OmsorgstilbudV2.somMap(fraOgMed: LocalDate, tilOgMed: LocalDate): Map<String, Any?> {
+    val DAGENS_DATO = LocalDate.now()
+    val GÅRSDAGENS_DATO = DAGENS_DATO.minusDays(1)
+    return mapOf(
+        "historisk" to historisk?.somMap(),
+        "planlagt" to planlagt?.somMap(),
+        "søknadsperiodeFraOgMed" to DATE_FORMATTER.format(fraOgMed),
+        "søknadsperiodeTilOgMed" to DATE_FORMATTER.format(tilOgMed),
+        "periodenAvsluttesIFremtiden" to (tilOgMed.isAfter(GÅRSDAGENS_DATO)),
+        "fremtidFraOgMed" to if(fraOgMed.isAfter(DAGENS_DATO)) DATE_FORMATTER.format(fraOgMed) else DATE_FORMATTER.format(DAGENS_DATO),
+        "periodenStarterIFortid" to (fraOgMed.isBefore(DAGENS_DATO)),
+        "fortidTilOgMed" to if(tilOgMed.isBefore(DAGENS_DATO)) DATE_FORMATTER.format(tilOgMed) else DATE_FORMATTER.format(GÅRSDAGENS_DATO)
+    )
+}
+
+private fun List<Enkeltdag>.somMapEnkeltdag(): List<Map<String, Any?>> {
+    return map {
+        mapOf<String, Any?>(
+            "dato" to DATE_FORMATTER.format(it.dato),
+            "dag" to it.dato.dayOfWeek.somNorskDag(),
+            "tid" to it.tid.somTekst(avkort = false)
+        )
+    }
+}
+
+private fun List<Enkeltdag>.somMapPerUke(): List<Map<String, Any>> {
+    val omsorgsdagerPerUke = this.groupBy {
+        val uketall = it.dato.get(WeekFields.of(Locale.getDefault()).weekOfYear())
+        if(uketall == 0) 53 else uketall
+    }
+    return omsorgsdagerPerUke.map {
+        mapOf(
+            "uke" to it.key,
+            "dager" to it.value.somMapEnkeltdag()
+        )
+    }
+}
+
+private fun HistoriskOmsorgstilbud.somMap(): Map<String, Any?> = mutableMapOf(
+    "enkeltdagerPerUke" to enkeltdager.somMapPerUke(),
+)
+
+private fun PlanlagtOmsorgstilbud.somMap(): Map<String, Any?> = mutableMapOf(
+    "enkeltdagerPerUke" to enkeltdager?.somMapPerUke(),
+    "ukedager" to ukedager?.somMap(),
+    "vetOmsorgstilbud" to vetOmsorgstilbud.name,
+    "vetLikeDager" to (ukedager != null),
+    "erLiktHverDag" to  erLiktHverDag,
+    "harSvartPåErLiktHverDag" to  (erLiktHverDag != null)
+)
+
+private fun PlanUkedager.somMap() = mapOf<String, Any?>(
+    "mandag" to (mandag?.somTekst() ?: "0 timer"),
+    "tirsdag" to (tirsdag?.somTekst() ?: "0 timer"),
+    "onsdag" to (onsdag?.somTekst() ?: "0 timer"),
+    "torsdag" to (torsdag?.somTekst() ?: "0 timer"),
+    "fredag" to (fredag?.somTekst() ?: "0 timer")
+)
+
 private fun Arbeidsforhold.somMap(): Map<String, Any?> = mapOf(
-    "skalJobbe" to skalJobbe.verdi,
-    "skalJobbeProsent" to skalJobbeProsent.avrundetMedEnDesimal(),
-    "inntektstapProsent" to skalJobbeProsent.skalJobbeProsentTilInntektstap(),
+    "arbeidsform" to arbeidsform.utskriftsvennlig.lowercase(),
     "jobberNormaltTimer" to jobberNormaltTimer,
-    "arbeidsform" to arbeidsform.utskriftsvennlig.lowercase()
+    "erAktivtArbeidsforhold" to erAktivtArbeidsforhold,
+    "historisk" to historisk?.somMap(),
+    "planlagt" to planlagt?.somMap()
+)
+
+private fun ArbeidIPeriode.somMap() : Map<String, Any?> = mapOf(
+    "jobberIPerioden" to jobberIPerioden.pdfTekst,
+    "jobberSomVanlig" to jobberSomVanlig,
+    "enkeltdager" to enkeltdager?.somMapPerUke(),
+    "fasteDager" to fasteDager?.somMap()
+)
+
+private fun Frilans.somMap() : Map<String, Any?> = mapOf(
+    "startdato" to DATE_FORMATTER.format(startdato),
+    "sluttdato" to if(sluttdato!= null) DATE_FORMATTER.format(sluttdato) else null,
+    "jobberFortsattSomFrilans" to jobberFortsattSomFrilans,
+    "arbeidsforhold" to arbeidsforhold?.somMap()
 )
 
 private fun List<Organisasjon>.somMap() = map {
