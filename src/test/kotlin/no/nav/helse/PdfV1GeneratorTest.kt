@@ -1,6 +1,7 @@
 package no.nav.helse
 
 import no.nav.helse.felles.*
+import no.nav.helse.prosessering.v1.ArbeidsforholdAnsatt
 import no.nav.helse.prosessering.v1.MeldingV1
 import no.nav.helse.prosessering.v1.PdfV1Generator
 import java.io.File
@@ -37,43 +38,6 @@ class PdfV1GeneratorTest {
             barn = Barn(
                 fødselsnummer = barnetsIdent,
                 navn = barnetsNavn
-            ),
-            arbeidsgivere = Arbeidsgivere(
-                organisasjoner = listOf(
-                    Organisasjon(
-                        organisasjonsnummer = "952352655",
-                        navn = "Arbeidsgiver 1",
-                        skalJobbe = SkalJobbe.JA,
-                        skalJobbeProsent = 100.0,
-                        jobberNormaltTimer = 37.5,
-                        arbeidsform = Arbeidsform.FAST
-                    ),
-                    Organisasjon(
-                        organisasjonsnummer = "952352655",
-                        navn = "Arbeidsgiver 2",
-                        skalJobbe = SkalJobbe.NEI,
-                        skalJobbeProsent = 0.0,
-                        jobberNormaltTimer = 37.5,
-                        arbeidsform = Arbeidsform.VARIERENDE
-                    ),
-                    Organisasjon(
-                        organisasjonsnummer = "952352655",
-                        navn = "Arbeidsgiver 3",
-                        skalJobbe = SkalJobbe.VET_IKKE,
-                        jobberNormaltTimer = 30.0,
-                        skalJobbeProsent = 50.0,
-                        vetIkkeEkstrainfo = "Vondt i hode, skulker, kne og tå, kne og tå",
-                        arbeidsform = Arbeidsform.FAST
-                    ),
-                    Organisasjon(
-                        organisasjonsnummer = "952352655",
-                        navn = "Arbeidsgiver 4",
-                        skalJobbe = SkalJobbe.REDUSERT,
-                        jobberNormaltTimer = 30.0,
-                        skalJobbeProsent = 50.0,
-                        arbeidsform = Arbeidsform.TURNUS
-                    )
-                )
             ),
             vedleggUrls = listOf(
                 URI("http:localhost:8080/vedlegg1"),
@@ -254,6 +218,82 @@ class PdfV1GeneratorTest {
                     )
                 )
             ),
+            ansatt = listOf(
+                ArbeidsforholdAnsatt(
+                    navn = "Peppes",
+                    organisasjonsnummer = "917755736",
+                    arbeidsforhold = Arbeidsforhold(
+                        arbeidsform = Arbeidsform.FAST,
+                        jobberNormaltTimer = 40.0,
+                        erAktivtArbeidsforhold = true,
+                        historisk = ArbeidIPeriode(
+                            jobberIPerioden = JobberIPeriodeSvar.JA,
+                            jobberSomVanlig = false,
+                            enkeltdager = listOf(
+                                Enkeltdag(dato = LocalDate.now(), tid = Duration.ofHours(4)),
+                                Enkeltdag(dato = LocalDate.now().plusDays(3), tid = Duration.ofHours(4)),
+                                Enkeltdag(dato = LocalDate.now().plusWeeks(1), tid = Duration.ofHours(4))
+                            ),
+                            fasteDager = PlanUkedager(
+                                mandag = Duration.ofHours(4),
+                                tirsdag = Duration.ofHours(7),
+                                onsdag = null,
+                                torsdag = Duration.ofHours(5).plusMinutes(45),
+                                fredag = null
+                            )
+                        ),
+                        planlagt = ArbeidIPeriode(
+                            jobberIPerioden = JobberIPeriodeSvar.VET_IKKE,
+                            jobberSomVanlig = false,
+                            enkeltdager = null,
+                            fasteDager = PlanUkedager(
+                                mandag = Duration.ofHours(4),
+                                tirsdag = Duration.ofHours(7),
+                                onsdag = null,
+                                torsdag = Duration.ofHours(5).plusMinutes(45),
+                                fredag = null
+                            )
+                        )
+                    )
+                ),
+                ArbeidsforholdAnsatt(
+                    navn = "Pizzabakeren",
+                    organisasjonsnummer = "917755736",
+                    arbeidsforhold = Arbeidsforhold(
+                        arbeidsform = Arbeidsform.FAST,
+                        jobberNormaltTimer = 40.0,
+                        erAktivtArbeidsforhold = true,
+                        historisk = ArbeidIPeriode(
+                            jobberIPerioden = JobberIPeriodeSvar.JA,
+                            jobberSomVanlig = false,
+                            enkeltdager = listOf(
+                                Enkeltdag(dato = LocalDate.now(), tid = Duration.ofHours(4)),
+                                Enkeltdag(dato = LocalDate.now().plusDays(3), tid = Duration.ofHours(4)),
+                                Enkeltdag(dato = LocalDate.now().plusWeeks(1), tid = Duration.ofHours(4))
+                            ),
+                            fasteDager = PlanUkedager(
+                                mandag = Duration.ofHours(4),
+                                tirsdag = Duration.ofHours(7),
+                                onsdag = null,
+                                torsdag = Duration.ofHours(5).plusMinutes(45),
+                                fredag = null
+                            )
+                        ),
+                        planlagt = ArbeidIPeriode(
+                            jobberIPerioden = JobberIPeriodeSvar.VET_IKKE,
+                            jobberSomVanlig = false,
+                            enkeltdager = null,
+                            fasteDager = PlanUkedager(
+                                mandag = Duration.ofHours(4),
+                                tirsdag = Duration.ofHours(7),
+                                onsdag = null,
+                                torsdag = Duration.ofHours(5).plusMinutes(45),
+                                fredag = null
+                            )
+                        )
+                    )
+                )
+            ),
             skalBekrefteOmsorg = true,
             skalPassePaBarnetIHelePerioden = true,
             beskrivelseOmsorgsrollen = "Jeg er far og skal passe på barnet i hele perioden.",
@@ -267,40 +307,6 @@ class PdfV1GeneratorTest {
     private fun gyldigMelding(
         soknadId: String,
         sprak: String? = "nb",
-        organisasjoner: List<Organisasjon> = listOf(
-            Organisasjon(
-                organisasjonsnummer = "987564785",
-                navn = "NAV",
-                jobberNormaltTimer = 30.0,
-                skalJobbeProsent = 50.0,
-                skalJobbe = SkalJobbe.REDUSERT,
-                arbeidsform = Arbeidsform.FAST
-            ),
-            Organisasjon(
-                organisasjonsnummer = "975124568",
-                navn = "Kiwi",
-                jobberNormaltTimer = 30.0,
-                skalJobbeProsent = 50.0,
-                skalJobbe = SkalJobbe.REDUSERT,
-                arbeidsform = Arbeidsform.VARIERENDE
-            ),
-            Organisasjon(
-                organisasjonsnummer = "952352687",
-                navn = "Bjerkheim gård",
-                jobberNormaltTimer = 30.0,
-                skalJobbeProsent = 50.0,
-                skalJobbe = SkalJobbe.REDUSERT,
-                arbeidsform = Arbeidsform.TURNUS
-            ),
-            Organisasjon(
-                organisasjonsnummer = "952352655",
-                navn = "Hopp i havet",
-                jobberNormaltTimer = 30.0,
-                skalJobbeProsent = 50.0,
-                skalJobbe = SkalJobbe.REDUSERT,
-                arbeidsform = Arbeidsform.FAST
-            )
-        ),
         barn: Barn = Barn(
             navn = "Børge Øverbø Ånsnes",
             fødselsnummer = barnetsIdent
@@ -341,9 +347,6 @@ class PdfV1GeneratorTest {
             fødselsnummer = "29099012345"
         ),
         barn = barn,
-        arbeidsgivere = Arbeidsgivere(
-            organisasjoner = organisasjoner
-        ),
         medlemskap = medlemskap,
         harMedsøker = harMedsøker,
         samtidigHjemme = samtidigHjemme,
@@ -413,6 +416,8 @@ class PdfV1GeneratorTest {
         k9FormatSøknad = SøknadUtils.defaultK9FormatPSB()
     )
 
+
+    // TODO: 28/09/2021 Rydde opp i pdf tester.
     private fun genererOppsummeringsPdfer(writeBytes: Boolean) {
         var id = "1-full-søknad"
         var pdf = generator.generateSoknadOppsummeringPdf(
@@ -454,7 +459,7 @@ class PdfV1GeneratorTest {
 
         id = "6-utenArbeidsgivere"
         pdf = generator.generateSoknadOppsummeringPdf(
-            melding = gyldigMelding(soknadId = id, harMedsøker = false, organisasjoner = listOf())
+            melding = gyldigMelding(soknadId = id, harMedsøker = false).copy(ansatt = null)
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
@@ -462,9 +467,8 @@ class PdfV1GeneratorTest {
         pdf = generator.generateSoknadOppsummeringPdf(
             melding = gyldigMelding(
                 soknadId = id,
-                harMedsøker = false,
-                organisasjoner = listOf()
-            )
+                harMedsøker = false
+            ).copy(ansatt = null)
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
@@ -472,120 +476,8 @@ class PdfV1GeneratorTest {
         pdf = generator.generateSoknadOppsummeringPdf(
             melding = gyldigMelding(
                 soknadId = id,
-                harMedsøker = false,
-                organisasjoner = listOf()
-            )
-        )
-        if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
-
-        id = "9-skalJobbeRedusert"
-        pdf = generator.generateSoknadOppsummeringPdf(
-            melding = gyldigMelding(
-                soknadId = id, harMedsøker = true, organisasjoner = listOf(
-                    Organisasjon(
-                        organisasjonsnummer = "952352655",
-                        navn = "Hopp i havet",
-                        skalJobbe = SkalJobbe.REDUSERT,
-                        jobberNormaltTimer = 30.0,
-                        skalJobbeProsent = 50.0,
-                        arbeidsform = Arbeidsform.VARIERENDE
-                    )
-                )
-            )
-        )
-        if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
-
-        id = "10-skalJobbeVetIkke"
-        pdf = generator.generateSoknadOppsummeringPdf(
-            melding = gyldigMelding(
-                soknadId = id, harMedsøker = true, samtidigHjemme = true, organisasjoner = listOf(
-                    Organisasjon(
-                        organisasjonsnummer = "952352655",
-                        navn = "Hopp i havet",
-                        skalJobbe = SkalJobbe.VET_IKKE,
-                        jobberNormaltTimer = 30.0,
-                        skalJobbeProsent = 0.0,
-                        vetIkkeEkstrainfo = "Vondt i hode, skulker, kne og tå, kne og tå",
-                        arbeidsform = Arbeidsform.VARIERENDE
-                    )
-                )
-            )
-        )
-        if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
-
-        id = "11-skalJobbeJa"
-        pdf = generator.generateSoknadOppsummeringPdf(
-            melding = gyldigMelding(
-                soknadId = id, harMedsøker = true, organisasjoner = listOf(
-                    Organisasjon(
-                        organisasjonsnummer = "952352655",
-                        navn = "Hopp i havet",
-                        skalJobbe = SkalJobbe.JA,
-                        jobberNormaltTimer = 30.0,
-                        skalJobbeProsent = 100.0,
-                        arbeidsform = Arbeidsform.VARIERENDE
-                    )
-                )
-            )
-        )
-        if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
-
-        id = "12-skalJobbeNei"
-        pdf = generator.generateSoknadOppsummeringPdf(
-            melding = gyldigMelding(
-                soknadId = id, harMedsøker = true, organisasjoner = listOf(
-                    Organisasjon(
-                        organisasjonsnummer = "952352655",
-                        navn = "Hopp i havet",
-                        skalJobbe = SkalJobbe.NEI,
-                        jobberNormaltTimer = 30.0,
-                        skalJobbeProsent = 0.0,
-                        arbeidsform = Arbeidsform.VARIERENDE
-                    )
-                )
-            )
-        )
-        if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
-
-        id = "13-flereArbeidsgivereSkalJobbeJaNeiVetIkkeRedusert"
-        pdf = generator.generateSoknadOppsummeringPdf(
-            melding = gyldigMelding(
-                soknadId = id, harMedsøker = true, organisasjoner = listOf(
-                    Organisasjon(
-                        organisasjonsnummer = "952352655",
-                        navn = "Arbeidsgiver 1",
-                        skalJobbe = SkalJobbe.JA,
-                        jobberNormaltTimer = 30.0,
-                        skalJobbeProsent = 100.0,
-                        arbeidsform = Arbeidsform.VARIERENDE
-                    ),
-                    Organisasjon(
-                        organisasjonsnummer = "952352655",
-                        navn = "Arbeidsgiver 2",
-                        skalJobbe = SkalJobbe.NEI,
-                        skalJobbeProsent = 0.0,
-                        jobberNormaltTimer = 30.0,
-                        arbeidsform = Arbeidsform.VARIERENDE
-                    ),
-                    Organisasjon(
-                        organisasjonsnummer = "952352655",
-                        navn = "Arbeidsgiver 3",
-                        skalJobbe = SkalJobbe.VET_IKKE,
-                        jobberNormaltTimer = 30.0,
-                        skalJobbeProsent = 50.0,
-                        vetIkkeEkstrainfo = "Vondt i hode, skulker, kne og tå, kne og tå",
-                        arbeidsform = Arbeidsform.VARIERENDE
-                    ),
-                    Organisasjon(
-                        organisasjonsnummer = "952352655",
-                        navn = "Arbeidsgiver 4",
-                        skalJobbe = SkalJobbe.REDUSERT,
-                        jobberNormaltTimer = 30.0,
-                        skalJobbeProsent = 50.0,
-                        arbeidsform = Arbeidsform.VARIERENDE
-                    )
-                )
-            )
+                harMedsøker = false
+            ).copy(ansatt = null)
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
@@ -617,9 +509,8 @@ class PdfV1GeneratorTest {
         id = "15-barnHarIkkeIdBareFødselsdato"
         pdf = generator.generateSoknadOppsummeringPdf(
             melding = gyldigMelding(
-                soknadId = id, harMedsøker = true, organisasjoner = listOf(
-                )
-            ),
+                soknadId = id, harMedsøker = true
+            )
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
@@ -627,7 +518,7 @@ class PdfV1GeneratorTest {
         id = "16-barnManglerIdOgFødselsdato"
         pdf = generator.generateSoknadOppsummeringPdf(
             melding = gyldigMelding(
-                soknadId = id, harMedsøker = true, organisasjoner = listOf()
+                soknadId = id, harMedsøker = true
             ),
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
@@ -635,7 +526,7 @@ class PdfV1GeneratorTest {
         id = "17-har-du-jobbet-og-hatt-inntekt-som-frilanser"
         pdf = generator.generateSoknadOppsummeringPdf(
             melding = gyldigMelding(
-                soknadId = id, harMedsøker = true, organisasjoner = listOf()
+                soknadId = id, harMedsøker = true
             )
         )
 
@@ -644,7 +535,7 @@ class PdfV1GeneratorTest {
         id = "18-har-du-hatt-inntekt-som-selvstendig-næringsdrivende"
         pdf = generator.generateSoknadOppsummeringPdf(
             melding = gyldigMelding(
-                soknadId = id, harMedsøker = true, organisasjoner = listOf()
+                soknadId = id, harMedsøker = true
             )
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
@@ -652,7 +543,7 @@ class PdfV1GeneratorTest {
         id = "19-har-lastet-opp-vedlegg"
         pdf = generator.generateSoknadOppsummeringPdf(
             melding = gyldigMelding(
-                soknadId = id, harMedsøker = true, organisasjoner = listOf(),
+                soknadId = id, harMedsøker = true,
                 vedleggUrls = listOf(URI("noe"))
             )
         )

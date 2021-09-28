@@ -140,8 +140,22 @@ internal fun MeldingV1.reportMetrics() {
         false -> nattevaakCounter.labels("nattevåk", "nei").inc()
     }
 
-    val skalJobbeString = arbeidsgivere.organisasjoner.map { it.skalJobbe.name.lowercase() }.sorted().joinToString("|")
-    arbeidsgivereCounter.labels(arbeidsgivere.organisasjoner.size.toString(), skalJobbeString).inc()
+    val jobberIPerioden = ansatt?.mapNotNull {
+        val historisk = if(it.arbeidsforhold.historisk != null) {
+            "historisk_" + it.arbeidsforhold.historisk.jobberIPerioden.name.lowercase()
+        } else "tom_historisk_"
+
+        val planlagt = if(it.arbeidsforhold.planlagt != null) {
+            "planlagt" + it.arbeidsforhold.planlagt.jobberIPerioden.name.lowercase()
+        } else "tom_planlagt"
+
+        "$historisk|$planlagt"
+    }?.sorted()?.joinToString("|")
+
+    //val skalJobbeString = ansatt?.map { it.skalJobbe.name.lowercase() }.sorted().joinToString("|") //Funksjonen over erstatter
+    if(ansatt != null){
+        arbeidsgivereCounter.labels(ansatt?.size.toString(), jobberIPerioden).inc()
+    }
 
     when {
         erArbeidstaker() -> arbeidstakerCounter.inc()
@@ -155,23 +169,25 @@ internal fun MeldingV1.reportMetrics() {
     }
 }
 
+private fun MeldingV1.harArbeidsforhold() = (this.ansatt != null && this.ansatt.isNotEmpty())
+
 private fun MeldingV1.erArbeidstaker() =
-    this.arbeidsgivere.organisasjoner.isNotEmpty() && selvstendigNæringsdrivende == null && frilans == null
+    this.harArbeidsforhold() && selvstendigNæringsdrivende == null && frilans == null
 
 private fun MeldingV1.erArbeidstakerOgFrilanser() =
-    this.arbeidsgivere.organisasjoner.isNotEmpty() && selvstendigNæringsdrivende == null  && frilans != null
+    this.harArbeidsforhold() && selvstendigNæringsdrivende == null  && frilans != null
 
 private fun MeldingV1.erArbeidstakerOgSelvstendigNæringsdrivende() =
-    this.arbeidsgivere.organisasjoner.isNotEmpty() && selvstendigNæringsdrivende != null  && frilans == null
+    this.harArbeidsforhold() && selvstendigNæringsdrivende != null  && frilans == null
 
 private fun MeldingV1.erArbeidstakerFrilanserOgSelvstendigNæringsdrivende() =
-    this.arbeidsgivere.organisasjoner.isNotEmpty() && selvstendigNæringsdrivende != null && frilans != null
+    this.harArbeidsforhold() && selvstendigNæringsdrivende != null && frilans != null
 
 private fun MeldingV1.erFrilanserOgSelvstendigNæringsdrivende() =
-    this.arbeidsgivere.organisasjoner.isEmpty() && selvstendigNæringsdrivende != null && frilans != null
+    !this.harArbeidsforhold() && selvstendigNæringsdrivende != null && frilans != null
 
 private fun MeldingV1.erFrilanser() =
-    this.arbeidsgivere.organisasjoner.isEmpty() && selvstendigNæringsdrivende == null && frilans != null
+    !this.harArbeidsforhold() && selvstendigNæringsdrivende == null && frilans != null
 
 private fun MeldingV1.erSelvstendigNæringsdrivende() =
-    this.arbeidsgivere.organisasjoner.isEmpty() && selvstendigNæringsdrivende != null && frilans == null
+    !this.harArbeidsforhold() && selvstendigNæringsdrivende != null && frilans == null

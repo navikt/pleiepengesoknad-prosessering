@@ -110,10 +110,6 @@ internal class PdfV1Generator {
                             "til_og_med" to DATE_FORMATTER.format(melding.tilOgMed),
                             "virkedager" to DateUtils.antallVirkedager(melding.fraOgMed, melding.tilOgMed)
                         ),
-                        "arbeidsgivere" to mapOf(
-                            "har_arbeidsgivere" to melding.arbeidsgivere.organisasjoner.isNotEmpty(),
-                            "organisasjoner" to melding.arbeidsgivere.organisasjoner.somMap()
-                        ),
                         "medlemskap" to mapOf(
                             "har_bodd_i_utlandet_siste_12_mnd" to melding.medlemskap.harBoddIUtlandetSiste12Mnd,
                             "utenlandsopphold_siste_12_mnd" to melding.medlemskap.utenlandsoppholdSiste12Mnd.somMapBosted(),
@@ -126,7 +122,7 @@ internal class PdfV1Generator {
                         ),
                         "hjelp" to mapOf(
                             "har_medsoker" to melding.harMedsøker,
-                            "ingen_arbeidsgivere" to melding.arbeidsgivere.organisasjoner.isEmpty(),
+                            "ingen_arbeidsgivere" to (melding.ansatt == null),
                             "sprak" to melding.språk?.sprakTilTekst()
                         ),
                         "omsorgstilbudV2" to melding.omsorgstilbudV2?.somMap(melding.fraOgMed, melding.tilOgMed),
@@ -148,6 +144,7 @@ internal class PdfV1Generator {
                         "harVærtEllerErVernepliktig" to melding.harVærtEllerErVernepliktig,
                         "frilans" to melding.frilans?.somMap(),
                         "selvstendigNæringsdrivende" to melding.selvstendigNæringsdrivende?.somMap(),
+                        "arbeidsforholdAnsatt" to melding.ansatt?.somMapAnsatt(),
                         "hjelper" to mapOf( // TODO: 04/06/2021 Kan fjerne hjelpemetoden når feltet er prodsatt i api og front
                             "harFlereAktiveVirksomheterErSatt" to melding.harFlereAktiveVirksomehterSatt(),
                             "harVærtEllerErVernepliktigErSatt" to erBooleanSatt(melding.harVærtEllerErVernepliktig)
@@ -359,21 +356,11 @@ private fun VarigEndring.somMap() : Map<String, Any?> = mapOf(
     "forklaring" to forklaring
 )
 
-private fun List<Organisasjon>.somMap() = map {
-    val skalJobbeProsent = it.skalJobbeProsent.avrundetMedEnDesimal()
-    val jobberNormaltimer = it.jobberNormaltTimer
-    val inntektstapProsent = skalJobbeProsent.skalJobbeProsentTilInntektstap()
-    val vetIkkeEkstrainfo = it.vetIkkeEkstrainfo
-
+private fun List<ArbeidsforholdAnsatt>.somMapAnsatt() = map {
     mapOf<String, Any?>(
         "navn" to it.navn,
-        "organisasjonsnummer" to it.formaterOrganisasjonsnummer(),
-        "skal_jobbe" to it.skalJobbe.verdi,
-        "skal_jobbe_prosent" to skalJobbeProsent.formatertMedEnDesimal(),
-        "inntektstap_prosent" to inntektstapProsent.formatertMedEnDesimal(),
-        "jobber_normaltimer" to jobberNormaltimer,
-        "vet_ikke_ekstra_info" to vetIkkeEkstrainfo,
-        "arbeidsform" to it.arbeidsform?.utskriftsvennlig?.lowercase()
+        "organisasjonsnummer" to it.organisasjonsnummer,
+        "arbeidsforhold" to it.arbeidsforhold.somMap()
     )
 }
 

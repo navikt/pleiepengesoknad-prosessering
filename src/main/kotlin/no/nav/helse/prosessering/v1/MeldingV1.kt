@@ -14,7 +14,6 @@ data class MeldingV1 (
     val tilOgMed : LocalDate,
     val søker : Søker,
     val barn : Barn,
-    val arbeidsgivere: Arbeidsgivere,
     var vedleggUrls : List<URI> = listOf(),
     val medlemskap: Medlemskap,
     val utenlandsoppholdIPerioden: UtenlandsoppholdIPerioden,
@@ -28,6 +27,7 @@ data class MeldingV1 (
     val nattevåk: Nattevåk?,
     val frilans: Frilans?,
     val selvstendigNæringsdrivende: SelvstendigNæringsdrivende? = null,
+    val ansatt: List<ArbeidsforholdAnsatt>? = null,
     val skalBekrefteOmsorg: Boolean? = null, // TODO: Fjern optional når prodsatt.
     val skalPassePaBarnetIHelePerioden: Boolean? = null, // TODO: Fjern optional når prodsatt.
     val beskrivelseOmsorgsrollen: String? = null, // TODO: Fjern optional når prodsatt.
@@ -35,4 +35,10 @@ data class MeldingV1 (
     val barnRelasjonBeskrivelse: String? = null,
     val harVærtEllerErVernepliktig: Boolean? = null,
     val k9FormatSøknad: Søknad
+)
+
+data class ArbeidsforholdAnsatt(
+    val navn: String? = null,
+    val organisasjonsnummer: String,
+    val arbeidsforhold: Arbeidsforhold
 )

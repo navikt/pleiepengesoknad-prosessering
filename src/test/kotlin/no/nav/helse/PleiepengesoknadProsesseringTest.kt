@@ -26,7 +26,6 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
 
 
 class PleiepengesoknadProsesseringTest {
@@ -125,54 +124,6 @@ class PleiepengesoknadProsesseringTest {
         )
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
-        cleanupConsumer
-            .hentCleanupMelding(melding.søknadId)
-            .assertJournalførtFormat()
-    }
-
-    @Test
-    fun `Melding med språk og skal jobbe prosent blir prosessert`() {
-
-        val språk = "nn"
-        val jobb1SkalJobbeProsent = 50.422
-        val jobb2SkalJobberProsent = 12.111
-
-        val melding = SøknadUtils.defaultSøknad.copy(
-            søknadId = UUID.randomUUID().toString(),
-            språk = språk,
-            arbeidsgivere = Arbeidsgivere(
-                organisasjoner = listOf(
-                    Organisasjon(
-                        "917755736",
-                        "Jobb1",
-                        skalJobbeProsent = jobb1SkalJobbeProsent,
-                        jobberNormaltTimer = 37.5,
-                        skalJobbe = SkalJobbe.REDUSERT,
-                        arbeidsform = Arbeidsform.VARIERENDE
-                    ),
-                    Organisasjon(
-                        "917755737",
-                        "Jobb2",
-                        skalJobbeProsent = jobb2SkalJobberProsent,
-                        jobberNormaltTimer = 37.5,
-                        skalJobbe = SkalJobbe.REDUSERT,
-                        arbeidsform = Arbeidsform.VARIERENDE
-                    )
-                )
-            )
-        )
-
-        kafkaTestProducer.leggSoknadTilProsessering(melding)
-        val preprossesertMelding = kafkaTestConsumer.hentPreprosessertMelding(melding.søknadId).data
-        assertEquals(språk, preprossesertMelding.språk)
-        assertEquals(2, preprossesertMelding.arbeidsgivere.organisasjoner.size)
-        val jobb1 = preprossesertMelding.arbeidsgivere.organisasjoner.firstOrNull { it.navn == "Jobb1" }
-        val jobb2 = preprossesertMelding.arbeidsgivere.organisasjoner.firstOrNull { it.navn == "Jobb2" }
-        assertNotNull(jobb1)
-        assertNotNull(jobb2)
-        assertEquals(jobb1SkalJobbeProsent, jobb1.skalJobbeProsent)
-        assertEquals(jobb2SkalJobberProsent, jobb2.skalJobbeProsent)
-
         cleanupConsumer
             .hentCleanupMelding(melding.søknadId)
             .assertJournalførtFormat()
@@ -287,26 +238,6 @@ class PleiepengesoknadProsesseringTest {
             barn = Barn(
                 navn = "Bjarne",
                 fødselsnummer = gyldigFodselsnummerB
-            ),
-            arbeidsgivere = Arbeidsgivere(
-                organisasjoner = listOf(
-                    Organisasjon(
-                        "917755736",
-                        "Jobb1",
-                        skalJobbeProsent = 50.25,
-                        jobberNormaltTimer = 5.0,
-                        skalJobbe = SkalJobbe.REDUSERT,
-                        arbeidsform = Arbeidsform.VARIERENDE
-                    ),
-                    Organisasjon(
-                        "917755737",
-                        "Jobb2",
-                        skalJobbeProsent = 20.0,
-                        jobberNormaltTimer = 3.75,
-                        skalJobbe = SkalJobbe.REDUSERT,
-                        arbeidsform = Arbeidsform.VARIERENDE
-                    )
-                )
             ),
             frilans = Frilans(
                 startdato = LocalDate.parse("2018-08-01"),

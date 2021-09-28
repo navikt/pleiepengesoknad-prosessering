@@ -170,53 +170,85 @@
             </ul>
         {{/if}}
 
-
-        {{#if arbeidsgivere.har_arbeidsgivere }}
-
-            {{#each arbeidsgivere.organisasjoner as |org|~}}
+        {{#if arbeidsforholdAnsatt}}
+            {{#each arbeidsforholdAnsatt as |arbeidsforhold|~}}
                 <ul>
-                    <li><b>{{org.navn}} (orgnr: {{org.organisasjonsnummer}})</b></li>
-                    <li class="li-style-none">Du har oppgitt at du</li>
-                    <li class="li-style-none">
-                        <ul>
-                            <li>
-                                {{#if org.jobber_normaltimer}}
-                                    vanligvis jobber {{org.jobber_normaltimer}} timer per uke
-                                    {{#if org.arbeidsform}}
-                                        ({{org.arbeidsform}})
-                                    {{/if}}<br/>
+                    <li><b>{{arbeidsforhold.navn}} (orgnr: {{arbeidsforhold.organisasjonsnummer}})</b></li>
+                    {{#if arbeidsforhold.arbeidsforhold.historisk}}
+                        <li class="li-style-none">
+                            <b>Historisk:</b>
+                            <ul>
+                                <li>Jobber i perioden? {{arbeidsforhold.arbeidsforhold.historisk.jobberIPerioden}}</li>
+                                <li>Jobber som vanlig? {{ jaNeiSvar arbeidsforhold.arbeidsforhold.historisk.jobberSomVanlig}}</li>
+                                {{#if arbeidsforhold.arbeidsforhold.historisk.enkeltdager}}
+                                    <li class="li-style-none"><b>Enkeltdager:</b>
+                                        <ul>
+                                            {{#each arbeidsforhold.arbeidsforhold.historisk.enkeltdager as |enkeltdagerPerUke|~}}
+                                                <li>
+                                                    <p>Uke {{enkeltdagerPerUke.uke}}</p>
+                                                    <ul>
+                                                        {{#each enkeltdagerPerUke.dager as |enkeltdag|~}}
+                                                            <li><p>{{enkeltdag.dag}} {{enkeltdag.dato}}:    {{enkeltdag.tid}}</p></li>
+                                                        {{/each}}
+                                                    </ul>
+                                                </li>
+                                            {{/each}}
+                                        </ul>
+                                    </li>
                                 {{/if}}
-                            </li>
-                            <li>
-                                {{#if org.skal_jobbe}}
-                                    {{#eq org.skal_jobbe "ja"}}
-                                        {{#if org.jobber_normaltimer}}
-                                            skal jobbe som vanlig i pleiepengeperioden, {{org.jobber_normaltimer}}
-                                            timer per uke
-                                        {{/if}}
-                                    {{/eq}}
 
-                                    {{#eq org.skal_jobbe "nei"}}
-                                        ikke skal jobbe i pleiepengeperioden
-                                    {{/eq}}
-
-                                    {{#eq org.skal_jobbe "redusert"}}
-                                        {{#if org.skal_jobbe_prosent }}
-                                            {{#if org.jobber_normaltimer }}
-                                                skal jobbe {{org.skal_jobbe_prosent }} prosent
-                                                av {{org.jobber_normaltimer}} timer per uke i pleiepengeperioden
-                                            {{/if}}
-                                        {{/if}}
-                                    {{/eq}}
-
-                                    {{#eq org.skal_jobbe "vetIkke"}}
-                                        er usikker på om du skal jobbe i pleiepengeperioden, men at du melder fra hvis
-                                        du starter å jobbe
-                                    {{/eq}}
+                                {{#if arbeidsforhold.arbeidsforhold.historisk.fasteDager}}
+                                    <li class="li-style-none"><b>Faste dager:</b>
+                                        <ul>
+                                            <li>Mandag: {{arbeidsforhold.arbeidsforhold.historisk.fasteDager.mandag}}</li>
+                                            <li>Tirsdag: {{arbeidsforhold.arbeidsforhold.historisk.fasteDager.tirsdag}}</li>
+                                            <li>Onsdag: {{arbeidsforhold.arbeidsforhold.historisk.fasteDager.onsdag}}</li>
+                                            <li>Torsdag: {{arbeidsforhold.arbeidsforhold.historisk.fasteDager.torsdag}}</li>
+                                            <li>Fredag: {{arbeidsforhold.arbeidsforhold.historisk.fasteDager.fredag}}</li>
+                                        </ul>
+                                    </li>
                                 {{/if}}
-                            </li>
-                        </ul>
-                    </li>
+                            </ul>
+                        </li>
+                    {{/if}}
+                    {{#if arbeidsforhold.arbeidsforhold.planlagt}}
+                        <li class="li-style-none">
+                            <b>Planlagt:</b>
+                            <ul>
+                                <li>Jobber i perioden? {{arbeidsforhold.arbeidsforhold.planlagt.jobberIPerioden}}</li>
+                                <li>Jobber som vanlig? {{ jaNeiSvar arbeidsforhold.arbeidsforhold.planlagt.jobberSomVanlig}}</li>
+                                {{#if arbeidsforhold.arbeidsforhold.planlagt.enkeltdager}}
+                                    <li class="li-style-none"><b>Enkeltdager:</b>
+                                        <ul>
+                                            {{#each arbeidsforhold.arbeidsforhold.planlagt.enkeltdager as |enkeltdagerPerUke|~}}
+                                                <li>
+                                                    <p>Uke {{enkeltdagerPerUke.uke}}</p>
+                                                    <ul>
+                                                        {{#each enkeltdagerPerUke.dager as |enkeltdag|~}}
+                                                            <li><p>{{enkeltdag.dag}} {{enkeltdag.dato}}:    {{enkeltdag.tid}}</p></li>
+                                                        {{/each}}
+                                                    </ul>
+                                                </li>
+                                            {{/each}}
+                                        </ul>
+                                    </li>
+                                {{/if}}
+
+                                {{#if arbeidsforhold.arbeidsforhold.planlagt.fasteDager}}
+                                    <li class="li-style-none"><b>Faste dager:</b>
+                                        <ul>
+                                            {{#if}}{{/if}}
+                                            <li>Mandag: {{arbeidsforhold.arbeidsforhold.planlagt.fasteDager.mandag}}</li>
+                                            <li>Tirsdag: {{arbeidsforhold.arbeidsforhold.planlagt.fasteDager.tirsdag}}</li>
+                                            <li>Onsdag: {{arbeidsforhold.arbeidsforhold.planlagt.fasteDager.onsdag}}</li>
+                                            <li>Torsdag: {{arbeidsforhold.arbeidsforhold.planlagt.fasteDager.torsdag}}</li>
+                                            <li>Fredag: {{arbeidsforhold.arbeidsforhold.planlagt.fasteDager.fredag}}</li>
+                                        </ul>
+                                    </li>
+                                {{/if}}
+                            </ul>
+                        </li>
+                    {{/if}}
                 </ul>
             {{/each}}
         {{/if}}

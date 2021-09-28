@@ -37,24 +37,6 @@ data class Barn(
     }
 }
 
-data class Arbeidsgivere(
-    val organisasjoner : List<Organisasjon>
-)
-
-data class Organisasjon(
-    val organisasjonsnummer: String,
-    val navn: String?,
-    val skalJobbe: SkalJobbe,
-    val jobberNormaltTimer: Double,
-    val skalJobbeProsent: Double,
-    val vetIkkeEkstrainfo: String? = null,
-    val arbeidsform: Arbeidsform? = null //TODO 09.02.2021 - Fjerner optional når prodsatt
-) {
-    override fun toString(): String {
-        return "Organisasjon()"
-    }
-}
-
 enum class Arbeidsform(val utskriftsvennlig: String){
     FAST("Fast antall timer per uke"),
     TURNUS("Turnus"),
