@@ -3,7 +3,7 @@ package no.nav.helse
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.helse.dusseldorf.ktor.jackson.dusseldorfConfigured
 import no.nav.helse.felles.*
-import no.nav.helse.prosessering.v1.*
+import no.nav.helse.prosessering.v1.MeldingV1
 import no.nav.k9.søknad.Søknad
 import no.nav.k9.søknad.felles.Versjon
 import no.nav.k9.søknad.felles.opptjening.Frilanser
@@ -13,11 +13,7 @@ import no.nav.k9.søknad.felles.personopplysninger.Bosteder
 import no.nav.k9.søknad.felles.personopplysninger.Utenlandsopphold.UtenlandsoppholdPeriodeInfo
 import no.nav.k9.søknad.felles.personopplysninger.Utenlandsopphold.UtenlandsoppholdÅrsak.BARNET_INNLAGT_I_HELSEINSTITUSJON_DEKKET_ETTER_AVTALE_MED_ET_ANNET_LAND_OM_TRYGD
 import no.nav.k9.søknad.felles.personopplysninger.Utenlandsopphold.UtenlandsoppholdÅrsak.BARNET_INNLAGT_I_HELSEINSTITUSJON_FOR_NORSK_OFFENTLIG_REGNING
-import no.nav.k9.søknad.felles.type.Landkode
-import no.nav.k9.søknad.felles.type.NorskIdentitetsnummer
-import no.nav.k9.søknad.felles.type.Organisasjonsnummer
-import no.nav.k9.søknad.felles.type.SøknadId
-import no.nav.k9.søknad.felles.type.VirksomhetType
+import no.nav.k9.søknad.felles.type.*
 import no.nav.k9.søknad.ytelse.psb.v1.*
 import no.nav.k9.søknad.ytelse.psb.v1.Beredskap.BeredskapPeriodeInfo
 import no.nav.k9.søknad.ytelse.psb.v1.Nattevåk.NattevåkPeriodeInfo
@@ -177,10 +173,36 @@ internal object SøknadUtils {
         ),
         frilans = Frilans(
             startdato = LocalDate.parse("2019-01-01"),
-            jobberFortsattSomFrilans = true
+            jobberFortsattSomFrilans = true,
+            arbeidsforhold = Arbeidsforhold(
+                arbeidsform = Arbeidsform.FAST,
+                jobberNormaltTimer = 30.0,
+                erAktivtArbeidsforhold = true,
+                historisk = ArbeidIPeriode(
+                    jobberIPerioden = JobberIPeriodeSvar.JA,
+                    jobberSomVanlig = false,
+                    enkeltdager = listOf(
+                        Enkeltdag(dato = LocalDate.now(), tid = Duration.ofHours(4)),
+                        Enkeltdag(dato = LocalDate.now().plusDays(3), tid = Duration.ofHours(4)),
+                        Enkeltdag(dato = LocalDate.now().plusWeeks(1), tid = Duration.ofHours(4))
+                    )
+                ),
+                planlagt = ArbeidIPeriode(
+                    jobberIPerioden = JobberIPeriodeSvar.JA,
+                    jobberSomVanlig = false,
+                    enkeltdager = null,
+                    fasteDager = PlanUkedager(
+                        mandag = Duration.ofHours(4),
+                        tirsdag = Duration.ofHours(7),
+                        onsdag = null,
+                        torsdag = Duration.ofHours(5).plusMinutes(45),
+                        fredag = null
+                    )
+                )
+            )
         ),
-        selvstendigVirksomheter = listOf(
-            Virksomhet(
+        selvstendigNæringsdrivende = no.nav.helse.felles.SelvstendigNæringsdrivende(
+            virksomhet =  Virksomhet(
                 næringstyper = listOf(Næringstyper.ANNEN),
                 fraOgMed = LocalDate.parse("2021-01-01"),
                 tilOgMed = LocalDate.parse("2021-01-10"),
@@ -188,25 +210,43 @@ internal object SøknadUtils {
                 registrertINorge = true,
                 yrkesaktivSisteTreFerdigliknedeÅrene = YrkesaktivSisteTreFerdigliknedeÅrene(LocalDate.parse("2021-01-01")),
                 organisasjonsnummer = "111111"
-            ), Virksomhet(
-                næringstyper = listOf(Næringstyper.JORDBRUK_SKOGBRUK),
-                organisasjonsnummer = "9999",
-                fraOgMed = LocalDate.parse("2020-01-01"),
-                navnPåVirksomheten = "Kjells Skogbruk",
-                registrertINorge = false,
-                registrertIUtlandet = Land(
-                    "DEU",
-                    "Tyskland"
+            ),
+            arbeidsforhold = Arbeidsforhold(
+                arbeidsform = Arbeidsform.FAST,
+                jobberNormaltTimer = 30.0,
+                erAktivtArbeidsforhold = true,
+                historisk = ArbeidIPeriode(
+                    jobberIPerioden = JobberIPeriodeSvar.JA,
+                    jobberSomVanlig = false,
+                    enkeltdager = listOf(
+                        Enkeltdag(dato = LocalDate.now(), tid = Duration.ofHours(4)),
+                        Enkeltdag(dato = LocalDate.now().plusDays(3), tid = Duration.ofHours(4)),
+                        Enkeltdag(dato = LocalDate.now().plusWeeks(1), tid = Duration.ofHours(4))
+                    )
                 ),
-                næringsinntekt = 900_000,
-                regnskapsfører = Regnskapsfører(
-                    "Bård",
-                    "98989898"
+                planlagt = ArbeidIPeriode(
+                    jobberIPerioden = JobberIPeriodeSvar.JA,
+                    jobberSomVanlig = false,
+                    enkeltdager = null,
+                    fasteDager = PlanUkedager(
+                        mandag = Duration.ofHours(4),
+                        tirsdag = Duration.ofHours(7),
+                        onsdag = null,
+                        torsdag = Duration.ofHours(5).plusMinutes(45),
+                        fredag = null
+                    )
                 )
             )
         ),
         harVærtEllerErVernepliktig = true,
-        k9FormatSøknad = defaultK9FormatPSB()
+        k9FormatSøknad = defaultK9FormatPSB(),
+        samtidigHjemme = null,
+        omsorgstilbudV2 = null,
+        skalBekrefteOmsorg = null,
+        skalPassePaBarnetIHelePerioden = null,
+        beskrivelseOmsorgsrollen = null,
+        barnRelasjon = null,
+        barnRelasjonBeskrivelse = null
     )
 
     fun defaultK9FormatPSB(søknadId: UUID = UUID.randomUUID()) = Søknad(

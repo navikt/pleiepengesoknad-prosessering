@@ -1,18 +1,6 @@
 package no.nav.helse.prosessering.v1
 
-import no.nav.helse.felles.Arbeidsforhold
-import no.nav.helse.felles.Arbeidsgivere
-import no.nav.helse.felles.Barn
-import no.nav.helse.felles.BarnRelasjon
-import no.nav.helse.felles.Beredskap
-import no.nav.helse.felles.FerieuttakIPerioden
-import no.nav.helse.felles.Frilans
-import no.nav.helse.felles.Medlemskap
-import no.nav.helse.felles.Nattevåk
-import no.nav.helse.felles.OmsorgstilbudV2
-import no.nav.helse.felles.Søker
-import no.nav.helse.felles.UtenlandsoppholdIPerioden
-import no.nav.helse.felles.Virksomhet
+import no.nav.helse.felles.*
 import no.nav.k9.søknad.Søknad
 import java.net.URI
 import java.time.LocalDate
@@ -39,8 +27,7 @@ data class MeldingV1 (
     val beredskap: Beredskap?,
     val nattevåk: Nattevåk?,
     val frilans: Frilans?,
-    val selvstendigVirksomheter: List<Virksomhet> = listOf(),
-    val selvstendigArbeidsforhold: Arbeidsforhold? = null,
+    val selvstendigNæringsdrivende: SelvstendigNæringsdrivende? = null,
     val skalBekrefteOmsorg: Boolean? = null, // TODO: Fjern optional når prodsatt.
     val skalPassePaBarnetIHelePerioden: Boolean? = null, // TODO: Fjern optional når prodsatt.
     val beskrivelseOmsorgsrollen: String? = null, // TODO: Fjern optional når prodsatt.

@@ -196,17 +196,8 @@ class PdfV1GeneratorTest {
                     )
                 )
             ),
-            selvstendigVirksomheter = listOf(
-                Virksomhet(
-                    næringstyper = listOf(Næringstyper.ANNEN),
-                    fraOgMed = LocalDate.now(),
-                    tilOgMed = LocalDate.now().plusDays(10),
-                    navnPåVirksomheten = "Kjells Møbelsnekkeri",
-                    registrertINorge = true,
-                    organisasjonsnummer = "111111",
-                    harFlereAktiveVirksomheter = true
-                ),
-                Virksomhet(
+            selvstendigNæringsdrivende = SelvstendigNæringsdrivende(
+                virksomhet = Virksomhet(
                     næringstyper = listOf(Næringstyper.JORDBRUK_SKOGBRUK, Næringstyper.DAGMAMMA, Næringstyper.FISKE),
                     fiskerErPåBladB = true,
                     fraOgMed = LocalDate.now(),
@@ -228,31 +219,38 @@ class PdfV1GeneratorTest {
                         telefon = "65484578"
                     ),
                     harFlereAktiveVirksomheter = true
-                )
-            ),
-            selvstendigArbeidsforhold = Arbeidsforhold(
-                arbeidsform = Arbeidsform.FAST,
-                jobberNormaltTimer = 40.0,
-                erAktivtArbeidsforhold = true,
-                historisk = ArbeidIPeriode(
-                    jobberIPerioden = JobberIPeriodeSvar.JA,
-                    jobberSomVanlig = false,
-                    enkeltdager = listOf(
-                        Enkeltdag(dato = LocalDate.now(), tid = Duration.ofHours(4)
+                ),
+                arbeidsforhold = Arbeidsforhold(
+                    arbeidsform = Arbeidsform.FAST,
+                    jobberNormaltTimer = 40.0,
+                    erAktivtArbeidsforhold = true,
+                    historisk = ArbeidIPeriode(
+                        jobberIPerioden = JobberIPeriodeSvar.JA,
+                        jobberSomVanlig = false,
+                        enkeltdager = listOf(
+                            Enkeltdag(dato = LocalDate.now(), tid = Duration.ofHours(4)),
+                            Enkeltdag(dato = LocalDate.now().plusDays(3), tid = Duration.ofHours(4)),
+                            Enkeltdag(dato = LocalDate.now().plusWeeks(1), tid = Duration.ofHours(4))
+                        ),
+                        fasteDager = PlanUkedager(
+                            mandag = Duration.ofHours(4),
+                            tirsdag = Duration.ofHours(7),
+                            onsdag = null,
+                            torsdag = Duration.ofHours(5).plusMinutes(45),
+                            fredag = null
                         )
                     ),
-                    fasteDager = null
-                ),
-                planlagt = ArbeidIPeriode(
-                    jobberIPerioden = JobberIPeriodeSvar.JA,
-                    jobberSomVanlig = false,
-                    enkeltdager = null,
-                    fasteDager = PlanUkedager(
-                        mandag = Duration.ofHours(4),
-                        tirsdag = Duration.ofHours(7),
-                        onsdag = null,
-                        torsdag = Duration.ofHours(5).plusMinutes(45),
-                        fredag = null
+                    planlagt = ArbeidIPeriode(
+                        jobberIPerioden = JobberIPeriodeSvar.VET_IKKE,
+                        jobberSomVanlig = false,
+                        enkeltdager = null,
+                        fasteDager = PlanUkedager(
+                            mandag = Duration.ofHours(4),
+                            tirsdag = Duration.ofHours(7),
+                            onsdag = null,
+                            torsdag = Duration.ofHours(5).plusMinutes(45),
+                            fredag = null
+                        )
                     )
                 )
             ),
@@ -326,43 +324,6 @@ class PdfV1GeneratorTest {
             startdato = LocalDate.now().minusYears(3),
             sluttdato = LocalDate.now(),
             jobberFortsattSomFrilans = false
-        ),
-        selvstendigVirksomheter: List<Virksomhet> = listOf(
-            Virksomhet(
-                næringstyper = listOf(
-                    Næringstyper.ANNEN,
-                    Næringstyper.FISKE,
-                    Næringstyper.JORDBRUK_SKOGBRUK,
-                    Næringstyper.DAGMAMMA
-                ),
-                fiskerErPåBladB = true,
-                fraOgMed = LocalDate.now(),
-                tilOgMed = LocalDate.now().plusDays(10),
-                navnPåVirksomheten = "Kjells Møbelsnekkeriiii",
-                registrertINorge = true,
-                organisasjonsnummer = "101010",
-                varigEndring = VarigEndring(
-                    dato = LocalDate.now(),
-                    inntektEtterEndring = 202020,
-                    forklaring = "ASDASDASDASDASD"
-                )
-            ),
-            Virksomhet(
-                næringstyper = listOf(Næringstyper.JORDBRUK_SKOGBRUK, Næringstyper.DAGMAMMA),
-                fraOgMed = LocalDate.now(),
-                næringsinntekt = 100111,
-                navnPåVirksomheten = "Tull Og Tøys",
-                registrertINorge = false,
-                registrertIUtlandet = Land(
-                    landnavn = "Tyskland",
-                    landkode = "DEU"
-                ),
-                yrkesaktivSisteTreFerdigliknedeÅrene = YrkesaktivSisteTreFerdigliknedeÅrene(LocalDate.now()),
-                regnskapsfører = Regnskapsfører(
-                    navn = "Bjarne Regnskap",
-                    telefon = "65484578"
-                )
-            )
         ),
         vedleggUrls: List<URI> = listOf()
     ) = MeldingV1(
@@ -446,7 +407,6 @@ class PdfV1GeneratorTest {
             )
         ),
         frilans = frilans,
-        selvstendigVirksomheter = selvstendigVirksomheter,
         barnRelasjon = BarnRelasjon.FAR,
         barnRelasjonBeskrivelse = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec iaculis tempus molestie",
         harVærtEllerErVernepliktig = true,

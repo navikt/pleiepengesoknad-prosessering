@@ -146,9 +146,8 @@ internal class PdfV1Generator {
                         "barnRelasjon" to melding.barnRelasjon?.utskriftsvennlig,
                         "barnRelasjonBeskrivelse" to melding.barnRelasjonBeskrivelse,
                         "harVærtEllerErVernepliktig" to melding.harVærtEllerErVernepliktig,
-                        "frilanserArbeidsforhold" to melding.frilans?.arbeidsforhold?.somMap(),
-                        "selvstendigArbeidsforhold" to melding.selvstendigArbeidsforhold?.somMap(),
                         "frilans" to melding.frilans?.somMap(),
+                        "selvstendigNæringsdrivende" to melding.selvstendigNæringsdrivende?.somMap(),
                         "hjelper" to mapOf( // TODO: 04/06/2021 Kan fjerne hjelpemetoden når feltet er prodsatt i api og front
                             "harFlereAktiveVirksomheterErSatt" to melding.harFlereAktiveVirksomehterSatt(),
                             "harVærtEllerErVernepliktigErSatt" to erBooleanSatt(melding.harVærtEllerErVernepliktig)
@@ -208,7 +207,7 @@ internal class PdfV1Generator {
 }
 
 private fun MeldingV1.harFlereAktiveVirksomehterSatt() =
-    (this.selvstendigVirksomheter.firstOrNull()?.harFlereAktiveVirksomheter != null)
+    (this.selvstendigNæringsdrivende?.virksomhet?.harFlereAktiveVirksomheter != null)
 
 private fun erBooleanSatt(verdi: Boolean?) = verdi != null
 
@@ -311,6 +310,53 @@ private fun Frilans.somMap() : Map<String, Any?> = mapOf(
     "sluttdato" to if(sluttdato!= null) DATE_FORMATTER.format(sluttdato) else null,
     "jobberFortsattSomFrilans" to jobberFortsattSomFrilans,
     "arbeidsforhold" to arbeidsforhold?.somMap()
+)
+
+private fun SelvstendigNæringsdrivende.somMap() : Map<String, Any?> = mapOf(
+    "virksomhet" to virksomhet.somMap(),
+    "arbeidsforhold" to arbeidsforhold?.somMap()
+)
+
+private fun Virksomhet.somMap() : Map<String, Any?> = mapOf(
+    "næringstyper" to næringstyper,
+    "næringsinntekt" to næringsinntekt,
+    "yrkesaktivSisteTreFerdigliknedeÅrene" to yrkesaktivSisteTreFerdigliknedeÅrene?.somMap(),
+    "varigEndring" to varigEndring?.somMap(),
+    "harFlereAktiveVirksomheter" to harFlereAktiveVirksomheter,
+    "navnPåVirksomheten" to navnPåVirksomheten,
+    "fraOgMed" to DATE_FORMATTER.format(fraOgMed),
+    "tilOgMed" to if(tilOgMed != null) DATE_FORMATTER.format(tilOgMed) else null,
+    "næringstyper" to næringstyper.somMapNæringstyper(),
+    "fiskerErPåBladB" to fiskerErPåBladB,
+    "registrertINorge" to registrertINorge,
+    "organisasjonsnummer" to organisasjonsnummer,
+    "registrertIUtlandet" to registrertIUtlandet?.somMap(),
+    "regnskapsfører" to regnskapsfører?.somMap()
+)
+
+private fun List<Næringstyper>.somMapNæringstyper() = map {
+    mapOf(
+        "navn" to it.beskrivelse
+    )
+}
+
+private fun Regnskapsfører.somMap() = mapOf<String, Any?>(
+    "navn" to navn,
+    "telefon" to telefon
+)
+
+private fun Land.somMap() = mapOf<String, Any?>(
+    "landnavn" to landnavn,
+    "landkode" to landkode
+)
+
+private fun YrkesaktivSisteTreFerdigliknedeÅrene.somMap() : Map<String, Any?> = mapOf(
+    "oppstartsdato" to DATE_FORMATTER.format(oppstartsdato)
+)
+private fun VarigEndring.somMap() : Map<String, Any?> = mapOf(
+    "dato" to DATE_FORMATTER.format(dato),
+    "inntektEtterEndring" to inntektEtterEndring,
+    "forklaring" to forklaring
 )
 
 private fun List<Organisasjon>.somMap() = map {

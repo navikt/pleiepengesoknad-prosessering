@@ -3,6 +3,11 @@ package no.nav.helse.felles
 import com.fasterxml.jackson.annotation.JsonFormat
 import java.time.LocalDate
 
+data class SelvstendigNæringsdrivende(
+    val virksomhet: Virksomhet,
+    val arbeidsforhold: Arbeidsforhold?
+)
+
 data class Virksomhet(
     val næringstyper: List<Næringstyper>,
     val fiskerErPåBladB: Boolean? = null,

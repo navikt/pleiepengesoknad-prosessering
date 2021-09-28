@@ -1,18 +1,6 @@
 package no.nav.helse.prosessering.v1
 
-import no.nav.helse.felles.Arbeidsforhold
-import no.nav.helse.felles.Arbeidsgivere
-import no.nav.helse.felles.Barn
-import no.nav.helse.felles.BarnRelasjon
-import no.nav.helse.felles.Beredskap
-import no.nav.helse.felles.FerieuttakIPerioden
-import no.nav.helse.felles.Frilans
-import no.nav.helse.felles.Medlemskap
-import no.nav.helse.felles.Nattevåk
-import no.nav.helse.felles.OmsorgstilbudV2
-import no.nav.helse.felles.Søker
-import no.nav.helse.felles.UtenlandsoppholdIPerioden
-import no.nav.helse.felles.Virksomhet
+import no.nav.helse.felles.*
 import no.nav.k9.søknad.Søknad
 import java.net.URI
 import java.time.LocalDate
@@ -36,8 +24,7 @@ data class PreprossesertMeldingV1(
     val omsorgstilbudV2: OmsorgstilbudV2? = null,
     val harMedsøker: Boolean,
     val frilans: Frilans? = null,
-    val selvstendigVirksomheter: List<Virksomhet> = listOf(),
-    val selvstendigArbeidsforhold: Arbeidsforhold? = null,
+    val selvstendigNæringsdrivende: SelvstendigNæringsdrivende? = null,
     val barnRelasjon: BarnRelasjon? = null,
     val barnRelasjonBeskrivelse: String? = null,
     val skalBekrefteOmsorg: Boolean? = null, //TODO: Fjerne optinal når prodsatt
@@ -67,8 +54,7 @@ data class PreprossesertMeldingV1(
         omsorgstilbudV2 = melding.omsorgstilbudV2,
         harMedsøker = melding.harMedsøker,
         frilans = melding.frilans,
-        selvstendigVirksomheter = melding.selvstendigVirksomheter,
-        selvstendigArbeidsforhold = melding.selvstendigArbeidsforhold,
+        selvstendigNæringsdrivende = melding.selvstendigNæringsdrivende,
         harForstattRettigheterOgPlikter = melding.harForståttRettigheterOgPlikter,
         harBekreftetOpplysninger = melding.harBekreftetOpplysninger,
         utenlandsoppholdIPerioden = melding.utenlandsoppholdIPerioden,

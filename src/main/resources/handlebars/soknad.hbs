@@ -255,7 +255,6 @@
                                     {{#if frilans.arbeidsforhold.historisk.fasteDager}}
                                         <li class="li-style-none"><b>Faste dager:</b>
                                             <ul>
-                                                {{#if}}{{/if}}
                                                 <li>Mandag: {{frilans.arbeidsforhold.historisk.fasteDager.mandag}}</li>
                                                 <li>Tirsdag: {{frilans.arbeidsforhold.historisk.fasteDager.tirsdag}}</li>
                                                 <li>Onsdag: {{frilans.arbeidsforhold.historisk.fasteDager.onsdag}}</li>
@@ -310,43 +309,94 @@
             </ul>
         {{/if}}
 
-        {{#if selvstendigArbeidsforhold}}
+        {{#if selvstendigNæringsdrivende.arbeidsforhold}}
             <ul>
-                <li><b>Selvstendig næringsdrivende</b></li>
-                <li class="li-style-none">Du har oppgitt at du som selvstendig næringsdrivende</li>
+                <li><b>Selvstending næringsdrivende</b></li>
                 <li class="li-style-none">
                     <ul>
-                        <li>
-                            vanligvis jobber {{selvstendigArbeidsforhold.jobberNormaltTimer}} timer per uke
-                            ({{selvstendigArbeidsforhold.arbeidsform}})
-                        </li>
-                        {{#eq selvstendigArbeidsforhold.skalJobbe "ja"}}
-                            <li>
-                                skal jobbe som vanlig i
-                                pleiepengeperioden, {{selvstendigArbeidsforhold.jobberNormaltTimer}}
-                                timer per uke
+                        <li class="sporsmalstekst">Arbeidsform: {{selvstendigNæringsdrivende.arbeidsforhold.arbeidsform}}</li>
+                        <li class="sporsmalstekst">Normaltimer per uke: {{selvstendigNæringsdrivende.arbeidsforhold.jobberNormaltTimer}}</li>
+                        <li class="sporsmalstekst">Er det et aktivt arbeidsforhold? {{ jaNeiSvar selvstendigNæringsdrivende.arbeidsforhold.erAktivtArbeidsforhold}}</li>
+                        {{#if selvstendigNæringsdrivende.arbeidsforhold.historisk}}
+                            <li class="li-style-none">
+                                <b>Historisk:</b>
+                                <ul>
+                                    <li>Jobber i perioden? {{selvstendigNæringsdrivende.arbeidsforhold.historisk.jobberIPerioden}}</li>
+                                    <li>Jobber som vanlig? {{ jaNeiSvar selvstendigNæringsdrivendeselvstendigNæringsdrivende.arbeidsforhold.historisk.jobberSomVanlig}}</li>
+                                    {{#if selvstendigNæringsdrivendeselvstendigNæringsdrivende.arbeidsforhold.historisk.enkeltdager}}
+                                        <li class="li-style-none"><b>Enkeltdager:</b>
+                                            <ul>
+                                                {{#each selvstendigNæringsdrivendeselvstendigNæringsdrivende.arbeidsforhold.historisk.enkeltdager as |enkeltdagerPerUke|~}}
+                                                    <li>
+                                                        <p>Uke {{enkeltdagerPerUke.uke}}</p>
+                                                        <ul>
+                                                            {{#each enkeltdagerPerUke.dager as |enkeltdag|~}}
+                                                                <li><p>{{enkeltdag.dag}} {{enkeltdag.dato}}:    {{enkeltdag.tid}}</p></li>
+                                                            {{/each}}
+                                                        </ul>
+                                                    </li>
+                                                {{/each}}
+                                            </ul>
+                                        </li>
+                                    {{/if}}
+
+                                    {{#if selvstendigNæringsdrivende.arbeidsforhold.historisk.fasteDager}}
+                                        <li class="li-style-none"><b>Faste dager:</b>
+                                            <ul>
+                                                {{#if}}{{/if}}
+                                                <li>Mandag: {{selvstendigNæringsdrivende.arbeidsforhold.historisk.fasteDager.mandag}}</li>
+                                                <li>Tirsdag: {{selvstendigNæringsdrivende.arbeidsforhold.historisk.fasteDager.tirsdag}}</li>
+                                                <li>Onsdag: {{selvstendigNæringsdrivende.arbeidsforhold.historisk.fasteDager.onsdag}}</li>
+                                                <li>Torsdag: {{selvstendigNæringsdrivende.arbeidsforhold.historisk.fasteDager.torsdag}}</li>
+                                                <li>Fredag: {{selvstendigNæringsdrivende.arbeidsforhold.historisk.fasteDager.fredag}}</li>
+                                            </ul>
+                                        </li>
+                                    {{/if}}
+                                </ul>
                             </li>
-                        {{/eq}}
-                        {{#eq selvstendigArbeidsforhold.skalJobbe "nei"}}
-                            <li>ikke skal jobbe i pleiepengeperioden</li>
-                        {{/eq}}
-                        {{#eq selvstendigArbeidsforhold.skalJobbe "redusert"}}
-                            <li>
-                                skal jobbe {{selvstendigArbeidsforhold.skalJobbeProsent}} prosent
-                                av {{selvstendigArbeidsforhold.jobberNormaltTimer}} timer per uke
+                        {{/if}}
+                        {{#if selvstendigNæringsdrivende.arbeidsforhold.planlagt}}
+                            <li class="li-style-none">
+                                <b>Planlagt:</b>
+                                <ul>
+                                    <li>Jobber i perioden? {{selvstendigNæringsdrivende.arbeidsforhold.planlagt.jobberIPerioden}}</li>
+                                    <li>Jobber som vanlig? {{ jaNeiSvar selvstendigNæringsdrivende.arbeidsforhold.planlagt.jobberSomVanlig}}</li>
+                                    {{#if selvstendigNæringsdrivende.arbeidsforhold.planlagt.enkeltdager}}
+                                        <li class="li-style-none"><b>Enkeltdager:</b>
+                                            <ul>
+                                                {{#each selvstendigNæringsdrivende.arbeidsforhold.planlagt.enkeltdager as |enkeltdagerPerUke|~}}
+                                                    <li>
+                                                        <p>Uke {{enkeltdagerPerUke.uke}}</p>
+                                                        <ul>
+                                                            {{#each enkeltdagerPerUke.dager as |enkeltdag|~}}
+                                                                <li><p>{{enkeltdag.dag}} {{enkeltdag.dato}}:    {{enkeltdag.tid}}</p></li>
+                                                            {{/each}}
+                                                        </ul>
+                                                    </li>
+                                                {{/each}}
+                                            </ul>
+                                        </li>
+                                    {{/if}}
+
+                                    {{#if selvstendigNæringsdrivende.arbeidsforhold.planlagt.fasteDager}}
+                                        <li class="li-style-none"><b>Faste dager:</b>
+                                            <ul>
+                                                <li>Mandag: {{selvstendigNæringsdrivende.arbeidsforhold.planlagt.fasteDager.mandag}}</li>
+                                                <li>Tirsdag: {{selvstendigNæringsdrivende.arbeidsforhold.planlagt.fasteDager.tirsdag}}</li>
+                                                <li>Onsdag: {{selvstendigNæringsdrivende.arbeidsforhold.planlagt.fasteDager.onsdag}}</li>
+                                                <li>Torsdag: {{selvstendigNæringsdrivende.arbeidsforhold.planlagt.fasteDager.torsdag}}</li>
+                                                <li>Fredag: {{selvstendigNæringsdrivende.arbeidsforhold.planlagt.fasteDager.fredag}}</li>
+                                            </ul>
+                                        </li>
+                                    {{/if}}
+                                </ul>
                             </li>
-                        {{/eq}}
-                        {{#eq selvstendigArbeidsforhold.skalJobbe "vetIkke"}}
-                            <li>
-                                er usikker på om du skal jobbe i pleiepengeperioden, men at du melder fra hvis du
-                                starter å
-                                jobbe
-                            </li>
-                        {{/eq}}
+                        {{/if}}
                     </ul>
                 </li>
             </ul>
         {{/if}}
+
     </section>
 
     <section id="frilans">
@@ -367,87 +417,77 @@
     </section>
 
     <section id="selvstendig">
-        {{#if søknad.selvstendigVirksomheter}}
+        {{#if selvstendigNæringsdrivende}}
             <h2>Selvstendig næringsdrivende</h2>
-            {{# each søknad.selvstendigVirksomheter as |virksomhet|~}}
 
-                {{#if virksomhet.næringsinntekt}}
-                    <p>Næringsinntekt: {{virksomhet.næringsinntekt}},-</p>
-                {{/if}}
+            {{#if selvstendigNæringsdrivende.virksomhet.næringsinntekt}}
+                <p>Næringsinntekt: {{selvstendigNæringsdrivende.virksomhet.næringsinntekt}},-</p>
+            {{/if}}
 
-                {{#if virksomhet.yrkesaktivSisteTreFerdigliknedeÅrene}}
-                    <p>Oppgi dato for når du ble yrkesaktiv:{{#dato
-                            virksomhet.yrkesaktivSisteTreFerdigliknedeÅrene.oppstartsdato}}{{/dato}}</p>
-                {{/if}}
+            {{#if selvstendigNæringsdrivende.virksomhet.yrkesaktivSisteTreFerdigliknedeÅrene}}
+                <p>Oppgi dato for når du ble yrkesaktiv: {{selvstendigNæringsdrivende.virksomhet.yrkesaktivSisteTreFerdigliknedeÅrene.oppstartsdato}}</p>
+            {{/if}}
 
-                {{#if virksomhet.varigEndring}}
-                    <h3>Varig endring</h3>
-                    <ul>
-                        <li>
-                            <p>Dato for når varig endring oppsto: {{#dato virksomhet.varigEndring.dato}}{{/dato}}</p>
-                            <p>Næringsinntekt etter endringen: {{virksomhet.varigEndring.inntektEtterEndring}}</p>
-                            <div class="fritekst">
-                                <p class="sporsmalstekst">Din forklaring om varig endring:</p>
-                                <p class="fritekst_textarea">{{virksomhet.varigEndring.forklaring}}</p>
-                            </div>
-                        </li>
-                    </ul>
-                {{/if}}
+            {{#if selvstendigNæringsdrivende.virksomhet.varigEndring}}
+                <h3>Varig endring</h3>
+                <ul>
+                    <li>
+                        <p>Dato for når varig endring oppsto: {{selvstendigNæringsdrivende.virksomhet.varigEndring.dato}}</p>
+                        <p>Næringsinntekt etter endringen: {{selvstendigNæringsdrivende.virksomhet.varigEndring.inntektEtterEndring}}</p>
+                        <div class="fritekst">
+                            <p class="sporsmalstekst">Din forklaring om varig endring:</p>
+                            <p class="fritekst_textarea">{{selvstendigNæringsdrivende.virksomhet.varigEndring.forklaring}}</p>
+                        </div>
+                    </li>
+                </ul>
+            {{/if}}
 
-                {{#if hjelper.harFlereAktiveVirksomheterErSatt}}
-                    <p class="sporsmalstekst">Har du flere enn én næringsvirksomhet som er aktiv?</p>
-                    {{jaNeiSvar virksomhet.harFlereAktiveVirksomheter}}
-                {{/if}}
+            {{#if hjelper.harFlereAktiveVirksomheterErSatt}}
+                <p class="sporsmalstekst">Har du flere enn én næringsvirksomhet som er aktiv?</p>
+                {{jaNeiSvar selvstendigNæringsdrivende.virksomhet.harFlereAktiveVirksomheter}}
+            {{/if}}
 
-                <h3>Næringsvirksomhet som du har lagt inn:</h3>
-                <h3>{{virksomhet.navnPåVirksomheten}} (startet {{#dato virksomhet.fraOgMed}}{{/dato}},
-                    {{#if virksomhet.tilOgMed}}
-                        avsluttet {{#dato virksomhet.tilOgMed}}{{/dato}})
+            <h3>Næringsvirksomhet som du har lagt inn:</h3>
+            <h3>{{selvstendigNæringsdrivende.virksomhet.navnPåVirksomheten}} (startet {{selvstendigNæringsdrivende.virksomhet.fraOgMed}},
+                {{#if selvstendigNæringsdrivende.virksomhet.tilOgMed}}
+                    avsluttet {{selvstendigNæringsdrivende.virksomhet.tilOgMed}})
+                {{else}}
+                    er pågående)
+                {{/if}}</h3>
+
+            <p>Næringstype:
+                {{# each selvstendigNæringsdrivende.virksomhet.næringstyper as |næringstype|~}}
+                    {{#if @first}}
+                        {{næringstype.navn}}
                     {{else}}
-                        er pågående)
-                    {{/if}}</h3>
-
-                <p>Næringstype:
-                    {{# each virksomhet.næringstyper as |næringstype|~}}
-                        {{#if @first}}
-                            {{#enumNæringstyper næringstype}}{{/enumNæringstyper}}
+                        , {{næringstype.navn}}
+                    {{/if}}
+                    {{#eq næringstype.navn "Fiske"}}
+                        {{#if selvstendigNæringsdrivende.virksomhet.fiskerErPåBladB}}
+                            (blad B)
                         {{else}}
-                            , {{#enumNæringstyper næringstype}}{{/enumNæringstyper}}
+                            (ikke blad B)
                         {{/if}}
-                        {{#eq næringstype "FISKE"}}
-                            {{#if virksomhet.fiskerErPåBladB}}
-                                (blad B)
-                            {{else}}
-                                (ikke blad B)
-                            {{/if}}
-                        {{/eq}}
-                    {{/each}}</p>
+                    {{/eq}}
+                {{/each}}</p>
 
-                {{#if virksomhet.registrertINorge}}
-                    <p>Registrert i Norge</p>
-                    <p>Organisasjonsnummeret: {{virksomhet.organisasjonsnummer}}</p>
-                {{else}}
-                    <p>Registrert i land: {{virksomhet.registrertIUtlandet.landnavn}}
-                        ({{virksomhet.registrertIUtlandet.landkode}})</p>
-                {{/if}}
+            {{#if selvstendigNæringsdrivende.virksomhet.registrertINorge}}
+                <p>Registrert i Norge</p>
+                <p>Organisasjonsnummeret: {{selvstendigNæringsdrivende.virksomhet.organisasjonsnummer}}</p>
+            {{else}}
+                <p>Registrert i land: {{selvstendigNæringsdrivende.virksomhet.registrertIUtlandet.landnavn}}
+                    ({{selvstendigNæringsdrivende.virksomhet.registrertIUtlandet.landkode}})</p>
+            {{/if}}
 
-
-                {{#if virksomhet.regnskapsfører}}
-                    <h3>Regnskapsfører:</h3>
-                    <ul>
-                        <li>
-                            <p>Navn: {{virksomhet.regnskapsfører.navn}}</p>
-                            <p>Telefon: {{virksomhet.regnskapsfører.telefon}}</p>
-                        </li>
-                    </ul>
-                {{/if}}
-                {{#if @last}}
-                {{else}}
-                    <hr/>
-                {{/if}}
-            {{/each}}
-
-            <hr/>
+            {{#if selvstendigNæringsdrivende.virksomhet.regnskapsfører}}
+                <h3>Regnskapsfører:</h3>
+                <ul>
+                    <li>
+                        <p>Navn: {{selvstendigNæringsdrivende.virksomhet.regnskapsfører.navn}}</p>
+                        <p>Telefon: {{selvstendigNæringsdrivende.virksomhet.regnskapsfører.telefon}}</p>
+                    </li>
+                </ul>
+            {{/if}}
         {{/if}}
     </section>
 
