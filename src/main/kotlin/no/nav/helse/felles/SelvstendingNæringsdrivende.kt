@@ -37,6 +37,11 @@ enum class Næringstyper(val beskrivelse: String) {
     ANNEN("Annen");
 }
 
+data class Land(
+    val landkode: String,
+    val landnavn: String
+)
+
 data class YrkesaktivSisteTreFerdigliknedeÅrene(
     val oppstartsdato: LocalDate
 )

@@ -1,8 +1,6 @@
 package no.nav.helse.felles
 
-import com.fasterxml.jackson.annotation.JsonAlias
 import com.fasterxml.jackson.annotation.JsonFormat
-import java.time.Duration
 import java.time.LocalDate
 
 enum class BarnRelasjon(val utskriftsvennlig: String) {
@@ -12,9 +10,6 @@ enum class BarnRelasjon(val utskriftsvennlig: String) {
     FOSTERFORELDER("Du er fosterforelder til barnet"),
     ANNET("Annet")
 }
-
-
-data class Land(val landkode: String, val landnavn: String)
 
 data class Søker(
     val aktørId: String,
@@ -37,51 +32,11 @@ data class Barn(
     }
 }
 
-enum class Arbeidsform(val utskriftsvennlig: String){
-    FAST("Fast antall timer per uke"),
-    TURNUS("Turnus"),
-    VARIERENDE("Deltid/varierende/tilkalling")
-}
-
 data class Medlemskap(
     val harBoddIUtlandetSiste12Mnd : Boolean,
     val utenlandsoppholdSiste12Mnd: List<Bosted> = listOf(),
     val skalBoIUtlandetNeste12Mnd : Boolean,
     val utenlandsoppholdNeste12Mnd: List<Bosted> = listOf()
-)
-
-data class Enkeltdag(
-    val dato: LocalDate,
-    val tid: Duration
-)
-
-enum class VetOmsorgstilbud {
-    VET_ALLE_TIMER,
-    VET_IKKE
-}
-
-data class PlanUkedager(
-    val mandag: Duration? = null,
-    val tirsdag: Duration? = null,
-    val onsdag: Duration? = null,
-    val torsdag: Duration? = null,
-    val fredag: Duration? = null
-)
-
-data class OmsorgstilbudV2(
-    val historisk: HistoriskOmsorgstilbud? = null,
-    val planlagt: PlanlagtOmsorgstilbud? = null
-)
-
-data class HistoriskOmsorgstilbud(
-    val enkeltdager: List<Enkeltdag>
-)
-
-data class PlanlagtOmsorgstilbud(
-    val enkeltdager: List<Enkeltdag>? = null,
-    val ukedager: PlanUkedager? = null,
-    val vetOmsorgstilbud: VetOmsorgstilbud,
-    val erLiktHverDag: Boolean? = null
 )
 
 data class Nattevåk(
@@ -188,31 +143,3 @@ data class Navn(
     val mellomnavn: String?,
     val etternavn: String
 )
-
-data class Arbeidsforhold(
-    val arbeidsform: Arbeidsform,
-    val jobberNormaltTimer: Double,
-    val erAktivtArbeidsforhold: Boolean? = null,
-    val historisk: ArbeidIPeriode? = null,
-    val planlagt: ArbeidIPeriode? = null
-)
-
-data class ArbeidIPeriode(
-    val jobberIPerioden: JobberIPeriodeSvar,
-    val jobberSomVanlig: Boolean? = null,
-    val enkeltdager: List<Enkeltdag>? = null,
-    val fasteDager: PlanUkedager? = null
-)
-
-enum class JobberIPeriodeSvar(val pdfTekst: String) {
-    JA("Ja"),
-    NEI("Nei"),
-    VET_IKKE("Vet ikke")
-}
-
-enum class SkalJobbe(val verdi: String) {
-    @JsonAlias("ja") JA("ja"), // TODO: 28/05/2021 Fjern @JsonAlias etter prodsetting.
-    @JsonAlias("nei") NEI("nei"), // TODO: 28/05/2021 Fjern @JsonAlias etter prodsetting.
-    @JsonAlias("redusert") REDUSERT("redusert"), // TODO: 28/05/2021 Fjern @JsonAlias etter prodsetting.
-    @JsonAlias("vetIkke") VET_IKKE("vetIkke") // TODO: 28/05/2021 Fjern @JsonAlias etter prodsetting.
-}
