@@ -154,7 +154,7 @@ internal fun MeldingV1.reportMetrics() {
 
     //val skalJobbeString = ansatt?.map { it.skalJobbe.name.lowercase() }.sorted().joinToString("|") //Funksjonen over erstatter
     if(ansatt != null){
-        arbeidsgivereCounter.labels(ansatt?.size.toString(), jobberIPerioden).inc()
+        arbeidsgivereCounter.labels(ansatt.size.toString(), jobberIPerioden).inc()
     }
 
     when {
