@@ -3,7 +3,6 @@ package no.nav.helse.prosessering.v2
 import java.time.Duration
 
 internal val NormalArbeidsdag = Duration.ofHours(7).plusMinutes(30)
-private val NormalArbeidsuke = Duration.ofHours(37).plusMinutes(30)
 
 internal fun Duration.somTekst() : String {
     val timer = seconds / 3600
