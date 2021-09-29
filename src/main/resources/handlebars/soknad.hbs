@@ -603,41 +603,11 @@
                         </ul>
 
                         {{#if omsorgstilbudV2.planlagt.ukedager}}
-                            <p><span class="sporsmalstekst">Mandager: </span>
-                                {{# if omsorgstilbudV2.planlagt.ukedager.mandag }}
-                                    {{omsorgstilbudV2.planlagt.ukedager.mandag}}
-                                {{ else }}
-                                    <span class="ikke_satt">0 timer</span>
-                                {{/if}}
-                            </p>
-                            <p><span class="sporsmalstekst">Tirsdager: </span>
-                                {{# if omsorgstilbudV2.planlagt.ukedager.tirsdag }}
-                                    {{omsorgstilbudV2.planlagt.ukedager.tirsdag}}
-                                {{ else }}
-                                    <span class="ikke_satt">0 timer</span>
-                                {{/if}}
-                            </p>
-                            <p><span class="sporsmalstekst">Onsdager: </span>
-                                {{# if omsorgstilbudV2.planlagt.ukedager.onsdag }}
-                                    {{omsorgstilbudV2.planlagt.ukedager.onsdag}}
-                                {{ else }}
-                                    <span class="ikke_satt">0 timer</span>
-                                {{/if}}
-                            </p>
-                            <p><span class="sporsmalstekst">Torsdager: </span>
-                                {{# if omsorgstilbudV2.planlagt.ukedager.torsdag }}
-                                    {{omsorgstilbudV2.planlagt.ukedager.torsdag}}
-                                {{ else }}
-                                    <span class="ikke_satt">0 timer</span>
-                                {{/if}}
-                            </p>
-                            <p><span class="sporsmalstekst">Fredager: </span>
-                                {{# if omsorgstilbudV2.planlagt.ukedager.fredag }}
-                                    {{omsorgstilbudV2.planlagt.ukedager.fredag}}
-                                {{ else }}
-                                    <span class="ikke_satt">0 timer</span>
-                                {{/if}}
-                            </p>
+                            <p><b>Mandager:</b> {{omsorgstilbudV2.planlagt.ukedager.mandag}}</p>
+                            <p><b>Tirsdager:</b> {{omsorgstilbudV2.planlagt.ukedager.tirsdag}}</p>
+                            <p><b>Onsdager:</b> {{omsorgstilbudV2.planlagt.ukedager.onsdag}}</p>
+                            <p><b>Torsdager:</b> {{omsorgstilbudV2.planlagt.ukedager.torsdag}}</p>
+                            <p><b>Fredager:</b> {{omsorgstilbudV2.planlagt.ukedager.fredag}}</p>
                             <br/>
                         {{/if}}
                     {{/eq}}

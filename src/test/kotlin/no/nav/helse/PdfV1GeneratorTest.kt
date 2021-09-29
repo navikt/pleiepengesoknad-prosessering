@@ -395,8 +395,9 @@ class PdfV1GeneratorTest {
                     ),
                     planlagt = PlanlagtOmsorgstilbud(
                         ukedager = PlanUkedager(
-                            mandag = Duration.ofHours(7).plusMinutes(30),
+                            mandag = null,
                             tirsdag = Duration.ofHours(7).plusMinutes(30),
+                            onsdag = null,
                             torsdag = Duration.ofHours(7).plusMinutes(30),
                             fredag = Duration.ofHours(7).plusMinutes(30),
                         ),
