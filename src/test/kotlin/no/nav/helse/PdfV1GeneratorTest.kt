@@ -92,7 +92,7 @@ class PdfV1GeneratorTest {
                     Utenlandsopphold(
                         fraOgMed = LocalDate.parse("2020-01-01"),
                         tilOgMed = LocalDate.parse("2020-01-10"),
-                        landnavn = "Svergie",
+                        landnavn = "Sverige",
                         landkode = "BHS",
                         erUtenforEøs = false,
                         erBarnetInnlagt = true,
@@ -445,6 +445,15 @@ class PdfV1GeneratorTest {
                         vetOmsorgstilbud = VetOmsorgstilbud.VET_IKKE
                     )
                 )
+            )
+        )
+        if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
+
+        id = "12-kun-frilans-arbeidsforhold"
+        pdf = generator.generateSoknadOppsummeringPdf(
+            melding = fullGyldigMelding(id).copy(
+                selvstendigNæringsdrivende = null,
+                ansatt = null
             )
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
