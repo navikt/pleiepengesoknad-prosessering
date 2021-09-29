@@ -98,18 +98,6 @@
                     {{else}}
                         <li>Det er ikke oppgitt andre medsøkere.</li>
                     {{/if}}
-
-                    {{# if skal_passe_pa_barnet_i_hele_perioden}}
-                        <li>
-                            Du bekrefter at du har omsorgen for barnet i hele perioden du søker om.<br/>
-                            {{# if beskrivelse_omsorgsrollen}}
-                                <div class="fritekst">
-                                    <p class="sporsmalstekst">Din beskrivelse av omsorgsrollen:</p>
-                                    <p class="fritekst_textarea">{{fritekst beskrivelse_omsorgsrollen}}</p>
-                                </div>
-                            {{/if}}
-                        </li>
-                    {{/if}}
                 </ul>
             </li>
         </ul>
@@ -170,25 +158,27 @@
             </ul>
         {{/if}}
 
-        {{#if arbeidsforholdAnsatt}}
-            {{#each arbeidsforholdAnsatt as |arbeidsforhold|~}}
+        {{#if arbeidsgivere}}
+            {{#each arbeidsgivere as |arbeidsforhold|~}}
                 <ul>
                     <li><b>{{arbeidsforhold.navn}} (orgnr: {{arbeidsforhold.organisasjonsnummer}})</b></li>
                     <li class="li-style-none">
                         <ul>
+                            <li class="sporsmalstekst">Er ansatt: {{arbeidsforhold.erAnsatt}}</li>
                             <li class="sporsmalstekst">Arbeidsform: {{arbeidsforhold.arbeidsforhold.arbeidsform}}</li>
                             <li class="sporsmalstekst">Normaltimer per uke: {{arbeidsforhold.arbeidsforhold.jobberNormaltTimer}}</li>
                             <li class="sporsmalstekst">Er det et aktivt arbeidsforhold? {{ jaNeiSvar arbeidsforhold.arbeidsforhold.erAktivtArbeidsforhold}}</li>
-                            {{#if arbeidsforhold.arbeidsforhold.historisk}}
+                            {{#if arbeidsforhold.arbeidsforhold.historiskArbeid}}
                                 <li class="li-style-none">
                                     <b>Historisk:</b>
                                     <ul>
-                                        <li>Jobber i perioden? {{arbeidsforhold.arbeidsforhold.historisk.jobberIPerioden}}</li>
-                                        <li>Jobber som vanlig? {{ jaNeiSvar arbeidsforhold.arbeidsforhold.historisk.jobberSomVanlig}}</li>
-                                        {{#if arbeidsforhold.arbeidsforhold.historisk.enkeltdager}}
+                                        <li>Jobber i perioden? {{arbeidsforhold.arbeidsforhold.historiskArbeid.jobberIPerioden}}</li>
+                                        <li>Jobber som vanlig? {{ jaNeiSvar arbeidsforhold.arbeidsforhold.historiskArbeid.jobberSomVanlig}}</li>
+                                        <li>Er likt hver uke? {{ jaNeiSvar arbeidsforhold.arbeidsforhold.historiskArbeid.erLiktHverUke}}</li>
+                                        {{#if arbeidsforhold.arbeidsforhold.historiskArbeid.enkeltdager}}
                                             <li class="li-style-none"><b>Enkeltdager:</b>
                                                 <ul>
-                                                    {{#each arbeidsforhold.arbeidsforhold.historisk.enkeltdager as |enkeltdagerPerUke|~}}
+                                                    {{#each arbeidsforhold.arbeidsforhold.historiskArbeid.enkeltdager as |enkeltdagerPerUke|~}}
                                                         <li>
                                                             <p>Uke {{enkeltdagerPerUke.uke}}</p>
                                                             <ul>
@@ -202,30 +192,31 @@
                                             </li>
                                         {{/if}}
 
-                                        {{#if arbeidsforhold.arbeidsforhold.historisk.fasteDager}}
+                                        {{#if arbeidsforhold.arbeidsforhold.historiskArbeid.fasteDager}}
                                             <li class="li-style-none"><b>Faste dager:</b>
                                                 <ul>
-                                                    <li>Mandag: {{arbeidsforhold.arbeidsforhold.historisk.fasteDager.mandag}}</li>
-                                                    <li>Tirsdag: {{arbeidsforhold.arbeidsforhold.historisk.fasteDager.tirsdag}}</li>
-                                                    <li>Onsdag: {{arbeidsforhold.arbeidsforhold.historisk.fasteDager.onsdag}}</li>
-                                                    <li>Torsdag: {{arbeidsforhold.arbeidsforhold.historisk.fasteDager.torsdag}}</li>
-                                                    <li>Fredag: {{arbeidsforhold.arbeidsforhold.historisk.fasteDager.fredag}}</li>
+                                                    <li>Mandag: {{arbeidsforhold.arbeidsforhold.historiskArbeid.fasteDager.mandag}}</li>
+                                                    <li>Tirsdag: {{arbeidsforhold.arbeidsforhold.historiskArbeid.fasteDager.tirsdag}}</li>
+                                                    <li>Onsdag: {{arbeidsforhold.arbeidsforhold.historiskArbeid.fasteDager.onsdag}}</li>
+                                                    <li>Torsdag: {{arbeidsforhold.arbeidsforhold.historiskArbeid.fasteDager.torsdag}}</li>
+                                                    <li>Fredag: {{arbeidsforhold.arbeidsforhold.historiskArbeid.fasteDager.fredag}}</li>
                                                 </ul>
                                             </li>
                                         {{/if}}
                                     </ul>
                                 </li>
                             {{/if}}
-                            {{#if arbeidsforhold.arbeidsforhold.planlagt}}
+                            {{#if arbeidsforhold.arbeidsforhold.planlagtArbeid}}
                                 <li class="li-style-none">
                                     <b>Planlagt:</b>
                                     <ul>
-                                        <li>Jobber i perioden? {{arbeidsforhold.arbeidsforhold.planlagt.jobberIPerioden}}</li>
-                                        <li>Jobber som vanlig? {{ jaNeiSvar arbeidsforhold.arbeidsforhold.planlagt.jobberSomVanlig}}</li>
-                                        {{#if arbeidsforhold.arbeidsforhold.planlagt.enkeltdager}}
+                                        <li>Jobber i perioden? {{arbeidsforhold.arbeidsforhold.planlagtArbeid.jobberIPerioden}}</li>
+                                        <li>Jobber som vanlig? {{ jaNeiSvar arbeidsforhold.arbeidsforhold.planlagtArbeid.jobberSomVanlig}}</li>
+                                        <li>Er likt hver uke? {{ jaNeiSvar arbeidsforhold.arbeidsforhold.planlagtArbeid.erLiktHverUke}}</li>
+                                        {{#if arbeidsforhold.arbeidsforhold.planlagtArbeid.enkeltdager}}
                                             <li class="li-style-none"><b>Enkeltdager:</b>
                                                 <ul>
-                                                    {{#each arbeidsforhold.arbeidsforhold.planlagt.enkeltdager as |enkeltdagerPerUke|~}}
+                                                    {{#each arbeidsforhold.arbeidsforhold.planlagtArbeid.enkeltdager as |enkeltdagerPerUke|~}}
                                                         <li>
                                                             <p>Uke {{enkeltdagerPerUke.uke}}</p>
                                                             <ul>
@@ -239,14 +230,14 @@
                                             </li>
                                         {{/if}}
 
-                                        {{#if arbeidsforhold.arbeidsforhold.planlagt.fasteDager}}
+                                        {{#if arbeidsforhold.arbeidsforhold.planlagtArbeid.fasteDager}}
                                             <li class="li-style-none"><b>Faste dager:</b>
                                                 <ul>
-                                                    <li>Mandag: {{arbeidsforhold.arbeidsforhold.planlagt.fasteDager.mandag}}</li>
-                                                    <li>Tirsdag: {{arbeidsforhold.arbeidsforhold.planlagt.fasteDager.tirsdag}}</li>
-                                                    <li>Onsdag: {{arbeidsforhold.arbeidsforhold.planlagt.fasteDager.onsdag}}</li>
-                                                    <li>Torsdag: {{arbeidsforhold.arbeidsforhold.planlagt.fasteDager.torsdag}}</li>
-                                                    <li>Fredag: {{arbeidsforhold.arbeidsforhold.planlagt.fasteDager.fredag}}</li>
+                                                    <li>Mandag: {{arbeidsforhold.arbeidsforhold.planlagtArbeid.fasteDager.mandag}}</li>
+                                                    <li>Tirsdag: {{arbeidsforhold.arbeidsforhold.planlagtArbeid.fasteDager.tirsdag}}</li>
+                                                    <li>Onsdag: {{arbeidsforhold.arbeidsforhold.planlagtArbeid.fasteDager.onsdag}}</li>
+                                                    <li>Torsdag: {{arbeidsforhold.arbeidsforhold.planlagtArbeid.fasteDager.torsdag}}</li>
+                                                    <li>Fredag: {{arbeidsforhold.arbeidsforhold.planlagtArbeid.fasteDager.fredag}}</li>
                                                 </ul>
                                             </li>
                                         {{/if}}
@@ -267,16 +258,17 @@
                         <li class="sporsmalstekst">Arbeidsform: {{frilans.arbeidsforhold.arbeidsform}}</li>
                         <li class="sporsmalstekst">Normaltimer per uke: {{frilans.arbeidsforhold.jobberNormaltTimer}}</li>
                         <li class="sporsmalstekst">Er det et aktivt arbeidsforhold? {{ jaNeiSvar frilans.arbeidsforhold.erAktivtArbeidsforhold}}</li>
-                        {{#if frilans.arbeidsforhold.historisk}}
+                        {{#if frilans.arbeidsforhold.historiskArbeid}}
                             <li class="li-style-none">
                                 <b>Historisk:</b>
                                 <ul>
-                                    <li>Jobber i perioden? {{frilans.arbeidsforhold.historisk.jobberIPerioden}}</li>
-                                    <li>Jobber som vanlig? {{ jaNeiSvar frilans.arbeidsforhold.historisk.jobberSomVanlig}}</li>
-                                    {{#if frilans.arbeidsforhold.historisk.enkeltdager}}
+                                    <li>Jobber i perioden? {{frilans.arbeidsforhold.historiskArbeid.jobberIPerioden}}</li>
+                                    <li>Jobber som vanlig? {{ jaNeiSvar frilans.arbeidsforhold.historiskArbeid.jobberSomVanlig}}</li>
+                                    <li>Er likt hver uke? {{ jaNeiSvar frilans.arbeidsforhold.historiskArbeid.erLiktHverUke}}</li>
+                                    {{#if frilans.arbeidsforhold.historiskArbeid.enkeltdager}}
                                         <li class="li-style-none"><b>Enkeltdager:</b>
                                             <ul>
-                                                {{#each frilans.arbeidsforhold.historisk.enkeltdager as |enkeltdagerPerUke|~}}
+                                                {{#each frilans.arbeidsforhold.historiskArbeid.enkeltdager as |enkeltdagerPerUke|~}}
                                                     <li>
                                                         <p>Uke {{enkeltdagerPerUke.uke}}</p>
                                                         <ul>
@@ -290,30 +282,31 @@
                                         </li>
                                     {{/if}}
 
-                                    {{#if frilans.arbeidsforhold.historisk.fasteDager}}
+                                    {{#if frilans.arbeidsforhold.historiskArbeid.fasteDager}}
                                         <li class="li-style-none"><b>Faste dager:</b>
                                             <ul>
-                                                <li>Mandag: {{frilans.arbeidsforhold.historisk.fasteDager.mandag}}</li>
-                                                <li>Tirsdag: {{frilans.arbeidsforhold.historisk.fasteDager.tirsdag}}</li>
-                                                <li>Onsdag: {{frilans.arbeidsforhold.historisk.fasteDager.onsdag}}</li>
-                                                <li>Torsdag: {{frilans.arbeidsforhold.historisk.fasteDager.torsdag}}</li>
-                                                <li>Fredag: {{frilans.arbeidsforhold.historisk.fasteDager.fredag}}</li>
+                                                <li>Mandag: {{frilans.arbeidsforhold.historiskArbeid.fasteDager.mandag}}</li>
+                                                <li>Tirsdag: {{frilans.arbeidsforhold.historiskArbeid.fasteDager.tirsdag}}</li>
+                                                <li>Onsdag: {{frilans.arbeidsforhold.historiskArbeid.fasteDager.onsdag}}</li>
+                                                <li>Torsdag: {{frilans.arbeidsforhold.historiskArbeid.fasteDager.torsdag}}</li>
+                                                <li>Fredag: {{frilans.arbeidsforhold.historiskArbeid.fasteDager.fredag}}</li>
                                             </ul>
                                         </li>
                                     {{/if}}
                                 </ul>
                             </li>
                         {{/if}}
-                        {{#if frilans.arbeidsforhold.planlagt}}
+                        {{#if frilans.arbeidsforhold.planlagtArbeid}}
                             <li class="li-style-none">
                                 <b>Planlagt:</b>
                                 <ul>
-                                    <li>Jobber i perioden? {{frilans.arbeidsforhold.planlagt.jobberIPerioden}}</li>
-                                    <li>Jobber som vanlig? {{ jaNeiSvar frilans.arbeidsforhold.planlagt.jobberSomVanlig}}</li>
-                                    {{#if frilans.arbeidsforhold.planlagt.enkeltdager}}
+                                    <li>Jobber i perioden? {{frilans.arbeidsforhold.planlagtArbeid.jobberIPerioden}}</li>
+                                    <li>Jobber som vanlig? {{ jaNeiSvar frilans.arbeidsforhold.planlagtArbeid.jobberSomVanlig}}</li>
+                                    <li>Er likt hver uke? {{ jaNeiSvar frilans.arbeidsforhold.planlagtArbeid.erLiktHverUke}}</li>
+                                    {{#if frilans.arbeidsforhold.planlagtArbeid.enkeltdager}}
                                         <li class="li-style-none"><b>Enkeltdager:</b>
                                             <ul>
-                                                {{#each frilans.arbeidsforhold.planlagt.enkeltdager as |enkeltdagerPerUke|~}}
+                                                {{#each frilans.arbeidsforhold.planlagtArbeid.enkeltdager as |enkeltdagerPerUke|~}}
                                                     <li>
                                                         <p>Uke {{enkeltdagerPerUke.uke}}</p>
                                                         <ul>
@@ -327,14 +320,14 @@
                                         </li>
                                     {{/if}}
 
-                                    {{#if frilans.arbeidsforhold.planlagt.fasteDager}}
+                                    {{#if frilans.arbeidsforhold.planlagtArbeid.fasteDager}}
                                         <li class="li-style-none"><b>Faste dager:</b>
                                             <ul>
-                                                <li>Mandag: {{frilans.arbeidsforhold.planlagt.fasteDager.mandag}}</li>
-                                                <li>Tirsdag: {{frilans.arbeidsforhold.planlagt.fasteDager.tirsdag}}</li>
-                                                <li>Onsdag: {{frilans.arbeidsforhold.planlagt.fasteDager.onsdag}}</li>
-                                                <li>Torsdag: {{frilans.arbeidsforhold.planlagt.fasteDager.torsdag}}</li>
-                                                <li>Fredag: {{frilans.arbeidsforhold.planlagt.fasteDager.fredag}}</li>
+                                                <li>Mandag: {{frilans.arbeidsforhold.planlagtArbeid.fasteDager.mandag}}</li>
+                                                <li>Tirsdag: {{frilans.arbeidsforhold.planlagtArbeid.fasteDager.tirsdag}}</li>
+                                                <li>Onsdag: {{frilans.arbeidsforhold.planlagtArbeid.fasteDager.onsdag}}</li>
+                                                <li>Torsdag: {{frilans.arbeidsforhold.planlagtArbeid.fasteDager.torsdag}}</li>
+                                                <li>Fredag: {{frilans.arbeidsforhold.planlagtArbeid.fasteDager.fredag}}</li>
                                             </ul>
                                         </li>
                                     {{/if}}
@@ -354,16 +347,17 @@
                         <li class="sporsmalstekst">Arbeidsform: {{selvstendigNæringsdrivende.arbeidsforhold.arbeidsform}}</li>
                         <li class="sporsmalstekst">Normaltimer per uke: {{selvstendigNæringsdrivende.arbeidsforhold.jobberNormaltTimer}}</li>
                         <li class="sporsmalstekst">Er det et aktivt arbeidsforhold? {{ jaNeiSvar selvstendigNæringsdrivende.arbeidsforhold.erAktivtArbeidsforhold}}</li>
-                        {{#if selvstendigNæringsdrivende.arbeidsforhold.historisk}}
+                        {{#if selvstendigNæringsdrivende.arbeidsforhold.historiskArbeid}}
                             <li class="li-style-none">
                                 <b>Historisk:</b>
                                 <ul>
-                                    <li>Jobber i perioden? {{selvstendigNæringsdrivende.arbeidsforhold.historisk.jobberIPerioden}}</li>
-                                    <li>Jobber som vanlig? {{ jaNeiSvar selvstendigNæringsdrivendeselvstendigNæringsdrivende.arbeidsforhold.historisk.jobberSomVanlig}}</li>
-                                    {{#if selvstendigNæringsdrivendeselvstendigNæringsdrivende.arbeidsforhold.historisk.enkeltdager}}
+                                    <li>Jobber i perioden? {{selvstendigNæringsdrivende.arbeidsforhold.historiskArbeid.jobberIPerioden}}</li>
+                                    <li>Jobber som vanlig? {{ jaNeiSvar selvstendigNæringsdrivende.arbeidsforhold.historiskArbeid.jobberSomVanlig}}</li>
+                                    <li>Er likt hver uke? {{ jaNeiSvar selvstendigNæringsdrivende.arbeidsforhold.historiskArbeid.erLiktHverUke}}</li>
+                                    {{#if selvstendigNæringsdrivendeselvstendigNæringsdrivende.arbeidsforhold.historiskArbeid.enkeltdager}}
                                         <li class="li-style-none"><b>Enkeltdager:</b>
                                             <ul>
-                                                {{#each selvstendigNæringsdrivendeselvstendigNæringsdrivende.arbeidsforhold.historisk.enkeltdager as |enkeltdagerPerUke|~}}
+                                                {{#each selvstendigNæringsdrivende.arbeidsforhold.historiskArbeid.enkeltdager as |enkeltdagerPerUke|~}}
                                                     <li>
                                                         <p>Uke {{enkeltdagerPerUke.uke}}</p>
                                                         <ul>
@@ -377,30 +371,31 @@
                                         </li>
                                     {{/if}}
 
-                                    {{#if selvstendigNæringsdrivende.arbeidsforhold.historisk.fasteDager}}
+                                    {{#if selvstendigNæringsdrivende.arbeidsforhold.historiskArbeid.fasteDager}}
                                         <li class="li-style-none"><b>Faste dager:</b>
                                             <ul>
-                                                <li>Mandag: {{selvstendigNæringsdrivende.arbeidsforhold.historisk.fasteDager.mandag}}</li>
-                                                <li>Tirsdag: {{selvstendigNæringsdrivende.arbeidsforhold.historisk.fasteDager.tirsdag}}</li>
-                                                <li>Onsdag: {{selvstendigNæringsdrivende.arbeidsforhold.historisk.fasteDager.onsdag}}</li>
-                                                <li>Torsdag: {{selvstendigNæringsdrivende.arbeidsforhold.historisk.fasteDager.torsdag}}</li>
-                                                <li>Fredag: {{selvstendigNæringsdrivende.arbeidsforhold.historisk.fasteDager.fredag}}</li>
+                                                <li>Mandag: {{selvstendigNæringsdrivende.arbeidsforhold.historiskArbeid.fasteDager.mandag}}</li>
+                                                <li>Tirsdag: {{selvstendigNæringsdrivende.arbeidsforhold.historiskArbeid.fasteDager.tirsdag}}</li>
+                                                <li>Onsdag: {{selvstendigNæringsdrivende.arbeidsforhold.historiskArbeid.fasteDager.onsdag}}</li>
+                                                <li>Torsdag: {{selvstendigNæringsdrivende.arbeidsforhold.historiskArbeid.fasteDager.torsdag}}</li>
+                                                <li>Fredag: {{selvstendigNæringsdrivende.arbeidsforhold.historiskArbeid.fasteDager.fredag}}</li>
                                             </ul>
                                         </li>
                                     {{/if}}
                                 </ul>
                             </li>
                         {{/if}}
-                        {{#if selvstendigNæringsdrivende.arbeidsforhold.planlagt}}
+                        {{#if selvstendigNæringsdrivende.arbeidsforhold.planlagtArbeid}}
                             <li class="li-style-none">
                                 <b>Planlagt:</b>
                                 <ul>
-                                    <li>Jobber i perioden? {{selvstendigNæringsdrivende.arbeidsforhold.planlagt.jobberIPerioden}}</li>
-                                    <li>Jobber som vanlig? {{ jaNeiSvar selvstendigNæringsdrivende.arbeidsforhold.planlagt.jobberSomVanlig}}</li>
-                                    {{#if selvstendigNæringsdrivende.arbeidsforhold.planlagt.enkeltdager}}
+                                    <li>Jobber i perioden? {{selvstendigNæringsdrivende.arbeidsforhold.planlagtArbeid.jobberIPerioden}}</li>
+                                    <li>Jobber som vanlig? {{ jaNeiSvar selvstendigNæringsdrivende.arbeidsforhold.planlagtArbeid.jobberSomVanlig}}</li>
+                                    <li>Er likt hver uke? {{ jaNeiSvar selvstendigNæringsdrivende.arbeidsforhold.planlagtArbeid.erLiktHverUke}}</li>
+                                    {{#if selvstendigNæringsdrivende.arbeidsforhold.planlagtArbeid.enkeltdager}}
                                         <li class="li-style-none"><b>Enkeltdager:</b>
                                             <ul>
-                                                {{#each selvstendigNæringsdrivende.arbeidsforhold.planlagt.enkeltdager as |enkeltdagerPerUke|~}}
+                                                {{#each selvstendigNæringsdrivende.arbeidsforhold.planlagtArbeid.enkeltdager as |enkeltdagerPerUke|~}}
                                                     <li>
                                                         <p>Uke {{enkeltdagerPerUke.uke}}</p>
                                                         <ul>
@@ -414,14 +409,14 @@
                                         </li>
                                     {{/if}}
 
-                                    {{#if selvstendigNæringsdrivende.arbeidsforhold.planlagt.fasteDager}}
+                                    {{#if selvstendigNæringsdrivende.arbeidsforhold.planlagtArbeid.fasteDager}}
                                         <li class="li-style-none"><b>Faste dager:</b>
                                             <ul>
-                                                <li>Mandag: {{selvstendigNæringsdrivende.arbeidsforhold.planlagt.fasteDager.mandag}}</li>
-                                                <li>Tirsdag: {{selvstendigNæringsdrivende.arbeidsforhold.planlagt.fasteDager.tirsdag}}</li>
-                                                <li>Onsdag: {{selvstendigNæringsdrivende.arbeidsforhold.planlagt.fasteDager.onsdag}}</li>
-                                                <li>Torsdag: {{selvstendigNæringsdrivende.arbeidsforhold.planlagt.fasteDager.torsdag}}</li>
-                                                <li>Fredag: {{selvstendigNæringsdrivende.arbeidsforhold.planlagt.fasteDager.fredag}}</li>
+                                                <li>Mandag: {{selvstendigNæringsdrivende.arbeidsforhold.planlagtArbeid.fasteDager.mandag}}</li>
+                                                <li>Tirsdag: {{selvstendigNæringsdrivende.arbeidsforhold.planlagtArbeid.fasteDager.tirsdag}}</li>
+                                                <li>Onsdag: {{selvstendigNæringsdrivende.arbeidsforhold.planlagtArbeid.fasteDager.onsdag}}</li>
+                                                <li>Torsdag: {{selvstendigNæringsdrivende.arbeidsforhold.planlagtArbeid.fasteDager.torsdag}}</li>
+                                                <li>Fredag: {{selvstendigNæringsdrivende.arbeidsforhold.planlagtArbeid.fasteDager.fredag}}</li>
                                             </ul>
                                         </li>
                                     {{/if}}
@@ -537,17 +532,17 @@
 
     <section id="omsorgstilbud">
         <h2>Omsorgstilbud</h2>
-        {{#if omsorgstilbudV2}}
-            {{#if omsorgstilbudV2.periodenStarterIFortid}}
+        {{#if omsorgstilbud}}
+            {{#if omsorgstilbud.periodenStarterIFortid}}
                 <p class="sporsmalstekst">Har barnet vært noe i et omsorgstilbud i
-                    perioden {{omsorgstilbudV2.søknadsperiodeFraOgMed}} til {{omsorgstilbudV2.fortidTilOgMed}}?</p>
-                {{#if omsorgstilbudV2.historisk}}
+                    perioden {{omsorgstilbud.søknadsperiodeFraOgMed}} til {{omsorgstilbud.fortidTilOgMed}}?</p>
+                {{#if omsorgstilbud.historisk}}
                     <p>Ja</p>
                     <br/>
 
                     <p class="sporsmalstekst">Tid barnet har vært i omsorgstilbud:</p>
                     <ul>
-                        {{#each omsorgstilbudV2.historisk.enkeltdagerPerUke as |enkeltdagerPerUke|~}}
+                        {{#each omsorgstilbud.historisk.enkeltdagerPerUke as |enkeltdagerPerUke|~}}
                             <li>
                                 <p>Uke {{enkeltdagerPerUke.uke}}</p>
                                 <ul>
@@ -567,28 +562,28 @@
                 {{/if}}
             {{/if}}
 
-            {{#if omsorgstilbudV2.periodenAvsluttesIFremtiden}}
+            {{#if omsorgstilbud.periodenAvsluttesIFremtiden}}
                 <p class="sporsmalstekst">Skal barnet være noe i et omsorgstilbud i
-                    perioden {{omsorgstilbudV2.fremtidFraOgMed}} til {{omsorgstilbudV2.søknadsperiodeTilOgMed}}?</p>
+                    perioden {{omsorgstilbud.fremtidFraOgMed}} til {{omsorgstilbud.søknadsperiodeTilOgMed}}?</p>
 
-                {{#if omsorgstilbudV2.planlagt}}
+                {{#if omsorgstilbud.planlagt}}
                     <p>Ja</p>
                     <br/>
 
                     <p class="sporsmalstekst">Kan du oppgi tiden barnet skal være i omsorgstilbudet?</p>
-                    {{#eq omsorgstilbudV2.planlagt.vetOmsorgstilbud "VET_ALLE_TIMER" }}
+                    {{#eq omsorgstilbud.planlagt.vetOmsorgstilbud "VET_ALLE_TIMER" }}
                         <p>Ja</p>
                         <br/>
-                        {{#if omsorgstilbudV2.planlagt.harSvartPåErLiktHverDag}}
+                        {{#if omsorgstilbud.planlagt.harSvartPåErLiktHverDag}}
                             <p><span class="sporsmalstekst">Er tiden barnet skal være i omsorgstilbudet lik for hver dag i perioden du søker om? Det
                                     vil si at alle mandager er like, alle tirsdager er like og så videre</span></p>
-                            <p>{{ jaNeiSvar omsorgstilbudV2.planlagt.erLiktHverDag }}</p>
+                            <p>{{ jaNeiSvar omsorgstilbud.planlagt.erLiktHverDag }}</p>
                         {{/if}}
                         <br/>
 
                         <p class="sporsmalstekst">Tid barnet skal være i omsorgstilbudet:</p>
                         <ul>
-                            {{#each omsorgstilbudV2.planlagt.enkeltdagerPerUke as |enkeltdagerPerUke|~}}
+                            {{#each omsorgstilbud.planlagt.enkeltdagerPerUke as |enkeltdagerPerUke|~}}
                                 <li>
                                     <p>Uke {{enkeltdagerPerUke.uke}}</p>
                                     <ul>
@@ -602,17 +597,17 @@
                             {{/each}}
                         </ul>
 
-                        {{#if omsorgstilbudV2.planlagt.ukedager}}
-                            <p><b>Mandager:</b> {{omsorgstilbudV2.planlagt.ukedager.mandag}}</p>
-                            <p><b>Tirsdager:</b> {{omsorgstilbudV2.planlagt.ukedager.tirsdag}}</p>
-                            <p><b>Onsdager:</b> {{omsorgstilbudV2.planlagt.ukedager.onsdag}}</p>
-                            <p><b>Torsdager:</b> {{omsorgstilbudV2.planlagt.ukedager.torsdag}}</p>
-                            <p><b>Fredager:</b> {{omsorgstilbudV2.planlagt.ukedager.fredag}}</p>
+                        {{#if omsorgstilbud.planlagt.ukedager}}
+                            <p><b>Mandager:</b> {{omsorgstilbud.planlagt.ukedager.mandag}}</p>
+                            <p><b>Tirsdager:</b> {{omsorgstilbud.planlagt.ukedager.tirsdag}}</p>
+                            <p><b>Onsdager:</b> {{omsorgstilbud.planlagt.ukedager.onsdag}}</p>
+                            <p><b>Torsdager:</b> {{omsorgstilbud.planlagt.ukedager.torsdag}}</p>
+                            <p><b>Fredager:</b> {{omsorgstilbud.planlagt.ukedager.fredag}}</p>
                             <br/>
                         {{/if}}
                     {{/eq}}
 
-                    {{#eq omsorgstilbudV2.planlagt.vetOmsorgstilbud "VET_IKKE" }}
+                    {{#eq omsorgstilbud.planlagt.vetOmsorgstilbud "VET_IKKE" }}
                         <p>Nei</p>
                     {{/eq}}
 

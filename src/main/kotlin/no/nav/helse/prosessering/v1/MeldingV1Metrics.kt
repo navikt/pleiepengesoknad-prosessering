@@ -101,10 +101,10 @@ internal fun MeldingV1.reportMetrics() {
         søknadsperiodeCounter.labels("fremtid").inc()
     }
 
-    when (omsorgstilbudV2) {
+    when (omsorgstilbud) {
         null -> omsorgstilbudCounter.labels("omsorgstilbud", "nei").inc()
         else -> {
-            omsorgstilbudV2.apply {
+            omsorgstilbud.apply {
                 historisk?.let {
                     if (it.enkeltdager.isNotEmpty()) {
                         omsorgstilbudCounter.labels("omsorgstilbud", "historiskeEnkeltdager").inc()
@@ -140,21 +140,21 @@ internal fun MeldingV1.reportMetrics() {
         false -> nattevaakCounter.labels("nattevåk", "nei").inc()
     }
 
-    val jobberIPerioden = ansatt?.mapNotNull {
-        val historisk = if(it.arbeidsforhold.historisk != null) {
-            "historisk_" + it.arbeidsforhold.historisk.jobberIPerioden.name.lowercase()
+    val jobberIPerioden = arbeidsgivere?.mapNotNull {
+        val historisk = if(it.arbeidsforhold.historiskArbeid != null) {
+            "historisk_" + it.arbeidsforhold.historiskArbeid.jobberIPerioden.name.lowercase()
         } else "tom_historisk_"
 
-        val planlagt = if(it.arbeidsforhold.planlagt != null) {
-            "planlagt" + it.arbeidsforhold.planlagt.jobberIPerioden.name.lowercase()
+        val planlagt = if(it.arbeidsforhold.planlagtArbeid != null) {
+            "planlagt" + it.arbeidsforhold.planlagtArbeid.jobberIPerioden.name.lowercase()
         } else "tom_planlagt"
 
         "$historisk|$planlagt"
     }?.sorted()?.joinToString("|")
 
     //val skalJobbeString = ansatt?.map { it.skalJobbe.name.lowercase() }.sorted().joinToString("|") //Funksjonen over erstatter
-    if(ansatt != null){
-        arbeidsgivereCounter.labels(ansatt.size.toString(), jobberIPerioden).inc()
+    if(arbeidsgivere != null){
+        arbeidsgivereCounter.labels(arbeidsgivere.size.toString(), jobberIPerioden).inc()
     }
 
     when {
@@ -169,7 +169,7 @@ internal fun MeldingV1.reportMetrics() {
     }
 }
 
-private fun MeldingV1.harArbeidsforhold() = (this.ansatt != null && this.ansatt.isNotEmpty())
+private fun MeldingV1.harArbeidsforhold() = (this.arbeidsgivere != null && this.arbeidsgivere.isNotEmpty())
 
 private fun MeldingV1.erArbeidstaker() =
     this.harArbeidsforhold() && selvstendigNæringsdrivende == null && frilans == null

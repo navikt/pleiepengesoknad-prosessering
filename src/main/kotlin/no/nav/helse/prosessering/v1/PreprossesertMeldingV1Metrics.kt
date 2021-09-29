@@ -51,7 +51,7 @@ internal fun PreprossesertMeldingV1.reportMetrics() {
         barnetsAlderIUkerCounter.labels(barnetsFodselsdato.ukerSiden()).inc()
     }
 
-    valgteArbeidsgivereHistogram.observe(ansatt?.size?.toDouble() ?: 0.0)
+    valgteArbeidsgivereHistogram.observe(arbeidsgivere?.size?.toDouble() ?: 0.0)
     idTypePaaBarnCounter.labels(barn.idType()).inc()
     periodeSoknadGjelderIUkerHistogram.observe(ChronoUnit.WEEKS.between(fraOgMed, tilOgMed).toDouble())
 

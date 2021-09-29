@@ -122,10 +122,10 @@ internal class PdfV1Generator {
                         ),
                         "hjelp" to mapOf(
                             "har_medsoker" to melding.harMedsøker,
-                            "ingen_arbeidsgivere" to (melding.ansatt == null),
+                            "ingen_arbeidsgivere" to (melding.arbeidsgivere == null),
                             "sprak" to melding.språk?.sprakTilTekst()
                         ),
-                        "omsorgstilbudV2" to melding.omsorgstilbudV2?.somMap(melding.fraOgMed, melding.tilOgMed),
+                        "omsorgstilbud" to melding.omsorgstilbud?.somMap(melding.fraOgMed, melding.tilOgMed),
                         "nattevaak" to nattevåk(melding.nattevåk),
                         "beredskap" to beredskap(melding.beredskap),
                         "utenlandsoppholdIPerioden" to mapOf(
@@ -136,15 +136,12 @@ internal class PdfV1Generator {
                             "skalTaUtFerieIPerioden" to melding.ferieuttakIPerioden?.skalTaUtFerieIPerioden,
                             "ferieuttak" to melding.ferieuttakIPerioden?.ferieuttak?.somMapFerieuttak()
                         ),
-                        "skal_bekrefte_omsorg" to melding.skalBekrefteOmsorg,
-                        "skal_passe_pa_barnet_i_hele_perioden" to melding.skalPassePaBarnetIHelePerioden,
-                        "beskrivelse_omsorgsrollen" to melding.beskrivelseOmsorgsrollen,
                         "barnRelasjon" to melding.barnRelasjon?.utskriftsvennlig,
                         "barnRelasjonBeskrivelse" to melding.barnRelasjonBeskrivelse,
                         "harVærtEllerErVernepliktig" to melding.harVærtEllerErVernepliktig,
                         "frilans" to melding.frilans?.somMap(),
                         "selvstendigNæringsdrivende" to melding.selvstendigNæringsdrivende?.somMap(),
-                        "arbeidsforholdAnsatt" to melding.ansatt?.somMapAnsatt(),
+                        "arbeidsgivere" to melding.arbeidsgivere?.somMapAnsatt(),
                         "hjelper" to mapOf( // TODO: 04/06/2021 Kan fjerne hjelpemetoden når feltet er prodsatt i api og front
                             "harFlereAktiveVirksomheterErSatt" to melding.harFlereAktiveVirksomehterSatt(),
                             "harVærtEllerErVernepliktigErSatt" to erBooleanSatt(melding.harVærtEllerErVernepliktig)
@@ -228,7 +225,7 @@ private fun beredskap(beredskap: Beredskap?) = when {
     }
 }
 
-private fun OmsorgstilbudV2.somMap(fraOgMed: LocalDate, tilOgMed: LocalDate): Map<String, Any?> {
+private fun Omsorgstilbud.somMap(fraOgMed: LocalDate, tilOgMed: LocalDate): Map<String, Any?> {
     val DAGENS_DATO = LocalDate.now()
     val GÅRSDAGENS_DATO = DAGENS_DATO.minusDays(1)
     return mapOf(
@@ -291,13 +288,14 @@ private fun Arbeidsforhold.somMap(): Map<String, Any?> = mapOf(
     "arbeidsform" to arbeidsform.utskriftsvennlig.lowercase(),
     "jobberNormaltTimer" to jobberNormaltTimer,
     "erAktivtArbeidsforhold" to erAktivtArbeidsforhold,
-    "historisk" to historisk?.somMap(),
-    "planlagt" to planlagt?.somMap()
+    "historiskArbeid" to historiskArbeid?.somMap(),
+    "planlagtArbeid" to planlagtArbeid?.somMap()
 )
 
 private fun ArbeidIPeriode.somMap() : Map<String, Any?> = mapOf(
     "jobberIPerioden" to jobberIPerioden.pdfTekst,
     "jobberSomVanlig" to jobberSomVanlig,
+    "erLiktHverUke" to erLiktHverUke,
     "enkeltdager" to enkeltdager?.somMapPerUke(),
     "fasteDager" to fasteDager?.somMap()
 )
@@ -360,6 +358,7 @@ private fun List<ArbeidsforholdAnsatt>.somMapAnsatt() = map {
     mapOf<String, Any?>(
         "navn" to it.navn,
         "organisasjonsnummer" to it.organisasjonsnummer,
+        "erAnsatt" to it.erAnsatt,
         "arbeidsforhold" to it.arbeidsforhold.somMap()
     )
 }

@@ -22,15 +22,12 @@ data class MeldingV1 (
     val samtidigHjemme: Boolean? = null,
     val harForståttRettigheterOgPlikter : Boolean,
     val harBekreftetOpplysninger : Boolean,
-    val omsorgstilbudV2: OmsorgstilbudV2? = null,
+    val omsorgstilbud: Omsorgstilbud? = null,
     val beredskap: Beredskap?,
     val nattevåk: Nattevåk?,
     val frilans: Frilans?,
     val selvstendigNæringsdrivende: SelvstendigNæringsdrivende? = null,
-    val ansatt: List<ArbeidsforholdAnsatt>? = null,
-    val skalBekrefteOmsorg: Boolean? = null, // TODO: Fjern optional når prodsatt.
-    val skalPassePaBarnetIHelePerioden: Boolean? = null, // TODO: Fjern optional når prodsatt.
-    val beskrivelseOmsorgsrollen: String? = null, // TODO: Fjern optional når prodsatt.
+    val arbeidsgivere: List<ArbeidsforholdAnsatt>? = null,
     val barnRelasjon: BarnRelasjon? = null,
     val barnRelasjonBeskrivelse: String? = null,
     val harVærtEllerErVernepliktig: Boolean? = null,
@@ -40,5 +37,6 @@ data class MeldingV1 (
 data class ArbeidsforholdAnsatt(
     val navn: String? = null,
     val organisasjonsnummer: String,
+    val erAnsatt: Boolean,
     val arbeidsforhold: Arbeidsforhold
 )

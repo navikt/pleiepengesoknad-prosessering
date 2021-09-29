@@ -143,18 +143,20 @@ internal object SøknadUtils {
                 arbeidsform = Arbeidsform.FAST,
                 jobberNormaltTimer = 30.0,
                 erAktivtArbeidsforhold = true,
-                historisk = ArbeidIPeriode(
+                historiskArbeid = ArbeidIPeriode(
                     jobberIPerioden = JobberIPeriodeSvar.JA,
                     jobberSomVanlig = false,
+                    erLiktHverUke = false,
                     enkeltdager = listOf(
                         Enkeltdag(dato = LocalDate.now(), tid = Duration.ofHours(4)),
                         Enkeltdag(dato = LocalDate.now().plusDays(3), tid = Duration.ofHours(4)),
                         Enkeltdag(dato = LocalDate.now().plusWeeks(1), tid = Duration.ofHours(4))
                     )
                 ),
-                planlagt = ArbeidIPeriode(
+                planlagtArbeid = ArbeidIPeriode(
                     jobberIPerioden = JobberIPeriodeSvar.JA,
                     jobberSomVanlig = false,
+                    erLiktHverUke = true,
                     enkeltdager = null,
                     fasteDager = PlanUkedager(
                         mandag = Duration.ofHours(4),
@@ -180,18 +182,20 @@ internal object SøknadUtils {
                 arbeidsform = Arbeidsform.FAST,
                 jobberNormaltTimer = 30.0,
                 erAktivtArbeidsforhold = true,
-                historisk = ArbeidIPeriode(
+                historiskArbeid = ArbeidIPeriode(
                     jobberIPerioden = JobberIPeriodeSvar.JA,
                     jobberSomVanlig = false,
+                    erLiktHverUke = false,
                     enkeltdager = listOf(
                         Enkeltdag(dato = LocalDate.now(), tid = Duration.ofHours(4)),
                         Enkeltdag(dato = LocalDate.now().plusDays(3), tid = Duration.ofHours(4)),
                         Enkeltdag(dato = LocalDate.now().plusWeeks(1), tid = Duration.ofHours(4))
                     )
                 ),
-                planlagt = ArbeidIPeriode(
+                planlagtArbeid = ArbeidIPeriode(
                     jobberIPerioden = JobberIPeriodeSvar.JA,
                     jobberSomVanlig = false,
+                    erLiktHverUke = true,
                     enkeltdager = null,
                     fasteDager = PlanUkedager(
                         mandag = Duration.ofHours(4),
@@ -203,17 +207,19 @@ internal object SøknadUtils {
                 )
             )
         ),
-        ansatt = listOf(
+        arbeidsgivere = listOf(
             ArbeidsforholdAnsatt(
                 navn = "Peppes",
                 organisasjonsnummer = "917755736",
+                erAnsatt = true,
                 arbeidsforhold = Arbeidsforhold(
                     arbeidsform = Arbeidsform.FAST,
                     jobberNormaltTimer = 40.0,
                     erAktivtArbeidsforhold = true,
-                    historisk = ArbeidIPeriode(
+                    historiskArbeid = ArbeidIPeriode(
                         jobberIPerioden = JobberIPeriodeSvar.JA,
                         jobberSomVanlig = false,
+                        erLiktHverUke = false,
                         enkeltdager = listOf(
                             Enkeltdag(dato = LocalDate.now(), tid = Duration.ofHours(4)),
                             Enkeltdag(dato = LocalDate.now().plusDays(3), tid = Duration.ofHours(4)),
@@ -227,9 +233,10 @@ internal object SøknadUtils {
                             fredag = null
                         )
                     ),
-                    planlagt = ArbeidIPeriode(
+                    planlagtArbeid = ArbeidIPeriode(
                         jobberIPerioden = JobberIPeriodeSvar.VET_IKKE,
                         jobberSomVanlig = false,
+                        erLiktHverUke = true,
                         enkeltdager = null,
                         fasteDager = PlanUkedager(
                             mandag = Duration.ofHours(4),
@@ -244,13 +251,15 @@ internal object SøknadUtils {
             ArbeidsforholdAnsatt(
                 navn = "Pizzabakeren",
                 organisasjonsnummer = "917755736",
+                erAnsatt = true,
                 arbeidsforhold = Arbeidsforhold(
                     arbeidsform = Arbeidsform.FAST,
                     jobberNormaltTimer = 40.0,
                     erAktivtArbeidsforhold = true,
-                    historisk = ArbeidIPeriode(
+                    historiskArbeid = ArbeidIPeriode(
                         jobberIPerioden = JobberIPeriodeSvar.JA,
                         jobberSomVanlig = false,
+                        erLiktHverUke = false,
                         enkeltdager = listOf(
                             Enkeltdag(dato = LocalDate.now(), tid = Duration.ofHours(4)),
                             Enkeltdag(dato = LocalDate.now().plusDays(3), tid = Duration.ofHours(4)),
@@ -264,9 +273,10 @@ internal object SøknadUtils {
                             fredag = null
                         )
                     ),
-                    planlagt = ArbeidIPeriode(
+                    planlagtArbeid = ArbeidIPeriode(
                         jobberIPerioden = JobberIPeriodeSvar.VET_IKKE,
                         jobberSomVanlig = false,
+                        erLiktHverUke = true,
                         enkeltdager = null,
                         fasteDager = PlanUkedager(
                             mandag = Duration.ofHours(4),
@@ -282,10 +292,7 @@ internal object SøknadUtils {
         harVærtEllerErVernepliktig = true,
         k9FormatSøknad = defaultK9FormatPSB(),
         samtidigHjemme = null,
-        omsorgstilbudV2 = null,
-        skalBekrefteOmsorg = null,
-        skalPassePaBarnetIHelePerioden = null,
-        beskrivelseOmsorgsrollen = null,
+        omsorgstilbud = null,
         barnRelasjon = null,
         barnRelasjonBeskrivelse = null
     )

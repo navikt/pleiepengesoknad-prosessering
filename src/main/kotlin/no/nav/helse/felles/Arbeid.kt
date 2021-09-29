@@ -4,13 +4,14 @@ data class Arbeidsforhold(
     val arbeidsform: Arbeidsform,
     val jobberNormaltTimer: Double,
     val erAktivtArbeidsforhold: Boolean? = null,
-    val historisk: ArbeidIPeriode? = null,
-    val planlagt: ArbeidIPeriode? = null
+    val historiskArbeid: ArbeidIPeriode? = null,
+    val planlagtArbeid: ArbeidIPeriode? = null
 )
 
 data class ArbeidIPeriode(
     val jobberIPerioden: JobberIPeriodeSvar,
     val jobberSomVanlig: Boolean? = null,
+    val erLiktHverUke: Boolean,
     val enkeltdager: List<Enkeltdag>? = null,
     val fasteDager: PlanUkedager? = null
 )

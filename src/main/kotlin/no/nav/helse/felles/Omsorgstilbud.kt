@@ -3,7 +3,7 @@ package no.nav.helse.felles
 import java.time.Duration
 import java.time.LocalDate
 
-data class OmsorgstilbudV2(
+data class Omsorgstilbud(
     val historisk: HistoriskOmsorgstilbud? = null,
     val planlagt: PlanlagtOmsorgstilbud? = null
 )
