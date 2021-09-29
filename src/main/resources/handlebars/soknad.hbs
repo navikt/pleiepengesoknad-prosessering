@@ -176,9 +176,9 @@
                     <li><b>{{arbeidsforhold.navn}} (orgnr: {{arbeidsforhold.organisasjonsnummer}})</b></li>
                     <li class="li-style-none">
                         <ul>
-                            <li class="sporsmalstekst">Arbeidsform: {{arbeidsforhold.arbeidsform}}</li>
-                            <li class="sporsmalstekst">Normaltimer per uke: {{arbeidsforhold.jobberNormaltTimer}}</li>
-                            <li class="sporsmalstekst">Er det et aktivt arbeidsforhold? {{ jaNeiSvar arbeidsforhold.erAktivtArbeidsforhold}}</li>
+                            <li class="sporsmalstekst">Arbeidsform: {{arbeidsforhold.arbeidsforhold.arbeidsform}}</li>
+                            <li class="sporsmalstekst">Normaltimer per uke: {{arbeidsforhold.arbeidsforhold.jobberNormaltTimer}}</li>
+                            <li class="sporsmalstekst">Er det et aktivt arbeidsforhold? {{ jaNeiSvar arbeidsforhold.arbeidsforhold.erAktivtArbeidsforhold}}</li>
                             {{#if arbeidsforhold.arbeidsforhold.historisk}}
                                 <li class="li-style-none">
                                     <b>Historisk:</b>

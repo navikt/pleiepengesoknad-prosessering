@@ -243,7 +243,7 @@ class PdfV1GeneratorTest {
                             )
                         ),
                         planlagt = ArbeidIPeriode(
-                            jobberIPerioden = JobberIPeriodeSvar.VET_IKKE,
+                            jobberIPerioden = JobberIPeriodeSvar.NEI,
                             jobberSomVanlig = false,
                             enkeltdager = null,
                             fasteDager = PlanUkedager(
@@ -260,7 +260,7 @@ class PdfV1GeneratorTest {
                     navn = "Pizzabakeren",
                     organisasjonsnummer = "917755736",
                     arbeidsforhold = Arbeidsforhold(
-                        arbeidsform = Arbeidsform.FAST,
+                        arbeidsform = Arbeidsform.VARIERENDE,
                         jobberNormaltTimer = 40.0,
                         erAktivtArbeidsforhold = true,
                         historisk = ArbeidIPeriode(
