@@ -3,7 +3,6 @@ package no.nav.helse.felles
 data class Arbeidsforhold(
     val arbeidsform: Arbeidsform,
     val jobberNormaltTimer: Double,
-    val erAktivtArbeidsforhold: Boolean? = null,
     val historiskArbeid: ArbeidIPeriode? = null,
     val planlagtArbeid: ArbeidIPeriode? = null
 )
@@ -11,7 +10,7 @@ data class Arbeidsforhold(
 data class ArbeidIPeriode(
     val jobberIPerioden: JobberIPeriodeSvar,
     val jobberSomVanlig: Boolean? = null,
-    val erLiktHverUke: Boolean,
+    val erLiktHverUke: Boolean? = null,
     val enkeltdager: List<Enkeltdag>? = null,
     val fasteDager: PlanUkedager? = null
 )

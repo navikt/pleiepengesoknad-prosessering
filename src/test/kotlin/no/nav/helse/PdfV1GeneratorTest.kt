@@ -129,7 +129,6 @@ class PdfV1GeneratorTest {
                 arbeidsforhold = Arbeidsforhold(
                     arbeidsform = Arbeidsform.FAST,
                     jobberNormaltTimer = 40.0,
-                    erAktivtArbeidsforhold = true,
                     historiskArbeid = ArbeidIPeriode(
                         jobberIPerioden = JobberIPeriodeSvar.JA,
                         jobberSomVanlig = false,
@@ -189,7 +188,6 @@ class PdfV1GeneratorTest {
                 arbeidsforhold = Arbeidsforhold(
                     arbeidsform = Arbeidsform.FAST,
                     jobberNormaltTimer = 40.0,
-                    erAktivtArbeidsforhold = true,
                     historiskArbeid = ArbeidIPeriode(
                         jobberIPerioden = JobberIPeriodeSvar.JA,
                         jobberSomVanlig = false,
@@ -230,7 +228,6 @@ class PdfV1GeneratorTest {
                     arbeidsforhold = Arbeidsforhold(
                         arbeidsform = Arbeidsform.FAST,
                         jobberNormaltTimer = 40.0,
-                        erAktivtArbeidsforhold = true,
                         historiskArbeid = ArbeidIPeriode(
                             jobberIPerioden = JobberIPeriodeSvar.JA,
                             jobberSomVanlig = false,
@@ -274,7 +271,6 @@ class PdfV1GeneratorTest {
                     arbeidsforhold = Arbeidsforhold(
                         arbeidsform = Arbeidsform.VARIERENDE,
                         jobberNormaltTimer = 40.0,
-                        erAktivtArbeidsforhold = true,
                         historiskArbeid = ArbeidIPeriode(
                             jobberIPerioden = JobberIPeriodeSvar.JA,
                             jobberSomVanlig = false,

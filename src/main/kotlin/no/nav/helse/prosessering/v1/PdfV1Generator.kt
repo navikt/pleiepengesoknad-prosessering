@@ -287,7 +287,6 @@ private fun PlanUkedager.somMap() = mapOf<String, Any?>(
 private fun Arbeidsforhold.somMap(): Map<String, Any?> = mapOf(
     "arbeidsform" to arbeidsform.utskriftsvennlig.lowercase(),
     "jobberNormaltTimer" to jobberNormaltTimer,
-    "erAktivtArbeidsforhold" to erAktivtArbeidsforhold,
     "historiskArbeid" to historiskArbeid?.somMap(),
     "planlagtArbeid" to planlagtArbeid?.somMap()
 )

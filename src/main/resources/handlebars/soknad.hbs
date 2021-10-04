@@ -164,10 +164,8 @@
                     <li><b>{{arbeidsforhold.navn}} (orgnr: {{arbeidsforhold.organisasjonsnummer}})</b></li>
                     <li class="li-style-none">
                         <ul>
-                            <li class="sporsmalstekst">Er ansatt: {{arbeidsforhold.erAnsatt}}</li>
                             <li class="sporsmalstekst">Arbeidsform: {{arbeidsforhold.arbeidsforhold.arbeidsform}}</li>
                             <li class="sporsmalstekst">Normaltimer per uke: {{arbeidsforhold.arbeidsforhold.jobberNormaltTimer}}</li>
-                            <li class="sporsmalstekst">Er det et aktivt arbeidsforhold? {{ jaNeiSvar arbeidsforhold.arbeidsforhold.erAktivtArbeidsforhold}}</li>
                             {{#if arbeidsforhold.arbeidsforhold.historiskArbeid}}
                                 <li class="li-style-none">
                                     <b>Historisk:</b>
@@ -257,7 +255,6 @@
                     <ul>
                         <li class="sporsmalstekst">Arbeidsform: {{frilans.arbeidsforhold.arbeidsform}}</li>
                         <li class="sporsmalstekst">Normaltimer per uke: {{frilans.arbeidsforhold.jobberNormaltTimer}}</li>
-                        <li class="sporsmalstekst">Er det et aktivt arbeidsforhold? {{ jaNeiSvar frilans.arbeidsforhold.erAktivtArbeidsforhold}}</li>
                         {{#if frilans.arbeidsforhold.historiskArbeid}}
                             <li class="li-style-none">
                                 <b>Historisk:</b>
@@ -346,7 +343,6 @@
                     <ul>
                         <li class="sporsmalstekst">Arbeidsform: {{selvstendigNæringsdrivende.arbeidsforhold.arbeidsform}}</li>
                         <li class="sporsmalstekst">Normaltimer per uke: {{selvstendigNæringsdrivende.arbeidsforhold.jobberNormaltTimer}}</li>
-                        <li class="sporsmalstekst">Er det et aktivt arbeidsforhold? {{ jaNeiSvar selvstendigNæringsdrivende.arbeidsforhold.erAktivtArbeidsforhold}}</li>
                         {{#if selvstendigNæringsdrivende.arbeidsforhold.historiskArbeid}}
                             <li class="li-style-none">
                                 <b>Historisk:</b>
@@ -385,6 +381,7 @@
                                 </ul>
                             </li>
                         {{/if}}
+
                         {{#if selvstendigNæringsdrivende.arbeidsforhold.planlagtArbeid}}
                             <li class="li-style-none">
                                 <b>Planlagt:</b>
