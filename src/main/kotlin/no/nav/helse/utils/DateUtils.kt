@@ -3,6 +3,7 @@ package no.nav.helse.utils
 import java.time.DayOfWeek
 import java.time.DayOfWeek.*
 import java.time.LocalDate
+import java.time.Month
 import java.time.ZonedDateTime
 import kotlin.streams.toList
 
@@ -24,4 +25,19 @@ internal fun DayOfWeek.somNorskDag() = when(this) {
     FRIDAY -> "Fredag"
     SATURDAY -> "Lørdag"
     else -> "Søndag"
+}
+
+internal fun Month.somNorskMåned() = when(this) {
+    Month.JANUARY -> "Januar"
+    Month.FEBRUARY -> "Februar"
+    Month.MARCH -> "Mars"
+    Month.APRIL -> "April"
+    Month.MAY -> "Mai"
+    Month.JUNE -> "Juni"
+    Month.JULY -> "Juli"
+    Month.AUGUST -> "August"
+    Month.SEPTEMBER -> "September"
+    Month.OCTOBER -> "Oktober"
+    Month.NOVEMBER -> "November"
+    Month.DECEMBER -> "Desember"
 }

@@ -175,15 +175,24 @@
                                         {{#if arbeidsforhold.arbeidsforhold.historiskArbeid.erLiktHverUke}}
                                             <li>Er likt hver uke? {{ jaNeiSvar arbeidsforhold.arbeidsforhold.historiskArbeid.erLiktHverUke}}</li>
                                         {{/if}}
-                                        {{#if arbeidsforhold.arbeidsforhold.historiskArbeid.enkeltdager}}
+                                        {{#if arbeidsforhold.arbeidsforhold.historiskArbeid.enkeltdagerPerMnd}}
                                             <li class="li-style-none"><b>Enkeltdager:</b>
                                                 <ul>
-                                                    {{#each arbeidsforhold.arbeidsforhold.historiskArbeid.enkeltdager as |enkeltdagerPerUke|~}}
+                                                    {{#each arbeidsforhold.arbeidsforhold.historiskArbeid.enkeltdagerPerMnd as |enkeltdagerPerMnd|~}}
                                                         <li>
-                                                            <p>Uke {{enkeltdagerPerUke.uke}}</p>
+                                                            <p>{{enkeltdagerPerMnd.måned}}</p>
                                                             <ul>
-                                                                {{#each enkeltdagerPerUke.dager as |enkeltdag|~}}
-                                                                    <li><p>{{enkeltdag.dag}} {{enkeltdag.dato}}:    {{enkeltdag.tid}}</p></li>
+                                                                {{#each enkeltdagerPerMnd.enkeltdagerPerUke as |enkeltdagerPerUke|~}}
+                                                                    <li>
+                                                                        <p>Uke {{enkeltdagerPerUke.uke}}</p>
+                                                                        <ul>
+                                                                            {{#each enkeltdagerPerUke.dager as |enkeltdag|~}}
+                                                                                <li>
+                                                                                    <p>{{enkeltdag.dag}} {{enkeltdag.dato}}:    {{enkeltdag.tid}}</p>
+                                                                                </li>
+                                                                            {{/each}}
+                                                                        </ul>
+                                                                    </li>
                                                                 {{/each}}
                                                             </ul>
                                                         </li>
@@ -215,15 +224,24 @@
                                         {{#if arbeidsforhold.arbeidsforhold.planlagtArbeid.erLiktHverUke}}
                                             <li>Er likt hver uke? {{ jaNeiSvar arbeidsforhold.arbeidsforhold.planlagtArbeid.erLiktHverUke}}</li>
                                         {{/if}}
-                                        {{#if arbeidsforhold.arbeidsforhold.planlagtArbeid.enkeltdager}}
+                                        {{#if arbeidsforhold.arbeidsforhold.planlagtArbeid.enkeltdagerPerMnd}}
                                             <li class="li-style-none"><b>Enkeltdager:</b>
                                                 <ul>
-                                                    {{#each arbeidsforhold.arbeidsforhold.planlagtArbeid.enkeltdager as |enkeltdagerPerUke|~}}
+                                                    {{#each arbeidsforhold.arbeidsforhold.planlagtArbeid.enkeltdagerPerMnd as |enkeltdagerPerMnd|~}}
                                                         <li>
-                                                            <p>Uke {{enkeltdagerPerUke.uke}}</p>
+                                                            <p>{{enkeltdagerPerMnd.måned}}</p>
                                                             <ul>
-                                                                {{#each enkeltdagerPerUke.dager as |enkeltdag|~}}
-                                                                    <li><p>{{enkeltdag.dag}} {{enkeltdag.dato}}:    {{enkeltdag.tid}}</p></li>
+                                                                {{#each enkeltdagerPerMnd.enkeltdagerPerUke as |enkeltdagerPerUke|~}}
+                                                                    <li>
+                                                                        <p>Uke {{enkeltdagerPerUke.uke}}</p>
+                                                                        <ul>
+                                                                            {{#each enkeltdagerPerUke.dager as |enkeltdag|~}}
+                                                                                <li>
+                                                                                    <p>{{enkeltdag.dag}} {{enkeltdag.dato}}:    {{enkeltdag.tid}}</p>
+                                                                                </li>
+                                                                            {{/each}}
+                                                                        </ul>
+                                                                    </li>
                                                                 {{/each}}
                                                             </ul>
                                                         </li>
@@ -268,15 +286,24 @@
                                     {{#if frilans.arbeidsforhold.historiskArbeid.erLiktHverUke}}
                                         <li>Er likt hver uke? {{ jaNeiSvar frilans.arbeidsforhold.historiskArbeid.erLiktHverUke}}</li>
                                     {{/if}}
-                                    {{#if frilans.arbeidsforhold.historiskArbeid.enkeltdager}}
+                                    {{#if frilans.arbeidsforhold.historiskArbeid.enkeltdagerPerMnd}}
                                         <li class="li-style-none"><b>Enkeltdager:</b>
                                             <ul>
-                                                {{#each frilans.arbeidsforhold.historiskArbeid.enkeltdager as |enkeltdagerPerUke|~}}
+                                                {{#each frilans.arbeidsforhold.historiskArbeid.enkeltdagerPerMnd as |enkeltdagerPerMnd|~}}
                                                     <li>
-                                                        <p>Uke {{enkeltdagerPerUke.uke}}</p>
+                                                        <p>{{enkeltdagerPerMnd.måned}}</p>
                                                         <ul>
-                                                            {{#each enkeltdagerPerUke.dager as |enkeltdag|~}}
-                                                                <li><p>{{enkeltdag.dag}} {{enkeltdag.dato}}:    {{enkeltdag.tid}}</p></li>
+                                                            {{#each enkeltdagerPerMnd.enkeltdagerPerUke as |enkeltdagerPerUke|~}}
+                                                                <li>
+                                                                    <p>Uke {{enkeltdagerPerUke.uke}}</p>
+                                                                    <ul>
+                                                                        {{#each enkeltdagerPerUke.dager as |enkeltdag|~}}
+                                                                            <li>
+                                                                                <p>{{enkeltdag.dag}} {{enkeltdag.dato}}:    {{enkeltdag.tid}}</p>
+                                                                            </li>
+                                                                        {{/each}}
+                                                                    </ul>
+                                                                </li>
                                                             {{/each}}
                                                         </ul>
                                                     </li>
@@ -308,15 +335,24 @@
                                     {{#if frilans.arbeidsforhold.planlagtArbeid.erLiktHverUke}}
                                         <li>Er likt hver uke? {{ jaNeiSvar frilans.arbeidsforhold.planlagtArbeid.erLiktHverUke}}</li>
                                     {{/if}}
-                                    {{#if frilans.arbeidsforhold.planlagtArbeid.enkeltdager}}
+                                    {{#if frilans.arbeidsforhold.planlagtArbeid.enkeltdagerPerMnd}}
                                         <li class="li-style-none"><b>Enkeltdager:</b>
                                             <ul>
-                                                {{#each frilans.arbeidsforhold.planlagtArbeid.enkeltdager as |enkeltdagerPerUke|~}}
+                                                {{#each frilans.arbeidsforhold.planlagtArbeid.enkeltdagerPerMnd as |enkeltdagerPerMnd|~}}
                                                     <li>
-                                                        <p>Uke {{enkeltdagerPerUke.uke}}</p>
+                                                        <p>{{enkeltdagerPerMnd.måned}}</p>
                                                         <ul>
-                                                            {{#each enkeltdagerPerUke.dager as |enkeltdag|~}}
-                                                                <li><p>{{enkeltdag.dag}} {{enkeltdag.dato}}:    {{enkeltdag.tid}}</p></li>
+                                                            {{#each enkeltdagerPerMnd.enkeltdagerPerUke as |enkeltdagerPerUke|~}}
+                                                                <li>
+                                                                    <p>Uke {{enkeltdagerPerUke.uke}}</p>
+                                                                    <ul>
+                                                                        {{#each enkeltdagerPerUke.dager as |enkeltdag|~}}
+                                                                            <li>
+                                                                                <p>{{enkeltdag.dag}} {{enkeltdag.dato}}:    {{enkeltdag.tid}}</p>
+                                                                            </li>
+                                                                        {{/each}}
+                                                                    </ul>
+                                                                </li>
                                                             {{/each}}
                                                         </ul>
                                                     </li>
@@ -360,15 +396,24 @@
                                     {{#if selvstendigNæringsdrivende.arbeidsforhold.historiskArbeid.erLiktHverUke}}
                                         <li>Er likt hver uke? {{ jaNeiSvar selvstendigNæringsdrivende.arbeidsforhold.historiskArbeid.erLiktHverUke}}</li>
                                     {{/if}}
-                                    {{#if selvstendigNæringsdrivende.arbeidsforhold.historiskArbeid.enkeltdager}}
+                                    {{#if selvstendigNæringsdrivende.arbeidsforhold.historiskArbeid.enkeltdagerPerMnd}}
                                         <li class="li-style-none"><b>Enkeltdager:</b>
                                             <ul>
-                                                {{#each selvstendigNæringsdrivende.arbeidsforhold.historiskArbeid.enkeltdager as |enkeltdagerPerUke|~}}
+                                                {{#each selvstendigNæringsdrivende.arbeidsforhold.historiskArbeid.enkeltdagerPerMnd as |enkeltdagerPerMnd|~}}
                                                     <li>
-                                                        <p>Uke {{enkeltdagerPerUke.uke}}</p>
+                                                        <p>{{enkeltdagerPerMnd.måned}}</p>
                                                         <ul>
-                                                            {{#each enkeltdagerPerUke.dager as |enkeltdag|~}}
-                                                                <li><p>{{enkeltdag.dag}} {{enkeltdag.dato}}:    {{enkeltdag.tid}}</p></li>
+                                                            {{#each enkeltdagerPerMnd.enkeltdagerPerUke as |enkeltdagerPerUke|~}}
+                                                                <li>
+                                                                    <p>Uke {{enkeltdagerPerUke.uke}}</p>
+                                                                    <ul>
+                                                                        {{#each enkeltdagerPerUke.dager as |enkeltdag|~}}
+                                                                            <li>
+                                                                                <p>{{enkeltdag.dag}} {{enkeltdag.dato}}:    {{enkeltdag.tid}}</p>
+                                                                            </li>
+                                                                        {{/each}}
+                                                                    </ul>
+                                                                </li>
                                                             {{/each}}
                                                         </ul>
                                                     </li>
@@ -401,15 +446,24 @@
                                     {{#if selvstendigNæringsdrivende.arbeidsforhold.planlagtArbeid.erLiktHverUke}}
                                         <li>Er likt hver uke? {{ jaNeiSvar selvstendigNæringsdrivende.arbeidsforhold.planlagtArbeid.erLiktHverUke}}</li>
                                     {{/if}}
-                                    {{#if selvstendigNæringsdrivende.arbeidsforhold.planlagtArbeid.enkeltdager}}
+                                    {{#if selvstendigNæringsdrivende.arbeidsforhold.planlagtArbeid.enkeltdagerPerMnd}}
                                         <li class="li-style-none"><b>Enkeltdager:</b>
                                             <ul>
-                                                {{#each selvstendigNæringsdrivende.arbeidsforhold.planlagtArbeid.enkeltdager as |enkeltdagerPerUke|~}}
+                                                {{#each selvstendigNæringsdrivende.arbeidsforhold.planlagtArbeid.enkeltdagerPerMnd as |enkeltdagerPerMnd|~}}
                                                     <li>
-                                                        <p>Uke {{enkeltdagerPerUke.uke}}</p>
+                                                        <p>{{enkeltdagerPerMnd.måned}}</p>
                                                         <ul>
-                                                            {{#each enkeltdagerPerUke.dager as |enkeltdag|~}}
-                                                                <li><p>{{enkeltdag.dag}} {{enkeltdag.dato}}:    {{enkeltdag.tid}}</p></li>
+                                                            {{#each enkeltdagerPerMnd.enkeltdagerPerUke as |enkeltdagerPerUke|~}}
+                                                                <li>
+                                                                    <p>Uke {{enkeltdagerPerUke.uke}}</p>
+                                                                    <ul>
+                                                                        {{#each enkeltdagerPerUke.dager as |enkeltdag|~}}
+                                                                            <li>
+                                                                                <p>{{enkeltdag.dag}} {{enkeltdag.dato}}:    {{enkeltdag.tid}}</p>
+                                                                            </li>
+                                                                        {{/each}}
+                                                                    </ul>
+                                                                </li>
                                                             {{/each}}
                                                         </ul>
                                                     </li>
@@ -557,13 +611,20 @@
 
                     <p class="sporsmalstekst">Tid barnet har vært i omsorgstilbud:</p>
                     <ul>
-                        {{#each omsorgstilbud.historisk.enkeltdagerPerUke as |enkeltdagerPerUke|~}}
+                        {{#each omsorgstilbud.historisk.enkeltdagerPerMnd as |enkeltdagerPerMnd|~}}
                             <li>
-                                <p>Uke {{enkeltdagerPerUke.uke}}</p>
+                                <p>{{enkeltdagerPerMnd.måned}}</p>
                                 <ul>
-                                    {{#each enkeltdagerPerUke.dager as |enkeltdag|~}}
+                                    {{#each enkeltdagerPerMnd.enkeltdagerPerUke as |enkeltdagerPerUke|~}}
                                         <li>
-                                            <p>{{enkeltdag.dag}} {{enkeltdag.dato}}:    {{enkeltdag.tid}}</p>
+                                            <p>Uke {{enkeltdagerPerUke.uke}}</p>
+                                            <ul>
+                                                {{#each enkeltdagerPerUke.dager as |enkeltdag|~}}
+                                                    <li>
+                                                        <p>{{enkeltdag.dag}} {{enkeltdag.dato}}:    {{enkeltdag.tid}}</p>
+                                                    </li>
+                                                {{/each}}
+                                            </ul>
                                         </li>
                                     {{/each}}
                                 </ul>
@@ -598,13 +659,20 @@
 
                         <p class="sporsmalstekst">Tid barnet skal være i omsorgstilbudet:</p>
                         <ul>
-                            {{#each omsorgstilbud.planlagt.enkeltdagerPerUke as |enkeltdagerPerUke|~}}
+                            {{#each omsorgstilbud.planlagt.enkeltdagerPerMnd as |enkeltdagerPerMnd|~}}
                                 <li>
-                                    <p>Uke {{enkeltdagerPerUke.uke}}</p>
+                                    <p>{{enkeltdagerPerMnd.måned}}</p>
                                     <ul>
-                                        {{#each enkeltdagerPerUke.dager as |enkeltdag|~}}
+                                        {{#each enkeltdagerPerMnd.enkeltdagerPerUke as |enkeltdagerPerUke|~}}
                                             <li>
-                                                <p>{{enkeltdag.dag}} {{enkeltdag.dato}}:    {{enkeltdag.tid}}</p>
+                                                <p>Uke {{enkeltdagerPerUke.uke}}</p>
+                                                <ul>
+                                                    {{#each enkeltdagerPerUke.dager as |enkeltdag|~}}
+                                                        <li>
+                                                            <p>{{enkeltdag.dag}} {{enkeltdag.dato}}:    {{enkeltdag.tid}}</p>
+                                                        </li>
+                                                    {{/each}}
+                                                </ul>
                                             </li>
                                         {{/each}}
                                     </ul>

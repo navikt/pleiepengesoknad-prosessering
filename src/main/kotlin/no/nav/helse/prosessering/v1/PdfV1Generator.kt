@@ -16,6 +16,7 @@ import no.nav.helse.pleiepengerKonfiguert
 import no.nav.helse.prosessering.v1.PdfV1Generator.Companion.DATE_FORMATTER
 import no.nav.helse.utils.DateUtils
 import no.nav.helse.utils.somNorskDag
+import no.nav.helse.utils.somNorskMåned
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.time.Duration
@@ -250,6 +251,17 @@ private fun List<Enkeltdag>.somMapEnkeltdag(): List<Map<String, Any?>> {
     }
 }
 
+fun List<Enkeltdag>.somMapPerMnd(): List<Map<String, Any>> {
+    val omsorgsdagerPerMnd = this.groupBy { it.dato.month }
+
+    return omsorgsdagerPerMnd.map {
+        mapOf(
+            "måned" to it.key.somNorskMåned(),
+            "enkeltdagerPerUke" to it.value.somMapPerUke()
+        )
+    }
+}
+
 private fun List<Enkeltdag>.somMapPerUke(): List<Map<String, Any>> {
     val omsorgsdagerPerUke = this.groupBy {
         val uketall = it.dato.get(WeekFields.of(Locale.getDefault()).weekOfYear())
@@ -264,11 +276,11 @@ private fun List<Enkeltdag>.somMapPerUke(): List<Map<String, Any>> {
 }
 
 private fun HistoriskOmsorgstilbud.somMap(): Map<String, Any?> = mutableMapOf(
-    "enkeltdagerPerUke" to enkeltdager.somMapPerUke(),
+    "enkeltdagerPerMnd" to enkeltdager.somMapPerMnd()
 )
 
 private fun PlanlagtOmsorgstilbud.somMap(): Map<String, Any?> = mutableMapOf(
-    "enkeltdagerPerUke" to enkeltdager?.somMapPerUke(),
+    "enkeltdagerPerMnd" to enkeltdager?.somMapPerMnd(),
     "ukedager" to ukedager?.somMap(),
     "vetOmsorgstilbud" to vetOmsorgstilbud.name,
     "vetLikeDager" to (ukedager != null),
@@ -295,7 +307,7 @@ private fun ArbeidIPeriode.somMap() : Map<String, Any?> = mapOf(
     "jobberIPerioden" to jobberIPerioden.pdfTekst,
     "jobberSomVanlig" to jobberSomVanlig,
     "erLiktHverUke" to erLiktHverUke,
-    "enkeltdager" to enkeltdager?.somMapPerUke(),
+    "enkeltdagerPerMnd" to enkeltdager?.somMapPerMnd(),
     "fasteDager" to fasteDager?.somMap()
 )
 

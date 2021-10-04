@@ -150,7 +150,11 @@ class PdfV1GeneratorTest {
                         jobberIPerioden = JobberIPeriodeSvar.VET_IKKE,
                         jobberSomVanlig = false,
                         erLiktHverUke = true,
-                        enkeltdager = null,
+                        enkeltdager = listOf(
+                            Enkeltdag(dato = LocalDate.now(), tid = Duration.ofHours(4)),
+                            Enkeltdag(dato = LocalDate.now().plusDays(3), tid = Duration.ofHours(4)),
+                            Enkeltdag(dato = LocalDate.now().plusWeeks(1), tid = Duration.ofHours(4))
+                        ),
                         fasteDager = PlanUkedager(
                             mandag = Duration.ofHours(4),
                             tirsdag = Duration.ofHours(7),
@@ -209,7 +213,11 @@ class PdfV1GeneratorTest {
                         jobberIPerioden = JobberIPeriodeSvar.VET_IKKE,
                         jobberSomVanlig = false,
                         erLiktHverUke = true,
-                        enkeltdager = null,
+                        enkeltdager = listOf(
+                            Enkeltdag(dato = LocalDate.now(), tid = Duration.ofHours(4)),
+                            Enkeltdag(dato = LocalDate.now().plusDays(3), tid = Duration.ofHours(4)),
+                            Enkeltdag(dato = LocalDate.now().plusWeeks(1), tid = Duration.ofHours(4))
+                        ),
                         fasteDager = PlanUkedager(
                             mandag = Duration.ofHours(4),
                             tirsdag = Duration.ofHours(7),
