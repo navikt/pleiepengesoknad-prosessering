@@ -166,12 +166,17 @@
                         <ul>
                             <li class="sporsmalstekst">Arbeidsform: {{arbeidsforhold.arbeidsforhold.arbeidsform}}</li>
                             <li class="sporsmalstekst">Normaltimer per uke: {{arbeidsforhold.arbeidsforhold.jobberNormaltTimer}}</li>
+                            <li class="sporsmalstekst">Er ansatt? {{ jaNeiSvar arbeidsforhold.erAnsatt}}</li>
                             {{#if arbeidsforhold.arbeidsforhold.historiskArbeid}}
                                 <li class="li-style-none">
                                     <b>Historisk:</b>
                                     <ul>
                                         <li>Jobber i perioden? {{arbeidsforhold.arbeidsforhold.historiskArbeid.jobberIPerioden}}</li>
-                                        <li>Jobber som vanlig? {{ jaNeiSvar arbeidsforhold.arbeidsforhold.historiskArbeid.jobberSomVanlig}}</li>
+                                        {{#if arbeidsforhold.arbeidsforhold.historiskArbeid.jobberSomVanlig}}
+                                            <li>Jobber som vanlig? Ja, {{arbeidsforhold.arbeidsforhold.jobberNormaltTimer}} timer per uke.</li>
+                                        {{else}}
+                                            <li>Jobber som vanlig? {{ jaNeiSvar arbeidsforhold.arbeidsforhold.historiskArbeid.jobberSomVanlig}}</li>
+                                        {{/if}}
                                         {{#if arbeidsforhold.arbeidsforhold.historiskArbeid.erLiktHverUke}}
                                             <li>Er likt hver uke? {{ jaNeiSvar arbeidsforhold.arbeidsforhold.historiskArbeid.erLiktHverUke}}</li>
                                         {{/if}}
@@ -220,7 +225,11 @@
                                     <b>Planlagt:</b>
                                     <ul>
                                         <li>Jobber i perioden? {{arbeidsforhold.arbeidsforhold.planlagtArbeid.jobberIPerioden}}</li>
-                                        <li>Jobber som vanlig? {{ jaNeiSvar arbeidsforhold.arbeidsforhold.planlagtArbeid.jobberSomVanlig}}</li>
+                                        {{#if arbeidsforhold.arbeidsforhold.planlagtArbeid.jobberSomVanlig}}
+                                            <li>Jobber som vanlig? Ja, {{arbeidsforhold.arbeidsforhold.jobberNormaltTimer}} timer per uke.</li>
+                                        {{else}}
+                                            <li>Jobber som vanlig? {{ jaNeiSvar arbeidsforhold.arbeidsforhold.planlagtArbeid.jobberSomVanlig}}</li>
+                                        {{/if}}
                                         {{#if arbeidsforhold.arbeidsforhold.planlagtArbeid.erLiktHverUke}}
                                             <li>Er likt hver uke? {{ jaNeiSvar arbeidsforhold.arbeidsforhold.planlagtArbeid.erLiktHverUke}}</li>
                                         {{/if}}
@@ -282,7 +291,11 @@
                                 <b>Historisk:</b>
                                 <ul>
                                     <li>Jobber i perioden? {{frilans.arbeidsforhold.historiskArbeid.jobberIPerioden}}</li>
-                                    <li>Jobber som vanlig? {{ jaNeiSvar frilans.arbeidsforhold.historiskArbeid.jobberSomVanlig}}</li>
+                                    {{#if frilans.arbeidsforhold.historiskArbeid.jobberSomVanlig}}
+                                        <li>Jobber som vanlig? Ja, {{frilans.arbeidsforhold.jobberNormaltTimer}} timer per uke.</li>
+                                    {{else}}
+                                        <li>Jobber som vanlig? {{ jaNeiSvar frilans.arbeidsforhold.historiskArbeid.jobberSomVanlig}}</li>
+                                    {{/if}}
                                     {{#if frilans.arbeidsforhold.historiskArbeid.erLiktHverUke}}
                                         <li>Er likt hver uke? {{ jaNeiSvar frilans.arbeidsforhold.historiskArbeid.erLiktHverUke}}</li>
                                     {{/if}}
@@ -331,7 +344,11 @@
                                 <b>Planlagt:</b>
                                 <ul>
                                     <li>Jobber i perioden? {{frilans.arbeidsforhold.planlagtArbeid.jobberIPerioden}}</li>
-                                    <li>Jobber som vanlig? {{ jaNeiSvar frilans.arbeidsforhold.planlagtArbeid.jobberSomVanlig}}</li>
+                                    {{#if frilans.arbeidsforhold.planlagtArbeid.jobberSomVanlig}}
+                                        <li>Jobber som vanlig? Ja, {{frilans.arbeidsforhold.jobberNormaltTimer}} timer per uke.</li>
+                                    {{else}}
+                                        <li>Jobber som vanlig? {{ jaNeiSvar frilans.arbeidsforhold.planlagtArbeid.jobberSomVanlig}}</li>
+                                    {{/if}}
                                     {{#if frilans.arbeidsforhold.planlagtArbeid.erLiktHverUke}}
                                         <li>Er likt hver uke? {{ jaNeiSvar frilans.arbeidsforhold.planlagtArbeid.erLiktHverUke}}</li>
                                     {{/if}}
@@ -392,7 +409,11 @@
                                 <b>Historisk:</b>
                                 <ul>
                                     <li>Jobber i perioden? {{selvstendigNæringsdrivende.arbeidsforhold.historiskArbeid.jobberIPerioden}}</li>
-                                    <li>Jobber som vanlig? {{ jaNeiSvar selvstendigNæringsdrivende.arbeidsforhold.historiskArbeid.jobberSomVanlig}}</li>
+                                    {{#if selvstendigNæringsdrivende.arbeidsforhold.historiskArbeid.jobberSomVanlig}}
+                                        <li>Jobber som vanlig? Ja, {{selvstendigNæringsdrivende.arbeidsforhold.jobberNormaltTimer}} timer per uke.</li>
+                                    {{else}}
+                                        <li>Jobber som vanlig? {{ jaNeiSvar selvstendigNæringsdrivende.arbeidsforhold.historiskArbeid.jobberSomVanlig}}</li>
+                                    {{/if}}
                                     {{#if selvstendigNæringsdrivende.arbeidsforhold.historiskArbeid.erLiktHverUke}}
                                         <li>Er likt hver uke? {{ jaNeiSvar selvstendigNæringsdrivende.arbeidsforhold.historiskArbeid.erLiktHverUke}}</li>
                                     {{/if}}
@@ -442,7 +463,11 @@
                                 <b>Planlagt:</b>
                                 <ul>
                                     <li>Jobber i perioden? {{selvstendigNæringsdrivende.arbeidsforhold.planlagtArbeid.jobberIPerioden}}</li>
-                                    <li>Jobber som vanlig? {{ jaNeiSvar selvstendigNæringsdrivende.arbeidsforhold.planlagtArbeid.jobberSomVanlig}}</li>
+                                    {{#if selvstendigNæringsdrivende.arbeidsforhold.planlagtArbeid.jobberSomVanlig}}
+                                        <li>Jobber som vanlig? Ja, {{selvstendigNæringsdrivende.arbeidsforhold.jobberNormaltTimer}} timer per uke.</li>
+                                    {{else}}
+                                        <li>Jobber som vanlig? {{ jaNeiSvar selvstendigNæringsdrivende.arbeidsforhold.planlagtArbeid.jobberSomVanlig}}</li>
+                                    {{/if}}
                                     {{#if selvstendigNæringsdrivende.arbeidsforhold.planlagtArbeid.erLiktHverUke}}
                                         <li>Er likt hver uke? {{ jaNeiSvar selvstendigNæringsdrivende.arbeidsforhold.planlagtArbeid.erLiktHverUke}}</li>
                                     {{/if}}

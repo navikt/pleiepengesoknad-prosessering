@@ -131,7 +131,7 @@ class PdfV1GeneratorTest {
                     jobberNormaltTimer = 40.0,
                     historiskArbeid = ArbeidIPeriode(
                         jobberIPerioden = JobberIPeriodeSvar.JA,
-                        jobberSomVanlig = false,
+                        jobberSomVanlig = true,
                         erLiktHverUke = true,
                         enkeltdager = listOf(
                             Enkeltdag(dato = LocalDate.now(), tid = Duration.ofHours(4)),
@@ -148,7 +148,7 @@ class PdfV1GeneratorTest {
                     ),
                     planlagtArbeid = ArbeidIPeriode(
                         jobberIPerioden = JobberIPeriodeSvar.VET_IKKE,
-                        jobberSomVanlig = false,
+                        jobberSomVanlig = true,
                         erLiktHverUke = true,
                         enkeltdager = listOf(
                             Enkeltdag(dato = LocalDate.now(), tid = Duration.ofHours(4)),
@@ -194,7 +194,7 @@ class PdfV1GeneratorTest {
                     jobberNormaltTimer = 40.0,
                     historiskArbeid = ArbeidIPeriode(
                         jobberIPerioden = JobberIPeriodeSvar.JA,
-                        jobberSomVanlig = false,
+                        jobberSomVanlig = true,
                         erLiktHverUke = true,
                         enkeltdager = listOf(
                             Enkeltdag(dato = LocalDate.now(), tid = Duration.ofHours(4)),
@@ -211,7 +211,7 @@ class PdfV1GeneratorTest {
                     ),
                     planlagtArbeid = ArbeidIPeriode(
                         jobberIPerioden = JobberIPeriodeSvar.VET_IKKE,
-                        jobberSomVanlig = false,
+                        jobberSomVanlig = true,
                         erLiktHverUke = true,
                         enkeltdager = listOf(
                             Enkeltdag(dato = LocalDate.now(), tid = Duration.ofHours(4)),
@@ -238,7 +238,7 @@ class PdfV1GeneratorTest {
                         jobberNormaltTimer = 40.0,
                         historiskArbeid = ArbeidIPeriode(
                             jobberIPerioden = JobberIPeriodeSvar.JA,
-                            jobberSomVanlig = false,
+                            jobberSomVanlig = true,
                             erLiktHverUke = true,
                             enkeltdager = listOf(
                                 Enkeltdag(dato = LocalDate.now(), tid = Duration.ofHours(4)),
@@ -255,7 +255,7 @@ class PdfV1GeneratorTest {
                         ),
                         planlagtArbeid = ArbeidIPeriode(
                             jobberIPerioden = JobberIPeriodeSvar.NEI,
-                            jobberSomVanlig = false,
+                            jobberSomVanlig = true,
                             erLiktHverUke = true,
                             enkeltdager = listOf(
                                 Enkeltdag(dato = LocalDate.now(), tid = Duration.ofHours(4)),
@@ -281,7 +281,7 @@ class PdfV1GeneratorTest {
                         jobberNormaltTimer = 40.0,
                         historiskArbeid = ArbeidIPeriode(
                             jobberIPerioden = JobberIPeriodeSvar.JA,
-                            jobberSomVanlig = false,
+                            jobberSomVanlig = true,
                             erLiktHverUke = true,
                             enkeltdager = listOf(
                                 Enkeltdag(dato = LocalDate.now(), tid = Duration.ofHours(4)),
@@ -298,7 +298,7 @@ class PdfV1GeneratorTest {
                         ),
                         planlagtArbeid = ArbeidIPeriode(
                             jobberIPerioden = JobberIPeriodeSvar.VET_IKKE,
-                            jobberSomVanlig = false,
+                            jobberSomVanlig = true,
                             erLiktHverUke = true,
                             enkeltdager = null,
                             fasteDager = PlanUkedager(
