@@ -304,7 +304,6 @@ internal object SøknadUtils {
             .medBarn(K9Barn(NorskIdentitetsnummer.of("10987654321"), null))
             .medOpptjeningAktivitet(
                 OpptjeningAktivitet(
-                    null,
                     listOf(
                         SelvstendigNæringsdrivende(
                             mapOf(
@@ -349,7 +348,9 @@ internal object SøknadUtils {
                             "Something Fishy AS"
                         ),
                     ),
-                    Frilanser(LocalDate.parse("2020-01-01"), null, true)
+                    Frilanser(LocalDate.parse("2020-01-01"), null),
+                    null,
+                    null
                 )
             )
             .medBeredskap(

@@ -1,13 +1,7 @@
 package no.nav.helse
 
 import no.nav.helse.dokument.JournalforingsFormat
-import no.nav.helse.prosessering.v1.*
 import org.skyscreamer.jsonassert.JSONAssert
-import java.net.URI
-import java.time.Duration
-import java.time.LocalDate
-import java.time.ZoneId
-import java.time.ZonedDateTime
 import java.util.*
 import kotlin.test.Test
 
@@ -34,6 +28,7 @@ class JournalforingsFormatTest {
             "type": "PLEIEPENGER_SYKT_BARN",
             "søknadsperiode": ["2020-01-01/2020-01-10"],
             "endringsperiode": [],
+            "trekkKravPerioder": [],
             "infoFraPunsj": null,
             "dataBruktTilUtledning" : {
               "harForståttRettigheterOgPlikter" : true,
@@ -88,8 +83,7 @@ class JournalforingsFormatTest {
               ],
               "frilanser": {
                 "startdato": "2020-01-01",
-                "sluttdato": null,
-                "jobberFortsattSomFrilans": true
+                "sluttdato": null
               }
             },
             "beredskap": {
@@ -163,10 +157,13 @@ class JournalforingsFormatTest {
               "beskrivelseAvOmsorgsrollen" : "Blabla beskrivelse"
             },
             "lovbestemtFerie": {
-              "perioderSomSkalSlettes": {},
               "perioder": {
-                "2020-01-01/2020-01-05":  {},
-                "2020-01-06/2020-01-10": {}
+                "2020-01-01/2020-01-05":  {
+                  "skalHaFerie" : true
+                },
+                "2020-01-06/2020-01-10": {
+                  "skalHaFerie" : true
+                }
               }
             },
             "bosteder": {
