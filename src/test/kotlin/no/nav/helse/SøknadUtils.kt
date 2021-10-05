@@ -3,7 +3,7 @@ package no.nav.helse
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.helse.dusseldorf.ktor.jackson.dusseldorfConfigured
 import no.nav.helse.felles.*
-import no.nav.helse.prosessering.v1.*
+import no.nav.helse.prosessering.v1.MeldingV1
 import no.nav.k9.søknad.Søknad
 import no.nav.k9.søknad.felles.Versjon
 import no.nav.k9.søknad.felles.opptjening.Frilanser
@@ -13,11 +13,7 @@ import no.nav.k9.søknad.felles.personopplysninger.Bosteder
 import no.nav.k9.søknad.felles.personopplysninger.Utenlandsopphold.UtenlandsoppholdPeriodeInfo
 import no.nav.k9.søknad.felles.personopplysninger.Utenlandsopphold.UtenlandsoppholdÅrsak.BARNET_INNLAGT_I_HELSEINSTITUSJON_DEKKET_ETTER_AVTALE_MED_ET_ANNET_LAND_OM_TRYGD
 import no.nav.k9.søknad.felles.personopplysninger.Utenlandsopphold.UtenlandsoppholdÅrsak.BARNET_INNLAGT_I_HELSEINSTITUSJON_FOR_NORSK_OFFENTLIG_REGNING
-import no.nav.k9.søknad.felles.type.Landkode
-import no.nav.k9.søknad.felles.type.NorskIdentitetsnummer
-import no.nav.k9.søknad.felles.type.Organisasjonsnummer
-import no.nav.k9.søknad.felles.type.SøknadId
-import no.nav.k9.søknad.felles.type.VirksomhetType
+import no.nav.k9.søknad.felles.type.*
 import no.nav.k9.søknad.ytelse.psb.v1.*
 import no.nav.k9.søknad.ytelse.psb.v1.Beredskap.BeredskapPeriodeInfo
 import no.nav.k9.søknad.ytelse.psb.v1.Nattevåk.NattevåkPeriodeInfo
@@ -220,7 +216,6 @@ internal object SøknadUtils {
             .medBarn(K9Barn(NorskIdentitetsnummer.of("10987654321"), null))
             .medOpptjeningAktivitet(
                 OpptjeningAktivitet(
-                    null,
                     listOf(
                         SelvstendigNæringsdrivende(
                             mapOf(
@@ -265,7 +260,9 @@ internal object SøknadUtils {
                             "Something Fishy AS"
                         ),
                     ),
-                    Frilanser(LocalDate.parse("2020-01-01"), null, true)
+                    Frilanser(LocalDate.parse("2020-01-01"), null),
+                    null,
+                    null
                 )
             )
             .medBeredskap(
