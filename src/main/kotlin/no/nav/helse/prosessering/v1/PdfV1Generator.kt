@@ -306,6 +306,8 @@ private fun Arbeidsforhold.somMap(): Map<String, Any?> = mapOf(
 private fun ArbeidIPeriode.somMap() : Map<String, Any?> = mapOf(
     "jobberIPerioden" to jobberIPerioden.pdfTekst,
     "jobberSomVanlig" to jobberSomVanlig,
+    "skalViseJobberSomVanlig" to (jobberIPerioden == JobberIPeriodeSvar.JA),
+    "erLiktHverUkeSatt" to (erLiktHverUke != null),
     "erLiktHverUke" to erLiktHverUke,
     "enkeltdagerPerMnd" to enkeltdager?.somMapPerMnd(),
     "fasteDager" to fasteDager?.somMap()
