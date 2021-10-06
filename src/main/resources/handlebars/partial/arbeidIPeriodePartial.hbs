@@ -1,0 +1,50 @@
+<li>Jobber i perioden? {{arbeidIPeriode.jobberIPerioden}}</li>
+{{#if arbeidIPeriode.skalViseJobberSomVanlig}}
+    {{#if arbeidIPeriode.jobberSomVanlig}}
+        <li>Jobber som vanlig? Ja, {{jobberNormaltTimer}} timer per uke.</li>
+    {{else}}
+        <li>Jobber som vanlig? {{ jaNeiSvar arbeidIPeriode.jobberSomVanlig}}</li>
+    {{/if}}
+{{/if}}
+
+{{#if arbeidIPeriode.erLiktHverUkeSatt}}
+    <li>Er likt hver uke? {{ jaNeiSvar arbeidIPeriode.erLiktHverUke}}</li>
+{{/if}}
+
+{{#if arbeidIPeriode.enkeltdagerPerMnd}}
+    <li class="li-style-none"><b>Enkeltdager:</b>
+        <ul>
+            {{#each arbeidIPeriode.enkeltdagerPerMnd as |enkeltdagerPerMnd|~}}
+                <li>
+                    <p>{{enkeltdagerPerMnd.måned}}</p>
+                    <ul>
+                        {{#each enkeltdagerPerMnd.enkeltdagerPerUke as |enkeltdagerPerUke|~}}
+                            <li>
+                                <p>Uke {{enkeltdagerPerUke.uke}}</p>
+                                <ul>
+                                    {{#each enkeltdagerPerUke.dager as |enkeltdag|~}}
+                                        <li>
+                                            <p>{{enkeltdag.dag}} {{enkeltdag.dato}}:    {{enkeltdag.tid}}</p>
+                                        </li>
+                                    {{/each}}
+                                </ul>
+                            </li>
+                        {{/each}}
+                    </ul>
+                </li>
+            {{/each}}
+        </ul>
+    </li>
+{{/if}}
+
+{{#if arbeidIPeriode.fasteDager}}
+    <li class="li-style-none"><b>Faste dager:</b>
+        <ul>
+            <li>Mandag: {{arbeidIPeriode.fasteDager.mandag}}</li>
+            <li>Tirsdag: {{arbeidIPeriode.fasteDager.tirsdag}}</li>
+            <li>Onsdag: {{arbeidIPeriode.fasteDager.onsdag}}</li>
+            <li>Torsdag: {{arbeidIPeriode.fasteDager.torsdag}}</li>
+            <li>Fredag: {{arbeidIPeriode.fasteDager.fredag}}</li>
+        </ul>
+    </li>
+{{/if}}

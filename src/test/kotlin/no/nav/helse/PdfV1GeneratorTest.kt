@@ -124,38 +124,38 @@ class PdfV1GeneratorTest {
                 jobberFortsattSomFrilans = false,
                 arbeidsforhold = Arbeidsforhold(
                     arbeidsform = Arbeidsform.FAST,
-                    jobberNormaltTimer = 40.0,
+                    jobberNormaltTimer = 23.0,
                     historiskArbeid = ArbeidIPeriode(
                         jobberIPerioden = JobberIPeriodeSvar.JA,
                         jobberSomVanlig = true,
                         erLiktHverUke = null,
                         enkeltdager = listOf(
-                            Enkeltdag(dato = LocalDate.now(), tid = Duration.ofHours(4)),
-                            Enkeltdag(dato = LocalDate.now().plusDays(3), tid = Duration.ofHours(4)),
-                            Enkeltdag(dato = LocalDate.now().plusWeeks(1), tid = Duration.ofHours(4))
+                            Enkeltdag(dato = LocalDate.now(), tid = Duration.ofHours(1)),
+                            Enkeltdag(dato = LocalDate.now().plusDays(3), tid = Duration.ofHours(1)),
+                            Enkeltdag(dato = LocalDate.now().plusWeeks(1), tid = Duration.ofHours(1))
                         ),
                         fasteDager = PlanUkedager(
-                            mandag = Duration.ofHours(4),
-                            tirsdag = Duration.ofHours(7),
+                            mandag = Duration.ofHours(1),
+                            tirsdag = Duration.ofHours(1),
                             onsdag = null,
-                            torsdag = Duration.ofHours(5).plusMinutes(45),
+                            torsdag = Duration.ofHours(1).plusMinutes(45),
                             fredag = null
                         )
                     ),
                     planlagtArbeid = ArbeidIPeriode(
-                        jobberIPerioden = JobberIPeriodeSvar.VET_IKKE,
+                        jobberIPerioden = JobberIPeriodeSvar.JA,
                         jobberSomVanlig = true,
                         erLiktHverUke = true,
                         enkeltdager = listOf(
-                            Enkeltdag(dato = LocalDate.now(), tid = Duration.ofHours(4)),
-                            Enkeltdag(dato = LocalDate.now().plusDays(3), tid = Duration.ofHours(4)),
-                            Enkeltdag(dato = LocalDate.now().plusWeeks(1), tid = Duration.ofHours(4))
+                            Enkeltdag(dato = LocalDate.now(), tid = Duration.ofHours(1)),
+                            Enkeltdag(dato = LocalDate.now().plusDays(3), tid = Duration.ofHours(1)),
+                            Enkeltdag(dato = LocalDate.now().plusWeeks(1), tid = Duration.ofHours(1))
                         ),
                         fasteDager = PlanUkedager(
-                            mandag = Duration.ofHours(4),
-                            tirsdag = Duration.ofHours(7),
+                            mandag = Duration.ofHours(1),
+                            tirsdag = Duration.ofHours(1),
                             onsdag = null,
-                            torsdag = Duration.ofHours(5).plusMinutes(45),
+                            torsdag = Duration.ofHours(1).plusMinutes(45),
                             fredag = null
                         )
                     )
@@ -231,7 +231,7 @@ class PdfV1GeneratorTest {
                     erAnsatt = true,
                     arbeidsforhold = Arbeidsforhold(
                         arbeidsform = Arbeidsform.FAST,
-                        jobberNormaltTimer = 40.0,
+                        jobberNormaltTimer = 27.0,
                         historiskArbeid = ArbeidIPeriode(
                             jobberIPerioden = JobberIPeriodeSvar.JA,
                             jobberSomVanlig = true,
