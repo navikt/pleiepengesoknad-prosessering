@@ -15,10 +15,6 @@ class PdfV1GeneratorTest {
 
     private companion object {
         private val generator = PdfV1Generator()
-        private val barnetsIdent = "02119970078"
-        private val barnetsFødselsdato = LocalDate.parse("1999-11-02")
-        private val barnetsNavn = "OLE DOLE"
-        private val fødselsdato = LocalDate.now().minusDays(10)
     }
 
     private fun fullGyldigMelding(soknadsId: String): MeldingV1 {
@@ -36,8 +32,8 @@ class PdfV1GeneratorTest {
                 fødselsnummer = "29099012345"
             ),
             barn = Barn(
-                fødselsnummer = barnetsIdent,
-                navn = barnetsNavn
+                fødselsnummer = "02119970078",
+                navn = "OLE DOLE"
             ),
             vedleggUrls = listOf(
                 URI("http:localhost:8080/vedlegg1"),
@@ -488,4 +484,3 @@ class PdfV1GeneratorTest {
         genererOppsummeringsPdfer(true)
     }
 }
-
