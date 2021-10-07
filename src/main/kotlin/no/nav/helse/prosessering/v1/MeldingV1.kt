@@ -38,5 +38,5 @@ data class ArbeidsforholdAnsatt(
     val navn: String? = null,
     val organisasjonsnummer: String,
     val erAnsatt: Boolean,
-    val arbeidsforhold: Arbeidsforhold
+    val arbeidsforhold: Arbeidsforhold? = null
 )

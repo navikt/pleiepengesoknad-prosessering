@@ -141,11 +141,11 @@ internal fun MeldingV1.reportMetrics() {
     }
 
     val jobberIPerioden = arbeidsgivere?.mapNotNull {
-        val historisk = if(it.arbeidsforhold.historiskArbeid != null) {
+        val historisk = if(it.arbeidsforhold?.historiskArbeid != null) {
             "historisk_" + it.arbeidsforhold.historiskArbeid.jobberIPerioden.name.lowercase()
         } else "tom_historisk_"
 
-        val planlagt = if(it.arbeidsforhold.planlagtArbeid != null) {
+        val planlagt = if(it.arbeidsforhold?.planlagtArbeid != null) {
             "planlagt" + it.arbeidsforhold.planlagtArbeid.jobberIPerioden.name.lowercase()
         } else "tom_planlagt"
 

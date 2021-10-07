@@ -372,7 +372,7 @@ private fun List<ArbeidsforholdAnsatt>.somMapAnsatt() = map {
         "navn" to it.navn,
         "organisasjonsnummer" to it.organisasjonsnummer,
         "erAnsatt" to it.erAnsatt,
-        "arbeidsforhold" to it.arbeidsforhold.somMap()
+        "arbeidsforhold" to it.arbeidsforhold?.somMap()
     )
 }
 

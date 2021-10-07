@@ -162,7 +162,14 @@
             {{#each arbeidsgivere as |arbeidsgiver|~}}
                 <ul>
                     <li><b>{{arbeidsgiver.navn}} (orgnr: {{arbeidsgiver.organisasjonsnummer}})</b></li>
-                    {{> partial/arbeidsforholdPartial arbeidsforhold=arbeidsgiver.arbeidsforhold}}
+                    <li class="li-style-none">
+                        <ul>
+                            <li class="sporsmalstekst">Er ansatt? {{ jaNeiSvar arbeidsgiver.erAnsatt}}</li>
+                        </ul>
+                    </li>
+                    {{#if arbeidsgiver.arbeidsforhold}}
+                        {{> partial/arbeidsforholdPartial arbeidsforhold=arbeidsgiver.arbeidsforhold}}
+                    {{/if}}
                 </ul>
             {{/each}}
         {{/if}}
@@ -170,7 +177,9 @@
         {{#if frilans.arbeidsforhold}}
             <ul>
                 <li><b>Frilans</b></li>
-                {{> partial/arbeidsforholdPartial arbeidsforhold=frilans.arbeidsforhold}}
+                {{#if frilans.arbeidsforhold}}
+                    {{> partial/arbeidsforholdPartial arbeidsforhold=frilans.arbeidsforhold}}
+                {{/if}}
             </ul>
         {{/if}}
 

@@ -238,8 +238,8 @@ class PdfV1GeneratorTest {
                             erLiktHverUke = true,
                             enkeltdager = listOf(
                                 Enkeltdag(dato = LocalDate.now(), tid = Duration.ofHours(4)),
-                                Enkeltdag(dato = LocalDate.now().plusDays(3), tid = Duration.ofHours(4)),
-                                Enkeltdag(dato = LocalDate.now().plusWeeks(1), tid = Duration.ofHours(4))
+                                Enkeltdag(dato = LocalDate.now().plusDays(3), tid = Duration.ofHours(5)),
+                                Enkeltdag(dato = LocalDate.now().plusWeeks(1), tid = Duration.ofHours(5))
                             ),
                             fasteDager = PlanUkedager(
                                 mandag = Duration.ofHours(4),
@@ -254,9 +254,9 @@ class PdfV1GeneratorTest {
                             jobberSomVanlig = true,
                             erLiktHverUke = true,
                             enkeltdager = listOf(
-                                Enkeltdag(dato = LocalDate.now(), tid = Duration.ofHours(4)),
+                                Enkeltdag(dato = LocalDate.now(), tid = Duration.ofHours(5)),
                                 Enkeltdag(dato = LocalDate.now().plusDays(3), tid = Duration.ofHours(4)),
-                                Enkeltdag(dato = LocalDate.now().plusWeeks(1), tid = Duration.ofHours(4))
+                                Enkeltdag(dato = LocalDate.now().plusWeeks(1), tid = Duration.ofHours(5))
                             ),
                             fasteDager = PlanUkedager(
                                 mandag = Duration.ofHours(4),
@@ -281,12 +281,12 @@ class PdfV1GeneratorTest {
                             erLiktHverUke = true,
                             enkeltdager = listOf(
                                 Enkeltdag(dato = LocalDate.now(), tid = Duration.ofHours(4)),
-                                Enkeltdag(dato = LocalDate.now().plusDays(3), tid = Duration.ofHours(4)),
-                                Enkeltdag(dato = LocalDate.now().plusWeeks(1), tid = Duration.ofHours(4))
+                                Enkeltdag(dato = LocalDate.now().plusDays(3), tid = Duration.ofHours(9)),
+                                Enkeltdag(dato = LocalDate.now().plusWeeks(1), tid = Duration.ofHours(9))
                             ),
                             fasteDager = PlanUkedager(
                                 mandag = Duration.ofHours(4),
-                                tirsdag = Duration.ofHours(7),
+                                tirsdag = Duration.ofHours(6),
                                 onsdag = null,
                                 torsdag = Duration.ofHours(5).plusMinutes(45),
                                 fredag = null
@@ -306,6 +306,12 @@ class PdfV1GeneratorTest {
                             )
                         )
                     )
+                ),
+                ArbeidsforholdAnsatt(
+                    navn = "Sluttaaaa",
+                    organisasjonsnummer = "917755736",
+                    erAnsatt = false,
+                    arbeidsforhold = null
                 )
             ),
             harVærtEllerErVernepliktig = true,
@@ -315,7 +321,6 @@ class PdfV1GeneratorTest {
         )
     }
 
-    // TODO: 28/09/2021 Rydde opp i pdf tester.
     private fun genererOppsummeringsPdfer(writeBytes: Boolean) {
         var id = "1-full-søknad"
         var pdf = generator.generateSoknadOppsummeringPdf(
