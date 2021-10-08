@@ -85,6 +85,7 @@ val søknadsperiodeCounter = Counter.build()
 fun LocalDate.erFørDagensDato() = isBefore(LocalDate.now())
 fun LocalDate.erLikDagensDato() = isEqual(LocalDate.now())
 fun LocalDate.erEtterDagensDato() = isAfter(LocalDate.now())
+fun LocalDate.erLikEllerEtterDagensDato() = erLikDagensDato() || erEtterDagensDato()
 
 internal fun MeldingV1.reportMetrics() {
     opplastedeVedleggHistogram.observe(vedleggUrls.size.toDouble())

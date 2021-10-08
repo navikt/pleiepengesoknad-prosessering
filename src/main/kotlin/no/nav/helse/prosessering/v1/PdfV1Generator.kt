@@ -296,11 +296,16 @@ private fun PlanUkedager.somMap() = mapOf<String, Any?>(
     "fredag" to (fredag?.somTekst() ?: "0 timer")
 )
 
-private fun Arbeidsforhold.somMap(): Map<String, Any?> = mapOf(
+private fun Arbeidsforhold.somMap(
+    skalViseHistoriskArbeid: Boolean = true,
+    skalVisePlanlagtArbeid: Boolean = true
+): Map<String, Any?> = mapOf(
     "arbeidsform" to arbeidsform.utskriftsvennlig.lowercase(),
     "jobberNormaltTimer" to jobberNormaltTimer,
     "historiskArbeid" to historiskArbeid?.somMap(),
-    "planlagtArbeid" to planlagtArbeid?.somMap()
+    "planlagtArbeid" to planlagtArbeid?.somMap(),
+    "skalViseHistoriskArbeid" to skalViseHistoriskArbeid,
+    "skalVisePlanlagtArbeid" to skalVisePlanlagtArbeid
 )
 
 private fun ArbeidIPeriode.somMap() : Map<String, Any?> = mapOf(
@@ -317,7 +322,10 @@ private fun Frilans.somMap() : Map<String, Any?> = mapOf(
     "startdato" to DATE_FORMATTER.format(startdato),
     "sluttdato" to if(sluttdato!= null) DATE_FORMATTER.format(sluttdato) else null,
     "jobberFortsattSomFrilans" to jobberFortsattSomFrilans,
-    "arbeidsforhold" to arbeidsforhold?.somMap()
+    "arbeidsforhold" to arbeidsforhold?.somMap(
+        skalViseHistoriskArbeid = startdato.erFørDagensDato(),
+        skalVisePlanlagtArbeid = sluttdato?.erLikEllerEtterDagensDato() ?: true //Hvis vedkommende fortsatt er frilans skal planlagt vises.
+    )
 )
 
 private fun SelvstendigNæringsdrivende.somMap() : Map<String, Any?> = mapOf(
