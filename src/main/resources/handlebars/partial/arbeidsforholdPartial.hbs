@@ -1,13 +1,13 @@
 <li class="li-style-none">
     <ul>
-        <li class="sporsmalstekst">Arbeidsform: {{arbeidsforhold.arbeidsform}}</li>
-        <li class="sporsmalstekst">Normaltimer per uke: {{arbeidsforhold.jobberNormaltTimer}}</li>
+        <li class="sporsmalstekst">{{arbeidsforhold.arbeidsform}}</li>
+        <li class="sporsmalstekst">{{arbeidsforhold.jobberNormaltTimerTekst}}</li>
         {{#if arbeidsforhold.skalViseHistoriskArbeid}}
             {{#if arbeidsforhold.historiskArbeid}}
                 <li class="li-style-none">
                     <b>Historisk:</b>
                     <ul>
-                        {{> partial/arbeidIPeriodePartial arbeidIPeriode=arbeidsforhold.historiskArbeid jobberNormaltTimer=arbeidsforhold.jobberNormaltTimer}}
+                        {{> partial/arbeidIPeriodePartial arbeidIPeriode=arbeidsforhold.historiskArbeid}}
                     </ul>
                 </li>
             {{/if}}
@@ -18,7 +18,7 @@
                 <li class="li-style-none">
                     <b>Planlagt:</b>
                     <ul>
-                        {{> partial/arbeidIPeriodePartial arbeidIPeriode=arbeidsforhold.planlagtArbeid jobberNormaltTimer=arbeidsforhold.jobberNormaltTimer}}
+                        {{> partial/arbeidIPeriodePartial arbeidIPeriode=arbeidsforhold.planlagtArbeid}}
                     </ul>
                 </li>
             {{/if}}

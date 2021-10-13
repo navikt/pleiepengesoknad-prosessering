@@ -18,11 +18,18 @@ data class ArbeidIPeriode(
 enum class JobberIPeriodeSvar(val pdfTekst: String) {
     JA("Ja"),
     NEI("Nei"),
-    VET_IKKE("Vet ikke")
+    VET_IKKE("Vet ikke");
+
+    fun tilBoolean(): Boolean{
+        return when(this){
+            JA -> true
+            NEI, VET_IKKE -> false
+        }
+    }
 }
 
 enum class Arbeidsform(val utskriftsvennlig: String){
-    FAST("Fast antall timer per uke"),
-    TURNUS("Turnus"),
-    VARIERENDE("Deltid/varierende/tilkalling")
+    FAST("Jobber fast antall timer per uke"),
+    TURNUS("Jobber turnus"),
+    VARIERENDE("Jobber deltid/varierende/tilkalling")
 }

@@ -1,30 +1,39 @@
-<li>Jobber i perioden? {{arbeidIPeriode.jobberIPerioden}}</li>
+{{#if arbeidIPeriode.jobberIPerioden}}
+    <li>Skal jobbe i perioden</li>
+{{else}}
+    <li>Skal ikke jobbe i perioden</li>
+{{/if}}
+
 {{#if arbeidIPeriode.skalViseJobberSomVanlig}}
     {{#if arbeidIPeriode.jobberSomVanlig}}
-        <li>Jobber som vanlig? Ja, {{jobberNormaltTimer}} timer per uke.</li>
+        <li>Skal jobbe som vanlig</li>
     {{else}}
-        <li>Jobber som vanlig? {{ jaNeiSvar arbeidIPeriode.jobberSomVanlig}}</li>
+        <li>Skal jobbe mindre enn vanlig</li>
     {{/if}}
 {{/if}}
 
 {{#if arbeidIPeriode.erLiktHverUkeSatt}}
-    <li>Er likt hver uke? {{ jaNeiSvar arbeidIPeriode.erLiktHverUke}}</li>
+    {{#if arbeidIPeriode.erLiktHverUke}}
+        <li>Skal jobbe likt hver uke</li>
+    {{else}}
+        <li>Jobber variert hver uke</li>
+    {{/if}}
 {{/if}}
 
 {{#if arbeidIPeriode.enkeltdagerPerMnd}}
     <li class="li-style-none"><b>Enkeltdager:</b>
-        <ul>
+        <ul class="ul-no-indent">
             {{#each arbeidIPeriode.enkeltdagerPerMnd as |enkeltdagerPerMnd|~}}
                 <li>
-                    <p>{{enkeltdagerPerMnd.måned}}</p>
-                    <ul>
+                    <p><b>Jobb registrert i {{enkeltdagerPerMnd.måned}} {{enkeltdagerPerMnd.år}}</b></p>
+                    <ul class="ul-no-indent">
                         {{#each enkeltdagerPerMnd.enkeltdagerPerUke as |enkeltdagerPerUke|~}}
                             <li>
                                 <p>Uke {{enkeltdagerPerUke.uke}}</p>
                                 <ul>
                                     {{#each enkeltdagerPerUke.dager as |enkeltdag|~}}
                                         <li>
-                                            <p>{{enkeltdag.dag}} {{enkeltdag.dato}}:    {{enkeltdag.tid}}</p>
+                                            <p>{{enkeltdag.dag}} {{enkeltdag.dato}}: {{enkeltdag.tid}}</p>
                                         </li>
                                     {{/each}}
                                 </ul>

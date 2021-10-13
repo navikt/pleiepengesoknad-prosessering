@@ -42,6 +42,7 @@
             {{ soker.fodselsnummer }}<br/>
         </p>
     </div>
+
     <div class="person" id="barn">
         <p>Barn</p>
         <p class="navn">
@@ -164,7 +165,11 @@
                     <li><b>{{arbeidsgiver.navn}} (orgnr: {{arbeidsgiver.organisasjonsnummer}})</b></li>
                     <li class="li-style-none">
                         <ul>
-                            <li class="sporsmalstekst">Er ansatt? {{ jaNeiSvar arbeidsgiver.erAnsatt}}</li>
+                            {{#if arbeidsgiver.erAnsatt}}
+                                <li class="sporsmalstekst">Er ansatt</li>
+                            {{else}}
+                                <li class="sporsmalstekst">Er ikke ansatt</li>
+                            {{/if}}
                         </ul>
                     </li>
                     {{#if arbeidsgiver.arbeidsforhold}}
@@ -307,6 +312,7 @@
                     perioden {{omsorgstilbud.søknadsperiodeFraOgMed}} til {{omsorgstilbud.fortidTilOgMed}}?</p>
                 {{#if omsorgstilbud.historisk}}
                     <p>Ja</p>
+                    <br/>
 
                     <p class="sporsmalstekst">Tid barnet var i omsorgstilbud:</p>
                     <ul class="ul-no-indent">
@@ -349,7 +355,6 @@
                     <p class="sporsmalstekst">Vet du noe av tiden barnet skal være i omsorgstilbudet?</p>
                     {{#eq omsorgstilbud.planlagt.vetOmsorgstilbud "VET_ALLE_TIMER" }}
                         <p>Ja</p>
-                        <br/>
                         {{#if omsorgstilbud.planlagt.harSvartPåErLiktHverDag}}
                             <p><span class="sporsmalstekst">Er tiden barnet skal være i omsorgstilbudet lik for hver dag i perioden du søker om? Det
                                     vil si at alle mandager er like, alle tirsdager er like og så videre</span></p>

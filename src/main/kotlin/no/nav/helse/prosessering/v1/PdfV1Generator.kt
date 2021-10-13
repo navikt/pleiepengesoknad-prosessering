@@ -301,7 +301,8 @@ private fun Arbeidsforhold.somMap(
     skalViseHistoriskArbeid: Boolean = true,
     skalVisePlanlagtArbeid: Boolean = true
 ): Map<String, Any?> = mapOf(
-    "arbeidsform" to arbeidsform.utskriftsvennlig.lowercase(),
+    "arbeidsform" to arbeidsform.utskriftsvennlig,
+    "jobberNormaltTimerTekst" to jobberNormaltTimer.somTekst(arbeidsform),
     "jobberNormaltTimer" to jobberNormaltTimer,
     "historiskArbeid" to historiskArbeid?.somMap(),
     "planlagtArbeid" to planlagtArbeid?.somMap(),
@@ -309,8 +310,16 @@ private fun Arbeidsforhold.somMap(
     "skalVisePlanlagtArbeid" to skalVisePlanlagtArbeid
 )
 
+private fun Double.somTekst(arbeidsform: Arbeidsform): String{
+    return when(arbeidsform){
+        Arbeidsform.FAST -> "Jobber fast $this timer per uke"
+        Arbeidsform.TURNUS -> "Jobber turnus $this timer i snitt per uke"
+        Arbeidsform.VARIERENDE -> "Jobber deltid/varierende/tilkalling $this timer i snitt per uke"
+    }
+}
+
 private fun ArbeidIPeriode.somMap() : Map<String, Any?> = mapOf(
-    "jobberIPerioden" to jobberIPerioden.pdfTekst,
+    "jobberIPerioden" to jobberIPerioden.tilBoolean(),
     "jobberSomVanlig" to jobberSomVanlig,
     "skalViseJobberSomVanlig" to (jobberIPerioden == JobberIPeriodeSvar.JA),
     "erLiktHverUkeSatt" to (erLiktHverUke != null),
@@ -321,7 +330,7 @@ private fun ArbeidIPeriode.somMap() : Map<String, Any?> = mapOf(
 
 private fun Frilans.somMap() : Map<String, Any?> = mapOf(
     "startdato" to DATE_FORMATTER.format(startdato),
-    "sluttdato" to if(sluttdato!= null) DATE_FORMATTER.format(sluttdato) else null,
+    "sluttdato" to if(sluttdato != null) DATE_FORMATTER.format(sluttdato) else null,
     "jobberFortsattSomFrilans" to jobberFortsattSomFrilans,
     "arbeidsforhold" to arbeidsforhold?.somMap(
         skalViseHistoriskArbeid = startdato.erFørDagensDato(),
