@@ -302,25 +302,25 @@
         <h2>Omsorgstilbud</h2>
         {{#if omsorgstilbud}}
             {{#if omsorgstilbud.periodenStarterIFortid}}
+                <h3 style="font-size: 17px;">Omsorgstilbud tilbake i tid:</h3>
                 <p class="sporsmalstekst">Har barnet vært noe i et omsorgstilbud i
                     perioden {{omsorgstilbud.søknadsperiodeFraOgMed}} til {{omsorgstilbud.fortidTilOgMed}}?</p>
                 {{#if omsorgstilbud.historisk}}
                     <p>Ja</p>
-                    <br/>
 
-                    <p class="sporsmalstekst">Tid barnet har vært i omsorgstilbud:</p>
-                    <ul>
+                    <p class="sporsmalstekst">Tid barnet var i omsorgstilbud:</p>
+                    <ul class="ul-no-indent">
                         {{#each omsorgstilbud.historisk.enkeltdagerPerMnd as |enkeltdagerPerMnd|~}}
                             <li>
-                                <p>{{enkeltdagerPerMnd.måned}}</p>
-                                <ul>
+                                <p><b>{{enkeltdagerPerMnd.måned}} {{enkeltdagerPerMnd.år}}</b></p>
+                                <ul class="ul-no-indent">
                                     {{#each enkeltdagerPerMnd.enkeltdagerPerUke as |enkeltdagerPerUke|~}}
                                         <li>
                                             <p>Uke {{enkeltdagerPerUke.uke}}</p>
                                             <ul>
                                                 {{#each enkeltdagerPerUke.dager as |enkeltdag|~}}
                                                     <li>
-                                                        <p>{{enkeltdag.dag}} {{enkeltdag.dato}}:    {{enkeltdag.tid}}</p>
+                                                        <p>{{enkeltdag.dato}}: {{enkeltdag.tid}}</p>
                                                     </li>
                                                 {{/each}}
                                             </ul>
@@ -338,14 +338,15 @@
             {{/if}}
 
             {{#if omsorgstilbud.periodenAvsluttesIFremtiden}}
+                <h3 style="font-size: 17px;">Omsorgstilbud frem i tid:</h3>
+
                 <p class="sporsmalstekst">Skal barnet være noe i et omsorgstilbud i
                     perioden {{omsorgstilbud.fremtidFraOgMed}} til {{omsorgstilbud.søknadsperiodeTilOgMed}}?</p>
 
                 {{#if omsorgstilbud.planlagt}}
                     <p>Ja</p>
-                    <br/>
 
-                    <p class="sporsmalstekst">Kan du oppgi tiden barnet skal være i omsorgstilbudet?</p>
+                    <p class="sporsmalstekst">Vet du noe av tiden barnet skal være i omsorgstilbudet??</p>
                     {{#eq omsorgstilbud.planlagt.vetOmsorgstilbud "VET_ALLE_TIMER" }}
                         <p>Ja</p>
                         <br/>
@@ -357,18 +358,18 @@
                         <br/>
 
                         <p class="sporsmalstekst">Tid barnet skal være i omsorgstilbudet:</p>
-                        <ul>
+                        <ul class="ul-no-indent">
                             {{#each omsorgstilbud.planlagt.enkeltdagerPerMnd as |enkeltdagerPerMnd|~}}
                                 <li>
-                                    <p>{{enkeltdagerPerMnd.måned}}</p>
-                                    <ul>
+                                    <p><b>{{enkeltdagerPerMnd.måned}} {{enkeltdagerPerMnd.år}}</b></p>
+                                    <ul class="ul-no-indent">
                                         {{#each enkeltdagerPerMnd.enkeltdagerPerUke as |enkeltdagerPerUke|~}}
                                             <li>
                                                 <p>Uke {{enkeltdagerPerUke.uke}}</p>
                                                 <ul>
                                                     {{#each enkeltdagerPerUke.dager as |enkeltdag|~}}
                                                         <li>
-                                                            <p>{{enkeltdag.dag}} {{enkeltdag.dato}}:    {{enkeltdag.tid}}</p>
+                                                            <p>{{enkeltdag.dato}}:    {{enkeltdag.tid}}</p>
                                                         </li>
                                                     {{/each}}
                                                 </ul>
