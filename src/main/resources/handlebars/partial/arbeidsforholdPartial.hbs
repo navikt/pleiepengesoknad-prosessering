@@ -1,11 +1,10 @@
 <li class="li-style-none">
     <ul>
-        <li class="sporsmalstekst">{{arbeidsforhold.arbeidsform}}</li>
         <li class="sporsmalstekst">{{arbeidsforhold.jobberNormaltTimerTekst}}</li>
         {{#if arbeidsforhold.skalViseHistoriskArbeid}}
             {{#if arbeidsforhold.historiskArbeid}}
                 <li class="li-style-none">
-                    <b>Historisk:</b>
+                    <b>Jobb tilbake i tid:</b>
                     <ul>
                         {{> partial/arbeidIPeriodePartial arbeidIPeriode=arbeidsforhold.historiskArbeid}}
                     </ul>
@@ -16,7 +15,7 @@
         {{#if arbeidsforhold.skalVisePlanlagtArbeid}}
             {{#if arbeidsforhold.planlagtArbeid}}
                 <li class="li-style-none">
-                    <b>Planlagt:</b>
+                    <b>Jobb frem i tid:</b>
                     <ul>
                         {{> partial/arbeidIPeriodePartial arbeidIPeriode=arbeidsforhold.planlagtArbeid}}
                     </ul>
