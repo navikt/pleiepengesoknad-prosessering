@@ -257,7 +257,7 @@ fun List<Enkeltdag>.somMapPerMnd(): List<Map<String, Any>> {
     return omsorgsdagerPerMnd.map {
         mapOf(
             "år" to it.value.first().dato.year,
-            "måned" to it.key.somNorskMåned(),
+            "måned" to it.key.somNorskMåned().lowercase(),
             "enkeltdagerPerUke" to it.value.somMapPerUke()
         )
     }
