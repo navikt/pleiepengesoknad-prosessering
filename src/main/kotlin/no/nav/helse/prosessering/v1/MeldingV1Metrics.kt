@@ -16,6 +16,11 @@ val omsorgstilbudCounter = Counter.build()
     .help("Teller for svar på ja på spørsmål om tilsynsordning i søknaden")
     .labelNames("spm", "svar")
     .register()
+val omsorgstilbudPlanEllerDagForDagCounter = Counter.build()
+    .name("omsorgstilbud_plan_eller_dag_for_dag_counter")
+    .help("Teller de som søker 6mnd frem i tid og har omsorgstilbud")
+    .labelNames("type")
+    .register()
 
 val beredskapCounter = Counter.build()
     .name("beredskap_counter")
@@ -106,6 +111,19 @@ internal fun MeldingV1.reportMetrics() {
         null -> omsorgstilbudCounter.labels("omsorgstilbud", "nei").inc()
         else -> {
             omsorgstilbud.apply {
+
+                // Søker for mer enn 6mnd fram i tid
+                if (tilOgMed.isAfter(LocalDate.now().plusMonths(6))) {
+                    planlagt?.let {
+                        it.enkeltdager?.let {
+                            omsorgstilbudPlanEllerDagForDagCounter.labels("enkeltdager").inc()
+                        }
+                        it.ukedager?.let {
+                            omsorgstilbudPlanEllerDagForDagCounter.labels("ukedager").inc()
+                        }
+                    }
+                }
+
                 historisk?.let {
                     if (it.enkeltdager.isNotEmpty()) {
                         omsorgstilbudCounter.labels("omsorgstilbud", "historiskeEnkeltdager").inc()
