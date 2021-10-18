@@ -93,6 +93,7 @@ fun LocalDate.erEtterDagensDato() = isAfter(LocalDate.now())
 fun LocalDate.erLikEllerEtterDagensDato() = erLikDagensDato() || erEtterDagensDato()
 
 internal fun MeldingV1.reportMetrics() {
+    val logger = LoggerFactory.getLogger("MeldingV1MetricsLogger")
     opplastedeVedleggHistogram.observe(vedleggUrls.size.toDouble())
 
     if (fraOgMed.erFørDagensDato() && (tilOgMed.erFørDagensDato() || tilOgMed.erLikDagensDato())) {
@@ -114,11 +115,16 @@ internal fun MeldingV1.reportMetrics() {
 
                 // Søker for mer enn 6mnd fram i tid
                 if (tilOgMed.isAfter(LocalDate.now().plusMonths(6))) {
+                    logger.info("Planlagt omsorgstilbud mer enn 6mnd frem i tid 0.")
+
                     planlagt?.let {
+                        logger.info("Planlagt omsorgstilbud mer enn 6mnd frem i tid 1.")
                         it.enkeltdager?.let {
+                            logger.info("Planlagt omsorgstilbud mer enn 6mnd frem i tid 2.")
                             omsorgstilbudPlanEllerDagForDagCounter.labels("enkeltdager").inc()
                         }
                         it.ukedager?.let {
+                            logger.info("Planlagt omsorgstilbud mer enn 6mnd frem i tid 3.")
                             omsorgstilbudPlanEllerDagForDagCounter.labels("ukedager").inc()
                         }
                     }
