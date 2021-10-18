@@ -2,6 +2,8 @@ package no.nav.helse.prosessering.v1
 
 import io.prometheus.client.Counter
 import io.prometheus.client.Histogram
+import no.nav.helse.felles.Arbeidsforhold
+import no.nav.helse.felles.JobberIPeriodeSvar
 import no.nav.helse.felles.VetOmsorgstilbud
 import java.time.LocalDate
 
@@ -73,6 +75,12 @@ val arbeidsgivereCounter = Counter.build()
     .name("arbeidsgivereCounter")
     .help("Teller for arbeidsgivere")
     .labelNames("antallArbeidsgivere", "skalJobbe")
+    .register()
+
+val jobbIPeriodenCounter = Counter.build()
+    .name("jobbIPeriodenCounter")
+    .help("Teller for om søker har jobbet i perioden")
+    .labelNames("periode", "svar")
     .register()
 
 val ingenInntektCounter = Counter.build()
@@ -174,6 +182,37 @@ internal fun MeldingV1.reportMetrics() {
     //val skalJobbeString = ansatt?.map { it.skalJobbe.name.lowercase() }.sorted().joinToString("|") //Funksjonen over erstatter
     if(arbeidsgivere != null){
         arbeidsgivereCounter.labels(arbeidsgivere.size.toString(), jobberIPerioden).inc()
+    }
+
+    val arbeidsforhold: MutableList<Arbeidsforhold?> = mutableListOf(frilans?.arbeidsforhold, selvstendigNæringsdrivende?.arbeidsforhold)
+    arbeidsgivere?.let { arbeidsgiver -> arbeidsforhold.addAll(arbeidsgiver.map { it.arbeidsforhold }) }
+
+    val historiskJobberSvar = arbeidsforhold
+        .filterNotNull()
+        .mapNotNull { it.historiskArbeid?.jobberIPerioden }
+
+    val planlagtJobberSvar = arbeidsforhold
+        .filterNotNull()
+        .mapNotNull { it.planlagtArbeid?.jobberIPerioden }
+
+    val harJobbet = historiskJobberSvar.contains(JobberIPeriodeSvar.JA)
+    val harIkkeJobbet = historiskJobberSvar.all { it == JobberIPeriodeSvar.NEI }
+
+    when {
+        harJobbet -> jobbIPeriodenCounter.labels("historisk", "harJobbet").inc()
+        harIkkeJobbet -> jobbIPeriodenCounter.labels("historisk", "harIkkeJobbet").inc()
+    }
+
+    val skalJobbe = planlagtJobberSvar.contains(JobberIPeriodeSvar.JA)
+    val skalIkkeJobbe = planlagtJobberSvar.all { it == JobberIPeriodeSvar.NEI }
+    val vetIkke = planlagtJobberSvar.contains( JobberIPeriodeSvar.VET_IKKE)
+
+    when {
+        skalJobbe -> jobbIPeriodenCounter.labels("planlagt", "skalJobbe").inc()
+        else -> when {
+            skalIkkeJobbe ->jobbIPeriodenCounter.labels("planlagt", "skalJobbe").inc()
+            vetIkke -> jobbIPeriodenCounter.labels("planlagt", "vetIkke").inc()
+        }
     }
 
     when {
