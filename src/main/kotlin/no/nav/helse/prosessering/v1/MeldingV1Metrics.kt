@@ -4,7 +4,6 @@ import io.prometheus.client.Counter
 import io.prometheus.client.Histogram
 import no.nav.helse.felles.VetOmsorgstilbud
 import java.time.LocalDate
-import org.slf4j.LoggerFactory
 
 val opplastedeVedleggHistogram = Histogram.build()
     .buckets(0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0)
@@ -94,7 +93,6 @@ fun LocalDate.erEtterDagensDato() = isAfter(LocalDate.now())
 fun LocalDate.erLikEllerEtterDagensDato() = erLikDagensDato() || erEtterDagensDato()
 
 internal fun MeldingV1.reportMetrics() {
-    val logger = LoggerFactory.getLogger("MeldingV1MetricsLogger")
     opplastedeVedleggHistogram.observe(vedleggUrls.size.toDouble())
 
     if (fraOgMed.erFørDagensDato() && (tilOgMed.erFørDagensDato() || tilOgMed.erLikDagensDato())) {
@@ -116,16 +114,11 @@ internal fun MeldingV1.reportMetrics() {
 
                 // Søker for mer enn 6mnd fram i tid
                 if (tilOgMed.isAfter(LocalDate.now().plusMonths(6))) {
-                    logger.info("Planlagt omsorgstilbud mer enn 6mnd frem i tid 0.")
-
                     planlagt?.let {
-                        logger.info("Planlagt omsorgstilbud mer enn 6mnd frem i tid 1.")
                         it.enkeltdager?.let {
-                            logger.info("Planlagt omsorgstilbud mer enn 6mnd frem i tid 2.")
                             omsorgstilbudPlanEllerDagForDagCounter.labels("enkeltdager").inc()
                         }
                         it.ukedager?.let {
-                            logger.info("Planlagt omsorgstilbud mer enn 6mnd frem i tid 3.")
                             omsorgstilbudPlanEllerDagForDagCounter.labels("ukedager").inc()
                         }
                     }
