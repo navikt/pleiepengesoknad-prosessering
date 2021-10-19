@@ -210,7 +210,7 @@ internal fun MeldingV1.reportMetrics() {
     when {
         skalJobbe -> jobbIPeriodenCounter.labels("planlagt", "skalJobbe").inc()
         else -> when {
-            skalIkkeJobbe ->jobbIPeriodenCounter.labels("planlagt", "skalJobbe").inc()
+            skalIkkeJobbe ->jobbIPeriodenCounter.labels("planlagt", "skalIkkeJobbe").inc()
             vetIkke -> jobbIPeriodenCounter.labels("planlagt", "vetIkke").inc()
         }
     }
