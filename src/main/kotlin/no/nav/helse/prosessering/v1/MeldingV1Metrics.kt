@@ -196,7 +196,7 @@ internal fun MeldingV1.reportMetrics() {
         .mapNotNull { it.planlagtArbeid?.jobberIPerioden }
 
     val harJobbet = historiskJobberSvar.contains(JobberIPeriodeSvar.JA)
-    val harIkkeJobbet = historiskJobberSvar.all { it == JobberIPeriodeSvar.NEI }
+    val harIkkeJobbet = historiskJobberSvar.isEmpty() ||historiskJobberSvar.all { it == JobberIPeriodeSvar.NEI }
 
     when {
         harJobbet -> jobbIPeriodenCounter.labels("historisk", "harJobbet").inc()
@@ -204,7 +204,7 @@ internal fun MeldingV1.reportMetrics() {
     }
 
     val skalJobbe = planlagtJobberSvar.contains(JobberIPeriodeSvar.JA)
-    val skalIkkeJobbe = planlagtJobberSvar.all { it == JobberIPeriodeSvar.NEI }
+    val skalIkkeJobbe = planlagtJobberSvar.isEmpty() || planlagtJobberSvar.all { it == JobberIPeriodeSvar.NEI }
     val vetIkke = planlagtJobberSvar.contains( JobberIPeriodeSvar.VET_IKKE)
 
     when {
