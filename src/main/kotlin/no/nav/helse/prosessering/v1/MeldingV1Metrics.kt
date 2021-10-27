@@ -179,7 +179,6 @@ internal fun MeldingV1.reportMetrics() {
         "$historisk|$planlagt"
     }?.sorted()?.joinToString("|")
 
-    //val skalJobbeString = ansatt?.map { it.skalJobbe.name.lowercase() }.sorted().joinToString("|") //Funksjonen over erstatter
     if(arbeidsgivere != null){
         arbeidsgivereCounter.labels(arbeidsgivere.size.toString(), jobberIPerioden).inc()
     }
