@@ -1,4 +1,4 @@
-package no.nav.helse.prosessering.v1.asynkron
+package no.nav.helse.prosessering.v1.asynkron.endringsmelding
 
 import no.nav.helse.CorrelationId
 import no.nav.helse.dokument.DokumentService
@@ -8,12 +8,15 @@ import no.nav.helse.kafka.ManagedStreamHealthy
 import no.nav.helse.kafka.ManagedStreamReady
 import no.nav.helse.kafka.TopicEntry
 import no.nav.helse.kafka.process
+import no.nav.helse.prosessering.v1.asynkron.CleanupEndringsmelding
+import no.nav.helse.prosessering.v1.asynkron.EndringsmeldingTopics
+import no.nav.helse.prosessering.v1.asynkron.Topic
 import org.apache.kafka.streams.StreamsBuilder
 import org.apache.kafka.streams.Topology
 import org.apache.kafka.streams.kstream.Consumed
 import org.slf4j.LoggerFactory
 
-internal class CleanupStream(
+internal class EndringsmeldingCleanupStream(
     kafkaConfig: KafkaConfig,
     dokumentService: DokumentService
 ) {
@@ -28,21 +31,21 @@ internal class CleanupStream(
     internal val healthy = ManagedStreamHealthy(stream)
 
     private companion object {
-        private const val NAME = "CleanupV1"
+        private const val NAME = "EndringsmeldingCleanupV1"
         private val logger = LoggerFactory.getLogger("no.nav.$NAME.topology")
 
         private fun topology(dokumentService: DokumentService): Topology {
             val builder = StreamsBuilder()
-            val fraCleanup: Topic<TopicEntry<Cleanup>> = SøknadTopics.CLEANUP
+            val fraCleanup: Topic<TopicEntry<CleanupEndringsmelding>> = EndringsmeldingTopics.ENDRINGSMELDING_CLEANUP
 
             builder
-                .stream<String, TopicEntry<Cleanup>>(
+                .stream<String, TopicEntry<CleanupEndringsmelding>>(
                     fraCleanup.name, Consumed.with(fraCleanup.keySerde, fraCleanup.valueSerde)
                 )
                 .filter {_, entry -> 1 == entry.metadata.version }
                 .mapValues { soknadId, entry ->
                     process(NAME, soknadId, entry) {
-                        logger.info("Sletter dokumenter.")
+                        logger.info("Sletter dokumenter tilknyttet endringsmeldimg.")
 
                         dokumentService.slettDokumeter(
                             urlBolks = entry.data.melding.dokumentUrls,
@@ -50,7 +53,6 @@ internal class CleanupStream(
                             correlationId = CorrelationId(entry.metadata.correlationId)
                         )
                         logger.info("Dokumenter slettet.")
-                        logger.info("Videresender journalført melding")
                     }
                 }
             return builder.build()

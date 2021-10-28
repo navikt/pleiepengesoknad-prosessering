@@ -16,7 +16,8 @@
     "LAGRE_DOKUMENT_SCOPES": "97f0b1bc-6aa9-4d44-a3c7-60b4318fbec4/.default",
     "SLETTE_DOKUMENT_SCOPES": "97f0b1bc-6aa9-4d44-a3c7-60b4318fbec4/.default",
     "JOURNALFORE_SCOPES": "b32ae17c-0276-4006-9507-4ef49e0e5e20/.default",
-    "KAFKA_AUTO_OFFSET_RESET": "latest"
+    "KAFKA_AUTO_OFFSET_RESET": "latest",
+    "ENDRINGSMELDING_KAFKA_AUTO_OFFSET_RESET": "earliest"
   },
   "slack-channel": "sif-alerts-dev",
   "slack-notify-type": "<!here> | pleiepengesoknad-prosessering | "

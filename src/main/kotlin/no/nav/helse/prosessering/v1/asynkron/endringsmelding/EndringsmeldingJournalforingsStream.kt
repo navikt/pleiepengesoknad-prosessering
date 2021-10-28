@@ -1,4 +1,4 @@
-package no.nav.helse.prosessering.v1.asynkron
+package no.nav.helse.prosessering.v1.asynkron.endringsmelding
 
 import no.nav.helse.CorrelationId
 import no.nav.helse.felles.tilTpsNavn
@@ -9,14 +9,17 @@ import no.nav.helse.kafka.ManagedStreamHealthy
 import no.nav.helse.kafka.ManagedStreamReady
 import no.nav.helse.kafka.TopicEntry
 import no.nav.helse.kafka.process
-import no.nav.helse.prosessering.v1.PreprossesertMeldingV1
+import no.nav.helse.prosessering.v1.asynkron.CleanupEndringsmelding
+import no.nav.helse.prosessering.v1.asynkron.EndringsmeldingTopics
+import no.nav.helse.prosessering.v1.asynkron.Journalfort
+import no.nav.helse.prosessering.v1.asynkron.Topic
 import org.apache.kafka.streams.StreamsBuilder
 import org.apache.kafka.streams.Topology
 import org.apache.kafka.streams.kstream.Consumed
 import org.apache.kafka.streams.kstream.Produced
 import org.slf4j.LoggerFactory
 
-internal class JournalforingsStream(
+internal class EndringsmeldingJournalforingsStream(
     joarkGateway: JoarkGateway,
     kafkaConfig: KafkaConfig
 ) {
@@ -32,16 +35,16 @@ internal class JournalforingsStream(
     internal val healthy = ManagedStreamHealthy(stream)
 
     private companion object {
-        private const val NAME = "JournalforingV1"
+        private const val NAME = "EndringsmeldingJournalforingV1"
         private val logger = LoggerFactory.getLogger("no.nav.$NAME.topology")
 
         private fun topology(joarkGateway: JoarkGateway): Topology {
             val builder = StreamsBuilder()
-            val fraPreprossesert: Topic<TopicEntry<PreprossesertMeldingV1>> = SøknadTopics.PREPROSSESERT
-            val tilCleanup: Topic<TopicEntry<Cleanup>> = SøknadTopics.CLEANUP
+            val fraPreprossesert: Topic<TopicEntry<PreprossesertEndringsmeldingV1>> = EndringsmeldingTopics.ENDRINGSMELDING_PREPROSSESERT
+            val tilCleanup: Topic<TopicEntry<CleanupEndringsmelding>> = EndringsmeldingTopics.ENDRINGSMELDING_CLEANUP
 
             builder
-                .stream<String, TopicEntry<PreprossesertMeldingV1>>(
+                .stream<String, TopicEntry<PreprossesertEndringsmeldingV1>>(
                     fraPreprossesert.name,
                     Consumed.with(fraPreprossesert.keySerde, fraPreprossesert.valueSerde)
                 )
@@ -50,7 +53,7 @@ internal class JournalforingsStream(
                     process(NAME, soknadId, entry) {
                         logger.info("Journalfører dokumenter.")
                         val journaPostId = joarkGateway.journalfoer(
-                            mottatt = entry.data.mottatt,
+                            mottatt = entry.data.k9FormatSøknad.mottattDato,
                             aktoerId = entry.data.søker.aktørId,
                             sokerNavn = entry.data.søker.tilTpsNavn(),
                             correlationId = CorrelationId(entry.metadata.correlationId),
@@ -62,7 +65,7 @@ internal class JournalforingsStream(
                             journalpostId = journaPostId.journalPostId,
                             søknad = entry.data.k9FormatSøknad
                         )
-                        Cleanup(
+                        CleanupEndringsmelding(
                             metadata = entry.metadata,
                             melding = entry.data,
                             journalførtMelding = journalfort

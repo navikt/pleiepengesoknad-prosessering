@@ -1,4 +1,4 @@
-package no.nav.helse.prosessering.v1.asynkron
+package no.nav.helse.prosessering.v1.asynkron.endringsmelding
 
 import no.nav.helse.kafka.KafkaConfig
 import no.nav.helse.kafka.ManagedKafkaStreams
@@ -6,22 +6,21 @@ import no.nav.helse.kafka.ManagedStreamHealthy
 import no.nav.helse.kafka.ManagedStreamReady
 import no.nav.helse.kafka.TopicEntry
 import no.nav.helse.kafka.process
-import no.nav.helse.prosessering.v1.MeldingV1
-import no.nav.helse.prosessering.v1.PreprosseseringV1Service
+import no.nav.helse.prosessering.v1.asynkron.EndringsmeldingTopics
 import org.apache.kafka.streams.StreamsBuilder
 import org.apache.kafka.streams.Topology
 import org.apache.kafka.streams.kstream.Consumed
 import org.apache.kafka.streams.kstream.Produced
 import org.slf4j.LoggerFactory
 
-internal class PreprosseseringStream(
-    preprosseseringV1Service: PreprosseseringV1Service,
+internal class EndringsmeldingPreprosseseringStream(
+    endringsmeldingPreprosseseringV1Service: EndringsmeldingPreprosseseringV1Service,
     kafkaConfig: KafkaConfig
 ) {
     private val stream = ManagedKafkaStreams(
         name = NAME,
         properties = kafkaConfig.stream(NAME),
-        topology = topology(preprosseseringV1Service),
+        topology = topology(endringsmeldingPreprosseseringV1Service),
         unreadyAfterStreamStoppedIn = kafkaConfig.unreadyAfterStreamStoppedIn
     )
 
@@ -30,24 +29,28 @@ internal class PreprosseseringStream(
 
     private companion object {
 
-        private const val NAME = "PreprosesseringV1"
+        private const val NAME = "EndringsmeldingPreprosesseringV1"
         private val logger = LoggerFactory.getLogger("no.nav.$NAME.topology")
 
-        private fun topology(preprosseseringV1Service: PreprosseseringV1Service) : Topology {
+        private fun topology(endringsmeldingPreprosseseringV1Service: EndringsmeldingPreprosseseringV1Service): Topology {
             val builder = StreamsBuilder()
-            val fromTopic = SøknadTopics.MOTTATT
-            val toTopic = SøknadTopics.PREPROSSESERT
+            val fromTopic = EndringsmeldingTopics.ENDRINGSMELDING_MOTTATT
+            val toTopic = EndringsmeldingTopics.ENDRINGSMELDING_PREPROSSESERT
 
             builder
-                .stream<String, TopicEntry<MeldingV1>>(fromTopic.name, Consumed.with(fromTopic.keySerde, fromTopic.valueSerde))
+                .stream<String, TopicEntry<EndringsmeldingV1>>(
+                    fromTopic.name,
+                    Consumed.with(fromTopic.keySerde, fromTopic.valueSerde)
+                )
                 .filter { _, entry -> 1 == entry.metadata.version }
-                .mapValues { soknadId, entry  ->
+                .mapValues { soknadId, entry ->
                     process(NAME, soknadId, entry) {
-                        logger.info("Preprosesserer søknad.")
-                        val preprossesertMelding = preprosseseringV1Service.preprosseser(
-                            melding = entry.data,
-                            metadata = entry.metadata
-                        )
+                        logger.info("Preprosesserer endringsmelding.")
+                        val preprossesertMelding: PreprossesertEndringsmeldingV1 =
+                            endringsmeldingPreprosseseringV1Service.preprosseser(
+                                endringsmelding = entry.data,
+                                metadata = entry.metadata
+                            )
                         logger.info("Preprossesering ferdig.")
                         preprossesertMelding
                     }

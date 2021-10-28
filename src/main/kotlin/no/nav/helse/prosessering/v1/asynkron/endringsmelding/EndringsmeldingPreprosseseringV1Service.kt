@@ -1,0 +1,71 @@
+package no.nav.helse.prosessering.v1.asynkron.endringsmelding
+
+import no.nav.helse.CorrelationId
+import no.nav.helse.dokument.DokumentService
+import no.nav.helse.pdf.EndringsmeldingPDFGenerator
+import no.nav.helse.prosessering.Metadata
+import no.nav.helse.prosessering.SoknadId
+import org.slf4j.LoggerFactory
+
+internal class EndringsmeldingPreprosseseringV1Service(
+    private val endringsmeldingPDFGenerator: EndringsmeldingPDFGenerator,
+    private val dokumentService: DokumentService
+) {
+
+    private companion object {
+        private val logger = LoggerFactory.getLogger(EndringsmeldingPreprosseseringV1Service::class.java)
+    }
+
+    internal suspend fun preprosseser(
+        endringsmelding: EndringsmeldingV1,
+        metadata: Metadata
+    ): PreprossesertEndringsmeldingV1 {
+        val soknadId = SoknadId(endringsmelding.k9Format.søknadId.id)
+        logger.info("Preprosseserer endringsmelding med søknadId $soknadId")
+
+        val correlationId = CorrelationId(metadata.correlationId)
+
+        val søkerAktørId = endringsmelding.søker.aktørId
+
+        logger.trace("Genererer Oppsummerings-PDF av endringsmelding.")
+
+        val endringsmeldingOppsummeringPdf = endringsmeldingPDFGenerator.genererPDF(endringsmelding)
+
+        logger.trace("Generering av Oppsummerings-PDF for endringsmelding OK.")
+        logger.trace("Mellomlagrer Oppsummerings-PDF av endringsmelding.")
+
+        val endringsmeldingOppsummeringPdfUrl = dokumentService.lagrePdf(
+            pdf = endringsmeldingOppsummeringPdf,
+            correlationId = correlationId,
+            aktørId = søkerAktørId,
+            dokumentbeskrivelse = "Endringsmelding om pleiepenger"
+        )
+
+        logger.trace("Mellomlagring av Oppsummerings-PDF for endringsmelding OK")
+
+        logger.trace("Mellomlagrer Oppsummerings-JSON for endringsmelding")
+
+        val endringsmeldingJsonUrl = dokumentService.lagreJsonMelding(
+            k9FormatSøknad = endringsmelding.k9Format,
+            aktørId = søkerAktørId,
+            correlationId = correlationId
+        )
+
+        logger.trace("Mellomlagring av oppsummerings-JSON for endringsmelding OK.")
+
+
+        val komplettDokumentUrls = mutableListOf(
+            listOf(
+                endringsmeldingOppsummeringPdfUrl,
+                endringsmeldingJsonUrl
+            )
+        )
+
+        logger.trace("Totalt ${komplettDokumentUrls.size} dokumentbolker.")
+
+        return PreprossesertEndringsmeldingV1(
+            endringsmelding = endringsmelding,
+            dokumentUrls = komplettDokumentUrls.toList()
+        )
+    }
+}

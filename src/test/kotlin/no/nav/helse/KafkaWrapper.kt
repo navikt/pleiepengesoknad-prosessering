@@ -4,12 +4,13 @@ import no.nav.common.JAASCredential
 import no.nav.common.KafkaEnvironment
 import no.nav.helse.kafka.TopicEntry
 import no.nav.helse.prosessering.Metadata
-import no.nav.helse.prosessering.v1.MeldingV1
-import no.nav.helse.prosessering.v1.PreprossesertMeldingV1
-import no.nav.helse.prosessering.v1.asynkron.Topics
-import no.nav.helse.prosessering.v1.asynkron.Topics.CLEANUP
-import no.nav.helse.prosessering.v1.asynkron.Topics.MOTTATT
-import no.nav.helse.prosessering.v1.asynkron.Topics.PREPROSSESERT
+import no.nav.helse.prosessering.v1.asynkron.EndringsmeldingTopics.ENDRINGSMELDING_CLEANUP
+import no.nav.helse.prosessering.v1.asynkron.EndringsmeldingTopics.ENDRINGSMELDING_MOTTATT
+import no.nav.helse.prosessering.v1.asynkron.EndringsmeldingTopics.ENDRINGSMELDING_PREPROSSESERT
+import no.nav.helse.prosessering.v1.asynkron.SøknadTopics.CLEANUP
+import no.nav.helse.prosessering.v1.asynkron.SøknadTopics.MOTTATT
+import no.nav.helse.prosessering.v1.asynkron.SøknadTopics.PREPROSSESERT
+import no.nav.helse.prosessering.v1.asynkron.Topic
 import org.apache.kafka.clients.CommonClientConfigs
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.clients.consumer.KafkaConsumer
@@ -26,79 +27,89 @@ private const val username = "srvkafkaclient"
 private const val password = "kafkaclient"
 
 object KafkaWrapper {
-    fun bootstrap() : KafkaEnvironment {
+    fun bootstrap(): KafkaEnvironment {
         val kafkaEnvironment = KafkaEnvironment(
             users = listOf(JAASCredential(username, password)),
             autoStart = true,
             withSchemaRegistry = false,
             withSecurity = true,
-            topicNames= listOf(
+            topicNames = listOf(
                 MOTTATT.name,
                 PREPROSSESERT.name,
-                CLEANUP.name
+                CLEANUP.name,
+                ENDRINGSMELDING_MOTTATT.name,
+                ENDRINGSMELDING_PREPROSSESERT.name,
+                ENDRINGSMELDING_CLEANUP.name,
             )
         )
         return kafkaEnvironment
     }
 }
 
-private fun KafkaEnvironment.testConsumerProperties(clientId: String): MutableMap<String, Any>?  {
+private fun KafkaEnvironment.testConsumerProperties(clientId: String): MutableMap<String, Any>? {
     return HashMap<String, Any>().apply {
         put(CommonClientConfigs.BOOTSTRAP_SERVERS_CONFIG, brokersURL)
         put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, "SASL_PLAINTEXT")
         put(SaslConfigs.SASL_MECHANISM, "PLAIN")
-        put(SaslConfigs.SASL_JAAS_CONFIG, "org.apache.kafka.common.security.plain.PlainLoginModule required username=\"$username\" password=\"$password\";")
+        put(
+            SaslConfigs.SASL_JAAS_CONFIG,
+            "org.apache.kafka.common.security.plain.PlainLoginModule required username=\"$username\" password=\"$password\";"
+        )
         put(ConsumerConfig.GROUP_ID_CONFIG, clientId)
     }
 }
 
-private fun KafkaEnvironment.testProducerProperties() : MutableMap<String, Any>?  {
+private fun KafkaEnvironment.testProducerProperties(producerClientId: String): MutableMap<String, Any>? {
     return HashMap<String, Any>().apply {
         put(CommonClientConfigs.BOOTSTRAP_SERVERS_CONFIG, brokersURL)
         put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, "SASL_PLAINTEXT")
         put(SaslConfigs.SASL_MECHANISM, "PLAIN")
-        put(SaslConfigs.SASL_JAAS_CONFIG, "org.apache.kafka.common.security.plain.PlainLoginModule required username=\"$username\" password=\"$password\";")
-        put(ProducerConfig.CLIENT_ID_CONFIG, "PleiepengesoknadProsesseringTestProducer")
+        put(
+            SaslConfigs.SASL_JAAS_CONFIG,
+            "org.apache.kafka.common.security.plain.PlainLoginModule required username=\"$username\" password=\"$password\";"
+        )
+        put(ProducerConfig.CLIENT_ID_CONFIG, producerClientId)
     }
 }
 
 
-fun KafkaEnvironment.testConsumer() : KafkaConsumer<String, TopicEntry<PreprossesertMeldingV1>> {
-    val consumer = KafkaConsumer<String, TopicEntry<PreprossesertMeldingV1>>(
-        testConsumerProperties("PleiepengesoknadProsesseringTestConsumer"),
+fun <T> KafkaEnvironment.testConsumer(topic: Topic<TopicEntry<T>>): KafkaConsumer<String, TopicEntry<T>> {
+    val consumer = KafkaConsumer(
+        testConsumerProperties("pleiepengesoknad-prosessering-${UUID.randomUUID()}"),
         StringDeserializer(),
-        PREPROSSESERT.serDes
+        topic.serDes
     )
-    consumer.subscribe(listOf(PREPROSSESERT.name))
+    consumer.subscribe(listOf(topic.name))
     return consumer
 }
 
-fun KafkaEnvironment.cleanupConsumer(): KafkaConsumer<String, String> {
+fun <T> KafkaEnvironment.cleanupConsumer(topic: Topic<TopicEntry<T>>, consumerClientId: String): KafkaConsumer<String, String> {
     val consumer = KafkaConsumer(
-        testConsumerProperties("K9FordelKonsumer"),
+        testConsumerProperties("$consumerClientId-${UUID.randomUUID()}"),
         StringDeserializer(),
         StringDeserializer()
     )
-    consumer.subscribe(listOf(CLEANUP.name))
+    consumer.subscribe(listOf(topic.name))
     return consumer
 }
 
 
-fun KafkaEnvironment.testProducer() = KafkaProducer(
-    testProducerProperties(),
-    Topics.MOTTATT.keySerializer,
-    Topics.MOTTATT.serDes
+fun <T> KafkaEnvironment.testProducer(producerClientId: String, topic: Topic<TopicEntry<T>>) = KafkaProducer(
+    testProducerProperties(producerClientId),
+    topic.keySerializer,
+    topic.serDes
 )
 
-fun KafkaConsumer<String, TopicEntry<PreprossesertMeldingV1>>.hentPreprosessertMelding(
+fun <V> KafkaConsumer<String, TopicEntry<V>>.hentMelding(
     soknadId: String,
-    maxWaitInSeconds: Long = 20
-) : TopicEntry<PreprossesertMeldingV1> {
+    maxWaitInSeconds: Long = 20,
+    topic: Topic<TopicEntry<V>>
+): TopicEntry<V> {
     val end = System.currentTimeMillis() + Duration.ofSeconds(maxWaitInSeconds).toMillis()
     while (System.currentTimeMillis() < end) {
         seekToBeginning(assignment())
         val entries = poll(Duration.ofSeconds(1))
-            .records(PREPROSSESERT.name)
+            .records(topic.name)
             .filter { it.key() == soknadId }
 
         if (entries.isNotEmpty()) {
@@ -109,15 +120,16 @@ fun KafkaConsumer<String, TopicEntry<PreprossesertMeldingV1>>.hentPreprosessertM
     throw IllegalStateException("Fant ikke preprosessert melding for søknad $soknadId etter $maxWaitInSeconds sekunder.")
 }
 
-fun KafkaConsumer<String, String>.hentCleanupMelding(
+fun <V> KafkaConsumer<String, String>.hentCleanupMelding(
     soknadId: String,
-    maxWaitInSeconds: Long = 20
+    maxWaitInSeconds: Long = 20,
+    topic: Topic<TopicEntry<V>>
 ): String {
     val end = System.currentTimeMillis() + Duration.ofSeconds(maxWaitInSeconds).toMillis()
     while (System.currentTimeMillis() < end) {
         seekToBeginning(assignment())
         val entries = poll(Duration.ofSeconds(1))
-            .records(CLEANUP.name)
+            .records(topic.name)
             .filter { it.key() == soknadId }
 
         if (entries.isNotEmpty()) {
@@ -128,11 +140,15 @@ fun KafkaConsumer<String, String>.hentCleanupMelding(
     throw IllegalStateException("Fant ikke journalført melding for søknad $soknadId etter $maxWaitInSeconds sekunder.")
 }
 
-fun KafkaProducer<String, TopicEntry<MeldingV1>>.leggSoknadTilProsessering(soknad: MeldingV1) {
+fun <V> KafkaProducer<String, TopicEntry<V>>.leggPåMelding(
+    søknadId: String,
+    soknad: V,
+    topic: Topic<TopicEntry<V>>
+) {
     send(
         ProducerRecord(
-            Topics.MOTTATT.name,
-            soknad.søknadId,
+            topic.name,
+            søknadId,
             TopicEntry(
                 metadata = Metadata(
                     version = 1,

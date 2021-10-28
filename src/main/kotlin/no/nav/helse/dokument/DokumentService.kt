@@ -23,7 +23,7 @@ class DokumentService(
         ).first()
     }
 
-    internal suspend fun lagreSoknadsOppsummeringPdf(
+    internal suspend fun lagrePdf(
         pdf : ByteArray,
         aktørId: String,
         correlationId: CorrelationId,
@@ -40,7 +40,7 @@ class DokumentService(
         )
     }
 
-    internal suspend fun lagreSoknadsMelding(
+    internal suspend fun lagreJsonMelding(
         k9FormatSøknad: Søknad,
         aktørId: String,
         correlationId: CorrelationId

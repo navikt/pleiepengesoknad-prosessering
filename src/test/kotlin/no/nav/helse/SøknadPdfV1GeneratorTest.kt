@@ -1,9 +1,39 @@
 package no.nav.helse
 
-import no.nav.helse.felles.*
+import no.nav.helse.felles.ArbeidIPeriode
+import no.nav.helse.felles.Arbeidsforhold
+import no.nav.helse.felles.Arbeidsform
+import no.nav.helse.felles.Barn
+import no.nav.helse.felles.BarnRelasjon
+import no.nav.helse.felles.Beredskap
+import no.nav.helse.felles.Bosted
+import no.nav.helse.felles.Enkeltdag
+import no.nav.helse.felles.Ferieuttak
+import no.nav.helse.felles.FerieuttakIPerioden
+import no.nav.helse.felles.Frilans
+import no.nav.helse.felles.HistoriskOmsorgstilbud
+import no.nav.helse.felles.JobberIPeriodeSvar
+import no.nav.helse.felles.Land
+import no.nav.helse.felles.Medlemskap
+import no.nav.helse.felles.Nattevåk
+import no.nav.helse.felles.Næringstyper
+import no.nav.helse.felles.Omsorgstilbud
+import no.nav.helse.felles.Periode
+import no.nav.helse.felles.PlanUkedager
+import no.nav.helse.felles.PlanlagtOmsorgstilbud
+import no.nav.helse.felles.Regnskapsfører
+import no.nav.helse.felles.SelvstendigNæringsdrivende
+import no.nav.helse.felles.Søker
+import no.nav.helse.felles.Utenlandsopphold
+import no.nav.helse.felles.UtenlandsoppholdIPerioden
+import no.nav.helse.felles.VarigEndring
+import no.nav.helse.felles.VetOmsorgstilbud
+import no.nav.helse.felles.Virksomhet
+import no.nav.helse.felles.YrkesaktivSisteTreFerdigliknedeÅrene
+import no.nav.helse.felles.Årsak
+import no.nav.helse.pdf.SøknadPDFGenerator
 import no.nav.helse.prosessering.v1.ArbeidsforholdAnsatt
 import no.nav.helse.prosessering.v1.MeldingV1
-import no.nav.helse.prosessering.v1.PdfV1Generator
 import java.io.File
 import java.net.URI
 import java.time.Duration
@@ -11,10 +41,10 @@ import java.time.LocalDate
 import java.time.ZonedDateTime
 import kotlin.test.Test
 
-class PdfV1GeneratorTest {
+class SøknadPdfV1GeneratorTest {
 
     private companion object {
-        private val generator = PdfV1Generator()
+        private val generator = SøknadPDFGenerator()
     }
 
     private fun fullGyldigMelding(soknadsId: String): MeldingV1 {
@@ -323,19 +353,19 @@ class PdfV1GeneratorTest {
 
     private fun genererOppsummeringsPdfer(writeBytes: Boolean) {
         var id = "1-full-søknad"
-        var pdf = generator.generateSoknadOppsummeringPdf(
+        var pdf = generator.genererPDF(
             melding = fullGyldigMelding(soknadsId = id)
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
         id = "2-utenMedsøker"
-        pdf = generator.generateSoknadOppsummeringPdf(
+        pdf = generator.genererPDF(
             melding = fullGyldigMelding(id).copy(harMedsøker = false)
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
         id = "3-medsøkerSamtidigHjemme"
-        pdf = generator.generateSoknadOppsummeringPdf(
+        pdf = generator.genererPDF(
             melding = fullGyldigMelding(id).copy(
                 harMedsøker = true,
                 samtidigHjemme = true
@@ -344,7 +374,7 @@ class PdfV1GeneratorTest {
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
         id = "4-medsøkerIkkeSamtidigHjemme"
-        pdf = generator.generateSoknadOppsummeringPdf(
+        pdf = generator.genererPDF(
             melding = fullGyldigMelding(id).copy(
                 harMedsøker = true,
                 samtidigHjemme = false
@@ -353,19 +383,19 @@ class PdfV1GeneratorTest {
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
         id = "5-utenSpråk"
-        pdf = generator.generateSoknadOppsummeringPdf(
+        pdf = generator.genererPDF(
             melding = fullGyldigMelding(id).copy(harMedsøker = false, språk = null)
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
         id = "6-utenArbeidsgivere"
-        pdf = generator.generateSoknadOppsummeringPdf(
+        pdf = generator.genererPDF(
             melding = fullGyldigMelding(id).copy(arbeidsgivere = null)
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
         id = "7-flerePlanlagteUtenlandsopphold"
-        pdf = generator.generateSoknadOppsummeringPdf(
+        pdf = generator.genererPDF(
             melding = fullGyldigMelding(id).copy(
                 medlemskap = Medlemskap(
                     harBoddIUtlandetSiste12Mnd = false,
@@ -388,7 +418,7 @@ class PdfV1GeneratorTest {
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
         id = "8-har-lastet-opp-vedlegg"
-        pdf = generator.generateSoknadOppsummeringPdf(
+        pdf = generator.genererPDF(
             melding = fullGyldigMelding(id).copy(
                 harMedsøker = true,
                 vedleggUrls = listOf(URI("noe"))
@@ -397,7 +427,7 @@ class PdfV1GeneratorTest {
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
         id = "9-omsorgstilbud-v2-med-historisk-og-planlagte-ukedager"
-        pdf = generator.generateSoknadOppsummeringPdf(
+        pdf = generator.genererPDF(
             melding = fullGyldigMelding(id).copy(
                 fraOgMed = LocalDate.now().minusDays(10),
                 tilOgMed = LocalDate.now().plusDays(10),
@@ -426,7 +456,7 @@ class PdfV1GeneratorTest {
 
 
         id = "10-omsorgstilbud-v2-med-historisk-og-planlagte-enkeltdager"
-        pdf = generator.generateSoknadOppsummeringPdf(
+        pdf = generator.genererPDF(
             melding = fullGyldigMelding(id).copy(
                 fraOgMed = LocalDate.now().minusDays(10),
                 tilOgMed = LocalDate.now().plusDays(10),
@@ -455,7 +485,7 @@ class PdfV1GeneratorTest {
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
         id = "11-omsorgstilbud-v2-vet-ikke-planlagt-tilsyn"
-        pdf = generator.generateSoknadOppsummeringPdf(
+        pdf = generator.genererPDF(
             melding = fullGyldigMelding(id).copy(
                 omsorgstilbud = Omsorgstilbud(
                     planlagt = PlanlagtOmsorgstilbud(
@@ -467,7 +497,7 @@ class PdfV1GeneratorTest {
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
         id = "12-kun-frilans-arbeidsforhold"
-        pdf = generator.generateSoknadOppsummeringPdf(
+        pdf = generator.genererPDF(
             melding = fullGyldigMelding(id).copy(
                 selvstendigNæringsdrivende = null,
                 arbeidsgivere = null

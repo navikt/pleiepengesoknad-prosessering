@@ -5,7 +5,13 @@ import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.common.config.SaslConfigs
 import org.apache.kafka.common.config.SslConfigs
 import org.apache.kafka.common.security.auth.SecurityProtocol
-import org.apache.kafka.streams.StreamsConfig.*
+import org.apache.kafka.streams.StreamsConfig.APPLICATION_ID_CONFIG
+import org.apache.kafka.streams.StreamsConfig.AT_LEAST_ONCE
+import org.apache.kafka.streams.StreamsConfig.BOOTSTRAP_SERVERS_CONFIG
+import org.apache.kafka.streams.StreamsConfig.DEFAULT_DESERIALIZATION_EXCEPTION_HANDLER_CLASS_CONFIG
+import org.apache.kafka.streams.StreamsConfig.EXACTLY_ONCE
+import org.apache.kafka.streams.StreamsConfig.PROCESSING_GUARANTEE_CONFIG
+import org.apache.kafka.streams.StreamsConfig.REPLICATION_FACTOR_CONFIG
 import org.apache.kafka.streams.errors.LogAndFailExceptionHandler
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -16,7 +22,7 @@ import java.util.*
 private val logger: Logger = LoggerFactory.getLogger(KafkaConfig::class.java)
 private const val ID_PREFIX = "pleiepengesoknad-prosessering-"
 
-internal class KafkaConfig(
+class KafkaConfig(
     bootstrapServers: String,
     trustStore: Pair<String, String>?,
     keyStore: Pair<String, String>?,

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8"/>
+    <title>Søknad om pleiepenger for sykt barn eller person over 18 år</title>
+    <meta name="subject" content="Søknad om pleiepenger for sykt barn eller person over 18 år"/>
+    <meta name="author" content="nav.no"/>
+    <meta name="description"
+          content="Søknad om pleiepenger for sykt barn eller person over 18 år mottatt {{soknad_mottatt_dag}} {{ soknad_mottatt }}"/>
+    <bookmarks>
+        <bookmark name="Søker" href="#søker"/>
+       <!-- <bookmark name="Barn" href="#barn"/>-->
+        <!--<bookmark name="Perioder" href="#perioder"/>-->
+        <!--<bookmark name="Arbeidsforhold" href="#arbeidsforhold"/>-->
+        <bookmark name="Samtykke" href="#samtykke"/>
+    </bookmarks>
+    {{#block 'style-common' }} {{/block}}
+</head>
+
+<body>
+<h1 id="header">Endringsmelding om pleiepenger for sykt barn eller person over 18 år</h1>
+
+<!--<p class="nokkelinfo"><strong>Sendt til NAV </strong>{{soknad_mottatt_dag}} {{ soknad_mottatt }}</p>-->
+
+<div class="innholdscontainer">
+    <div class="person" id="søker">
+        <p>Søker</p>
+        <p class="navn">
+            {{ soker.navn }}
+        </p>
+        <p>
+            {{ soker.fodselsnummer }}<br/>
+        </p>
+    </div>
+
+    <!--<div class="person" id="barn">
+        <p>Barn</p>
+        <p class="navn">
+            {{# if barn.navn }}
+                {{ barn.navn }}
+            {{else}}
+                <span class="ikke_satt">Navn ikke angitt</span>
+            {{/if}}
+        </p>
+        <p>
+            {{# if barn.id }}
+                {{ barn.id }}
+            {{else}}
+                <span class="ikke_satt">ID ikke angitt</span>
+            {{/if}}
+        </p>
+    </div>-->
+
+    <!--<section id="perioder">
+        <h2>Perioder du søker om endring i pleiepenger</h2>
+        <ul>
+            <li>
+                <strong>{{ periode.fra_og_med }} - {{ periode.til_og_med }}</strong><br/>
+            </li>
+        </ul>
+    </section>-->
+
+    <!--<section id="arbeidsforhold">
+        <h2>Arbeidssituasjonen din</h2>
+        {{# if hjelp.ingen_arbeidsgivere }}
+            <ul>
+                <li class="ikke_satt">Du har ikke angitt noen arbeidsgivere i søknaden</li>
+            </ul>
+        {{/if}}
+
+        {{#if arbeidsgivere}}
+            {{#each arbeidsgivere as |arbeidsgiver|~}}
+                <ul class="ul-no-indent">
+                    <li><b>{{arbeidsgiver.navn}} (orgnr: {{arbeidsgiver.organisasjonsnummer}})</b></li>
+                    <li class="li-style-none">
+                        <ul>
+                            {{#if arbeidsgiver.erAnsatt}}
+                                <li class="sporsmalstekst">Er ansatt</li>
+                            {{else}}
+                                <li class="sporsmalstekst">Er ikke ansatt</li>
+                            {{/if}}
+                        </ul>
+                    </li>
+                    {{#if arbeidsgiver.arbeidsforhold}}
+                        {{> partial/arbeidsforholdPartial arbeidsforhold=arbeidsgiver.arbeidsforhold}}
+                    {{/if}}
+                </ul>
+            {{/each}}
+        {{/if}}
+
+        {{#if frilans.arbeidsforhold}}
+            <ul class="ul-no-indent">
+                <li><b>Frilans</b></li>
+                {{#if frilans.arbeidsforhold}}
+                    {{> partial/arbeidsforholdPartial arbeidsforhold=frilans.arbeidsforhold}}
+                {{/if}}
+            </ul>
+        {{/if}}
+
+        {{#if selvstendigNæringsdrivende.arbeidsforhold}}
+            <ul class="ul-no-indent">
+                <li><b>Selvstendig næringsdrivende</b></li>
+                {{> partial/arbeidsforholdPartial arbeidsforhold=selvstendigNæringsdrivende.arbeidsforhold}}
+            </ul>
+        {{/if}}
+
+    </section>-->
+
+    <section id="samtykke">
+        <h2>Samtykke fra deg</h2>
+        <p class="sporsmalstekst">Har du forstått dine rettigheter og plikter?</p>
+        <p>{{ jaNeiSvar samtykke.har_forstatt_rettigheter_og_plikter }}</p>
+        <hr/>
+        <p class="sporsmalstekst">Har du bekreftet at opplysninger som er gitt er riktige?</p>
+        <p>{{ jaNeiSvar samtykke.har_bekreftet_opplysninger }}</p>
+    </section>
+</div>
+<!-- FOOTER -->
+<p id="footer">
+    <!--<span class="soknadsid">{{ soknad_id }}</span>-->
+    <span class="sidetall">side <span id="pagenumber"></span> av <span id="pagecount"></span></span>
+</p>
+</body>
+
+</html>

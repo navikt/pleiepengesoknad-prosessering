@@ -2,12 +2,13 @@ package no.nav.helse.prosessering.v1
 
 import no.nav.helse.CorrelationId
 import no.nav.helse.dokument.DokumentService
+import no.nav.helse.pdf.SøknadPDFGenerator
 import no.nav.helse.prosessering.Metadata
 import no.nav.helse.prosessering.SoknadId
 import org.slf4j.LoggerFactory
 
 internal class PreprosseseringV1Service(
-    private val pdfV1Generator: PdfV1Generator,
+    private val søknadPDFGenerator: SøknadPDFGenerator,
     private val dokumentService: DokumentService
 ) {
 
@@ -28,12 +29,12 @@ internal class PreprosseseringV1Service(
 
         logger.trace("Genererer Oppsummerings-PDF av søknaden.")
 
-        val søknadOppsummeringPdf = pdfV1Generator.generateSoknadOppsummeringPdf(melding)
+        val søknadOppsummeringPdf = søknadPDFGenerator.genererPDF(melding)
 
         logger.trace("Generering av Oppsummerings-PDF OK.")
         logger.trace("Mellomlagrer Oppsummerings-PDF.")
 
-        val soknadOppsummeringPdfUrl = dokumentService.lagreSoknadsOppsummeringPdf(
+        val soknadOppsummeringPdfUrl = dokumentService.lagrePdf(
             pdf = søknadOppsummeringPdf,
             correlationId = correlationId,
             aktørId = søkerAktørId,
@@ -44,7 +45,7 @@ internal class PreprosseseringV1Service(
 
         logger.trace("Mellomlagrer Oppsummerings-JSON")
 
-        val soknadJsonUrl = dokumentService.lagreSoknadsMelding(
+        val soknadJsonUrl = dokumentService.lagreJsonMelding(
             k9FormatSøknad = melding.k9FormatSøknad,
             aktørId = søkerAktørId,
             correlationId = correlationId
