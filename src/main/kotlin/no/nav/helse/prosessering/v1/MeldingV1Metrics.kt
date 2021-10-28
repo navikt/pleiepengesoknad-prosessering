@@ -2,6 +2,8 @@ package no.nav.helse.prosessering.v1
 
 import io.prometheus.client.Counter
 import io.prometheus.client.Histogram
+import no.nav.helse.felles.Arbeidsforhold
+import no.nav.helse.felles.JobberIPeriodeSvar
 import no.nav.helse.felles.VetOmsorgstilbud
 import java.time.LocalDate
 
@@ -15,6 +17,11 @@ val omsorgstilbudCounter = Counter.build()
     .name("omsorgstilbud_counter")
     .help("Teller for svar på ja på spørsmål om tilsynsordning i søknaden")
     .labelNames("spm", "svar")
+    .register()
+val omsorgstilbudPlanEllerDagForDagCounter = Counter.build()
+    .name("omsorgstilbud_plan_eller_dag_for_dag_counter")
+    .help("Teller de som søker 6mnd frem i tid og har omsorgstilbud")
+    .labelNames("type")
     .register()
 
 val beredskapCounter = Counter.build()
@@ -70,6 +77,12 @@ val arbeidsgivereCounter = Counter.build()
     .labelNames("antallArbeidsgivere", "skalJobbe")
     .register()
 
+val jobbIPeriodenCounter = Counter.build()
+    .name("jobbIPeriodenCounter")
+    .help("Teller for om søker har jobbet i perioden")
+    .labelNames("periode", "svar")
+    .register()
+
 val ingenInntektCounter = Counter.build()
     .name("ingenInntektCounter")
     .help("Teller for valg av verken arbeidsgiver, frilanser, eller selvstendig næringsdrivende")
@@ -85,6 +98,7 @@ val søknadsperiodeCounter = Counter.build()
 fun LocalDate.erFørDagensDato() = isBefore(LocalDate.now())
 fun LocalDate.erLikDagensDato() = isEqual(LocalDate.now())
 fun LocalDate.erEtterDagensDato() = isAfter(LocalDate.now())
+fun LocalDate.erLikEllerEtterDagensDato() = erLikDagensDato() || erEtterDagensDato()
 
 internal fun MeldingV1.reportMetrics() {
     opplastedeVedleggHistogram.observe(vedleggUrls.size.toDouble())
@@ -101,10 +115,23 @@ internal fun MeldingV1.reportMetrics() {
         søknadsperiodeCounter.labels("fremtid").inc()
     }
 
-    when (omsorgstilbudV2) {
+    when (omsorgstilbud) {
         null -> omsorgstilbudCounter.labels("omsorgstilbud", "nei").inc()
         else -> {
-            omsorgstilbudV2.apply {
+            omsorgstilbud.apply {
+
+                // Søker for mer enn 6mnd fram i tid
+                if (tilOgMed.isAfter(LocalDate.now().plusMonths(6))) {
+                    planlagt?.let {
+                        it.enkeltdager?.let {
+                            omsorgstilbudPlanEllerDagForDagCounter.labels("enkeltdager").inc()
+                        }
+                        it.ukedager?.let {
+                            omsorgstilbudPlanEllerDagForDagCounter.labels("ukedager").inc()
+                        }
+                    }
+                }
+
                 historisk?.let {
                     if (it.enkeltdager.isNotEmpty()) {
                         omsorgstilbudCounter.labels("omsorgstilbud", "historiskeEnkeltdager").inc()
@@ -140,8 +167,52 @@ internal fun MeldingV1.reportMetrics() {
         false -> nattevaakCounter.labels("nattevåk", "nei").inc()
     }
 
-    val skalJobbeString = arbeidsgivere.organisasjoner.map { it.skalJobbe.name.lowercase() }.sorted().joinToString("|")
-    arbeidsgivereCounter.labels(arbeidsgivere.organisasjoner.size.toString(), skalJobbeString).inc()
+    val jobberIPerioden = arbeidsgivere?.mapNotNull {
+        val historisk = if(it.arbeidsforhold?.historiskArbeid != null) {
+            "historisk_" + it.arbeidsforhold.historiskArbeid.jobberIPerioden.name.lowercase()
+        } else "tom_historisk_"
+
+        val planlagt = if(it.arbeidsforhold?.planlagtArbeid != null) {
+            "planlagt" + it.arbeidsforhold.planlagtArbeid.jobberIPerioden.name.lowercase()
+        } else "tom_planlagt"
+
+        "$historisk|$planlagt"
+    }?.sorted()?.joinToString("|")
+
+    if(arbeidsgivere != null){
+        arbeidsgivereCounter.labels(arbeidsgivere.size.toString(), jobberIPerioden).inc()
+    }
+
+    val arbeidsforhold: MutableList<Arbeidsforhold?> = mutableListOf(frilans?.arbeidsforhold, selvstendigNæringsdrivende?.arbeidsforhold)
+    arbeidsgivere?.let { arbeidsgiver -> arbeidsforhold.addAll(arbeidsgiver.map { it.arbeidsforhold }) }
+
+    val historiskJobberSvar = arbeidsforhold
+        .filterNotNull()
+        .mapNotNull { it.historiskArbeid?.jobberIPerioden }
+
+    val planlagtJobberSvar = arbeidsforhold
+        .filterNotNull()
+        .mapNotNull { it.planlagtArbeid?.jobberIPerioden }
+
+    val harJobbet = historiskJobberSvar.contains(JobberIPeriodeSvar.JA)
+    val harIkkeJobbet = historiskJobberSvar.isEmpty() ||historiskJobberSvar.all { it == JobberIPeriodeSvar.NEI }
+
+    when {
+        harJobbet -> jobbIPeriodenCounter.labels("historisk", "harJobbet").inc()
+        harIkkeJobbet -> jobbIPeriodenCounter.labels("historisk", "harIkkeJobbet").inc()
+    }
+
+    val skalJobbe = planlagtJobberSvar.contains(JobberIPeriodeSvar.JA)
+    val skalIkkeJobbe = planlagtJobberSvar.isEmpty() || planlagtJobberSvar.all { it == JobberIPeriodeSvar.NEI }
+    val vetIkke = planlagtJobberSvar.contains( JobberIPeriodeSvar.VET_IKKE)
+
+    when {
+        skalJobbe -> jobbIPeriodenCounter.labels("planlagt", "skalJobbe").inc()
+        else -> when {
+            skalIkkeJobbe ->jobbIPeriodenCounter.labels("planlagt", "skalIkkeJobbe").inc()
+            vetIkke -> jobbIPeriodenCounter.labels("planlagt", "vetIkke").inc()
+        }
+    }
 
     when {
         erArbeidstaker() -> arbeidstakerCounter.inc()
@@ -155,23 +226,25 @@ internal fun MeldingV1.reportMetrics() {
     }
 }
 
+private fun MeldingV1.harArbeidsforhold() = (this.arbeidsgivere != null && this.arbeidsgivere.isNotEmpty())
+
 private fun MeldingV1.erArbeidstaker() =
-    this.arbeidsgivere.organisasjoner.isNotEmpty() && selvstendigVirksomheter.isNullOrEmpty() && frilans == null
+    this.harArbeidsforhold() && selvstendigNæringsdrivende == null && frilans == null
 
 private fun MeldingV1.erArbeidstakerOgFrilanser() =
-    this.arbeidsgivere.organisasjoner.isNotEmpty() && selvstendigVirksomheter.isNullOrEmpty() && frilans != null
+    this.harArbeidsforhold() && selvstendigNæringsdrivende == null  && frilans != null
 
 private fun MeldingV1.erArbeidstakerOgSelvstendigNæringsdrivende() =
-    this.arbeidsgivere.organisasjoner.isNotEmpty() && !selvstendigVirksomheter.isNullOrEmpty() && frilans == null
+    this.harArbeidsforhold() && selvstendigNæringsdrivende != null  && frilans == null
 
 private fun MeldingV1.erArbeidstakerFrilanserOgSelvstendigNæringsdrivende() =
-    this.arbeidsgivere.organisasjoner.isNotEmpty() && !selvstendigVirksomheter.isNullOrEmpty() && frilans != null
+    this.harArbeidsforhold() && selvstendigNæringsdrivende != null && frilans != null
 
 private fun MeldingV1.erFrilanserOgSelvstendigNæringsdrivende() =
-    this.arbeidsgivere.organisasjoner.isEmpty() && !selvstendigVirksomheter.isNullOrEmpty() && frilans != null
+    !this.harArbeidsforhold() && selvstendigNæringsdrivende != null && frilans != null
 
 private fun MeldingV1.erFrilanser() =
-    this.arbeidsgivere.organisasjoner.isEmpty() && selvstendigVirksomheter.isNullOrEmpty() && frilans != null
+    !this.harArbeidsforhold() && selvstendigNæringsdrivende == null && frilans != null
 
 private fun MeldingV1.erSelvstendigNæringsdrivende() =
-    this.arbeidsgivere.organisasjoner.isEmpty() && !selvstendigVirksomheter.isNullOrEmpty() && frilans == null
+    !this.harArbeidsforhold() && selvstendigNæringsdrivende != null && frilans == null

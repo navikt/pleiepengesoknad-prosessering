@@ -3,6 +3,11 @@ package no.nav.helse.felles
 import com.fasterxml.jackson.annotation.JsonFormat
 import java.time.LocalDate
 
+data class SelvstendigNæringsdrivende(
+    val virksomhet: Virksomhet,
+    val arbeidsforhold: Arbeidsforhold?
+)
+
 data class Virksomhet(
     val næringstyper: List<Næringstyper>,
     val fiskerErPåBladB: Boolean? = null,
@@ -31,6 +36,11 @@ enum class Næringstyper(val beskrivelse: String) {
     DAGMAMMA("Dagmamma eller familiebarnehage i eget hjem"),
     ANNEN("Annen");
 }
+
+data class Land(
+    val landkode: String,
+    val landnavn: String
+)
 
 data class YrkesaktivSisteTreFerdigliknedeÅrene(
     val oppstartsdato: LocalDate

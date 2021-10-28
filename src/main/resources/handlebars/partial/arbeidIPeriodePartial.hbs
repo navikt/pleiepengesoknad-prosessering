@@ -1,0 +1,59 @@
+{{#if arbeidIPeriode.jobberIPerioden}}
+    <li>Skal jobbe i perioden</li>
+{{else}}
+    <li>Skal ikke jobbe i perioden</li>
+{{/if}}
+
+{{#if arbeidIPeriode.skalViseJobberSomVanlig}}
+    {{#if arbeidIPeriode.jobberSomVanlig}}
+        <li>Skal jobbe som vanlig</li>
+    {{else}}
+        <li>Skal jobbe mindre enn vanlig</li>
+    {{/if}}
+{{/if}}
+
+{{#if arbeidIPeriode.erLiktHverUkeSatt}}
+    {{#if arbeidIPeriode.erLiktHverUke}}
+        <li>Skal jobbe likt hver uke</li>
+    {{else}}
+        <li>Jobber variert hver uke</li>
+    {{/if}}
+{{/if}}
+
+{{#if arbeidIPeriode.enkeltdagerPerMnd}}
+    <li class="li-style-none">
+        <ul class="ul-no-indent">
+            {{#each arbeidIPeriode.enkeltdagerPerMnd as |enkeltdagerPerMnd|~}}
+                <li>
+                    <p><b>Jobb registrert i {{enkeltdagerPerMnd.måned}} {{enkeltdagerPerMnd.år}}</b></p>
+                    <ul class="ul-no-indent">
+                        {{#each enkeltdagerPerMnd.enkeltdagerPerUke as |enkeltdagerPerUke|~}}
+                            <li>
+                                <p>Uke {{enkeltdagerPerUke.uke}}</p>
+                                <ul>
+                                    {{#each enkeltdagerPerUke.dager as |enkeltdag|~}}
+                                        <li>
+                                            <p>{{enkeltdag.dag}} {{enkeltdag.dato}}: {{enkeltdag.tid}}</p>
+                                        </li>
+                                    {{/each}}
+                                </ul>
+                            </li>
+                        {{/each}}
+                    </ul>
+                </li>
+            {{/each}}
+        </ul>
+    </li>
+{{/if}}
+
+{{#if arbeidIPeriode.fasteDager}}
+    <li class="li-style-none"><b>Faste dager:</b>
+        <ul>
+            <li>Mandag: {{arbeidIPeriode.fasteDager.mandag}}</li>
+            <li>Tirsdag: {{arbeidIPeriode.fasteDager.tirsdag}}</li>
+            <li>Onsdag: {{arbeidIPeriode.fasteDager.onsdag}}</li>
+            <li>Torsdag: {{arbeidIPeriode.fasteDager.torsdag}}</li>
+            <li>Fredag: {{arbeidIPeriode.fasteDager.fredag}}</li>
+        </ul>
+    </li>
+{{/if}}

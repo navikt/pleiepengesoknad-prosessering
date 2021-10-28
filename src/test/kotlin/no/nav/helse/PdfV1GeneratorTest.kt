@@ -1,36 +1,7 @@
 package no.nav.helse
 
-import no.nav.helse.felles.Arbeidsforhold
-import no.nav.helse.felles.Arbeidsform
-import no.nav.helse.felles.Arbeidsgivere
-import no.nav.helse.felles.Barn
-import no.nav.helse.felles.BarnRelasjon
-import no.nav.helse.felles.Beredskap
-import no.nav.helse.felles.Bosted
-import no.nav.helse.felles.Ferieuttak
-import no.nav.helse.felles.FerieuttakIPerioden
-import no.nav.helse.felles.Frilans
-import no.nav.helse.felles.HistoriskOmsorgstilbud
-import no.nav.helse.felles.Land
-import no.nav.helse.felles.Medlemskap
-import no.nav.helse.felles.Nattevåk
-import no.nav.helse.felles.Næringstyper
-import no.nav.helse.felles.Omsorgsdag
-import no.nav.helse.felles.OmsorgstilbudUkedager
-import no.nav.helse.felles.OmsorgstilbudV2
-import no.nav.helse.felles.Organisasjon
-import no.nav.helse.felles.Periode
-import no.nav.helse.felles.PlanlagtOmsorgstilbud
-import no.nav.helse.felles.Regnskapsfører
-import no.nav.helse.felles.SkalJobbe
-import no.nav.helse.felles.Søker
-import no.nav.helse.felles.Utenlandsopphold
-import no.nav.helse.felles.UtenlandsoppholdIPerioden
-import no.nav.helse.felles.VarigEndring
-import no.nav.helse.felles.VetOmsorgstilbud
-import no.nav.helse.felles.Virksomhet
-import no.nav.helse.felles.YrkesaktivSisteTreFerdigliknedeÅrene
-import no.nav.helse.felles.Årsak
+import no.nav.helse.felles.*
+import no.nav.helse.prosessering.v1.ArbeidsforholdAnsatt
 import no.nav.helse.prosessering.v1.MeldingV1
 import no.nav.helse.prosessering.v1.PdfV1Generator
 import java.io.File
@@ -44,10 +15,6 @@ class PdfV1GeneratorTest {
 
     private companion object {
         private val generator = PdfV1Generator()
-        private val barnetsIdent = "02119970078"
-        private val barnetsFødselsdato = LocalDate.parse("1999-11-02")
-        private val barnetsNavn = "OLE DOLE"
-        private val fødselsdato = LocalDate.now().minusDays(10)
     }
 
     private fun fullGyldigMelding(soknadsId: String): MeldingV1 {
@@ -65,45 +32,8 @@ class PdfV1GeneratorTest {
                 fødselsnummer = "29099012345"
             ),
             barn = Barn(
-                fødselsnummer = barnetsIdent,
-                navn = barnetsNavn
-            ),
-            arbeidsgivere = Arbeidsgivere(
-                organisasjoner = listOf(
-                    Organisasjon(
-                        organisasjonsnummer = "952352655",
-                        navn = "Arbeidsgiver 1",
-                        skalJobbe = SkalJobbe.JA,
-                        skalJobbeProsent = 100.0,
-                        jobberNormaltTimer = 37.5,
-                        arbeidsform = Arbeidsform.FAST
-                    ),
-                    Organisasjon(
-                        organisasjonsnummer = "952352655",
-                        navn = "Arbeidsgiver 2",
-                        skalJobbe = SkalJobbe.NEI,
-                        skalJobbeProsent = 0.0,
-                        jobberNormaltTimer = 37.5,
-                        arbeidsform = Arbeidsform.VARIERENDE
-                    ),
-                    Organisasjon(
-                        organisasjonsnummer = "952352655",
-                        navn = "Arbeidsgiver 3",
-                        skalJobbe = SkalJobbe.VET_IKKE,
-                        jobberNormaltTimer = 30.0,
-                        skalJobbeProsent = 50.0,
-                        vetIkkeEkstrainfo = "Vondt i hode, skulker, kne og tå, kne og tå",
-                        arbeidsform = Arbeidsform.FAST
-                    ),
-                    Organisasjon(
-                        organisasjonsnummer = "952352655",
-                        navn = "Arbeidsgiver 4",
-                        skalJobbe = SkalJobbe.REDUSERT,
-                        jobberNormaltTimer = 30.0,
-                        skalJobbeProsent = 50.0,
-                        arbeidsform = Arbeidsform.TURNUS
-                    )
-                )
+                fødselsnummer = "02119970078",
+                navn = "OLE DOLE"
             ),
             vedleggUrls = listOf(
                 URI("http:localhost:8080/vedlegg1"),
@@ -158,7 +88,7 @@ class PdfV1GeneratorTest {
                     Utenlandsopphold(
                         fraOgMed = LocalDate.parse("2020-01-01"),
                         tilOgMed = LocalDate.parse("2020-01-10"),
-                        landnavn = "Svergie",
+                        landnavn = "Sverige",
                         landkode = "BHS",
                         erUtenforEøs = false,
                         erBarnetInnlagt = true,
@@ -193,23 +123,46 @@ class PdfV1GeneratorTest {
                 sluttdato = LocalDate.now(),
                 jobberFortsattSomFrilans = false,
                 arbeidsforhold = Arbeidsforhold(
-                    skalJobbe = SkalJobbe.NEI,
                     arbeidsform = Arbeidsform.FAST,
-                    jobberNormaltTimer = 40.0,
-                    skalJobbeProsent = 0.0
+                    jobberNormaltTimer = 23.0,
+                    historiskArbeid = ArbeidIPeriode(
+                        jobberIPerioden = JobberIPeriodeSvar.JA,
+                        jobberSomVanlig = true,
+                        erLiktHverUke = null,
+                        enkeltdager = listOf(
+                            Enkeltdag(dato = LocalDate.now(), tid = Duration.ofHours(1)),
+                            Enkeltdag(dato = LocalDate.now().plusDays(3), tid = Duration.ofHours(1)),
+                            Enkeltdag(dato = LocalDate.now().plusWeeks(1), tid = Duration.ofHours(1))
+                        ),
+                        fasteDager = PlanUkedager(
+                            mandag = Duration.ofHours(1),
+                            tirsdag = Duration.ofHours(1),
+                            onsdag = null,
+                            torsdag = Duration.ofHours(1).plusMinutes(45),
+                            fredag = null
+                        )
+                    ),
+                    planlagtArbeid = ArbeidIPeriode(
+                        jobberIPerioden = JobberIPeriodeSvar.JA,
+                        jobberSomVanlig = true,
+                        erLiktHverUke = true,
+                        enkeltdager = listOf(
+                            Enkeltdag(dato = LocalDate.now(), tid = Duration.ofHours(1)),
+                            Enkeltdag(dato = LocalDate.now().plusDays(3), tid = Duration.ofHours(1)),
+                            Enkeltdag(dato = LocalDate.now().plusWeeks(1), tid = Duration.ofHours(1))
+                        ),
+                        fasteDager = PlanUkedager(
+                            mandag = Duration.ofHours(1),
+                            tirsdag = Duration.ofHours(1),
+                            onsdag = null,
+                            torsdag = Duration.ofHours(1).plusMinutes(45),
+                            fredag = null
+                        )
+                    )
                 )
             ),
-            selvstendigVirksomheter = listOf(
-                Virksomhet(
-                    næringstyper = listOf(Næringstyper.ANNEN),
-                    fraOgMed = LocalDate.now(),
-                    tilOgMed = LocalDate.now().plusDays(10),
-                    navnPåVirksomheten = "Kjells Møbelsnekkeri",
-                    registrertINorge = true,
-                    organisasjonsnummer = "111111",
-                    harFlereAktiveVirksomheter = true
-                ),
-                Virksomhet(
+            selvstendigNæringsdrivende = SelvstendigNæringsdrivende(
+                virksomhet = Virksomhet(
                     næringstyper = listOf(Næringstyper.JORDBRUK_SKOGBRUK, Næringstyper.DAGMAMMA, Næringstyper.FISKE),
                     fiskerErPåBladB = true,
                     fraOgMed = LocalDate.now(),
@@ -231,210 +184,142 @@ class PdfV1GeneratorTest {
                         telefon = "65484578"
                     ),
                     harFlereAktiveVirksomheter = true
+                ),
+                arbeidsforhold = Arbeidsforhold(
+                    arbeidsform = Arbeidsform.FAST,
+                    jobberNormaltTimer = 40.0,
+                    historiskArbeid = ArbeidIPeriode(
+                        jobberIPerioden = JobberIPeriodeSvar.JA,
+                        jobberSomVanlig = true,
+                        erLiktHverUke = false,
+                        enkeltdager = listOf(
+                            Enkeltdag(dato = LocalDate.now(), tid = Duration.ofHours(4)),
+                            Enkeltdag(dato = LocalDate.now().plusDays(3), tid = Duration.ofHours(4)),
+                            Enkeltdag(dato = LocalDate.now().plusWeeks(1), tid = Duration.ofHours(4))
+                        ),
+                        fasteDager = PlanUkedager(
+                            mandag = Duration.ofHours(4),
+                            tirsdag = Duration.ofHours(7),
+                            onsdag = null,
+                            torsdag = Duration.ofHours(5).plusMinutes(45),
+                            fredag = null
+                        )
+                    ),
+                    planlagtArbeid = ArbeidIPeriode(
+                        jobberIPerioden = JobberIPeriodeSvar.VET_IKKE,
+                        jobberSomVanlig = true,
+                        erLiktHverUke = true,
+                        enkeltdager = listOf(
+                            Enkeltdag(dato = LocalDate.now(), tid = Duration.ofHours(4)),
+                            Enkeltdag(dato = LocalDate.now().plusDays(3), tid = Duration.ofHours(4)),
+                            Enkeltdag(dato = LocalDate.now().plusWeeks(1), tid = Duration.ofHours(4))
+                        ),
+                        fasteDager = PlanUkedager(
+                            mandag = Duration.ofHours(4),
+                            tirsdag = Duration.ofHours(7),
+                            onsdag = null,
+                            torsdag = Duration.ofHours(5).plusMinutes(45),
+                            fredag = null
+                        )
+                    )
                 )
             ),
-            selvstendigArbeidsforhold = Arbeidsforhold(
-                skalJobbe = SkalJobbe.REDUSERT,
-                arbeidsform = Arbeidsform.VARIERENDE,
-                jobberNormaltTimer = 40.0,
-                skalJobbeProsent = 50.0
+            arbeidsgivere = listOf(
+                ArbeidsforholdAnsatt(
+                    navn = "Peppes",
+                    organisasjonsnummer = "917755736",
+                    erAnsatt = true,
+                    arbeidsforhold = Arbeidsforhold(
+                        arbeidsform = Arbeidsform.FAST,
+                        jobberNormaltTimer = 27.0,
+                        historiskArbeid = ArbeidIPeriode(
+                            jobberIPerioden = JobberIPeriodeSvar.JA,
+                            jobberSomVanlig = true,
+                            erLiktHverUke = false,
+                            enkeltdager = listOf(
+                                Enkeltdag(dato = LocalDate.now(), tid = Duration.ofHours(4)),
+                                Enkeltdag(dato = LocalDate.now().plusDays(3), tid = Duration.ofHours(5)),
+                                Enkeltdag(dato = LocalDate.now().plusWeeks(1), tid = Duration.ofHours(5))
+                            ),
+                            fasteDager = PlanUkedager(
+                                mandag = Duration.ofHours(4),
+                                tirsdag = Duration.ofHours(7),
+                                onsdag = null,
+                                torsdag = Duration.ofHours(5).plusMinutes(45),
+                                fredag = null
+                            )
+                        ),
+                        planlagtArbeid = ArbeidIPeriode(
+                            jobberIPerioden = JobberIPeriodeSvar.NEI,
+                            jobberSomVanlig = true,
+                            erLiktHverUke = true,
+                            enkeltdager = listOf(
+                                Enkeltdag(dato = LocalDate.now(), tid = Duration.ofHours(5)),
+                                Enkeltdag(dato = LocalDate.now().plusDays(3), tid = Duration.ofHours(4)),
+                                Enkeltdag(dato = LocalDate.now().plusWeeks(1), tid = Duration.ofHours(5))
+                            ),
+                            fasteDager = PlanUkedager(
+                                mandag = Duration.ofHours(4),
+                                tirsdag = Duration.ofHours(7),
+                                onsdag = null,
+                                torsdag = Duration.ofHours(5).plusMinutes(45),
+                                fredag = null
+                            )
+                        )
+                    )
+                ),
+                ArbeidsforholdAnsatt(
+                    navn = "Pizzabakeren",
+                    organisasjonsnummer = "917755736",
+                    erAnsatt = true,
+                    arbeidsforhold = Arbeidsforhold(
+                        arbeidsform = Arbeidsform.VARIERENDE,
+                        jobberNormaltTimer = 40.0,
+                        historiskArbeid = ArbeidIPeriode(
+                            jobberIPerioden = JobberIPeriodeSvar.JA,
+                            jobberSomVanlig = true,
+                            erLiktHverUke = true,
+                            enkeltdager = listOf(
+                                Enkeltdag(dato = LocalDate.now(), tid = Duration.ofHours(4)),
+                                Enkeltdag(dato = LocalDate.now().plusDays(3), tid = Duration.ofHours(9)),
+                                Enkeltdag(dato = LocalDate.now().plusWeeks(1), tid = Duration.ofHours(9))
+                            ),
+                            fasteDager = PlanUkedager(
+                                mandag = Duration.ofHours(4),
+                                tirsdag = Duration.ofHours(6),
+                                onsdag = null,
+                                torsdag = Duration.ofHours(5).plusMinutes(45),
+                                fredag = null
+                            )
+                        ),
+                        planlagtArbeid = ArbeidIPeriode(
+                            jobberIPerioden = JobberIPeriodeSvar.VET_IKKE,
+                            jobberSomVanlig = true,
+                            erLiktHverUke = true,
+                            enkeltdager = null,
+                            fasteDager = PlanUkedager(
+                                mandag = Duration.ofHours(4),
+                                tirsdag = Duration.ofHours(7),
+                                onsdag = null,
+                                torsdag = Duration.ofHours(5).plusMinutes(45),
+                                fredag = null
+                            )
+                        )
+                    )
+                ),
+                ArbeidsforholdAnsatt(
+                    navn = "Sluttaaaa",
+                    organisasjonsnummer = "917755736",
+                    erAnsatt = false,
+                    arbeidsforhold = null
+                )
             ),
-            skalBekrefteOmsorg = true,
-            skalPassePaBarnetIHelePerioden = true,
-            beskrivelseOmsorgsrollen = "Jeg er far og skal passe på barnet i hele perioden.",
             harVærtEllerErVernepliktig = true,
             barnRelasjon = BarnRelasjon.ANNET,
             barnRelasjonBeskrivelse = "Blaabla annet",
-            k9FormatSøknad = SøknadUtils.defaultK9FormatPSB()
+            k9FormatSøknad = SøknadUtils.defaultK9FormatPSB(), omsorgstilbud = null
         )
     }
-
-    private fun gyldigMelding(
-        soknadId: String,
-        sprak: String? = "nb",
-        organisasjoner: List<Organisasjon> = listOf(
-            Organisasjon(
-                organisasjonsnummer = "987564785",
-                navn = "NAV",
-                jobberNormaltTimer = 30.0,
-                skalJobbeProsent = 50.0,
-                skalJobbe = SkalJobbe.REDUSERT,
-                arbeidsform = Arbeidsform.FAST
-            ),
-            Organisasjon(
-                organisasjonsnummer = "975124568",
-                navn = "Kiwi",
-                jobberNormaltTimer = 30.0,
-                skalJobbeProsent = 50.0,
-                skalJobbe = SkalJobbe.REDUSERT,
-                arbeidsform = Arbeidsform.VARIERENDE
-            ),
-            Organisasjon(
-                organisasjonsnummer = "952352687",
-                navn = "Bjerkheim gård",
-                jobberNormaltTimer = 30.0,
-                skalJobbeProsent = 50.0,
-                skalJobbe = SkalJobbe.REDUSERT,
-                arbeidsform = Arbeidsform.TURNUS
-            ),
-            Organisasjon(
-                organisasjonsnummer = "952352655",
-                navn = "Hopp i havet",
-                jobberNormaltTimer = 30.0,
-                skalJobbeProsent = 50.0,
-                skalJobbe = SkalJobbe.REDUSERT,
-                arbeidsform = Arbeidsform.FAST
-            )
-        ),
-        barn: Barn = Barn(
-            navn = "Børge Øverbø Ånsnes",
-            fødselsnummer = barnetsIdent
-        ),
-        harMedsøker: Boolean = true,
-        samtidigHjemme: Boolean? = false,
-        beredskap: Beredskap? = null,
-        nattevaak: Nattevåk? = null,
-        medlemskap: Medlemskap = Medlemskap(
-            harBoddIUtlandetSiste12Mnd = true,
-            utenlandsoppholdSiste12Mnd = listOf(
-                Bosted(
-                    LocalDate.of(2020, 1, 2),
-                    LocalDate.of(2020, 1, 3),
-                    "US", "USA"
-                )
-            ),
-            skalBoIUtlandetNeste12Mnd = false
-        ),
-        frilans: Frilans = Frilans(
-            startdato = LocalDate.now().minusYears(3),
-            sluttdato = LocalDate.now(),
-            jobberFortsattSomFrilans = false
-        ),
-        selvstendigVirksomheter: List<Virksomhet> = listOf(
-            Virksomhet(
-                næringstyper = listOf(
-                    Næringstyper.ANNEN,
-                    Næringstyper.FISKE,
-                    Næringstyper.JORDBRUK_SKOGBRUK,
-                    Næringstyper.DAGMAMMA
-                ),
-                fiskerErPåBladB = true,
-                fraOgMed = LocalDate.now(),
-                tilOgMed = LocalDate.now().plusDays(10),
-                navnPåVirksomheten = "Kjells Møbelsnekkeriiii",
-                registrertINorge = true,
-                organisasjonsnummer = "101010",
-                varigEndring = VarigEndring(
-                    dato = LocalDate.now(),
-                    inntektEtterEndring = 202020,
-                    forklaring = "ASDASDASDASDASD"
-                )
-            ),
-            Virksomhet(
-                næringstyper = listOf(Næringstyper.JORDBRUK_SKOGBRUK, Næringstyper.DAGMAMMA),
-                fraOgMed = LocalDate.now(),
-                næringsinntekt = 100111,
-                navnPåVirksomheten = "Tull Og Tøys",
-                registrertINorge = false,
-                registrertIUtlandet = Land(
-                    landnavn = "Tyskland",
-                    landkode = "DEU"
-                ),
-                yrkesaktivSisteTreFerdigliknedeÅrene = YrkesaktivSisteTreFerdigliknedeÅrene(LocalDate.now()),
-                regnskapsfører = Regnskapsfører(
-                    navn = "Bjarne Regnskap",
-                    telefon = "65484578"
-                )
-            )
-        ),
-        vedleggUrls: List<URI> = listOf()
-    ) = MeldingV1(
-        språk = sprak,
-        søknadId = soknadId,
-        mottatt = ZonedDateTime.now(),
-        vedleggUrls = vedleggUrls,
-        fraOgMed = LocalDate.now().plusDays(6),
-        tilOgMed = LocalDate.now().plusDays(35),
-        søker = Søker(
-            aktørId = "123456",
-            fornavn = "Ærling",
-            mellomnavn = "Øverbø",
-            etternavn = "Ånsnes",
-            fødselsnummer = "29099012345"
-        ),
-        barn = barn,
-        arbeidsgivere = Arbeidsgivere(
-            organisasjoner = organisasjoner
-        ),
-        medlemskap = medlemskap,
-        harMedsøker = harMedsøker,
-        samtidigHjemme = samtidigHjemme,
-        harForståttRettigheterOgPlikter = true,
-        harBekreftetOpplysninger = true,
-        nattevåk = nattevaak,
-        beredskap = beredskap,
-        utenlandsoppholdIPerioden = UtenlandsoppholdIPerioden(
-            skalOppholdeSegIUtlandetIPerioden = true,
-            opphold = listOf(
-                Utenlandsopphold(
-                    fraOgMed = LocalDate.parse("2020-01-01"),
-                    tilOgMed = LocalDate.parse("2020-01-10"),
-                    landnavn = "Bahamas",
-                    landkode = "BAH",
-                    erUtenforEøs = true,
-                    erBarnetInnlagt = true,
-                    perioderBarnetErInnlagt = listOf(
-                        Periode(
-                            fraOgMed = LocalDate.parse("2020-01-01"),
-                            tilOgMed = LocalDate.parse("2020-01-01")
-                        ),
-                        Periode(
-                            fraOgMed = LocalDate.parse("2020-01-03"),
-                            tilOgMed = LocalDate.parse("2020-01-04")
-                        )
-                    ),
-                    årsak = Årsak.ANNET
-                ),
-                Utenlandsopphold(
-                    fraOgMed = LocalDate.parse("2020-01-01"),
-                    tilOgMed = LocalDate.parse("2020-01-10"),
-                    landnavn = "Svergie",
-                    landkode = "BHS",
-                    erUtenforEøs = false,
-                    erBarnetInnlagt = true,
-                    perioderBarnetErInnlagt = listOf(
-                        Periode(
-                            fraOgMed = LocalDate.parse("2020-01-01"),
-                            tilOgMed = LocalDate.parse("2020-01-01")
-                        ),
-                        Periode(
-                            fraOgMed = LocalDate.parse("2020-01-03"),
-                            tilOgMed = LocalDate.parse("2020-01-04")
-                        ),
-                        Periode(
-                            fraOgMed = LocalDate.parse("2020-01-05"),
-                            tilOgMed = LocalDate.parse("2020-01-05")
-                        )
-                    ),
-                    årsak = Årsak.ANNET
-                )
-            )
-        ),
-        ferieuttakIPerioden = FerieuttakIPerioden(
-            skalTaUtFerieIPerioden = true,
-            ferieuttak = listOf(
-                Ferieuttak(fraOgMed = LocalDate.parse("2020-01-01"), tilOgMed = LocalDate.parse("2020-01-05")),
-                Ferieuttak(fraOgMed = LocalDate.parse("2020-01-07"), tilOgMed = LocalDate.parse("2020-01-15")),
-                Ferieuttak(fraOgMed = LocalDate.parse("2020-02-01"), tilOgMed = LocalDate.parse("2020-02-05"))
-            )
-        ),
-        frilans = frilans,
-        selvstendigVirksomheter = selvstendigVirksomheter,
-        barnRelasjon = BarnRelasjon.FAR,
-        barnRelasjonBeskrivelse = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec iaculis tempus molestie",
-        harVærtEllerErVernepliktig = true,
-        k9FormatSøknad = SøknadUtils.defaultK9FormatPSB()
-    )
 
     private fun genererOppsummeringsPdfer(writeBytes: Boolean) {
         var id = "1-full-søknad"
@@ -443,16 +328,15 @@ class PdfV1GeneratorTest {
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
-        id = "2-utenMedsoker"
+        id = "2-utenMedsøker"
         pdf = generator.generateSoknadOppsummeringPdf(
-            melding = gyldigMelding(soknadId = id, harMedsøker = false)
+            melding = fullGyldigMelding(id).copy(harMedsøker = false)
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
         id = "3-medsøkerSamtidigHjemme"
         pdf = generator.generateSoknadOppsummeringPdf(
-            melding = gyldigMelding(
-                soknadId = id,
+            melding = fullGyldigMelding(id).copy(
                 harMedsøker = true,
                 samtidigHjemme = true
             )
@@ -461,161 +345,28 @@ class PdfV1GeneratorTest {
 
         id = "4-medsøkerIkkeSamtidigHjemme"
         pdf = generator.generateSoknadOppsummeringPdf(
-            melding = gyldigMelding(
-                soknadId = id,
+            melding = fullGyldigMelding(id).copy(
                 harMedsøker = true,
                 samtidigHjemme = false
             )
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
-        id = "5-utenSprak"
+        id = "5-utenSpråk"
         pdf = generator.generateSoknadOppsummeringPdf(
-            melding = gyldigMelding(soknadId = id, harMedsøker = false, sprak = null)
+            melding = fullGyldigMelding(id).copy(harMedsøker = false, språk = null)
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
         id = "6-utenArbeidsgivere"
         pdf = generator.generateSoknadOppsummeringPdf(
-            melding = gyldigMelding(soknadId = id, harMedsøker = false, organisasjoner = listOf())
+            melding = fullGyldigMelding(id).copy(arbeidsgivere = null)
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
-        id = "7-utenGrad"
+        id = "7-flerePlanlagteUtenlandsopphold"
         pdf = generator.generateSoknadOppsummeringPdf(
-            melding = gyldigMelding(
-                soknadId = id,
-                harMedsøker = false,
-                organisasjoner = listOf()
-            )
-        )
-        if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
-
-        id = "8-utenDagerBorteFraJobb"
-        pdf = generator.generateSoknadOppsummeringPdf(
-            melding = gyldigMelding(
-                soknadId = id,
-                harMedsøker = false,
-                organisasjoner = listOf()
-            )
-        )
-        if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
-
-        id = "9-skalJobbeRedusert"
-        pdf = generator.generateSoknadOppsummeringPdf(
-            melding = gyldigMelding(
-                soknadId = id, harMedsøker = true, organisasjoner = listOf(
-                    Organisasjon(
-                        organisasjonsnummer = "952352655",
-                        navn = "Hopp i havet",
-                        skalJobbe = SkalJobbe.REDUSERT,
-                        jobberNormaltTimer = 30.0,
-                        skalJobbeProsent = 50.0,
-                        arbeidsform = Arbeidsform.VARIERENDE
-                    )
-                )
-            )
-        )
-        if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
-
-        id = "10-skalJobbeVetIkke"
-        pdf = generator.generateSoknadOppsummeringPdf(
-            melding = gyldigMelding(
-                soknadId = id, harMedsøker = true, samtidigHjemme = true, organisasjoner = listOf(
-                    Organisasjon(
-                        organisasjonsnummer = "952352655",
-                        navn = "Hopp i havet",
-                        skalJobbe = SkalJobbe.VET_IKKE,
-                        jobberNormaltTimer = 30.0,
-                        skalJobbeProsent = 0.0,
-                        vetIkkeEkstrainfo = "Vondt i hode, skulker, kne og tå, kne og tå",
-                        arbeidsform = Arbeidsform.VARIERENDE
-                    )
-                )
-            )
-        )
-        if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
-
-        id = "11-skalJobbeJa"
-        pdf = generator.generateSoknadOppsummeringPdf(
-            melding = gyldigMelding(
-                soknadId = id, harMedsøker = true, organisasjoner = listOf(
-                    Organisasjon(
-                        organisasjonsnummer = "952352655",
-                        navn = "Hopp i havet",
-                        skalJobbe = SkalJobbe.JA,
-                        jobberNormaltTimer = 30.0,
-                        skalJobbeProsent = 100.0,
-                        arbeidsform = Arbeidsform.VARIERENDE
-                    )
-                )
-            )
-        )
-        if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
-
-        id = "12-skalJobbeNei"
-        pdf = generator.generateSoknadOppsummeringPdf(
-            melding = gyldigMelding(
-                soknadId = id, harMedsøker = true, organisasjoner = listOf(
-                    Organisasjon(
-                        organisasjonsnummer = "952352655",
-                        navn = "Hopp i havet",
-                        skalJobbe = SkalJobbe.NEI,
-                        jobberNormaltTimer = 30.0,
-                        skalJobbeProsent = 0.0,
-                        arbeidsform = Arbeidsform.VARIERENDE
-                    )
-                )
-            )
-        )
-        if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
-
-        id = "13-flereArbeidsgivereSkalJobbeJaNeiVetIkkeRedusert"
-        pdf = generator.generateSoknadOppsummeringPdf(
-            melding = gyldigMelding(
-                soknadId = id, harMedsøker = true, organisasjoner = listOf(
-                    Organisasjon(
-                        organisasjonsnummer = "952352655",
-                        navn = "Arbeidsgiver 1",
-                        skalJobbe = SkalJobbe.JA,
-                        jobberNormaltTimer = 30.0,
-                        skalJobbeProsent = 100.0,
-                        arbeidsform = Arbeidsform.VARIERENDE
-                    ),
-                    Organisasjon(
-                        organisasjonsnummer = "952352655",
-                        navn = "Arbeidsgiver 2",
-                        skalJobbe = SkalJobbe.NEI,
-                        skalJobbeProsent = 0.0,
-                        jobberNormaltTimer = 30.0,
-                        arbeidsform = Arbeidsform.VARIERENDE
-                    ),
-                    Organisasjon(
-                        organisasjonsnummer = "952352655",
-                        navn = "Arbeidsgiver 3",
-                        skalJobbe = SkalJobbe.VET_IKKE,
-                        jobberNormaltTimer = 30.0,
-                        skalJobbeProsent = 50.0,
-                        vetIkkeEkstrainfo = "Vondt i hode, skulker, kne og tå, kne og tå",
-                        arbeidsform = Arbeidsform.VARIERENDE
-                    ),
-                    Organisasjon(
-                        organisasjonsnummer = "952352655",
-                        navn = "Arbeidsgiver 4",
-                        skalJobbe = SkalJobbe.REDUSERT,
-                        jobberNormaltTimer = 30.0,
-                        skalJobbeProsent = 50.0,
-                        arbeidsform = Arbeidsform.VARIERENDE
-                    )
-                )
-            )
-        )
-        if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
-
-        id = "14-flerePlanlagteUtenlandsopphold"
-        pdf = generator.generateSoknadOppsummeringPdf(
-            melding = gyldigMelding(
-                soknadId = id,
+            melding = fullGyldigMelding(id).copy(
                 medlemskap = Medlemskap(
                     harBoddIUtlandetSiste12Mnd = false,
                     utenlandsoppholdSiste12Mnd = listOf(),
@@ -632,72 +383,37 @@ class PdfV1GeneratorTest {
                         )
                     )
                 )
-            ),
-
-            )
-        if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
-
-        id = "15-barnHarIkkeIdBareFødselsdato"
-        pdf = generator.generateSoknadOppsummeringPdf(
-            melding = gyldigMelding(
-                soknadId = id, harMedsøker = true, organisasjoner = listOf(
-                )
-            ),
-        )
-        if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
-
-
-        id = "16-barnManglerIdOgFødselsdato"
-        pdf = generator.generateSoknadOppsummeringPdf(
-            melding = gyldigMelding(
-                soknadId = id, harMedsøker = true, organisasjoner = listOf()
-            ),
-        )
-        if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
-
-        id = "17-har-du-jobbet-og-hatt-inntekt-som-frilanser"
-        pdf = generator.generateSoknadOppsummeringPdf(
-            melding = gyldigMelding(
-                soknadId = id, harMedsøker = true, organisasjoner = listOf()
-            )
-        )
-
-        if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
-
-        id = "18-har-du-hatt-inntekt-som-selvstendig-næringsdrivende"
-        pdf = generator.generateSoknadOppsummeringPdf(
-            melding = gyldigMelding(
-                soknadId = id, harMedsøker = true, organisasjoner = listOf()
             )
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
-        id = "19-har-lastet-opp-vedlegg"
+        id = "8-har-lastet-opp-vedlegg"
         pdf = generator.generateSoknadOppsummeringPdf(
-            melding = gyldigMelding(
-                soknadId = id, harMedsøker = true, organisasjoner = listOf(),
+            melding = fullGyldigMelding(id).copy(
+                harMedsøker = true,
                 vedleggUrls = listOf(URI("noe"))
             )
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
-        id = "20-omsorgstilbud-v2-med-historisk-og-planlagte-ukedager"
+        id = "9-omsorgstilbud-v2-med-historisk-og-planlagte-ukedager"
         pdf = generator.generateSoknadOppsummeringPdf(
-            melding = SøknadUtils.defaultSøknad.copy(
+            melding = fullGyldigMelding(id).copy(
                 fraOgMed = LocalDate.now().minusDays(10),
                 tilOgMed = LocalDate.now().plusDays(10),
-                omsorgstilbudV2 = OmsorgstilbudV2(
+                omsorgstilbud = Omsorgstilbud(
                     historisk = HistoriskOmsorgstilbud(
                         enkeltdager = listOf(
-                            Omsorgsdag(LocalDate.now().minusDays(3), Duration.ofHours(7).plusMinutes(30)),
-                            Omsorgsdag(LocalDate.now().minusDays(2), Duration.ofHours(7).plusMinutes(30)),
-                            Omsorgsdag(LocalDate.now().minusDays(1), Duration.ofHours(7).plusMinutes(30)),
+                            Enkeltdag(LocalDate.now().minusDays(3), Duration.ofHours(7).plusMinutes(30)),
+                            Enkeltdag(LocalDate.now().minusDays(2), Duration.ofHours(7).plusMinutes(30)),
+                            Enkeltdag(LocalDate.now().minusDays(1), Duration.ofHours(7).plusMinutes(30)),
                         )
                     ),
                     planlagt = PlanlagtOmsorgstilbud(
-                        ukedager = OmsorgstilbudUkedager(
-                            mandag = Duration.ofHours(7).plusMinutes(30),
+                        ukedager = PlanUkedager(
+                            mandag = null,
                             tirsdag = Duration.ofHours(7).plusMinutes(30),
+                            onsdag = null,
                             torsdag = Duration.ofHours(7).plusMinutes(30),
                             fredag = Duration.ofHours(7).plusMinutes(30),
                         ),
@@ -709,26 +425,26 @@ class PdfV1GeneratorTest {
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
 
-        id = "21-oomsorgstilbud-v2-med-historisk-og-planlagte-enkeltdager"
+        id = "10-omsorgstilbud-v2-med-historisk-og-planlagte-enkeltdager"
         pdf = generator.generateSoknadOppsummeringPdf(
-            melding = SøknadUtils.defaultSøknad.copy(
+            melding = fullGyldigMelding(id).copy(
                 fraOgMed = LocalDate.now().minusDays(10),
                 tilOgMed = LocalDate.now().plusDays(10),
-                omsorgstilbudV2 = OmsorgstilbudV2(
+                omsorgstilbud = Omsorgstilbud(
                     historisk = HistoriskOmsorgstilbud(
                         enkeltdager = listOf(
-                            Omsorgsdag(LocalDate.parse("2021-01-01"), Duration.ofHours(7).plusMinutes(30)),
-                            Omsorgsdag(LocalDate.now().minusDays(3), Duration.ofHours(7).plusMinutes(30)),
-                            Omsorgsdag(LocalDate.now().minusDays(2), Duration.ofHours(7).plusMinutes(30)),
-                            Omsorgsdag(LocalDate.now().minusDays(1), Duration.ofHours(7).plusMinutes(30))
+                            Enkeltdag(LocalDate.parse("2021-01-01"), Duration.ofHours(7).plusMinutes(30)),
+                            Enkeltdag(LocalDate.now().minusDays(3), Duration.ofHours(7).plusMinutes(30)),
+                            Enkeltdag(LocalDate.now().minusDays(2), Duration.ofHours(7).plusMinutes(30)),
+                            Enkeltdag(LocalDate.now().minusDays(1), Duration.ofHours(7).plusMinutes(30))
                         )
                     ),
                     planlagt = PlanlagtOmsorgstilbud(
                         enkeltdager = listOf(
-                            Omsorgsdag(LocalDate.now().plusDays(1), Duration.ofHours(7).plusMinutes(30)),
-                            Omsorgsdag(LocalDate.now().plusDays(2), Duration.ofHours(7).plusMinutes(30)),
-                            Omsorgsdag(LocalDate.now().plusDays(3), Duration.ofHours(7).plusMinutes(30)),
-                            Omsorgsdag(LocalDate.now().plusDays(4), Duration.ofHours(0))
+                            Enkeltdag(LocalDate.now().plusDays(1), Duration.ofHours(7).plusMinutes(30)),
+                            Enkeltdag(LocalDate.now().plusDays(2), Duration.ofHours(7).plusMinutes(30)),
+                            Enkeltdag(LocalDate.now().plusDays(3), Duration.ofHours(7).plusMinutes(30)),
+                            Enkeltdag(LocalDate.now().plusDays(4), Duration.ofHours(0))
                         ),
                         vetOmsorgstilbud = VetOmsorgstilbud.VET_ALLE_TIMER,
                         erLiktHverDag = false
@@ -738,14 +454,23 @@ class PdfV1GeneratorTest {
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
-        id = "22-omsorgstilbud-v2-vet-ikke-planlagt-tilsyn"
+        id = "11-omsorgstilbud-v2-vet-ikke-planlagt-tilsyn"
         pdf = generator.generateSoknadOppsummeringPdf(
-            melding = SøknadUtils.defaultSøknad.copy(
-                omsorgstilbudV2 = OmsorgstilbudV2(
+            melding = fullGyldigMelding(id).copy(
+                omsorgstilbud = Omsorgstilbud(
                     planlagt = PlanlagtOmsorgstilbud(
                         vetOmsorgstilbud = VetOmsorgstilbud.VET_IKKE
                     )
                 )
+            )
+        )
+        if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
+
+        id = "12-kun-frilans-arbeidsforhold"
+        pdf = generator.generateSoknadOppsummeringPdf(
+            melding = fullGyldigMelding(id).copy(
+                selvstendigNæringsdrivende = null,
+                arbeidsgivere = null
             )
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)

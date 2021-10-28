@@ -3,6 +3,7 @@ package no.nav.helse
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.helse.dusseldorf.ktor.jackson.dusseldorfConfigured
 import no.nav.helse.felles.*
+import no.nav.helse.prosessering.v1.ArbeidsforholdAnsatt
 import no.nav.helse.prosessering.v1.MeldingV1
 import no.nav.k9.søknad.Søknad
 import no.nav.k9.søknad.felles.Versjon
@@ -57,42 +58,6 @@ internal object SøknadUtils {
         barn = Barn(
             navn = "Ole Dole",
             fødselsnummer = "02119970078"
-        ),
-        arbeidsgivere = Arbeidsgivere(
-            organisasjoner = listOf(
-                Organisasjon(
-                    "917755736",
-                    "Gyldig",
-                    jobberNormaltTimer = 4.0,
-                    skalJobbeProsent = 50.0,
-                    skalJobbe = SkalJobbe.REDUSERT,
-                    arbeidsform = Arbeidsform.VARIERENDE
-                ),
-                Organisasjon(
-                    "917755734",
-                    "Gyldig",
-                    jobberNormaltTimer = 40.0,
-                    skalJobbeProsent = 40.0,
-                    skalJobbe = SkalJobbe.JA,
-                    arbeidsform = Arbeidsform.VARIERENDE
-                ),
-                Organisasjon(
-                    "917755734",
-                    "Gyldig",
-                    jobberNormaltTimer = 8.0,
-                    skalJobbeProsent = 0.0,
-                    skalJobbe = SkalJobbe.NEI,
-                    arbeidsform = Arbeidsform.VARIERENDE
-                ),
-                Organisasjon(
-                    "917755734",
-                    "Gyldig",
-                    jobberNormaltTimer = 40.0,
-                    skalJobbeProsent = 40.0,
-                    skalJobbe = SkalJobbe.VET_IKKE,
-                    arbeidsform = Arbeidsform.VARIERENDE
-                )
-            )
         ),
         vedleggUrls = listOf(URI("http://localhost:8080/vedlegg/1")),
         medlemskap = Medlemskap(
@@ -173,10 +138,37 @@ internal object SøknadUtils {
         ),
         frilans = Frilans(
             startdato = LocalDate.parse("2019-01-01"),
-            jobberFortsattSomFrilans = true
+            jobberFortsattSomFrilans = true,
+            arbeidsforhold = Arbeidsforhold(
+                arbeidsform = Arbeidsform.FAST,
+                jobberNormaltTimer = 30.0,
+                historiskArbeid = ArbeidIPeriode(
+                    jobberIPerioden = JobberIPeriodeSvar.JA,
+                    jobberSomVanlig = false,
+                    erLiktHverUke = false,
+                    enkeltdager = listOf(
+                        Enkeltdag(dato = LocalDate.now(), tid = Duration.ofHours(4)),
+                        Enkeltdag(dato = LocalDate.now().plusDays(3), tid = Duration.ofHours(4)),
+                        Enkeltdag(dato = LocalDate.now().plusWeeks(1), tid = Duration.ofHours(4))
+                    )
+                ),
+                planlagtArbeid = ArbeidIPeriode(
+                    jobberIPerioden = JobberIPeriodeSvar.JA,
+                    jobberSomVanlig = false,
+                    erLiktHverUke = true,
+                    enkeltdager = null,
+                    fasteDager = PlanUkedager(
+                        mandag = Duration.ofHours(4),
+                        tirsdag = Duration.ofHours(7),
+                        onsdag = null,
+                        torsdag = Duration.ofHours(5).plusMinutes(45),
+                        fredag = null
+                    )
+                )
+            )
         ),
-        selvstendigVirksomheter = listOf(
-            Virksomhet(
+        selvstendigNæringsdrivende = no.nav.helse.felles.SelvstendigNæringsdrivende(
+            virksomhet =  Virksomhet(
                 næringstyper = listOf(Næringstyper.ANNEN),
                 fraOgMed = LocalDate.parse("2021-01-01"),
                 tilOgMed = LocalDate.parse("2021-01-10"),
@@ -184,25 +176,121 @@ internal object SøknadUtils {
                 registrertINorge = true,
                 yrkesaktivSisteTreFerdigliknedeÅrene = YrkesaktivSisteTreFerdigliknedeÅrene(LocalDate.parse("2021-01-01")),
                 organisasjonsnummer = "111111"
-            ), Virksomhet(
-                næringstyper = listOf(Næringstyper.JORDBRUK_SKOGBRUK),
-                organisasjonsnummer = "9999",
-                fraOgMed = LocalDate.parse("2020-01-01"),
-                navnPåVirksomheten = "Kjells Skogbruk",
-                registrertINorge = false,
-                registrertIUtlandet = Land(
-                    "DEU",
-                    "Tyskland"
+            ),
+            arbeidsforhold = Arbeidsforhold(
+                arbeidsform = Arbeidsform.FAST,
+                jobberNormaltTimer = 30.0,
+                historiskArbeid = ArbeidIPeriode(
+                    jobberIPerioden = JobberIPeriodeSvar.JA,
+                    jobberSomVanlig = false,
+                    erLiktHverUke = false,
+                    enkeltdager = listOf(
+                        Enkeltdag(dato = LocalDate.now(), tid = Duration.ofHours(4)),
+                        Enkeltdag(dato = LocalDate.now().plusDays(3), tid = Duration.ofHours(4)),
+                        Enkeltdag(dato = LocalDate.now().plusWeeks(1), tid = Duration.ofHours(4))
+                    )
                 ),
-                næringsinntekt = 900_000,
-                regnskapsfører = Regnskapsfører(
-                    "Bård",
-                    "98989898"
+                planlagtArbeid = ArbeidIPeriode(
+                    jobberIPerioden = JobberIPeriodeSvar.JA,
+                    jobberSomVanlig = false,
+                    erLiktHverUke = true,
+                    enkeltdager = null,
+                    fasteDager = PlanUkedager(
+                        mandag = Duration.ofHours(4),
+                        tirsdag = Duration.ofHours(7),
+                        onsdag = null,
+                        torsdag = Duration.ofHours(5).plusMinutes(45),
+                        fredag = null
+                    )
+                )
+            )
+        ),
+        arbeidsgivere = listOf(
+            ArbeidsforholdAnsatt(
+                navn = "Peppes",
+                organisasjonsnummer = "917755736",
+                erAnsatt = true,
+                arbeidsforhold = Arbeidsforhold(
+                    arbeidsform = Arbeidsform.FAST,
+                    jobberNormaltTimer = 40.0,
+                    historiskArbeid = ArbeidIPeriode(
+                        jobberIPerioden = JobberIPeriodeSvar.JA,
+                        jobberSomVanlig = false,
+                        erLiktHverUke = false,
+                        enkeltdager = listOf(
+                            Enkeltdag(dato = LocalDate.now(), tid = Duration.ofHours(4)),
+                            Enkeltdag(dato = LocalDate.now().plusDays(3), tid = Duration.ofHours(4)),
+                            Enkeltdag(dato = LocalDate.now().plusWeeks(1), tid = Duration.ofHours(4))
+                        ),
+                        fasteDager = PlanUkedager(
+                            mandag = Duration.ofHours(4),
+                            tirsdag = Duration.ofHours(7),
+                            onsdag = null,
+                            torsdag = Duration.ofHours(5).plusMinutes(45),
+                            fredag = null
+                        )
+                    ),
+                    planlagtArbeid = ArbeidIPeriode(
+                        jobberIPerioden = JobberIPeriodeSvar.VET_IKKE,
+                        jobberSomVanlig = false,
+                        erLiktHverUke = true,
+                        enkeltdager = null,
+                        fasteDager = PlanUkedager(
+                            mandag = Duration.ofHours(4),
+                            tirsdag = Duration.ofHours(7),
+                            onsdag = null,
+                            torsdag = Duration.ofHours(5).plusMinutes(45),
+                            fredag = null
+                        )
+                    )
+                )
+            ),
+            ArbeidsforholdAnsatt(
+                navn = "Pizzabakeren",
+                organisasjonsnummer = "917755736",
+                erAnsatt = true,
+                arbeidsforhold = Arbeidsforhold(
+                    arbeidsform = Arbeidsform.FAST,
+                    jobberNormaltTimer = 40.0,
+                    historiskArbeid = ArbeidIPeriode(
+                        jobberIPerioden = JobberIPeriodeSvar.JA,
+                        jobberSomVanlig = false,
+                        erLiktHverUke = false,
+                        enkeltdager = listOf(
+                            Enkeltdag(dato = LocalDate.now(), tid = Duration.ofHours(4)),
+                            Enkeltdag(dato = LocalDate.now().plusDays(3), tid = Duration.ofHours(4)),
+                            Enkeltdag(dato = LocalDate.now().plusWeeks(1), tid = Duration.ofHours(4))
+                        ),
+                        fasteDager = PlanUkedager(
+                            mandag = Duration.ofHours(4),
+                            tirsdag = Duration.ofHours(7),
+                            onsdag = null,
+                            torsdag = Duration.ofHours(5).plusMinutes(45),
+                            fredag = null
+                        )
+                    ),
+                    planlagtArbeid = ArbeidIPeriode(
+                        jobberIPerioden = JobberIPeriodeSvar.VET_IKKE,
+                        jobberSomVanlig = false,
+                        erLiktHverUke = true,
+                        enkeltdager = null,
+                        fasteDager = PlanUkedager(
+                            mandag = Duration.ofHours(4),
+                            tirsdag = Duration.ofHours(7),
+                            onsdag = null,
+                            torsdag = Duration.ofHours(5).plusMinutes(45),
+                            fredag = null
+                        )
+                    )
                 )
             )
         ),
         harVærtEllerErVernepliktig = true,
-        k9FormatSøknad = defaultK9FormatPSB()
+        k9FormatSøknad = defaultK9FormatPSB(),
+        samtidigHjemme = null,
+        omsorgstilbud = null,
+        barnRelasjon = null,
+        barnRelasjonBeskrivelse = null
     )
 
     fun defaultK9FormatPSB(søknadId: UUID = UUID.randomUUID()) = Søknad(

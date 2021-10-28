@@ -1,9 +1,8 @@
 package no.nav.helse.prosessering.v1
 
 
-import no.nav.helse.felles.Omsorgsdag
+import no.nav.helse.felles.Enkeltdag
 import java.time.Duration
-import java.time.Month
 
 internal val NormalArbeidsdag = Duration.ofHours(7).plusMinutes(30)
 
@@ -29,24 +28,7 @@ internal fun Duration.somTekst(avkort: Boolean = true): String {
     return "$timerTeskst$mellomTekst$minutterTekst$avkortetTekst"
 }
 
-fun Month.tilNorskMåned(): String {
-    return when(this){
-        Month.JANUARY -> "Januar"
-        Month.FEBRUARY -> "Februar"
-        Month.MARCH -> "Mars"
-        Month.APRIL -> "April"
-        Month.MAY -> "Mai"
-        Month.JUNE -> "Juni"
-        Month.JULY -> "Juli"
-        Month.AUGUST -> "August"
-        Month.SEPTEMBER -> "September"
-        Month.OCTOBER -> "Oktober"
-        Month.NOVEMBER -> "November"
-        Month.DECEMBER -> "Desember"
-    }
-}
-
-fun List<Omsorgsdag>.sumTid(): Duration {
+fun List<Enkeltdag>.sumTid(): Duration {
     var sumTid = Duration.ZERO
     forEach {
         sumTid = sumTid.plus(it.tid)

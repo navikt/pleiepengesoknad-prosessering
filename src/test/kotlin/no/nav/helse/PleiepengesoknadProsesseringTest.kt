@@ -6,36 +6,16 @@ import io.ktor.config.*
 import io.ktor.http.*
 import io.ktor.server.engine.*
 import io.ktor.server.testing.*
-import io.ktor.util.*
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.time.delay
 import no.nav.common.KafkaEnvironment
 import no.nav.helse.dusseldorf.testsupport.wiremock.WireMockBuilder
-import no.nav.helse.felles.Arbeidsform
-import no.nav.helse.felles.Arbeidsgivere
-import no.nav.helse.felles.Barn
-import no.nav.helse.felles.Beredskap
-import no.nav.helse.felles.Bosted
-import no.nav.helse.felles.Ferieuttak
-import no.nav.helse.felles.FerieuttakIPerioden
-import no.nav.helse.felles.Frilans
-import no.nav.helse.felles.Land
-import no.nav.helse.felles.Medlemskap
-import no.nav.helse.felles.Nattevåk
-import no.nav.helse.felles.Næringstyper
-import no.nav.helse.felles.Organisasjon
-import no.nav.helse.felles.SkalJobbe
-import no.nav.helse.felles.Søker
-import no.nav.helse.felles.Utenlandsopphold
-import no.nav.helse.felles.UtenlandsoppholdIPerioden
-import no.nav.helse.felles.Virksomhet
-import no.nav.helse.felles.Årsak
+import no.nav.helse.felles.*
 import no.nav.helse.k9format.assertJournalførtFormat
 import no.nav.helse.kafka.TopicEntry
 import no.nav.helse.prosessering.v1.MeldingV1
 import no.nav.helse.prosessering.v1.PreprossesertMeldingV1
 import org.junit.AfterClass
-import org.junit.BeforeClass
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.net.URI
@@ -46,7 +26,6 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
 
 
 class PleiepengesoknadProsesseringTest {
@@ -145,54 +124,6 @@ class PleiepengesoknadProsesseringTest {
         )
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
-        cleanupConsumer
-            .hentCleanupMelding(melding.søknadId)
-            .assertJournalførtFormat()
-    }
-
-    @Test
-    fun `Melding med språk og skal jobbe prosent blir prosessert`() {
-
-        val språk = "nn"
-        val jobb1SkalJobbeProsent = 50.422
-        val jobb2SkalJobberProsent = 12.111
-
-        val melding = SøknadUtils.defaultSøknad.copy(
-            søknadId = UUID.randomUUID().toString(),
-            språk = språk,
-            arbeidsgivere = Arbeidsgivere(
-                organisasjoner = listOf(
-                    Organisasjon(
-                        "917755736",
-                        "Jobb1",
-                        skalJobbeProsent = jobb1SkalJobbeProsent,
-                        jobberNormaltTimer = 37.5,
-                        skalJobbe = SkalJobbe.REDUSERT,
-                        arbeidsform = Arbeidsform.VARIERENDE
-                    ),
-                    Organisasjon(
-                        "917755737",
-                        "Jobb2",
-                        skalJobbeProsent = jobb2SkalJobberProsent,
-                        jobberNormaltTimer = 37.5,
-                        skalJobbe = SkalJobbe.REDUSERT,
-                        arbeidsform = Arbeidsform.VARIERENDE
-                    )
-                )
-            )
-        )
-
-        kafkaTestProducer.leggSoknadTilProsessering(melding)
-        val preprossesertMelding = kafkaTestConsumer.hentPreprosessertMelding(melding.søknadId).data
-        assertEquals(språk, preprossesertMelding.språk)
-        assertEquals(2, preprossesertMelding.arbeidsgivere.organisasjoner.size)
-        val jobb1 = preprossesertMelding.arbeidsgivere.organisasjoner.firstOrNull { it.navn == "Jobb1" }
-        val jobb2 = preprossesertMelding.arbeidsgivere.organisasjoner.firstOrNull { it.navn == "Jobb2" }
-        assertNotNull(jobb1)
-        assertNotNull(jobb2)
-        assertEquals(jobb1SkalJobbeProsent, jobb1.skalJobbeProsent)
-        assertEquals(jobb2SkalJobberProsent, jobb2.skalJobbeProsent)
-
         cleanupConsumer
             .hentCleanupMelding(melding.søknadId)
             .assertJournalførtFormat()
@@ -308,51 +239,9 @@ class PleiepengesoknadProsesseringTest {
                 navn = "Bjarne",
                 fødselsnummer = gyldigFodselsnummerB
             ),
-            arbeidsgivere = Arbeidsgivere(
-                organisasjoner = listOf(
-                    Organisasjon(
-                        "917755736",
-                        "Jobb1",
-                        skalJobbeProsent = 50.25,
-                        jobberNormaltTimer = 5.0,
-                        skalJobbe = SkalJobbe.REDUSERT,
-                        arbeidsform = Arbeidsform.VARIERENDE
-                    ),
-                    Organisasjon(
-                        "917755737",
-                        "Jobb2",
-                        skalJobbeProsent = 20.0,
-                        jobberNormaltTimer = 3.75,
-                        skalJobbe = SkalJobbe.REDUSERT,
-                        arbeidsform = Arbeidsform.VARIERENDE
-                    )
-                )
-            ),
             frilans = Frilans(
                 startdato = LocalDate.parse("2018-08-01"),
                 jobberFortsattSomFrilans = true
-            ),
-            selvstendigVirksomheter = listOf(
-                Virksomhet(
-                    næringstyper = listOf(Næringstyper.DAGMAMMA),
-                    fraOgMed = LocalDate.parse("2020-01-01"),
-                    næringsinntekt = 123456,
-                    navnPåVirksomheten = "Virksomehet 1",
-                    registrertINorge = true,
-                    organisasjonsnummer = "12345"
-                ),
-                Virksomhet(
-                    næringstyper = listOf(Næringstyper.FISKE),
-                    fraOgMed = LocalDate.parse("2020-02-01"),
-                    tilOgMed = LocalDate.parse("2020-05-01"),
-                    næringsinntekt = 123456,
-                    navnPåVirksomheten = "Virksomehet 2",
-                    registrertINorge = false,
-                    registrertIUtlandet = Land(
-                        landkode = "DEU",
-                        landnavn = "Tyskland"
-                    )
-                )
             ),
             medlemskap = Medlemskap(
                 harBoddIUtlandetSiste12Mnd = true,

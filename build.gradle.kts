@@ -78,8 +78,6 @@ repositories {
     mavenCentral()
 
     maven("https://jitpack.io")
-    maven("https://dl.bintray.com/kotlin/ktor")
-    maven("https://kotlin.bintray.com/kotlinx")
     maven("https://packages.confluent.io/maven/")
 }
 
