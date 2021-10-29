@@ -9,7 +9,7 @@
           content="Søknad om pleiepenger for sykt barn eller person over 18 år mottatt {{soknad_mottatt_dag}} {{ soknad_mottatt }}"/>
     <bookmarks>
         <bookmark name="Søker" href="#søker"/>
-       <!-- <bookmark name="Barn" href="#barn"/>-->
+        <bookmark name="Barn" href="#barn"/>
         <!--<bookmark name="Perioder" href="#perioder"/>-->
         <!--<bookmark name="Arbeidsforhold" href="#arbeidsforhold"/>-->
         <bookmark name="Samtykke" href="#samtykke"/>
@@ -29,27 +29,17 @@
             {{ soker.navn }}
         </p>
         <p>
-            {{ soker.fodselsnummer }}<br/>
+            {{ soker.fødselsnummer }}<br/>
         </p>
     </div>
 
-    <!--<div class="person" id="barn">
+    <div class="person" id="barn">
         <p>Barn</p>
         <p class="navn">
-            {{# if barn.navn }}
-                {{ barn.navn }}
-            {{else}}
-                <span class="ikke_satt">Navn ikke angitt</span>
-            {{/if}}
+            <span class="ikke_satt">Navn ikke angitt</span>
         </p>
-        <p>
-            {{# if barn.id }}
-                {{ barn.id }}
-            {{else}}
-                <span class="ikke_satt">ID ikke angitt</span>
-            {{/if}}
-        </p>
-    </div>-->
+        <p>{{ barn.fødselsnummer }}</p>
+    </div>
 
     <!--<section id="perioder">
         <h2>Perioder du søker om endring i pleiepenger</h2>
@@ -82,8 +72,8 @@
                         </ul>
                     </li>
                     {{#if arbeidsgiver.arbeidsforhold}}
-                        {{> partial/arbeidsforholdPartial arbeidsforhold=arbeidsgiver.arbeidsforhold}}
-                    {{/if}}
+                {{> partial/arbeidsforholdPartial arbeidsforhold=arbeidsgiver.arbeidsforhold}}
+            {{/if}}
                 </ul>
             {{/each}}
         {{/if}}
@@ -92,8 +82,8 @@
             <ul class="ul-no-indent">
                 <li><b>Frilans</b></li>
                 {{#if frilans.arbeidsforhold}}
-                    {{> partial/arbeidsforholdPartial arbeidsforhold=frilans.arbeidsforhold}}
-                {{/if}}
+            {{> partial/arbeidsforholdPartial arbeidsforhold=frilans.arbeidsforhold}}
+        {{/if}}
             </ul>
         {{/if}}
 

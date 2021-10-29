@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference
 import no.nav.helse.pdf.PDFGenerator.Companion.DATE_FORMATTER
 import no.nav.helse.prosessering.v1.asynkron.endringsmelding.EndringsmeldingV1
 import no.nav.helse.prosessering.v2.somTekst
+import no.nav.k9.søknad.felles.personopplysninger.Barn
 import no.nav.k9.søknad.felles.type.Periode
 import no.nav.k9.søknad.ytelse.psb.v1.PleiepengerSyktBarn
 import no.nav.k9.søknad.ytelse.psb.v1.arbeidstid.Arbeidstaker
@@ -17,18 +18,22 @@ class EndringsmeldingPDFGenerator : PDFGenerator<EndringsmeldingV1>() {
         get() = "endringsmelding"
 
 
-    override fun EndringsmeldingV1.tilMap(): Map<String, Any?> = mapOf(
-        "endringsmelding" to somMap(),
-        "soker" to mapOf(
-            "navn" to søker.formatertNavn().capitalizeName(),
-            "fodselsnummer" to søker.fødselsnummer
-        ),
-        "arbeidstid" to k9Format.getYtelse<PleiepengerSyktBarn>().arbeidstid.somMap(),
-        "samtykke" to mapOf(
-            "har_forstatt_rettigheter_og_plikter" to true,
-            "har_bekreftet_opplysninger" to true
+    override fun EndringsmeldingV1.tilMap(): Map<String, Any?> {
+        val ytelse = k9Format.getYtelse<PleiepengerSyktBarn>()
+        return mapOf(
+            "endringsmelding" to somMap(),
+            "soker" to mapOf(
+                "navn" to søker.formatertNavn().capitalizeName(),
+                "fødselsnummer" to søker.fødselsnummer
+            ),
+            "barn" to ytelse.barn.somMap(),
+            "arbeidstid" to ytelse.arbeidstid.somMap(),
+            "samtykke" to mapOf(
+                "har_forstatt_rettigheter_og_plikter" to true,
+                "har_bekreftet_opplysninger" to true
+            )
         )
-    )
+    }
 
     override val bilder: Map<String, String>
         get() = mapOf()
@@ -39,6 +44,10 @@ class EndringsmeldingPDFGenerator : PDFGenerator<EndringsmeldingV1>() {
             TypeReference<MutableMap<String, Any?>>() {}
     )
 }
+
+private fun Barn.somMap(): Map<String, Any?> = mapOf(
+    "fødselsnummer" to personIdent.verdi
+)
 
 fun Arbeidstid.somMap(): Map<String, Any?> = mapOf(
     "arbeidstakerList" to arbeidstakerList.somMap(),
