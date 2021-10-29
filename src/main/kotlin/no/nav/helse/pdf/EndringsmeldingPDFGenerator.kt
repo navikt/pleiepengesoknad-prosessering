@@ -35,8 +35,8 @@ class EndringsmeldingPDFGenerator : PDFGenerator<EndringsmeldingV1>() {
                 else -> null
             },
             "samtykke" to mapOf(
-                "har_forstatt_rettigheter_og_plikter" to true,
-                "har_bekreftet_opplysninger" to true
+                "har_forstatt_rettigheter_og_plikter" to harForståttRettigheterOgPlikter,
+                "har_bekreftet_opplysninger" to harBekreftetOpplysninger
             )
         )
     }
