@@ -1,0 +1,10 @@
+<ul>
+    {{#each arbeidstidinfo.perioder as |periode|~}}
+        <li>
+            Jobber normalt {{periode.arbeidstidPeriodeInfo.jobberNormaltTimerPerDag}} timer per dag,
+            men har faktisk jobbet {{periode.arbeidstidPeriodeInfo.faktiskArbeidTimerPerDag}} timer
+            per dag i perioden
+            {{periode.periode.fraOgMed}} - {{periode.periode.tilOgMed}}
+        </li>
+    {{/each}}
+</ul>

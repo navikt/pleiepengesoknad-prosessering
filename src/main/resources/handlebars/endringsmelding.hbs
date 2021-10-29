@@ -10,8 +10,7 @@
     <bookmarks>
         <bookmark name="Søker" href="#søker"/>
         <bookmark name="Barn" href="#barn"/>
-        <!--<bookmark name="Perioder" href="#perioder"/>-->
-        <!--<bookmark name="Arbeidsforhold" href="#arbeidsforhold"/>-->
+        <bookmark name="Arbeidstid" href="#arbeidstid"/>
         <bookmark name="Samtykke" href="#samtykke"/>
     </bookmarks>
     {{#block 'style-common' }} {{/block}}
@@ -20,7 +19,7 @@
 <body>
 <h1 id="header">Endringsmelding om pleiepenger for sykt barn eller person over 18 år</h1>
 
-<!--<p class="nokkelinfo"><strong>Sendt til NAV </strong>{{soknad_mottatt_dag}} {{ soknad_mottatt }}</p>-->
+<p class="nokkelinfo"><strong>Sendt til NAV </strong>{{mottattDag}} {{ mottattDato }}</p>
 
 <div class="innholdscontainer">
     <div class="person" id="søker">
@@ -41,60 +40,35 @@
         <p>{{ barn.fødselsnummer }}</p>
     </div>
 
-    <!--<section id="perioder">
-        <h2>Perioder du søker om endring i pleiepenger</h2>
-        <ul>
-            <li>
-                <strong>{{ periode.fra_og_med }} - {{ periode.til_og_med }}</strong><br/>
-            </li>
-        </ul>
-    </section>-->
-
-    <!--<section id="arbeidsforhold">
-        <h2>Arbeidssituasjonen din</h2>
-        {{# if hjelp.ingen_arbeidsgivere }}
-            <ul>
-                <li class="ikke_satt">Du har ikke angitt noen arbeidsgivere i søknaden</li>
-            </ul>
-        {{/if}}
-
-        {{#if arbeidsgivere}}
-            {{#each arbeidsgivere as |arbeidsgiver|~}}
-                <ul class="ul-no-indent">
-                    <li><b>{{arbeidsgiver.navn}} (orgnr: {{arbeidsgiver.organisasjonsnummer}})</b></li>
-                    <li class="li-style-none">
-                        <ul>
-                            {{#if arbeidsgiver.erAnsatt}}
-                                <li class="sporsmalstekst">Er ansatt</li>
-                            {{else}}
-                                <li class="sporsmalstekst">Er ikke ansatt</li>
-                            {{/if}}
-                        </ul>
-                    </li>
-                    {{#if arbeidsgiver.arbeidsforhold}}
-                {{> partial/arbeidsforholdPartial arbeidsforhold=arbeidsgiver.arbeidsforhold}}
-            {{/if}}
+    {{#if arbeidstid}}
+        <section id="arbeidstid">
+            {{#if arbeidstid.arbeidstakerList}}
+                <h2>Endringer i arbeidstid som arbeidstaker</h2>
+                <ul class="li-style-none">
+                    {{#each arbeidstid.arbeidstakerList as |arbeidsgiver|~}}
+                        <li>
+                            <b>Organisasjonsnummer</b>: {{arbeidsgiver.organisasjonsnummer}} <br/>
+                            <b>Arbeidstidsinfo:</b> <br/>
+                            {{> partial/arbeidstidinfoPartial arbeidstidinfo=arbeidsgiver.arbeidstidInfo}}
+                        </li>
+                    {{/each}}
                 </ul>
-            {{/each}}
-        {{/if}}
+            {{/if}}
 
-        {{#if frilans.arbeidsforhold}}
-            <ul class="ul-no-indent">
-                <li><b>Frilans</b></li>
-                {{#if frilans.arbeidsforhold}}
-            {{> partial/arbeidsforholdPartial arbeidsforhold=frilans.arbeidsforhold}}
-        {{/if}}
-            </ul>
-        {{/if}}
+            {{#if arbeidstid.frilanserArbeidstidInfo}}
+                <h2>Endringer i arbeidstid som frilanser</h2>
+                <b>Arbeidstidsinfo:</b> <br/>
+                {{> partial/arbeidstidinfoPartial arbeidstidinfo=arbeidstid.frilanserArbeidstidInfo}}
+            {{/if}}
 
-        {{#if selvstendigNæringsdrivende.arbeidsforhold}}
-            <ul class="ul-no-indent">
-                <li><b>Selvstendig næringsdrivende</b></li>
-                {{> partial/arbeidsforholdPartial arbeidsforhold=selvstendigNæringsdrivende.arbeidsforhold}}
-            </ul>
-        {{/if}}
+            {{#if arbeidstid.selvstendigNæringsdrivendeArbeidstidInfo}}
+                <h2>Endringer i arbeidstid som selvstendig næringsdrivende</h2>
+                <b>Arbeidstidsinfo:</b> <br/>
+                {{> partial/arbeidstidinfoPartial arbeidstidinfo=arbeidstid.selvstendigNæringsdrivendeArbeidstidInfo}}
+            {{/if}}
 
-    </section>-->
+        </section>
+    {{/if}}
 
     <section id="samtykke">
         <h2>Samtykke fra deg</h2>

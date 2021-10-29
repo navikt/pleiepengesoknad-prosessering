@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference
 import no.nav.helse.pdf.PDFGenerator.Companion.DATE_FORMATTER
 import no.nav.helse.prosessering.v1.asynkron.endringsmelding.EndringsmeldingV1
 import no.nav.helse.prosessering.v2.somTekst
+import no.nav.helse.utils.somNorskDag
 import no.nav.k9.søknad.felles.personopplysninger.Barn
 import no.nav.k9.søknad.felles.type.Periode
 import no.nav.k9.søknad.ytelse.psb.v1.PleiepengerSyktBarn
@@ -22,12 +23,17 @@ class EndringsmeldingPDFGenerator : PDFGenerator<EndringsmeldingV1>() {
         val ytelse = k9Format.getYtelse<PleiepengerSyktBarn>()
         return mapOf(
             "endringsmelding" to somMap(),
+            "mottattDag" to k9Format.mottattDato.withZoneSameInstant(ZONE_ID).somNorskDag(),
+            "mottattDato" to DATE_TIME_FORMATTER.format(k9Format.mottattDato),
             "soker" to mapOf(
                 "navn" to søker.formatertNavn().capitalizeName(),
                 "fødselsnummer" to søker.fødselsnummer
             ),
             "barn" to ytelse.barn.somMap(),
-            "arbeidstid" to ytelse.arbeidstid.somMap(),
+            "arbeidstid" to when {
+                ytelse.arbeidstid != null -> ytelse.arbeidstid.somMap()
+                else -> null
+            },
             "samtykke" to mapOf(
                 "har_forstatt_rettigheter_og_plikter" to true,
                 "har_bekreftet_opplysninger" to true
@@ -50,7 +56,10 @@ private fun Barn.somMap(): Map<String, Any?> = mapOf(
 )
 
 fun Arbeidstid.somMap(): Map<String, Any?> = mapOf(
-    "arbeidstakerList" to arbeidstakerList.somMap(),
+    "arbeidstakerList" to when {
+        !arbeidstakerList.isNullOrEmpty() -> arbeidstakerList.somMap()
+        else -> null
+    },
     "frilanserArbeidstidInfo" to when {
         frilanserArbeidstidInfo.isPresent -> frilanserArbeidstidInfo.get().somMap()
         else -> null
