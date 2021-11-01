@@ -261,8 +261,8 @@
         {{#if omsorgstilbud}}
             {{#if omsorgstilbud.periodenStarterIFortid}}
                 <h3 style="font-size: 17px;">Omsorgstilbud tilbake i tid:</h3>
-                <p class="sporsmalstekst">Har barnet vært noe i et omsorgstilbud i
-                    perioden {{omsorgstilbud.søknadsperiodeFraOgMed}} til {{omsorgstilbud.fortidTilOgMed}}?</p>
+                <p class="sporsmalstekst">Oppholdt barnet seg noe i et fast omsorgstilbud i perioden
+                    {{omsorgstilbud.søknadsperiodeFraOgMed}} til {{omsorgstilbud.fortidTilOgMed}}?</p>
                 {{#if omsorgstilbud.historisk}}
                     <p>Ja</p>
                     <br/>
@@ -299,15 +299,12 @@
             {{#if omsorgstilbud.periodenAvsluttesIFremtiden}}
                 <h3 style="font-size: 17px;">Omsorgstilbud frem i tid:</h3>
 
-                <p class="sporsmalstekst">Skal barnet være noe i et omsorgstilbud i
-                    perioden {{omsorgstilbud.fremtidFraOgMed}} til {{omsorgstilbud.søknadsperiodeTilOgMed}}?</p>
+                <p class="sporsmalstekst">Skal barnet oppholde seg noe i et fast omsorgstilbud i perioden
+                    {{omsorgstilbud.fremtidFraOgMed}} til {{omsorgstilbud.søknadsperiodeTilOgMed}}?</p>
 
                 {{#if omsorgstilbud.planlagt}}
                     <p>Ja</p>
 
-                    <p class="sporsmalstekst">Vet du noe av tiden barnet skal være i omsorgstilbudet?</p>
-                    {{#eq omsorgstilbud.planlagt.vetOmsorgstilbud "VET_ALLE_TIMER" }}
-                        <p>Ja</p>
                         {{#if omsorgstilbud.planlagt.harSvartPåErLiktHverDag}}
                             <p><span class="sporsmalstekst">Er tiden barnet skal være i omsorgstilbudet lik for hver dag i perioden du søker om? Det
                                     vil si at alle mandager er like, alle tirsdager er like og så videre</span></p>
@@ -346,12 +343,6 @@
                             <p><b>Fredager:</b> {{omsorgstilbud.planlagt.ukedager.fredag}}</p>
                             <br/>
                         {{/if}}
-                    {{/eq}}
-
-                    {{#eq omsorgstilbud.planlagt.vetOmsorgstilbud "VET_IKKE" }}
-                        <p>Nei</p>
-                    {{/eq}}
-
                 {{else}}
                     <p>Nei</p>
                 {{/if}}

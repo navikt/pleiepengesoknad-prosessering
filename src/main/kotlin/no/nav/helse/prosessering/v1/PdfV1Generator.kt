@@ -283,8 +283,6 @@ private fun HistoriskOmsorgstilbud.somMap(): Map<String, Any?> = mutableMapOf(
 private fun PlanlagtOmsorgstilbud.somMap(): Map<String, Any?> = mutableMapOf(
     "enkeltdagerPerMnd" to enkeltdager?.somMapPerMnd(),
     "ukedager" to ukedager?.somMap(),
-    "vetOmsorgstilbud" to vetOmsorgstilbud.name,
-    "vetLikeDager" to (ukedager != null),
     "erLiktHverDag" to  erLiktHverDag,
     "harSvartPåErLiktHverDag" to  (erLiktHverDag != null)
 )
