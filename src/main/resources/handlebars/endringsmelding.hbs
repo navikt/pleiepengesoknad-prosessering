@@ -11,6 +11,7 @@
         <bookmark name="Søker" href="#søker"/>
         <bookmark name="Barn" href="#barn"/>
         <bookmark name="Arbeidstid" href="#arbeidstid"/>
+        <bookmark name="Omsorgstilbud" href="#omsorgstilbud"/>
         <bookmark name="Samtykke" href="#samtykke"/>
     </bookmarks>
     {{#block 'style-common' }} {{/block}}
@@ -70,6 +71,17 @@
         </section>
     {{/if}}
 
+    {{#if omsorgstilbud}}
+        <section id="omsorgstilbud">
+            <h2>Endringer i omsorgstilbud</h2>
+            <ul>
+                {{#each omsorgstilbud.perioder as |periode|~}}
+                    <li>{{periode.periode.fraOgMed}}: {{periode.tilsynPeriodeInfo.etablertTilsynTimerPerDag}}</li>
+                {{/each}}
+            </ul>
+        </section>
+    {{/if}}
+
     <section id="samtykke">
         <h2>Samtykke fra deg</h2>
         <p class="sporsmalstekst">Har du forstått dine rettigheter og plikter?</p>
@@ -81,7 +93,7 @@
 </div>
 <!-- FOOTER -->
 <p id="footer">
-    <!--<span class="soknadsid">{{ soknad_id }}</span>-->
+    <span class="soknadsid">{{ søknadId }}</span>
     <span class="sidetall">side <span id="pagenumber"></span> av <span id="pagecount"></span></span>
 </p>
 </body>

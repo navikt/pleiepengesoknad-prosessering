@@ -41,6 +41,8 @@ internal object EndringsmeldingUtils {
             mellomnavn = "Mellomnavn",
             fornavn = "Ola"
         ),
+        harBekreftetOpplysninger = true,
+        harForståttRettigheterOgPlikter = true,
         k9Format = defaultK9FormatPSB(søknadsId)
     )
 

@@ -21,6 +21,8 @@ class EndringsmeldingPdfV1GeneratorTest {
                 etternavn = "ÅNSNES",
                 fødselsnummer = "29099012345"
             ),
+            harBekreftetOpplysninger = true,
+            harForståttRettigheterOgPlikter = true,
             k9Format = SøknadUtils.defaultK9FormatPSB()
         )
     }
