@@ -42,7 +42,7 @@ internal class EndringsmeldingPreprosseseringStream(
                     fromTopic.name,
                     Consumed.with(fromTopic.keySerde, fromTopic.valueSerde)
                 )
-                .filter { _, entry -> 1 == entry.metadata.version }
+                .filter { _, entry -> 2 == entry.metadata.version }
                 .mapValues { soknadId, entry ->
                     process(NAME, soknadId, entry) {
                         logger.info("Preprosesserer endringsmelding.")

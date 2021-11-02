@@ -377,7 +377,8 @@ class PleiepengesoknadProsesseringTest {
         endringsmeldingKafkaProducer.leggPåMelding(
             søknadsId.toString(),
             endringsmelding,
-            EndringsmeldingTopics.ENDRINGSMELDING_MOTTATT
+            EndringsmeldingTopics.ENDRINGSMELDING_MOTTATT,
+            2
         )
 
         val preprosessertEndringsMelding: TopicEntry<PreprossesertEndringsmeldingV1> =

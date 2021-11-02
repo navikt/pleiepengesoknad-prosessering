@@ -143,7 +143,8 @@ fun <V> KafkaConsumer<String, String>.hentCleanupMelding(
 fun <V> KafkaProducer<String, TopicEntry<V>>.leggPåMelding(
     søknadId: String,
     soknad: V,
-    topic: Topic<TopicEntry<V>>
+    topic: Topic<TopicEntry<V>>,
+    version: Int = 1
 ) {
     send(
         ProducerRecord(
@@ -151,7 +152,7 @@ fun <V> KafkaProducer<String, TopicEntry<V>>.leggPåMelding(
             søknadId,
             TopicEntry(
                 metadata = Metadata(
-                    version = 1,
+                    version = version,
                     correlationId = UUID.randomUUID().toString()
                 ),
                 data = soknad
