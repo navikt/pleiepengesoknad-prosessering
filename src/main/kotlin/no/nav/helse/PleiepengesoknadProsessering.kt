@@ -98,9 +98,9 @@ fun Application.pleiepengesoknadProsessering() {
         asynkronProsesseringV1Service.stop()
         logger.info("AsynkronProsesseringV1Service Stoppet.")
 
-        logger.info("Stopper AsynkronProsesseringV1Service.")
+        logger.info("Stopper asynkronEndringsmeldingProsesseringV1Service.")
         asynkronEndringsmeldingProsesseringV1Service.stop()
-        logger.info("AsynkronProsesseringV1Service Stoppet.")
+        logger.info("asynkronEndringsmeldingProsesseringV1Service Stoppet.")
 
         CollectorRegistry.defaultRegistry.clear()
     }
