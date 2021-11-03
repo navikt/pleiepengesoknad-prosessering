@@ -34,7 +34,6 @@ import no.nav.helse.prosessering.v1.asynkron.SøknadTopics
 import no.nav.helse.prosessering.v1.asynkron.endringsmelding.EndringsmeldingV1
 import no.nav.helse.prosessering.v1.asynkron.endringsmelding.PreprossesertEndringsmeldingV1
 import org.junit.AfterClass
-import org.junit.jupiter.api.Disabled
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.net.URI
@@ -372,15 +371,13 @@ class PleiepengesoknadProsesseringTest {
     }
 
     @Test
-    @Disabled
     fun endringsmelding() {
         val søknadsId = UUID.randomUUID()
         val endringsmelding = defaultEndringsmelding(søknadsId)
         endringsmeldingKafkaProducer.leggPåMelding(
             søknadsId.toString(),
             endringsmelding,
-            EndringsmeldingTopics.ENDRINGSMELDING_MOTTATT,
-            2
+            EndringsmeldingTopics.ENDRINGSMELDING_MOTTATT
         )
 
         val preprosessertEndringsMelding: TopicEntry<PreprossesertEndringsmeldingV1> =
