@@ -114,7 +114,7 @@ private class MottattEndringsmeldingSerDes : SerDes<TopicEntry<EndringsmeldingV1
             val readValue = objectMapper.readValue<TopicEntry<EndringsmeldingMottatt>>(it)
             val data = readValue.data
             val k9Format: ObjectNode = data.k9Format
-            val håndtertK9Format = k9Format.replace("språk", TextNode("nb")) as ObjectNode
+            val håndtertK9Format = k9Format.set<ObjectNode>("språk", TextNode("nb"))
             TopicEntry(
                 readValue.metadata,
                 EndringsmeldingV1(
