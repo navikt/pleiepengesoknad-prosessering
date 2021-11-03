@@ -5,8 +5,6 @@ import no.nav.helse.dokument.DokumentService
 import no.nav.helse.pdf.EndringsmeldingPDFGenerator
 import no.nav.helse.prosessering.Metadata
 import no.nav.helse.prosessering.SoknadId
-import no.nav.k9.søknad.JsonUtils
-import no.nav.k9.søknad.Søknad
 import org.slf4j.LoggerFactory
 
 internal class EndringsmeldingPreprosseseringV1Service(
@@ -22,7 +20,7 @@ internal class EndringsmeldingPreprosseseringV1Service(
         endringsmelding: EndringsmeldingV1,
         metadata: Metadata
     ): PreprossesertEndringsmeldingV1 {
-        val k9Format = JsonUtils.fromString(endringsmelding.k9Format, Søknad::class.java)
+        val k9Format = endringsmelding.k9Format
         val soknadId = SoknadId(k9Format.søknadId.id)
         logger.info("Preprosseserer endringsmelding med søknadId $soknadId")
 

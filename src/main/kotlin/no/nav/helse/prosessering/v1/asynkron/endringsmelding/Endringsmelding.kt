@@ -8,7 +8,7 @@ data class EndringsmeldingV1(
     val søker: Søker,
     val harBekreftetOpplysninger: Boolean,
     val harForståttRettigheterOgPlikter: Boolean,
-    val k9Format: String
+    val k9Format: Søknad
 )
 
 data class PreprossesertEndringsmeldingV1(

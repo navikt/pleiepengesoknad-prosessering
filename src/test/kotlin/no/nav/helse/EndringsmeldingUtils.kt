@@ -5,7 +5,6 @@ import no.nav.helse.EndringsmeldingUtils.objectMapper
 import no.nav.helse.dusseldorf.ktor.jackson.dusseldorfConfigured
 import no.nav.helse.felles.*
 import no.nav.helse.prosessering.v1.asynkron.endringsmelding.EndringsmeldingV1
-import no.nav.k9.søknad.JsonUtils
 import no.nav.k9.søknad.Søknad
 import no.nav.k9.søknad.felles.Versjon
 import no.nav.k9.søknad.felles.type.NorskIdentitetsnummer
@@ -44,7 +43,7 @@ internal object EndringsmeldingUtils {
         ),
         harBekreftetOpplysninger = true,
         harForståttRettigheterOgPlikter = true,
-        k9Format = JsonUtils.toString(defaultK9FormatPSB(søknadsId))
+        k9Format = defaultK9FormatPSB(søknadsId)
     )
 
     fun defaultK9FormatPSB(søknadId: UUID = UUID.randomUUID()) = Søknad(
