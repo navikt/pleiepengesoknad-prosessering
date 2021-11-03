@@ -8,7 +8,7 @@ data class EndringsmeldingV1(
     val søker: Søker,
     val harBekreftetOpplysninger: Boolean,
     val harForståttRettigheterOgPlikter: Boolean,
-    val k9Format: Søknad
+    val k9Format: String
 )
 
 data class PreprossesertEndringsmeldingV1(
@@ -18,10 +18,11 @@ data class PreprossesertEndringsmeldingV1(
 ) {
     internal constructor(
         endringsmelding: EndringsmeldingV1,
-        dokumentUrls: List<List<URI>>
+        dokumentUrls: List<List<URI>>,
+        k9Format: Søknad
     ) : this(
         søker = endringsmelding.søker,
-        k9FormatSøknad = endringsmelding.k9Format,
+        k9FormatSøknad = k9Format,
         dokumentUrls = dokumentUrls
     )
 }

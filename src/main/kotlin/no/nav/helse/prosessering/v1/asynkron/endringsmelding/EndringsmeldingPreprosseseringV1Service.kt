@@ -5,6 +5,8 @@ import no.nav.helse.dokument.DokumentService
 import no.nav.helse.pdf.EndringsmeldingPDFGenerator
 import no.nav.helse.prosessering.Metadata
 import no.nav.helse.prosessering.SoknadId
+import no.nav.k9.søknad.JsonUtils
+import no.nav.k9.søknad.Søknad
 import org.slf4j.LoggerFactory
 
 internal class EndringsmeldingPreprosseseringV1Service(
@@ -20,7 +22,8 @@ internal class EndringsmeldingPreprosseseringV1Service(
         endringsmelding: EndringsmeldingV1,
         metadata: Metadata
     ): PreprossesertEndringsmeldingV1 {
-        val soknadId = SoknadId(endringsmelding.k9Format.søknadId.id)
+        val k9Format = JsonUtils.fromString(endringsmelding.k9Format, Søknad::class.java)
+        val soknadId = SoknadId(k9Format.søknadId.id)
         logger.info("Preprosseserer endringsmelding med søknadId $soknadId")
 
         val correlationId = CorrelationId(metadata.correlationId)
@@ -46,7 +49,7 @@ internal class EndringsmeldingPreprosseseringV1Service(
         logger.trace("Mellomlagrer Oppsummerings-JSON for endringsmelding")
 
         val endringsmeldingJsonUrl = dokumentService.lagreJsonMelding(
-            k9FormatSøknad = endringsmelding.k9Format,
+            k9FormatSøknad = k9Format,
             aktørId = søkerAktørId,
             correlationId = correlationId
         )
@@ -65,6 +68,7 @@ internal class EndringsmeldingPreprosseseringV1Service(
 
         return PreprossesertEndringsmeldingV1(
             endringsmelding = endringsmelding,
+            k9Format = k9Format,
             dokumentUrls = komplettDokumentUrls.toList()
         )
     }

@@ -4,6 +4,8 @@ import no.nav.helse.pdf.PDFGenerator.Companion.DATE_FORMATTER
 import no.nav.helse.prosessering.v1.asynkron.endringsmelding.EndringsmeldingV1
 import no.nav.helse.prosessering.v2.somTekst
 import no.nav.helse.utils.somNorskDag
+import no.nav.k9.søknad.JsonUtils
+import no.nav.k9.søknad.Søknad
 import no.nav.k9.søknad.felles.personopplysninger.Barn
 import no.nav.k9.søknad.felles.type.Periode
 import no.nav.k9.søknad.ytelse.psb.v1.PleiepengerSyktBarn
@@ -21,6 +23,7 @@ class EndringsmeldingPDFGenerator : PDFGenerator<EndringsmeldingV1>() {
 
 
     override fun EndringsmeldingV1.tilMap(): Map<String, Any?> {
+        val k9Format = JsonUtils.fromString(k9Format, Søknad::class.java)
         val ytelse = k9Format.getYtelse<PleiepengerSyktBarn>()
         return mapOf(
             "søknadId" to k9Format.søknadId.id,

@@ -3,6 +3,7 @@ package no.nav.helse
 import no.nav.helse.felles.Søker
 import no.nav.helse.pdf.EndringsmeldingPDFGenerator
 import no.nav.helse.prosessering.v1.asynkron.endringsmelding.EndringsmeldingV1
+import no.nav.k9.søknad.JsonUtils
 import java.io.File
 import kotlin.test.Test
 
@@ -23,7 +24,7 @@ class EndringsmeldingPdfV1GeneratorTest {
             ),
             harBekreftetOpplysninger = true,
             harForståttRettigheterOgPlikter = true,
-            k9Format = SøknadUtils.defaultK9FormatPSB()
+            k9Format = JsonUtils.toString(SøknadUtils.defaultK9FormatPSB())
         )
     }
 
