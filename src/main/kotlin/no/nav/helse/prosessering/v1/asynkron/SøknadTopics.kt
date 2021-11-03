@@ -101,7 +101,7 @@ private class MottattEndringsmeldingSerDes: SerDes<TopicEntry<EndringsmeldingV1>
         return data?.let {
             try {
                 objectMapper.readValue<TopicEntry<EndringsmeldingV1>>(it)
-            } catch (e: IllegalArgumentException) {
+            } catch (e: Exception) {
                 logger.error("Feilet med å deserialisere endringsmelding. Ignorer verdi.")
                 null
             }
