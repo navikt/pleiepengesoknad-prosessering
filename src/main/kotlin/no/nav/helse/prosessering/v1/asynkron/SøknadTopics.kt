@@ -15,6 +15,7 @@ import org.apache.kafka.common.serialization.Deserializer
 import org.apache.kafka.common.serialization.Serdes
 import org.apache.kafka.common.serialization.Serializer
 import org.apache.kafka.common.serialization.StringSerializer
+import org.slf4j.LoggerFactory
 
 data class Journalfort(@JsonProperty("journalpostId") val journalpostId: String, val søknad: Søknad)
 data class Cleanup(val metadata: Metadata, val melding: PreprossesertMeldingV1, val journalførtMelding: Journalfort)
@@ -93,9 +94,17 @@ private class CleanupSerDes: SerDes<TopicEntry<Cleanup>>() {
 }
 
 private class MottattEndringsmeldingSerDes: SerDes<TopicEntry<EndringsmeldingV1>>() {
+    private companion object {
+        private val logger = LoggerFactory.getLogger(MottattEndringsmeldingSerDes::class.java)
+    }
     override fun deserialize(topic: String?, data: ByteArray?): TopicEntry<EndringsmeldingV1>? {
         return data?.let {
-            objectMapper.readValue<TopicEntry<EndringsmeldingV1>>(it)
+            try {
+                objectMapper.readValue<TopicEntry<EndringsmeldingV1>>(it)
+            } catch (e: IllegalArgumentException) {
+                logger.error("Feilet med å deserialisere endringsmelding. Ignorer verdi.")
+                null
+            }
         }
     }
 }
