@@ -190,6 +190,9 @@ class JournalforingsFormatTest {
               },
               "perioderSomSkalSlettes": {}
             }
+          },
+          "begrunnelseForInnsending": {
+            "tekst": null
           }
         }
         """.trimIndent(), String(json), true
