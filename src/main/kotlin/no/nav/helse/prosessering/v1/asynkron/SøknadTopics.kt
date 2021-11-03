@@ -109,11 +109,11 @@ private class MottattEndringsmeldingSerDes : SerDes<TopicEntry<EndringsmeldingV1
 
     override fun deserialize(topic: String?, data: ByteArray?): TopicEntry<EndringsmeldingV1>? {
         return data?.let {
-            val readValue = objectMapper.readValue<TopicEntry<EndringsmeldingMottatt>>(it)
-            val endringsmeldingMottatt = readValue.data
+            val topicEntry = objectMapper.readValue<TopicEntry<EndringsmeldingMottatt>>(it)
+            val endringsmeldingMottatt = topicEntry.data
 
             TopicEntry(
-                readValue.metadata,
+                topicEntry.metadata,
                 EndringsmeldingV1(
                     søker = endringsmeldingMottatt.søker,
                     harBekreftetOpplysninger = endringsmeldingMottatt.harBekreftetOpplysninger,
