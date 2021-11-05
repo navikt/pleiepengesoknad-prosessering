@@ -226,21 +226,6 @@ private fun beredskap(beredskap: Beredskap?) = when {
     }
 }
 
-private fun Omsorgstilbud.somMap(fraOgMed: LocalDate, tilOgMed: LocalDate): Map<String, Any?> {
-    val DAGENS_DATO = LocalDate.now()
-    val GÅRSDAGENS_DATO = DAGENS_DATO.minusDays(1)
-    return mapOf(
-        "historisk" to historisk?.somMap(),
-        "planlagt" to planlagt?.somMap(),
-        "søknadsperiodeFraOgMed" to DATE_FORMATTER.format(fraOgMed),
-        "søknadsperiodeTilOgMed" to DATE_FORMATTER.format(tilOgMed),
-        "periodenAvsluttesIFremtiden" to (tilOgMed.isAfter(GÅRSDAGENS_DATO)),
-        "fremtidFraOgMed" to if(fraOgMed.isAfter(DAGENS_DATO)) DATE_FORMATTER.format(fraOgMed) else DATE_FORMATTER.format(DAGENS_DATO),
-        "periodenStarterIFortid" to (fraOgMed.isBefore(DAGENS_DATO)),
-        "fortidTilOgMed" to if(tilOgMed.isBefore(DAGENS_DATO)) DATE_FORMATTER.format(tilOgMed) else DATE_FORMATTER.format(GÅRSDAGENS_DATO)
-    )
-}
-
 private fun MeldingV1.omsorgstilbudSomMap(fraOgMed: LocalDate, tilOgMed: LocalDate): Map<String, Any?> {
     val DAGENS_DATO = LocalDate.now()
     val GÅRSDAGENS_DATO = DAGENS_DATO.minusDays(1)
@@ -252,7 +237,6 @@ private fun MeldingV1.omsorgstilbudSomMap(fraOgMed: LocalDate, tilOgMed: LocalDa
         "fortidTilOgMed" to if(tilOgMed.isBefore(DAGENS_DATO)) DATE_FORMATTER.format(tilOgMed) else DATE_FORMATTER.format(GÅRSDAGENS_DATO),
         "periodenAvsluttesIFremtiden" to (tilOgMed.isAfter(GÅRSDAGENS_DATO)),
         "fremtidFraOgMed" to if(fraOgMed.isAfter(DAGENS_DATO)) DATE_FORMATTER.format(fraOgMed) else DATE_FORMATTER.format(DAGENS_DATO),
-        "omsorgstilbud" to omsorgstilbud?.somMap(fraOgMed, tilOgMed),
         "historisk" to omsorgstilbud?.historisk?.somMap(),
         "planlagt" to omsorgstilbud?.planlagt?.somMap(),
     )
