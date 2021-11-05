@@ -126,7 +126,7 @@ internal class PdfV1Generator {
                             "ingen_arbeidsgivere" to (melding.arbeidsgivere == null),
                             "sprak" to melding.språk?.sprakTilTekst()
                         ),
-                        "omsorgstilbud" to melding.omsorgstilbud?.somMap(melding.fraOgMed, melding.tilOgMed),
+                        "omsorgstilbud" to melding.omsorgstilbudSomMap(melding.fraOgMed, melding.tilOgMed),
                         "nattevaak" to nattevåk(melding.nattevåk),
                         "beredskap" to beredskap(melding.beredskap),
                         "utenlandsoppholdIPerioden" to mapOf(
@@ -238,6 +238,23 @@ private fun Omsorgstilbud.somMap(fraOgMed: LocalDate, tilOgMed: LocalDate): Map<
         "fremtidFraOgMed" to if(fraOgMed.isAfter(DAGENS_DATO)) DATE_FORMATTER.format(fraOgMed) else DATE_FORMATTER.format(DAGENS_DATO),
         "periodenStarterIFortid" to (fraOgMed.isBefore(DAGENS_DATO)),
         "fortidTilOgMed" to if(tilOgMed.isBefore(DAGENS_DATO)) DATE_FORMATTER.format(tilOgMed) else DATE_FORMATTER.format(GÅRSDAGENS_DATO)
+    )
+}
+
+private fun MeldingV1.omsorgstilbudSomMap(fraOgMed: LocalDate, tilOgMed: LocalDate): Map<String, Any?> {
+    val DAGENS_DATO = LocalDate.now()
+    val GÅRSDAGENS_DATO = DAGENS_DATO.minusDays(1)
+
+    return mapOf(
+        "søknadsperiodeFraOgMed" to DATE_FORMATTER.format(fraOgMed),
+        "søknadsperiodeTilOgMed" to DATE_FORMATTER.format(tilOgMed),
+        "periodenStarterIFortid" to (fraOgMed.isBefore(DAGENS_DATO)),
+        "fortidTilOgMed" to if(tilOgMed.isBefore(DAGENS_DATO)) DATE_FORMATTER.format(tilOgMed) else DATE_FORMATTER.format(GÅRSDAGENS_DATO),
+        "periodenAvsluttesIFremtiden" to (tilOgMed.isAfter(GÅRSDAGENS_DATO)),
+        "fremtidFraOgMed" to if(fraOgMed.isAfter(DAGENS_DATO)) DATE_FORMATTER.format(fraOgMed) else DATE_FORMATTER.format(DAGENS_DATO),
+        "omsorgstilbud" to omsorgstilbud?.somMap(fraOgMed, tilOgMed),
+        "historisk" to omsorgstilbud?.historisk?.somMap(),
+        "planlagt" to omsorgstilbud?.planlagt?.somMap(),
     )
 }
 

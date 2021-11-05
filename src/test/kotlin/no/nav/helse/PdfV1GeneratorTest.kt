@@ -22,7 +22,7 @@ class PdfV1GeneratorTest {
             språk = "nb",
             søknadId = soknadsId,
             mottatt = ZonedDateTime.now(),
-            fraOgMed = LocalDate.now().plusDays(6),
+            fraOgMed = LocalDate.now().minusDays(6),
             tilOgMed = LocalDate.now().plusDays(35),
             søker = Søker(
                 aktørId = "123456",
