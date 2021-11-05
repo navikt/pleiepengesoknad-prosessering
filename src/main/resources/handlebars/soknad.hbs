@@ -259,7 +259,6 @@
     <section id="omsorgstilbud">
         <h2>Omsorgstilbud</h2>
         {{#if omsorgstilbud.periodenStarterIFortid}}
-            <h3 style="font-size: 17px;">Omsorgstilbud tilbake i tid:</h3>
             <p class="sporsmalstekst">Har barnet vært fast og regelmessig i et omsorgstilbud i perioden {{omsorgstilbud.søknadsperiodeFraOgMed}} til {{omsorgstilbud.fortidTilOgMed}}?</p>
 
             {{#if omsorgstilbud.historisk}}
@@ -293,7 +292,6 @@
         {{/if}}
 
         {{#if omsorgstilbud.periodenAvsluttesIFremtiden}}
-            <h3 style="font-size: 17px;">Omsorgstilbud frem i tid:</h3>
             <p class="sporsmalstekst">Skal barnet være fast og regelmessig i et omsorgstilbud i perioden {{omsorgstilbud.fremtidFraOgMed}} til {{omsorgstilbud.søknadsperiodeTilOgMed}}?</p>
 
             {{#if omsorgstilbud.planlagt}}
