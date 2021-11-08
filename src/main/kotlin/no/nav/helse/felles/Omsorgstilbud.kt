@@ -11,7 +11,6 @@ data class Omsorgstilbud(
 data class PlanlagtOmsorgstilbud(
     val enkeltdager: List<Enkeltdag>? = null,
     val ukedager: PlanUkedager? = null,
-    val vetOmsorgstilbud: VetOmsorgstilbud,
     val erLiktHverDag: Boolean? = null
 )
 
@@ -31,8 +30,3 @@ data class PlanUkedager(
     val torsdag: Duration? = null,
     val fredag: Duration? = null
 )
-
-enum class VetOmsorgstilbud {
-    VET_ALLE_TIMER,
-    VET_IKKE
-}

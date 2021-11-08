@@ -126,7 +126,7 @@ internal class PdfV1Generator {
                             "ingen_arbeidsgivere" to (melding.arbeidsgivere == null),
                             "sprak" to melding.språk?.sprakTilTekst()
                         ),
-                        "omsorgstilbud" to melding.omsorgstilbud?.somMap(melding.fraOgMed, melding.tilOgMed),
+                        "omsorgstilbud" to melding.omsorgstilbudSomMap(melding.fraOgMed, melding.tilOgMed),
                         "nattevaak" to nattevåk(melding.nattevåk),
                         "beredskap" to beredskap(melding.beredskap),
                         "utenlandsoppholdIPerioden" to mapOf(
@@ -226,18 +226,19 @@ private fun beredskap(beredskap: Beredskap?) = when {
     }
 }
 
-private fun Omsorgstilbud.somMap(fraOgMed: LocalDate, tilOgMed: LocalDate): Map<String, Any?> {
+private fun MeldingV1.omsorgstilbudSomMap(fraOgMed: LocalDate, tilOgMed: LocalDate): Map<String, Any?> {
     val DAGENS_DATO = LocalDate.now()
     val GÅRSDAGENS_DATO = DAGENS_DATO.minusDays(1)
+
     return mapOf(
-        "historisk" to historisk?.somMap(),
-        "planlagt" to planlagt?.somMap(),
         "søknadsperiodeFraOgMed" to DATE_FORMATTER.format(fraOgMed),
         "søknadsperiodeTilOgMed" to DATE_FORMATTER.format(tilOgMed),
+        "periodenStarterIFortid" to (fraOgMed.isBefore(DAGENS_DATO)),
+        "fortidTilOgMed" to if(tilOgMed.isBefore(DAGENS_DATO)) DATE_FORMATTER.format(tilOgMed) else DATE_FORMATTER.format(GÅRSDAGENS_DATO),
         "periodenAvsluttesIFremtiden" to (tilOgMed.isAfter(GÅRSDAGENS_DATO)),
         "fremtidFraOgMed" to if(fraOgMed.isAfter(DAGENS_DATO)) DATE_FORMATTER.format(fraOgMed) else DATE_FORMATTER.format(DAGENS_DATO),
-        "periodenStarterIFortid" to (fraOgMed.isBefore(DAGENS_DATO)),
-        "fortidTilOgMed" to if(tilOgMed.isBefore(DAGENS_DATO)) DATE_FORMATTER.format(tilOgMed) else DATE_FORMATTER.format(GÅRSDAGENS_DATO)
+        "historisk" to omsorgstilbud?.historisk?.somMap(),
+        "planlagt" to omsorgstilbud?.planlagt?.somMap(),
     )
 }
 
@@ -283,8 +284,6 @@ private fun HistoriskOmsorgstilbud.somMap(): Map<String, Any?> = mutableMapOf(
 private fun PlanlagtOmsorgstilbud.somMap(): Map<String, Any?> = mutableMapOf(
     "enkeltdagerPerMnd" to enkeltdager?.somMapPerMnd(),
     "ukedager" to ukedager?.somMap(),
-    "vetOmsorgstilbud" to vetOmsorgstilbud.name,
-    "vetLikeDager" to (ukedager != null),
     "erLiktHverDag" to  erLiktHverDag,
     "harSvartPåErLiktHverDag" to  (erLiktHverDag != null)
 )

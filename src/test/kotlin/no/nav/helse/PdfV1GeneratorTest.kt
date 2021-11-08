@@ -22,7 +22,7 @@ class PdfV1GeneratorTest {
             språk = "nb",
             søknadId = soknadsId,
             mottatt = ZonedDateTime.now(),
-            fraOgMed = LocalDate.now().plusDays(6),
+            fraOgMed = LocalDate.now().minusDays(6),
             tilOgMed = LocalDate.now().plusDays(35),
             søker = Søker(
                 aktørId = "123456",
@@ -416,8 +416,7 @@ class PdfV1GeneratorTest {
                             onsdag = null,
                             torsdag = Duration.ofHours(7).plusMinutes(30),
                             fredag = Duration.ofHours(7).plusMinutes(30),
-                        ),
-                        vetOmsorgstilbud = VetOmsorgstilbud.VET_ALLE_TIMER
+                        )
                     )
                 )
             )
@@ -446,7 +445,6 @@ class PdfV1GeneratorTest {
                             Enkeltdag(LocalDate.now().plusDays(3), Duration.ofHours(7).plusMinutes(30)),
                             Enkeltdag(LocalDate.now().plusDays(4), Duration.ofHours(0))
                         ),
-                        vetOmsorgstilbud = VetOmsorgstilbud.VET_ALLE_TIMER,
                         erLiktHverDag = false
                     )
                 )
@@ -454,14 +452,10 @@ class PdfV1GeneratorTest {
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
-        id = "11-omsorgstilbud-v2-vet-ikke-planlagt-tilsyn"
+        id = "11-omsorgstilbud-nei-til-omsorgstilbud"
         pdf = generator.generateSoknadOppsummeringPdf(
             melding = fullGyldigMelding(id).copy(
-                omsorgstilbud = Omsorgstilbud(
-                    planlagt = PlanlagtOmsorgstilbud(
-                        vetOmsorgstilbud = VetOmsorgstilbud.VET_IKKE
-                    )
-                )
+                omsorgstilbud = null
             )
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
