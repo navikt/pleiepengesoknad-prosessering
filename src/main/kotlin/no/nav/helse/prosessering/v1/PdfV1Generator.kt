@@ -300,8 +300,8 @@ private fun Arbeidsforhold.somMap(
     skalViseHistoriskArbeid: Boolean = true,
     skalVisePlanlagtArbeid: Boolean = true
 ): Map<String, Any?> = mapOf(
-    "arbeidsform" to arbeidsform.utskriftsvennlig,
-    "jobberNormaltTimerTekst" to jobberNormaltTimer.somTekst(arbeidsform),
+    "arbeidsform" to arbeidsform?.utskriftsvennlig,
+    "jobberNormaltTimerTekst" to if(arbeidsform != null) jobberNormaltTimer.somTekst(arbeidsform) else null,
     "jobberNormaltTimer" to jobberNormaltTimer,
     "historiskArbeid" to historiskArbeid?.somMap(),
     "planlagtArbeid" to planlagtArbeid?.somMap(),
