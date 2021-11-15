@@ -300,22 +300,12 @@ private fun Arbeidsforhold.somMap(
     skalViseHistoriskArbeid: Boolean = true,
     skalVisePlanlagtArbeid: Boolean = true
 ): Map<String, Any?> = mapOf(
-    "arbeidsform" to arbeidsform?.utskriftsvennlig,
-    "jobberNormaltTimerTekst" to if(arbeidsform != null) jobberNormaltTimer.somTekst(arbeidsform) else null,
     "jobberNormaltTimer" to jobberNormaltTimer,
     "historiskArbeid" to historiskArbeid?.somMap(),
     "planlagtArbeid" to planlagtArbeid?.somMap(),
     "skalViseHistoriskArbeid" to skalViseHistoriskArbeid,
     "skalVisePlanlagtArbeid" to skalVisePlanlagtArbeid
 )
-
-private fun Double.somTekst(arbeidsform: Arbeidsform): String{
-    return when(arbeidsform){
-        Arbeidsform.FAST -> "Jobber fast $this timer per uke"
-        Arbeidsform.TURNUS -> "Jobber turnus $this timer i snitt per uke"
-        Arbeidsform.VARIERENDE -> "Jobber deltid/varierende/tilkalling $this timer i snitt per uke"
-    }
-}
 
 private fun ArbeidIPeriode.somMap() : Map<String, Any?> = mapOf(
     "jobberIPerioden" to jobberIPerioden.tilBoolean(),
