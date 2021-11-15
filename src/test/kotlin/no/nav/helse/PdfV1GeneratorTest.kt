@@ -123,7 +123,6 @@ class PdfV1GeneratorTest {
                 sluttdato = LocalDate.now(),
                 jobberFortsattSomFrilans = false,
                 arbeidsforhold = Arbeidsforhold(
-                    arbeidsform = Arbeidsform.FAST,
                     jobberNormaltTimer = 23.0,
                     historiskArbeid = ArbeidIPeriode(
                         jobberIPerioden = JobberIPeriodeSvar.JA,
@@ -186,7 +185,6 @@ class PdfV1GeneratorTest {
                     harFlereAktiveVirksomheter = true
                 ),
                 arbeidsforhold = Arbeidsforhold(
-                    arbeidsform = Arbeidsform.FAST,
                     jobberNormaltTimer = 40.0,
                     historiskArbeid = ArbeidIPeriode(
                         jobberIPerioden = JobberIPeriodeSvar.JA,
@@ -230,7 +228,6 @@ class PdfV1GeneratorTest {
                     organisasjonsnummer = "917755736",
                     erAnsatt = true,
                     arbeidsforhold = Arbeidsforhold(
-                        arbeidsform = Arbeidsform.FAST,
                         jobberNormaltTimer = 27.0,
                         historiskArbeid = ArbeidIPeriode(
                             jobberIPerioden = JobberIPeriodeSvar.JA,
@@ -273,7 +270,6 @@ class PdfV1GeneratorTest {
                     organisasjonsnummer = "917755736",
                     erAnsatt = true,
                     arbeidsforhold = Arbeidsforhold(
-                        arbeidsform = Arbeidsform.VARIERENDE,
                         jobberNormaltTimer = 40.0,
                         historiskArbeid = ArbeidIPeriode(
                             jobberIPerioden = JobberIPeriodeSvar.JA,
@@ -465,46 +461,6 @@ class PdfV1GeneratorTest {
             melding = fullGyldigMelding(id).copy(
                 selvstendigNæringsdrivende = null,
                 arbeidsgivere = null
-            )
-        )
-        if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
-
-        id = "13-uten-arbeidsform-i-arbeidsforhold"
-        pdf = generator.generateSoknadOppsummeringPdf(
-            melding = fullGyldigMelding(id).copy(
-                frilans = Frilans(
-                    startdato = LocalDate.now().minusYears(3),
-                    sluttdato = LocalDate.now(),
-                    jobberFortsattSomFrilans = false,
-                    arbeidsforhold = Arbeidsforhold(
-                        jobberNormaltTimer = 23.0,
-                        historiskArbeid = ArbeidIPeriode(
-                            jobberIPerioden = JobberIPeriodeSvar.JA,
-                            jobberSomVanlig = true,
-                        ),
-                        planlagtArbeid = ArbeidIPeriode(
-                            jobberIPerioden = JobberIPeriodeSvar.JA,
-                            jobberSomVanlig = true
-                        )
-                    )
-                ),
-                arbeidsgivere = listOf(
-                    ArbeidsforholdAnsatt(
-                        navn = "Peppes",
-                        organisasjonsnummer = "917755736",
-                        erAnsatt = true,
-                        arbeidsforhold = Arbeidsforhold(
-                            jobberNormaltTimer = 27.0,
-                            historiskArbeid = ArbeidIPeriode(
-                                jobberIPerioden = JobberIPeriodeSvar.JA,
-                                jobberSomVanlig = true,
-                            ),
-                            planlagtArbeid = ArbeidIPeriode(
-                                jobberIPerioden = JobberIPeriodeSvar.NEI
-                            )
-                        )
-                    )
-                )
             )
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
