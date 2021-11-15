@@ -1,7 +1,7 @@
 package no.nav.helse.felles
 
 data class Arbeidsforhold(
-    val arbeidsform: Arbeidsform,
+    val arbeidsform: Arbeidsform? = null, //Feltet skal fjernes, bruker optional for å støtte begge versjoner
     val jobberNormaltTimer: Double,
     val historiskArbeid: ArbeidIPeriode? = null,
     val planlagtArbeid: ArbeidIPeriode? = null

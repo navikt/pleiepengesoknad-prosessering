@@ -468,6 +468,46 @@ class PdfV1GeneratorTest {
             )
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
+
+        id = "13-uten-arbeidsform-i-arbeidsforhold"
+        pdf = generator.generateSoknadOppsummeringPdf(
+            melding = fullGyldigMelding(id).copy(
+                frilans = Frilans(
+                    startdato = LocalDate.now().minusYears(3),
+                    sluttdato = LocalDate.now(),
+                    jobberFortsattSomFrilans = false,
+                    arbeidsforhold = Arbeidsforhold(
+                        jobberNormaltTimer = 23.0,
+                        historiskArbeid = ArbeidIPeriode(
+                            jobberIPerioden = JobberIPeriodeSvar.JA,
+                            jobberSomVanlig = true,
+                        ),
+                        planlagtArbeid = ArbeidIPeriode(
+                            jobberIPerioden = JobberIPeriodeSvar.JA,
+                            jobberSomVanlig = true
+                        )
+                    )
+                ),
+                arbeidsgivere = listOf(
+                    ArbeidsforholdAnsatt(
+                        navn = "Peppes",
+                        organisasjonsnummer = "917755736",
+                        erAnsatt = true,
+                        arbeidsforhold = Arbeidsforhold(
+                            jobberNormaltTimer = 27.0,
+                            historiskArbeid = ArbeidIPeriode(
+                                jobberIPerioden = JobberIPeriodeSvar.JA,
+                                jobberSomVanlig = true,
+                            ),
+                            planlagtArbeid = ArbeidIPeriode(
+                                jobberIPerioden = JobberIPeriodeSvar.NEI
+                            )
+                        )
+                    )
+                )
+            )
+        )
+        if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
     }
 
     private fun pdfPath(soknadId: String) = "${System.getProperty("user.dir")}/generated-pdf-$soknadId.pdf"
