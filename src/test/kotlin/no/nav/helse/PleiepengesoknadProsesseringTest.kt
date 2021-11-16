@@ -11,6 +11,7 @@ import kotlinx.coroutines.time.delay
 import no.nav.common.KafkaEnvironment
 import no.nav.helse.EndringsmeldingUtils.defaultEndringsmelding
 import no.nav.helse.dusseldorf.testsupport.wiremock.WireMockBuilder
+import no.nav.helse.felles.*
 import no.nav.helse.felles.Barn
 import no.nav.helse.felles.Beredskap
 import no.nav.helse.felles.Bosted
@@ -44,7 +45,6 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
 
 
 class PleiepengesoknadProsesseringTest {

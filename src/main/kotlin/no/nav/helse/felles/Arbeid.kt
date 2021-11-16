@@ -1,7 +1,6 @@
 package no.nav.helse.felles
 
 data class Arbeidsforhold(
-    val arbeidsform: Arbeidsform,
     val jobberNormaltTimer: Double,
     val historiskArbeid: ArbeidIPeriode? = null,
     val planlagtArbeid: ArbeidIPeriode? = null
@@ -26,10 +25,4 @@ enum class JobberIPeriodeSvar(val pdfTekst: String) {
             NEI, VET_IKKE -> false
         }
     }
-}
-
-enum class Arbeidsform(val utskriftsvennlig: String){
-    FAST("Jobber fast antall timer per uke"),
-    TURNUS("Jobber turnus"),
-    VARIERENDE("Jobber deltid/varierende/tilkalling")
 }

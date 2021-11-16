@@ -140,7 +140,6 @@ internal object SøknadUtils {
             startdato = LocalDate.parse("2019-01-01"),
             jobberFortsattSomFrilans = true,
             arbeidsforhold = Arbeidsforhold(
-                arbeidsform = Arbeidsform.FAST,
                 jobberNormaltTimer = 30.0,
                 historiskArbeid = ArbeidIPeriode(
                     jobberIPerioden = JobberIPeriodeSvar.JA,
@@ -178,7 +177,6 @@ internal object SøknadUtils {
                 organisasjonsnummer = "111111"
             ),
             arbeidsforhold = Arbeidsforhold(
-                arbeidsform = Arbeidsform.FAST,
                 jobberNormaltTimer = 30.0,
                 historiskArbeid = ArbeidIPeriode(
                     jobberIPerioden = JobberIPeriodeSvar.JA,
@@ -211,7 +209,6 @@ internal object SøknadUtils {
                 organisasjonsnummer = "917755736",
                 erAnsatt = true,
                 arbeidsforhold = Arbeidsforhold(
-                    arbeidsform = Arbeidsform.FAST,
                     jobberNormaltTimer = 40.0,
                     historiskArbeid = ArbeidIPeriode(
                         jobberIPerioden = JobberIPeriodeSvar.JA,
@@ -250,7 +247,6 @@ internal object SøknadUtils {
                 organisasjonsnummer = "917755736",
                 erAnsatt = true,
                 arbeidsforhold = Arbeidsforhold(
-                    arbeidsform = Arbeidsform.FAST,
                     jobberNormaltTimer = 40.0,
                     historiskArbeid = ArbeidIPeriode(
                         jobberIPerioden = JobberIPeriodeSvar.JA,

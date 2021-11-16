@@ -258,66 +258,58 @@
 
     <section id="omsorgstilbud">
         <h2>Omsorgstilbud</h2>
-        {{#if omsorgstilbud}}
-            {{#if omsorgstilbud.periodenStarterIFortid}}
-                <h3 style="font-size: 17px;">Omsorgstilbud tilbake i tid:</h3>
-                <p class="sporsmalstekst">Har barnet vært noe i et omsorgstilbud i
-                    perioden {{omsorgstilbud.søknadsperiodeFraOgMed}} til {{omsorgstilbud.fortidTilOgMed}}?</p>
-                {{#if omsorgstilbud.historisk}}
-                    <p>Ja</p>
-                    <br/>
+        {{#if omsorgstilbud.periodenStarterIFortid}}
+            <p class="sporsmalstekst">Har barnet vært fast og regelmessig i et omsorgstilbud i perioden {{omsorgstilbud.søknadsperiodeFraOgMed}} til {{omsorgstilbud.fortidTilOgMed}}?</p>
 
-                    <p class="sporsmalstekst">Tid barnet var i omsorgstilbud:</p>
-                    <ul class="ul-no-indent">
-                        {{#each omsorgstilbud.historisk.enkeltdagerPerMnd as |enkeltdagerPerMnd|~}}
-                            <li>
-                                <p><b>{{enkeltdagerPerMnd.måned}} {{enkeltdagerPerMnd.år}}</b></p>
-                                <ul class="ul-no-indent">
-                                    {{#each enkeltdagerPerMnd.enkeltdagerPerUke as |enkeltdagerPerUke|~}}
-                                        <li>
-                                            <p>Uke {{enkeltdagerPerUke.uke}}</p>
-                                            <ul>
-                                                {{#each enkeltdagerPerUke.dager as |enkeltdag|~}}
-                                                    <li>
-                                                        <p>{{enkeltdag.dato}}: {{enkeltdag.tid}}</p>
-                                                    </li>
-                                                {{/each}}
-                                            </ul>
-                                        </li>
-                                    {{/each}}
-                                </ul>
-                            </li>
-                        {{/each}}
-                    </ul>
-
-                {{else}}
-                    <p>Nei</p>
-                    <br/>
-                {{/if}}
+            {{#if omsorgstilbud.historisk}}
+                <p>Ja</p>
+                <br/>
+                <p class="sporsmalstekst">Tid barnet var i omsorgstilbud:</p>
+                <ul class="ul-no-indent">
+                    {{#each omsorgstilbud.historisk.enkeltdagerPerMnd as |enkeltdagerPerMnd|~}}
+                        <li>
+                            <p><b>{{enkeltdagerPerMnd.måned}} {{enkeltdagerPerMnd.år}}</b></p>
+                            <ul class="ul-no-indent">
+                                {{#each enkeltdagerPerMnd.enkeltdagerPerUke as |enkeltdagerPerUke|~}}
+                                    <li>
+                                        <p>Uke {{enkeltdagerPerUke.uke}}</p>
+                                        <ul>
+                                            {{#each enkeltdagerPerUke.dager as |enkeltdag|~}}
+                                                <li>
+                                                    <p>{{enkeltdag.dato}}: {{enkeltdag.tid}}</p>
+                                                </li>
+                                            {{/each}}
+                                        </ul>
+                                    </li>
+                                {{/each}}
+                            </ul>
+                        </li>
+                    {{/each}}
+                </ul>
+            {{else}}
+                <p>Nei</p>
             {{/if}}
+        {{/if}}
 
-            {{#if omsorgstilbud.periodenAvsluttesIFremtiden}}
+        {{#if omsorgstilbud.periodenAvsluttesIFremtiden}}
                 <h3 style="font-size: 17px;">Omsorgstilbud frem i tid:</h3>
 
-                <p class="sporsmalstekst">Skal barnet være noe i et omsorgstilbud i
-                    perioden {{omsorgstilbud.fremtidFraOgMed}} til {{omsorgstilbud.søknadsperiodeTilOgMed}}?</p>
+            <p class="sporsmalstekst">Skal barnet være fast og regelmessig i et omsorgstilbud i perioden {{omsorgstilbud.fremtidFraOgMed}} til {{omsorgstilbud.søknadsperiodeTilOgMed}}?</p>
 
-                {{#if omsorgstilbud.planlagt}}
-                    <p>Ja</p>
+            {{#if omsorgstilbud.planlagt}}
+                <p>Ja</p>
 
-                    <p class="sporsmalstekst">Vet du noe av tiden barnet skal være i omsorgstilbudet?</p>
-                    {{#eq omsorgstilbud.planlagt.vetOmsorgstilbud "VET_ALLE_TIMER" }}
-                        <p>Ja</p>
-                        {{#if omsorgstilbud.planlagt.harSvartPåErLiktHverDag}}
-                            <p><span class="sporsmalstekst">Er tiden barnet skal være i omsorgstilbudet lik for hver dag i perioden du søker om? Det
+                {{#if omsorgstilbud.planlagt.harSvartPåErLiktHverDag}}
+                    <p><span class="sporsmalstekst">Er tiden barnet skal være i omsorgstilbudet lik for hver dag i perioden du søker om? Det
                                     vil si at alle mandager er like, alle tirsdager er like og så videre</span></p>
-                            <p>{{ jaNeiSvar omsorgstilbud.planlagt.erLiktHverDag }}</p>
-                        {{/if}}
-                        <br/>
+                    <p>{{ jaNeiSvar omsorgstilbud.planlagt.erLiktHverDag }}</p>
+                {{/if}}
+
+                <br/>
 
                         <p class="sporsmalstekst">Tid barnet skal være i omsorgstilbudet:</p>
                         <ul class="ul-no-indent">
-                            {{#each omsorgstilbud.planlagt.enkeltdagerPerMnd as |enkeltdagerPerMnd|~}}
+                    {{#each omsorgstilbud.planlagt.enkeltdagerPerMnd as |enkeltdagerPerMnd|~}}
                                 <li>
                                     <p><b>{{enkeltdagerPerMnd.måned}} {{enkeltdagerPerMnd.år}}</b></p>
                                     <ul class="ul-no-indent">
@@ -338,29 +330,17 @@
                             {{/each}}
                         </ul>
 
-                        {{#if omsorgstilbud.planlagt.ukedager}}
-                            <p><b>Mandager:</b> {{omsorgstilbud.planlagt.ukedager.mandag}}</p>
-                            <p><b>Tirsdager:</b> {{omsorgstilbud.planlagt.ukedager.tirsdag}}</p>
-                            <p><b>Onsdager:</b> {{omsorgstilbud.planlagt.ukedager.onsdag}}</p>
-                            <p><b>Torsdager:</b> {{omsorgstilbud.planlagt.ukedager.torsdag}}</p>
-                            <p><b>Fredager:</b> {{omsorgstilbud.planlagt.ukedager.fredag}}</p>
-                            <br/>
-                        {{/if}}
-                    {{/eq}}
-
-                    {{#eq omsorgstilbud.planlagt.vetOmsorgstilbud "VET_IKKE" }}
-                        <p>Nei</p>
-                    {{/eq}}
-
-                {{else}}
-                    <p>Nei</p>
+                {{#if omsorgstilbud.planlagt.ukedager}}
+                    <p><b>Mandager:</b> {{omsorgstilbud.planlagt.ukedager.mandag}}</p>
+                    <p><b>Tirsdager:</b> {{omsorgstilbud.planlagt.ukedager.tirsdag}}</p>
+                    <p><b>Onsdager:</b> {{omsorgstilbud.planlagt.ukedager.onsdag}}</p>
+                    <p><b>Torsdager:</b> {{omsorgstilbud.planlagt.ukedager.torsdag}}</p>
+                    <p><b>Fredager:</b> {{omsorgstilbud.planlagt.ukedager.fredag}}</p>
+                    <br/>
                 {{/if}}
+            {{else}}
+                <p>Nei</p>
             {{/if}}
-
-        {{else}}
-            <p class="sporsmalstekst">Skal barnet være i et omsorgstilbud i hele eller deler av perioden du søker
-                om?</p>
-            <p>Nei</p>
         {{/if}}
     </section>
 

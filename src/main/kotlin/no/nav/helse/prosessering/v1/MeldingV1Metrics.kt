@@ -4,6 +4,8 @@ import io.prometheus.client.Counter
 import io.prometheus.client.Histogram
 import no.nav.helse.felles.Arbeidsforhold
 import no.nav.helse.felles.JobberIPeriodeSvar
+import no.nav.helse.felles.Arbeidsforhold
+import no.nav.helse.felles.JobberIPeriodeSvar
 import no.nav.helse.felles.VetOmsorgstilbud
 import java.time.LocalDate
 
@@ -146,12 +148,6 @@ internal fun MeldingV1.reportMetrics() {
                     if (it.erLiktHverDag !== null && it.erLiktHverDag) {
                         omsorgstilbudCounter.labels("omsorgstilbud", "planlagteUkedagerErLiktHverDag").inc()
                     }
-
-                    when (it.vetOmsorgstilbud) {
-                        VetOmsorgstilbud.VET_ALLE_TIMER -> omsorgstilbudCounter.labels("omsorgstilbud", "vetAlleTimer")
-                            .inc()
-                        VetOmsorgstilbud.VET_IKKE -> omsorgstilbudCounter.labels("omsorgstilbud", "vetIkke").inc()
-                    }
                 }
             }
         }
@@ -179,7 +175,6 @@ internal fun MeldingV1.reportMetrics() {
         "$historisk|$planlagt"
     }?.sorted()?.joinToString("|")
 
-    //val skalJobbeString = ansatt?.map { it.skalJobbe.name.lowercase() }.sorted().joinToString("|") //Funksjonen over erstatter
     if(arbeidsgivere != null){
         arbeidsgivereCounter.labels(arbeidsgivere.size.toString(), jobberIPerioden).inc()
     }
