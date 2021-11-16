@@ -4,9 +4,6 @@ import io.prometheus.client.Counter
 import io.prometheus.client.Histogram
 import no.nav.helse.felles.Arbeidsforhold
 import no.nav.helse.felles.JobberIPeriodeSvar
-import no.nav.helse.felles.Arbeidsforhold
-import no.nav.helse.felles.JobberIPeriodeSvar
-import no.nav.helse.felles.VetOmsorgstilbud
 import java.time.LocalDate
 
 val opplastedeVedleggHistogram = Histogram.build()

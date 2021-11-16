@@ -1,36 +1,6 @@
 package no.nav.helse
 
-import no.nav.helse.felles.ArbeidIPeriode
-import no.nav.helse.felles.Arbeidsforhold
-import no.nav.helse.felles.Arbeidsform
-import no.nav.helse.felles.Barn
-import no.nav.helse.felles.BarnRelasjon
-import no.nav.helse.felles.Beredskap
-import no.nav.helse.felles.Bosted
-import no.nav.helse.felles.Enkeltdag
-import no.nav.helse.felles.Ferieuttak
-import no.nav.helse.felles.FerieuttakIPerioden
-import no.nav.helse.felles.Frilans
-import no.nav.helse.felles.HistoriskOmsorgstilbud
-import no.nav.helse.felles.JobberIPeriodeSvar
-import no.nav.helse.felles.Land
-import no.nav.helse.felles.Medlemskap
-import no.nav.helse.felles.Nattevåk
-import no.nav.helse.felles.Næringstyper
-import no.nav.helse.felles.Omsorgstilbud
-import no.nav.helse.felles.Periode
-import no.nav.helse.felles.PlanUkedager
-import no.nav.helse.felles.PlanlagtOmsorgstilbud
-import no.nav.helse.felles.Regnskapsfører
-import no.nav.helse.felles.SelvstendigNæringsdrivende
-import no.nav.helse.felles.Søker
-import no.nav.helse.felles.Utenlandsopphold
-import no.nav.helse.felles.UtenlandsoppholdIPerioden
-import no.nav.helse.felles.VarigEndring
-import no.nav.helse.felles.VetOmsorgstilbud
-import no.nav.helse.felles.Virksomhet
-import no.nav.helse.felles.YrkesaktivSisteTreFerdigliknedeÅrene
-import no.nav.helse.felles.Årsak
+import no.nav.helse.felles.*
 import no.nav.helse.pdf.SøknadPDFGenerator
 import no.nav.helse.prosessering.v1.ArbeidsforholdAnsatt
 import no.nav.helse.prosessering.v1.MeldingV1
@@ -153,7 +123,6 @@ class SøknadPdfV1GeneratorTest {
                 sluttdato = LocalDate.now(),
                 jobberFortsattSomFrilans = false,
                 arbeidsforhold = Arbeidsforhold(
-                    arbeidsform = Arbeidsform.FAST,
                     jobberNormaltTimer = 23.0,
                     historiskArbeid = ArbeidIPeriode(
                         jobberIPerioden = JobberIPeriodeSvar.JA,
@@ -216,7 +185,6 @@ class SøknadPdfV1GeneratorTest {
                     harFlereAktiveVirksomheter = true
                 ),
                 arbeidsforhold = Arbeidsforhold(
-                    arbeidsform = Arbeidsform.FAST,
                     jobberNormaltTimer = 40.0,
                     historiskArbeid = ArbeidIPeriode(
                         jobberIPerioden = JobberIPeriodeSvar.JA,
@@ -260,7 +228,6 @@ class SøknadPdfV1GeneratorTest {
                     organisasjonsnummer = "917755736",
                     erAnsatt = true,
                     arbeidsforhold = Arbeidsforhold(
-                        arbeidsform = Arbeidsform.FAST,
                         jobberNormaltTimer = 27.0,
                         historiskArbeid = ArbeidIPeriode(
                             jobberIPerioden = JobberIPeriodeSvar.JA,
@@ -303,7 +270,6 @@ class SøknadPdfV1GeneratorTest {
                     organisasjonsnummer = "917755736",
                     erAnsatt = true,
                     arbeidsforhold = Arbeidsforhold(
-                        arbeidsform = Arbeidsform.VARIERENDE,
                         jobberNormaltTimer = 40.0,
                         historiskArbeid = ArbeidIPeriode(
                             jobberIPerioden = JobberIPeriodeSvar.JA,
@@ -446,8 +412,7 @@ class SøknadPdfV1GeneratorTest {
                             onsdag = null,
                             torsdag = Duration.ofHours(7).plusMinutes(30),
                             fredag = Duration.ofHours(7).plusMinutes(30),
-                        ),
-                        vetOmsorgstilbud = VetOmsorgstilbud.VET_ALLE_TIMER
+                        )
                     )
                 )
             )
@@ -476,7 +441,6 @@ class SøknadPdfV1GeneratorTest {
                             Enkeltdag(LocalDate.now().plusDays(3), Duration.ofHours(7).plusMinutes(30)),
                             Enkeltdag(LocalDate.now().plusDays(4), Duration.ofHours(0))
                         ),
-                        vetOmsorgstilbud = VetOmsorgstilbud.VET_ALLE_TIMER,
                         erLiktHverDag = false
                     )
                 )
@@ -484,14 +448,10 @@ class SøknadPdfV1GeneratorTest {
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
-        id = "11-omsorgstilbud-v2-vet-ikke-planlagt-tilsyn"
+        id = "11-omsorgstilbud-nei-til-omsorgstilbud"
         pdf = generator.genererPDF(
             melding = fullGyldigMelding(id).copy(
-                omsorgstilbud = Omsorgstilbud(
-                    planlagt = PlanlagtOmsorgstilbud(
-                        vetOmsorgstilbud = VetOmsorgstilbud.VET_IKKE
-                    )
-                )
+                omsorgstilbud = null
             )
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)

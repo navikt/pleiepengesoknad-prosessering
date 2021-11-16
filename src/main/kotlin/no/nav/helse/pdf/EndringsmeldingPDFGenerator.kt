@@ -113,4 +113,3 @@ fun ArbeidstidPeriodeInfo.somMap(): Map<String, Any?> = mutableMapOf(
     "jobberNormaltTimerPerDag" to jobberNormaltTimerPerDag.somTekst(),
     "faktiskArbeidTimerPerDag" to faktiskArbeidTimerPerDag.somTekst()
 )
-

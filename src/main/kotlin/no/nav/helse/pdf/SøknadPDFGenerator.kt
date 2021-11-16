@@ -1,36 +1,9 @@
 package no.nav.helse.pdf
 
 import com.fasterxml.jackson.core.type.TypeReference
-import no.nav.helse.felles.ArbeidIPeriode
-import no.nav.helse.felles.Arbeidsforhold
-import no.nav.helse.felles.Arbeidsform
-import no.nav.helse.felles.Beredskap
-import no.nav.helse.felles.Bosted
-import no.nav.helse.felles.Enkeltdag
-import no.nav.helse.felles.Ferieuttak
-import no.nav.helse.felles.Frilans
-import no.nav.helse.felles.HistoriskOmsorgstilbud
-import no.nav.helse.felles.JobberIPeriodeSvar
-import no.nav.helse.felles.Land
-import no.nav.helse.felles.Nattevåk
-import no.nav.helse.felles.Næringstyper
-import no.nav.helse.felles.Omsorgstilbud
-import no.nav.helse.felles.Periode
-import no.nav.helse.felles.PlanUkedager
-import no.nav.helse.felles.PlanlagtOmsorgstilbud
-import no.nav.helse.felles.Regnskapsfører
-import no.nav.helse.felles.SelvstendigNæringsdrivende
-import no.nav.helse.felles.Søker
-import no.nav.helse.felles.Utenlandsopphold
-import no.nav.helse.felles.VarigEndring
-import no.nav.helse.felles.Virksomhet
-import no.nav.helse.felles.YrkesaktivSisteTreFerdigliknedeÅrene
+import no.nav.helse.felles.*
 import no.nav.helse.pdf.PDFGenerator.Companion.DATE_FORMATTER
-import no.nav.helse.prosessering.v1.ArbeidsforholdAnsatt
-import no.nav.helse.prosessering.v1.MeldingV1
-import no.nav.helse.prosessering.v1.erFørDagensDato
-import no.nav.helse.prosessering.v1.erLikEllerEtterDagensDato
-import no.nav.helse.prosessering.v1.somTekst
+import no.nav.helse.prosessering.v1.*
 import no.nav.helse.utils.DateUtils
 import no.nav.helse.utils.somNorskDag
 import no.nav.helse.utils.somNorskMåned
@@ -83,7 +56,7 @@ class SøknadPDFGenerator : PDFGenerator<MeldingV1>() {
             "ingen_arbeidsgivere" to (arbeidsgivere == null),
             "sprak" to språk?.sprakTilTekst()
         ),
-        "omsorgstilbud" to omsorgstilbud?.somMap(fraOgMed, tilOgMed),
+        "omsorgstilbud" to omsorgstilbudSomMap(fraOgMed, tilOgMed),
         "nattevaak" to nattevåk(nattevåk),
         "beredskap" to beredskap(beredskap),
         "utenlandsoppholdIPerioden" to mapOf(
@@ -141,18 +114,19 @@ private fun beredskap(beredskap: Beredskap?) = when {
     }
 }
 
-private fun Omsorgstilbud.somMap(fraOgMed: LocalDate, tilOgMed: LocalDate): Map<String, Any?> {
+private fun MeldingV1.omsorgstilbudSomMap(fraOgMed: LocalDate, tilOgMed: LocalDate): Map<String, Any?> {
     val DAGENS_DATO = LocalDate.now()
     val GÅRSDAGENS_DATO = DAGENS_DATO.minusDays(1)
+
     return mapOf(
-        "historisk" to historisk?.somMap(),
-        "planlagt" to planlagt?.somMap(),
         "søknadsperiodeFraOgMed" to DATE_FORMATTER.format(fraOgMed),
         "søknadsperiodeTilOgMed" to DATE_FORMATTER.format(tilOgMed),
+        "periodenStarterIFortid" to (fraOgMed.isBefore(DAGENS_DATO)),
+        "fortidTilOgMed" to if(tilOgMed.isBefore(DAGENS_DATO)) DATE_FORMATTER.format(tilOgMed) else DATE_FORMATTER.format(GÅRSDAGENS_DATO),
         "periodenAvsluttesIFremtiden" to (tilOgMed.isAfter(GÅRSDAGENS_DATO)),
         "fremtidFraOgMed" to if(fraOgMed.isAfter(DAGENS_DATO)) DATE_FORMATTER.format(fraOgMed) else DATE_FORMATTER.format(DAGENS_DATO),
-        "periodenStarterIFortid" to (fraOgMed.isBefore(DAGENS_DATO)),
-        "fortidTilOgMed" to if(tilOgMed.isBefore(DAGENS_DATO)) DATE_FORMATTER.format(tilOgMed) else DATE_FORMATTER.format(GÅRSDAGENS_DATO)
+        "historisk" to omsorgstilbud?.historisk?.somMap(),
+        "planlagt" to omsorgstilbud?.planlagt?.somMap(),
     )
 }
 
@@ -198,8 +172,6 @@ private fun HistoriskOmsorgstilbud.somMap(): Map<String, Any?> = mutableMapOf(
 private fun PlanlagtOmsorgstilbud.somMap(): Map<String, Any?> = mutableMapOf(
     "enkeltdagerPerMnd" to enkeltdager?.somMapPerMnd(),
     "ukedager" to ukedager?.somMap(),
-    "vetOmsorgstilbud" to vetOmsorgstilbud.name,
-    "vetLikeDager" to (ukedager != null),
     "erLiktHverDag" to  erLiktHverDag,
     "harSvartPåErLiktHverDag" to  (erLiktHverDag != null)
 )
@@ -216,22 +188,12 @@ private fun Arbeidsforhold.somMap(
     skalViseHistoriskArbeid: Boolean = true,
     skalVisePlanlagtArbeid: Boolean = true
 ): Map<String, Any?> = mapOf(
-    "arbeidsform" to arbeidsform.utskriftsvennlig,
-    "jobberNormaltTimerTekst" to jobberNormaltTimer.somTekst(arbeidsform),
     "jobberNormaltTimer" to jobberNormaltTimer,
     "historiskArbeid" to historiskArbeid?.somMap(),
     "planlagtArbeid" to planlagtArbeid?.somMap(),
     "skalViseHistoriskArbeid" to skalViseHistoriskArbeid,
     "skalVisePlanlagtArbeid" to skalVisePlanlagtArbeid
 )
-
-private fun Double.somTekst(arbeidsform: Arbeidsform): String{
-    return when(arbeidsform){
-        Arbeidsform.FAST -> "Jobber fast $this timer per uke"
-        Arbeidsform.TURNUS -> "Jobber turnus $this timer i snitt per uke"
-        Arbeidsform.VARIERENDE -> "Jobber deltid/varierende/tilkalling $this timer i snitt per uke"
-    }
-}
 
 private fun ArbeidIPeriode.somMap() : Map<String, Any?> = mapOf(
     "jobberIPerioden" to jobberIPerioden.tilBoolean(),

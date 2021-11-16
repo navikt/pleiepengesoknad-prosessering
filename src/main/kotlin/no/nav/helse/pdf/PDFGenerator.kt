@@ -9,6 +9,7 @@ import com.github.jknack.handlebars.context.MapValueResolver
 import com.github.jknack.handlebars.io.ClassPathTemplateLoader
 import com.openhtmltopdf.outputdevice.helper.BaseRendererBuilder
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder
+import com.openhtmltopdf.util.XRLog
 import no.nav.helse.dusseldorf.ktor.core.fromResources
 import no.nav.helse.felles.Næringstyper
 import no.nav.helse.pleiepengerKonfiguert
@@ -20,6 +21,7 @@ import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
+import java.util.logging.Level
 
 /**
  * Baseklasse for generering av pdf.
@@ -54,24 +56,28 @@ abstract class PDFGenerator<in T> {
 
     abstract fun T.tilMap(): Map<String, Any?>
 
-    fun genererPDF(melding: T): ByteArray = søknadsTemplate.apply(
-        Context
-            .newBuilder(melding.tilMap())
-            .resolver(MapValueResolver.INSTANCE)
-            .build()
-    ).let { html ->
-        val outputStream = ByteArrayOutputStream()
-        PdfRendererBuilder()
-            .useFastMode()
-            .usePdfUaAccessbility(true)
-            .withHtmlContent(html, "")
-            .medFonter()
-            .toStream(outputStream)
-            .buildPdfRenderer()
-            .createPDF()
+    fun genererPDF(melding: T): ByteArray {
+        XRLog.listRegisteredLoggers().forEach { logger -> XRLog.setLevel(logger, Level.WARNING) }
 
-        outputStream.use {
-            it.toByteArray()
+        return søknadsTemplate.apply(
+            Context
+                .newBuilder(melding.tilMap())
+                .resolver(MapValueResolver.INSTANCE)
+                .build()
+        ).let { html ->
+            val outputStream = ByteArrayOutputStream()
+            PdfRendererBuilder()
+                .useFastMode()
+                .usePdfUaAccessbility(true)
+                .withHtmlContent(html, "")
+                .medFonter()
+                .toStream(outputStream)
+                .buildPdfRenderer()
+                .createPDF()
+
+            outputStream.use {
+                it.toByteArray()
+            }
         }
     }
 
