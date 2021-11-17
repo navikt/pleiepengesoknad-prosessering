@@ -292,8 +292,6 @@
         {{/if}}
 
         {{#if omsorgstilbud.periodenAvsluttesIFremtiden}}
-                <h3 style="font-size: 17px;">Omsorgstilbud frem i tid:</h3>
-
             <p class="sporsmalstekst">Skal barnet være fast og regelmessig i et omsorgstilbud i perioden {{omsorgstilbud.fremtidFraOgMed}} til {{omsorgstilbud.søknadsperiodeTilOgMed}}?</p>
 
             {{#if omsorgstilbud.planlagt}}
@@ -307,8 +305,8 @@
 
                 <br/>
 
-                        <p class="sporsmalstekst">Tid barnet skal være i omsorgstilbudet:</p>
-                        <ul class="ul-no-indent">
+                <p class="sporsmalstekst">Tid barnet skal være i omsorgstilbudet:</p>
+                <ul class="ul-no-indent">
                     {{#each omsorgstilbud.planlagt.enkeltdagerPerMnd as |enkeltdagerPerMnd|~}}
                                 <li>
                                     <p><b>{{enkeltdagerPerMnd.måned}} {{enkeltdagerPerMnd.år}}</b></p>
