@@ -133,6 +133,7 @@ fun Application.pleiepengesoknadProsessering() {
                     )
                 )
                     .plus(asynkronProsesseringV1Service.healthChecks()).toSet()
+                    .plus(asynkronEndringsmeldingProsesseringV1Service.healthChecks()).toSet()
             )
         )
     }
