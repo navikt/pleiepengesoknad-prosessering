@@ -13,7 +13,7 @@ import no.nav.k9.søknad.felles.type.SøknadId
 import no.nav.k9.søknad.ytelse.psb.v1.DataBruktTilUtledning
 import no.nav.k9.søknad.ytelse.psb.v1.PleiepengerSyktBarn
 import no.nav.k9.søknad.ytelse.psb.v1.Uttak
-import no.nav.k9.søknad.ytelse.psb.v1.UttakPeriodeInfo
+import no.nav.k9.søknad.ytelse.psb.v1.Uttak.UttakPeriodeInfo
 import no.nav.k9.søknad.ytelse.psb.v1.arbeidstid.Arbeidstaker
 import no.nav.k9.søknad.ytelse.psb.v1.arbeidstid.Arbeidstid
 import no.nav.k9.søknad.ytelse.psb.v1.arbeidstid.ArbeidstidInfo
@@ -54,7 +54,7 @@ internal object EndringsmeldingUtils {
         PleiepengerSyktBarn()
             .medSøknadsperiode(K9Periode(LocalDate.parse("2020-01-01"), LocalDate.parse("2020-01-10")))
             .medSøknadInfo(DataBruktTilUtledning(true, true, true, true, true))
-            .medBarn(K9Barn(NorskIdentitetsnummer.of("10987654321"), null))
+            .medBarn(K9Barn().medNorskIdentitetsnummer(NorskIdentitetsnummer.of("10987654321")))
             .medTilsynsordning(
                 K9Tilsynsordning().medPerioder(
                     mapOf(
@@ -75,16 +75,20 @@ internal object EndringsmeldingUtils {
                         Arbeidstaker(
                             NorskIdentitetsnummer.of("12345678910"),
                             Organisasjonsnummer.of("926032925"),
-                            ArbeidstidInfo(
+                            ArbeidstidInfo().medPerioder(
                                 mapOf(
                                     K9Periode(
                                         LocalDate.parse("2018-01-01"),
                                         LocalDate.parse("2020-01-05")
-                                    ) to ArbeidstidPeriodeInfo(Duration.ofHours(8), Duration.ofHours(4)),
+                                    ) to ArbeidstidPeriodeInfo()
+                                        .medJobberNormaltTimerPerDag(Duration.ofHours(8))
+                                        .medFaktiskArbeidTimerPerDag(Duration.ofHours(4)),
                                     K9Periode(
                                         LocalDate.parse("2020-01-06"),
                                         LocalDate.parse("2020-01-10")
-                                    ) to ArbeidstidPeriodeInfo(Duration.ofHours(8), Duration.ofHours(2))
+                                    ) to ArbeidstidPeriodeInfo()
+                                        .medJobberNormaltTimerPerDag(Duration.ofHours(8))
+                                        .medFaktiskArbeidTimerPerDag(Duration.ofHours(2))
                                 )
                             )
                         )
