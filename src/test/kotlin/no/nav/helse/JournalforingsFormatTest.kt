@@ -24,6 +24,9 @@ class JournalforingsFormatTest {
           "søker": {
             "norskIdentitetsnummer": "12345678910"
           },
+          "begrunnelseForInnsending": {
+            "tekst": null
+          },
           "ytelse": {
             "type": "PLEIEPENGER_SYKT_BARN",
             "søknadsperiode": ["2020-01-01/2020-01-10"],
@@ -116,8 +119,7 @@ class JournalforingsFormatTest {
                 "2020-01-06/2020-01-10": {
                   "etablertTilsynTimerPerDag": "PT4H"
                 }
-              },
-              "perioderSomSkalSlettes": {}
+              }
             },
             "arbeidstid": {
               "arbeidstakerList": [
@@ -149,8 +151,7 @@ class JournalforingsFormatTest {
                 "2020-01-06/2020-01-10": {
                   "timerPleieAvBarnetPerDag": "PT2H"
                 }
-              },
-              "perioderSomSkalSlettes": {}
+              }
             },
             "omsorg" : {
               "relasjonTilBarnet" : "MOR",
