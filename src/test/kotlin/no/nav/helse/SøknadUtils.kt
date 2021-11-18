@@ -14,10 +14,18 @@ import no.nav.k9.søknad.felles.personopplysninger.Bosteder
 import no.nav.k9.søknad.felles.personopplysninger.Utenlandsopphold.UtenlandsoppholdPeriodeInfo
 import no.nav.k9.søknad.felles.personopplysninger.Utenlandsopphold.UtenlandsoppholdÅrsak.BARNET_INNLAGT_I_HELSEINSTITUSJON_DEKKET_ETTER_AVTALE_MED_ET_ANNET_LAND_OM_TRYGD
 import no.nav.k9.søknad.felles.personopplysninger.Utenlandsopphold.UtenlandsoppholdÅrsak.BARNET_INNLAGT_I_HELSEINSTITUSJON_FOR_NORSK_OFFENTLIG_REGNING
-import no.nav.k9.søknad.felles.type.*
-import no.nav.k9.søknad.ytelse.psb.v1.*
+import no.nav.k9.søknad.felles.type.Landkode
+import no.nav.k9.søknad.felles.type.NorskIdentitetsnummer
+import no.nav.k9.søknad.felles.type.Organisasjonsnummer
+import no.nav.k9.søknad.felles.type.SøknadId
+import no.nav.k9.søknad.felles.type.VirksomhetType
 import no.nav.k9.søknad.ytelse.psb.v1.Beredskap.BeredskapPeriodeInfo
+import no.nav.k9.søknad.ytelse.psb.v1.DataBruktTilUtledning
+import no.nav.k9.søknad.ytelse.psb.v1.LovbestemtFerie
 import no.nav.k9.søknad.ytelse.psb.v1.Nattevåk.NattevåkPeriodeInfo
+import no.nav.k9.søknad.ytelse.psb.v1.Omsorg
+import no.nav.k9.søknad.ytelse.psb.v1.PleiepengerSyktBarn
+import no.nav.k9.søknad.ytelse.psb.v1.Uttak
 import no.nav.k9.søknad.ytelse.psb.v1.arbeidstid.Arbeidstaker
 import no.nav.k9.søknad.ytelse.psb.v1.arbeidstid.Arbeidstid
 import no.nav.k9.søknad.ytelse.psb.v1.arbeidstid.ArbeidstidInfo
@@ -167,7 +175,7 @@ internal object SøknadUtils {
             )
         ),
         selvstendigNæringsdrivende = no.nav.helse.felles.SelvstendigNæringsdrivende(
-            virksomhet =  Virksomhet(
+            virksomhet = Virksomhet(
                 næringstyper = listOf(Næringstyper.ANNEN),
                 fraOgMed = LocalDate.parse("2021-01-01"),
                 tilOgMed = LocalDate.parse("2021-01-10"),
@@ -299,55 +307,56 @@ internal object SøknadUtils {
             .medSøknadInfo(DataBruktTilUtledning(true, true, true, true, true))
             .medBarn(K9Barn(NorskIdentitetsnummer.of("10987654321"), null))
             .medOpptjeningAktivitet(
-                OpptjeningAktivitet(
-                    listOf(
-                        SelvstendigNæringsdrivende(
-                            mapOf(
-                                K9Periode(
-                                    LocalDate.parse("2018-01-01"),
-                                    LocalDate.parse("2020-01-01")
-                                ) to SelvstendigNæringsdrivende.SelvstendigNæringsdrivendePeriodeInfo.builder()
-                                    .erNyoppstartet(true)
-                                    .registrertIUtlandet(false)
-                                    .bruttoInntekt(BigDecimal(5_000_000))
-                                    .erVarigEndring(true)
-                                    .endringDato(LocalDate.parse("2020-01-01"))
-                                    .endringBegrunnelse("Grunnet Covid-19")
-                                    .landkode(Landkode.NORGE)
-                                    .regnskapsførerNavn("Regnskapsfører Svensen")
-                                    .regnskapsførerTelefon("+4799887766")
-                                    .virksomhetstyper(listOf(VirksomhetType.DAGMAMMA, VirksomhetType.ANNEN))
-                                    .build()
-                            ),
-                            Organisasjonsnummer.of("12345678910112233444455667"),
-                            "Mamsen Bamsen AS"
-                        ),
-                        SelvstendigNæringsdrivende(
-                            mapOf(
-                                K9Periode(
-                                    LocalDate.parse("2015-01-01"),
-                                    LocalDate.parse("2017-01-01")
-                                ) to SelvstendigNæringsdrivende.SelvstendigNæringsdrivendePeriodeInfo.builder()
-                                    .erNyoppstartet(false)
-                                    .registrertIUtlandet(true)
-                                    .bruttoInntekt(BigDecimal(500_000))
-                                    .erVarigEndring(false)
-                                    .endringDato(null)
-                                    .endringBegrunnelse(null)
-                                    .landkode(Landkode.SPANIA)
-                                    .regnskapsførerNavn(null)
-                                    .regnskapsførerTelefon(null)
-                                    .virksomhetstyper(listOf(VirksomhetType.FISKE))
-                                    .build()
-                            ),
-                            Organisasjonsnummer.of("54549049090490498048940940"),
-                            "Something Fishy AS"
-                        ),
-                    ),
-                    Frilanser(LocalDate.parse("2020-01-01"), null),
-                    null,
-                    null
-                )
+                OpptjeningAktivitet()
+                    .medSelvstendigNæringsdrivende(
+                        listOf(
+                            SelvstendigNæringsdrivende()
+                                .medOrganisasjonsnummer(Organisasjonsnummer.of("12345678910112233444455667"))
+                                .medVirksomhetNavn("Mamsen Bamsen AS")
+                                .medPerioder(
+                                    mapOf(
+                                        K9Periode(
+                                            LocalDate.parse("2018-01-01"),
+                                            LocalDate.parse("2020-01-01")
+                                        ) to SelvstendigNæringsdrivende.SelvstendigNæringsdrivendePeriodeInfo.builder()
+                                            .erNyoppstartet(true)
+                                            .registrertIUtlandet(false)
+                                            .bruttoInntekt(BigDecimal(5_000_000))
+                                            .erVarigEndring(true)
+                                            .endringDato(LocalDate.parse("2020-01-01"))
+                                            .endringBegrunnelse("Grunnet Covid-19")
+                                            .landkode(Landkode.NORGE)
+                                            .regnskapsførerNavn("Regnskapsfører Svensen")
+                                            .regnskapsførerTelefon("+4799887766")
+                                            .virksomhetstyper(listOf(VirksomhetType.DAGMAMMA, VirksomhetType.ANNEN))
+                                            .build()
+                                    )
+                                ),
+                            SelvstendigNæringsdrivende()
+                                .medOrganisasjonsnummer(Organisasjonsnummer.of("54549049090490498048940940"))
+                                .medVirksomhetNavn("Something Fishy AS")
+                                .medPerioder(
+                                    mapOf(
+                                        K9Periode(
+                                            LocalDate.parse("2015-01-01"),
+                                            LocalDate.parse("2017-01-01")
+                                        ) to SelvstendigNæringsdrivende.SelvstendigNæringsdrivendePeriodeInfo.builder()
+                                            .erNyoppstartet(false)
+                                            .registrertIUtlandet(true)
+                                            .bruttoInntekt(BigDecimal(500_000))
+                                            .erVarigEndring(false)
+                                            .endringDato(null)
+                                            .endringBegrunnelse(null)
+                                            .landkode(Landkode.SPANIA)
+                                            .regnskapsførerNavn(null)
+                                            .regnskapsførerTelefon(null)
+                                            .virksomhetstyper(listOf(VirksomhetType.FISKE))
+                                            .build()
+                                    )
+                                )
+                        )
+                    )
+                    .medFrilanser(Frilanser(LocalDate.parse("2020-01-01"), null))
             )
             .medBeredskap(
                 K9Beredskap().medPerioder(
@@ -397,18 +406,19 @@ internal object SøknadUtils {
                         Arbeidstaker(
                             NorskIdentitetsnummer.of("12345678910"),
                             Organisasjonsnummer.of("926032925"),
-                            ArbeidstidInfo(
-                                mapOf(
-                                    K9Periode(
-                                        LocalDate.parse("2018-01-01"),
-                                        LocalDate.parse("2020-01-05")
-                                    ) to ArbeidstidPeriodeInfo(Duration.ofHours(8), Duration.ofHours(4)),
-                                    K9Periode(
-                                        LocalDate.parse("2020-01-06"),
-                                        LocalDate.parse("2020-01-10")
-                                    ) to ArbeidstidPeriodeInfo(Duration.ofHours(8), Duration.ofHours(2))
+                            ArbeidstidInfo()
+                                .medPerioder(
+                                    mapOf(
+                                        K9Periode(
+                                            LocalDate.parse("2018-01-01"),
+                                            LocalDate.parse("2020-01-05")
+                                        ) to ArbeidstidPeriodeInfo(Duration.ofHours(8), Duration.ofHours(4)),
+                                        K9Periode(
+                                            LocalDate.parse("2020-01-06"),
+                                            LocalDate.parse("2020-01-10")
+                                        ) to ArbeidstidPeriodeInfo(Duration.ofHours(8), Duration.ofHours(2))
+                                    )
                                 )
-                            )
                         )
                     )
                 )
@@ -419,11 +429,11 @@ internal object SøknadUtils {
                         K9Periode(
                             LocalDate.parse("2020-01-01"),
                             LocalDate.parse("2020-01-05")
-                        ) to UttakPeriodeInfo(Duration.ofHours(4)),
+                        ) to Uttak.UttakPeriodeInfo(Duration.ofHours(4)),
                         K9Periode(
                             LocalDate.parse("2020-01-06"),
                             LocalDate.parse("2020-01-10")
-                        ) to UttakPeriodeInfo(Duration.ofHours(2))
+                        ) to Uttak.UttakPeriodeInfo(Duration.ofHours(2))
                     )
                 )
             )
@@ -466,17 +476,15 @@ internal object SøknadUtils {
                         K9Periode(
                             LocalDate.parse("2020-01-01"),
                             LocalDate.parse("2020-01-05")
-                        ) to UtenlandsoppholdPeriodeInfo.builder()
-                            .land(Landkode.CANADA)
-                            .årsak(BARNET_INNLAGT_I_HELSEINSTITUSJON_DEKKET_ETTER_AVTALE_MED_ET_ANNET_LAND_OM_TRYGD)
-                            .build(),
+                        ) to UtenlandsoppholdPeriodeInfo()
+                            .medLand(Landkode.CANADA)
+                            .medÅrsak(BARNET_INNLAGT_I_HELSEINSTITUSJON_DEKKET_ETTER_AVTALE_MED_ET_ANNET_LAND_OM_TRYGD),
                         K9Periode(
                             LocalDate.parse("2020-01-06"),
                             LocalDate.parse("2020-01-10")
-                        ) to UtenlandsoppholdPeriodeInfo.builder()
-                            .land(Landkode.SVERIGE)
-                            .årsak(BARNET_INNLAGT_I_HELSEINSTITUSJON_FOR_NORSK_OFFENTLIG_REGNING)
-                            .build()
+                        ) to UtenlandsoppholdPeriodeInfo()
+                            .medLand(Landkode.SVERIGE)
+                            .medÅrsak(BARNET_INNLAGT_I_HELSEINSTITUSJON_FOR_NORSK_OFFENTLIG_REGNING)
                     )
                 )
             )
