@@ -4,12 +4,12 @@ registries:
     type: maven-repository
     url: https://maven.pkg.github.com/navikt/k9-format
     username: x-access-token
-    password: ${{secrets.READER_TOKEN}}
+    password: ${{secrets.DEPENDABOT_TOKEN}}
   dusseldorf-ktor:
     type: maven-repository
     url: https://maven.pkg.github.com/navikt/dusseldorf-ktor
     username: x-access-token
-    password: ${{secrets.READER_TOKEN}}
+    password: ${{secrets.DEPENDABOT_TOKEN}}
 
 updates:
   - package-ecosystem: github-actions
