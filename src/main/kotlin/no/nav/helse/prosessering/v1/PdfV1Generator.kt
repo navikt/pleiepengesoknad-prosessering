@@ -380,6 +380,7 @@ private fun List<ArbeidsforholdAnsatt>.somMapAnsatt() = map {
         "organisasjonsnummer" to it.organisasjonsnummer,
         "erAnsatt" to it.erAnsatt,
         "arbeidsforhold" to it.arbeidsforhold?.somMap(),
+        "sluttetFørSøknadsperiodeErSatt" to (it.sluttetFørSøknadsperiode != null),
         "sluttetFørSøknadsperiode" to it.sluttetFørSøknadsperiode
     )
 }
