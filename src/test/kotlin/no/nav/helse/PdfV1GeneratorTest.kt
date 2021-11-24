@@ -307,7 +307,8 @@ class PdfV1GeneratorTest {
                     navn = "Sluttaaaa",
                     organisasjonsnummer = "917755736",
                     erAnsatt = false,
-                    arbeidsforhold = null
+                    arbeidsforhold = null,
+                    sluttetFørSøknadsperiode = true
                 )
             ),
             harVærtEllerErVernepliktig = true,
