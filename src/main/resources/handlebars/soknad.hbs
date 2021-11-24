@@ -122,6 +122,12 @@
                                 <li class="sporsmalstekst">Er ansatt</li>
                             {{else}}
                                 <li class="sporsmalstekst">Er ikke ansatt</li>
+                                {{#if arbeidsgiver.sluttetFørSøknadsperiodeErSatt}}
+                                    <li class="sporsmalstekst">
+                                        <p>Sluttet du hos {{arbeidsgiver.navn}} før {{periode.fra_og_med}}?</p>
+                                        <p>{{ jaNeiSvar arbeidsgiver.sluttetFørSøknadsperiode }}</p>
+                                    </li>
+                                {{/if}}
                             {{/if}}
                         </ul>
                     </li>
