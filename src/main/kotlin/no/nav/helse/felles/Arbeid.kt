@@ -12,7 +12,7 @@ data class ArbeidIPeriode(
     val erLiktHverUke: Boolean? = null,
     val enkeltdager: List<Enkeltdag>? = null,
     val fasteDager: PlanUkedager? = null,
-    val jobberProsent: Int? = null
+    val jobberProsent: Double? = null
 )
 
 enum class JobberIPeriodeSvar(val pdfTekst: String) {
