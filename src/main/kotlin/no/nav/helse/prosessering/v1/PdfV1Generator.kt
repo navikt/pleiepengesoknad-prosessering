@@ -337,7 +337,8 @@ private fun ArbeidIPeriode.somMap() : Map<String, Any?> = mapOf(
     "erLiktHverUkeSatt" to (erLiktHverUke != null),
     "erLiktHverUke" to erLiktHverUke,
     "enkeltdagerPerMnd" to enkeltdager?.somMapPerMnd(),
-    "fasteDager" to fasteDager?.somMap()
+    "fasteDager" to fasteDager?.somMap(),
+    "snittTimerPerUkedag" to fasteDager?.mandag?.somTekst() // alle dager er like dersom jobberProsent er satt.
 )
 
 private fun Frilans.somMap() : Map<String, Any?> = mapOf(

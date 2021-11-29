@@ -152,6 +152,7 @@ internal object SøknadUtils {
                 historiskArbeid = ArbeidIPeriode(
                     jobberIPerioden = JobberIPeriodeSvar.JA,
                     jobberSomVanlig = false,
+                    jobberProsent = 50.0,
                     erLiktHverUke = false,
                     enkeltdager = listOf(
                         Enkeltdag(dato = LocalDate.now(), tid = Duration.ofHours(4)),

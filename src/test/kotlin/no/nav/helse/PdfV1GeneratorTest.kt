@@ -261,7 +261,7 @@ class PdfV1GeneratorTest {
                             jobberIPerioden = JobberIPeriodeSvar.JA,
                             jobberSomVanlig = false,
                             jobberProsent = 50.0,
-                            erLiktHverUke = false,
+                            erLiktHverUke = true,
                             enkeltdager = listOf(
                                 Enkeltdag(dato = LocalDate.now(), tid = Duration.ofHours(4)),
                                 Enkeltdag(dato = LocalDate.now().plusDays(3), tid = Duration.ofHours(5)),
