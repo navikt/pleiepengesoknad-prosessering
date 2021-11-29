@@ -25,7 +25,6 @@ internal class PreprosseseringV1Service(
         val correlationId = CorrelationId(metadata.correlationId)
 
         val søkerAktørId = melding.søker.aktørId
-        logger.info("DEBUGGING: {}", melding)
 
         logger.trace("Genererer Oppsummerings-PDF av søknaden.")
 
