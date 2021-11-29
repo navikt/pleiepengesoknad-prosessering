@@ -322,7 +322,6 @@ private fun Arbeidsforhold.somMap(
     skalVisePlanlagtArbeid: Boolean = true
 ): Map<String, Any?> = mapOf(
     "jobberNormaltTimer" to jobberNormaltTimer,
-    "normaltTimerPerUkedag" to jobberNormaltTimer.div(5),
     "historiskArbeid" to historiskArbeid?.somMap(),
     "planlagtArbeid" to planlagtArbeid?.somMap(),
     "skalViseHistoriskArbeid" to skalViseHistoriskArbeid,
