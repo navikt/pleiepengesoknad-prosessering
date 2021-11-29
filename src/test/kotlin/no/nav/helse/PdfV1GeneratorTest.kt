@@ -1,6 +1,34 @@
 package no.nav.helse
 
-import no.nav.helse.felles.*
+import no.nav.helse.felles.ArbeidIPeriode
+import no.nav.helse.felles.Arbeidsforhold
+import no.nav.helse.felles.Barn
+import no.nav.helse.felles.BarnRelasjon
+import no.nav.helse.felles.Beredskap
+import no.nav.helse.felles.Bosted
+import no.nav.helse.felles.Enkeltdag
+import no.nav.helse.felles.Ferieuttak
+import no.nav.helse.felles.FerieuttakIPerioden
+import no.nav.helse.felles.Frilans
+import no.nav.helse.felles.HistoriskOmsorgstilbud
+import no.nav.helse.felles.JobberIPeriodeSvar
+import no.nav.helse.felles.Land
+import no.nav.helse.felles.Medlemskap
+import no.nav.helse.felles.Nattevåk
+import no.nav.helse.felles.Næringstyper
+import no.nav.helse.felles.Omsorgstilbud
+import no.nav.helse.felles.Periode
+import no.nav.helse.felles.PlanUkedager
+import no.nav.helse.felles.PlanlagtOmsorgstilbud
+import no.nav.helse.felles.Regnskapsfører
+import no.nav.helse.felles.SelvstendigNæringsdrivende
+import no.nav.helse.felles.Søker
+import no.nav.helse.felles.Utenlandsopphold
+import no.nav.helse.felles.UtenlandsoppholdIPerioden
+import no.nav.helse.felles.VarigEndring
+import no.nav.helse.felles.Virksomhet
+import no.nav.helse.felles.YrkesaktivSisteTreFerdigliknedeÅrene
+import no.nav.helse.felles.Årsak
 import no.nav.helse.prosessering.v1.ArbeidsforholdAnsatt
 import no.nav.helse.prosessering.v1.MeldingV1
 import no.nav.helse.prosessering.v1.PdfV1Generator
@@ -231,7 +259,8 @@ class PdfV1GeneratorTest {
                         jobberNormaltTimer = 27.0,
                         historiskArbeid = ArbeidIPeriode(
                             jobberIPerioden = JobberIPeriodeSvar.JA,
-                            jobberSomVanlig = true,
+                            jobberSomVanlig = false,
+                            jobberProsent = 50,
                             erLiktHverUke = false,
                             enkeltdager = listOf(
                                 Enkeltdag(dato = LocalDate.now(), tid = Duration.ofHours(4)),
