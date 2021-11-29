@@ -50,27 +50,30 @@
     {{/if}}
 {{/if}}
 
-{{#if arbeidIPeriode.erLiktHverUkeSatt}}
-    {{#if arbeidIPeriode.erLiktHverUke}}
-        <li>
-            {{#if historisk}}
-                Har jobbet
-            {{else}}
-                Skal jobbe
-            {{/if}}
-            likt hver uke
-        </li>
-    {{else}}
-        <li>
-            {{#if historisk}}
-                Har jobbet
-            {{else}}
-                Skal jobbe
-            {{/if}}
-            variert hver uke
-        </li>
+<!-- Viser erLiktHverUke dersom jobberProsent ikke er satt. -->
+{{#unless arbeidIPeriode.jobberProsent}}
+    {{#if arbeidIPeriode.erLiktHverUkeSatt}}
+        {{#if arbeidIPeriode.erLiktHverUke}}
+            <li>
+                {{#if historisk}}
+                    Har jobbet
+                {{else}}
+                    Skal jobbe
+                {{/if}}
+                likt hver uke
+            </li>
+        {{else}}
+            <li>
+                {{#if historisk}}
+                    Har jobbet
+                {{else}}
+                    Skal jobbe
+                {{/if}}
+                variert hver uke
+            </li>
+        {{/if}}
     {{/if}}
-{{/if}}
+{{/unless}}
 
 {{#if arbeidIPeriode.enkeltdagerPerMnd}}
     <li class="li-style-none">
