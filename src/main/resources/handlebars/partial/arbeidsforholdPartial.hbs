@@ -6,7 +6,7 @@
                 <li class="li-style-none">
                     <b>Jobb tilbake i tid:</b>
                     <ul>
-                        {{> partial/arbeidIPeriodePartial arbeidIPeriode=arbeidsforhold.historiskArbeid}}
+                        {{> partial/arbeidIPeriodePartial historisk=true arbeidIPeriode=arbeidsforhold.historiskArbeid}}
                     </ul>
                 </li>
             {{/if}}
@@ -17,7 +17,7 @@
                 <li class="li-style-none">
                     <b>Jobb frem i tid:</b>
                     <ul>
-                        {{> partial/arbeidIPeriodePartial arbeidIPeriode=arbeidsforhold.planlagtArbeid}}
+                        {{> partial/arbeidIPeriodePartial historisk=false arbeidIPeriode=arbeidsforhold.planlagtArbeid}}
                     </ul>
                 </li>
             {{/if}}

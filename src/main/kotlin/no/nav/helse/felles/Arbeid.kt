@@ -11,7 +11,8 @@ data class ArbeidIPeriode(
     val jobberSomVanlig: Boolean? = null,
     val erLiktHverUke: Boolean? = null,
     val enkeltdager: List<Enkeltdag>? = null,
-    val fasteDager: PlanUkedager? = null
+    val fasteDager: PlanUkedager? = null,
+    val jobberProsent: Double? = null
 )
 
 enum class JobberIPeriodeSvar(val pdfTekst: String) {

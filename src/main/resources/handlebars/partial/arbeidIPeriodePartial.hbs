@@ -1,24 +1,79 @@
 {{#if arbeidIPeriode.jobberIPerioden}}
-    <li>Skal jobbe i perioden</li>
+    <li>
+        {{#if historisk}}
+            Har jobbet
+        {{else}}
+            Skal jobbe
+        {{/if}}
+        i perioden
+    </li>
 {{else}}
-    <li>Skal ikke jobbe i perioden</li>
+    <li>
+        {{#if historisk}}
+            Har ikke jobbet
+        {{else}}
+            Skal ikke jobbe
+        {{/if}}
+        i perioden
+    </li>
 {{/if}}
 
 {{#if arbeidIPeriode.skalViseJobberSomVanlig}}
     {{#if arbeidIPeriode.jobberSomVanlig}}
-        <li>Skal jobbe som normalt</li>
+        <li>
+            {{#if historisk}}
+                Har jobbet
+            {{else}}
+                Skal jobbe
+            {{/if}}
+            som normalt
+        </li>
     {{else}}
-        <li>Skal jobbe mindre enn normalt</li>
+        <li>
+            {{#if historisk}}
+                Har jobbet
+            {{else}}
+                Skal jobbe
+            {{/if}}
+            mindre enn normalt
+        </li>
+        {{#if arbeidIPeriode.jobberProsent}}
+            <li>
+                {{#if historisk}}
+                    Har jobbet
+                {{else}}
+                    Skal jobbe
+                {{/if}}
+                {{arbeidIPeriode.jobberProsent}} prosent, i snitt {{arbeidIPeriode.snittTimerPerUkedag}} hver ukedag
+            </li>
+        {{/if}}
     {{/if}}
 {{/if}}
 
-{{#if arbeidIPeriode.erLiktHverUkeSatt}}
-    {{#if arbeidIPeriode.erLiktHverUke}}
-        <li>Skal jobbe likt hver uke</li>
-    {{else}}
-        <li>Jobber variert hver uke</li>
+<!-- Viser erLiktHverUke dersom jobberProsent ikke er satt. -->
+{{#unless arbeidIPeriode.jobberProsent}}
+    {{#if arbeidIPeriode.erLiktHverUkeSatt}}
+        {{#if arbeidIPeriode.erLiktHverUke}}
+            <li>
+                {{#if historisk}}
+                    Har jobbet
+                {{else}}
+                    Skal jobbe
+                {{/if}}
+                likt hver uke
+            </li>
+        {{else}}
+            <li>
+                {{#if historisk}}
+                    Har jobbet
+                {{else}}
+                    Skal jobbe
+                {{/if}}
+                variert hver uke
+            </li>
+        {{/if}}
     {{/if}}
-{{/if}}
+{{/unless}}
 
 {{#if arbeidIPeriode.enkeltdagerPerMnd}}
     <li class="li-style-none">
@@ -46,14 +101,19 @@
     </li>
 {{/if}}
 
-{{#if arbeidIPeriode.fasteDager}}
-    <li class="li-style-none"><b>Faste dager:</b>
-        <ul>
-            <li>Mandag: {{arbeidIPeriode.fasteDager.mandag}}</li>
-            <li>Tirsdag: {{arbeidIPeriode.fasteDager.tirsdag}}</li>
-            <li>Onsdag: {{arbeidIPeriode.fasteDager.onsdag}}</li>
-            <li>Torsdag: {{arbeidIPeriode.fasteDager.torsdag}}</li>
-            <li>Fredag: {{arbeidIPeriode.fasteDager.fredag}}</li>
-        </ul>
-    </li>
-{{/if}}
+<!-- Viser fasteDager dersom jobberProsent ikke er satt. -->
+{{#unless arbeidIPeriode.jobberProsent}}
+    {{#if arbeidIPeriode.fasteDager}}
+        <li class="li-style-none"><b>Faste dager:</b>
+            <ul>
+                <li>Mandag: {{arbeidIPeriode.fasteDager.mandag}}</li>
+                <li>Tirsdag: {{arbeidIPeriode.fasteDager.tirsdag}}</li>
+                <li>Onsdag: {{arbeidIPeriode.fasteDager.onsdag}}</li>
+                <li>Torsdag: {{arbeidIPeriode.fasteDager.torsdag}}</li>
+                <li>Fredag: {{arbeidIPeriode.fasteDager.fredag}}</li>
+            </ul>
+        </li>
+    {{/if}}
+{{/unless}}
+
+

@@ -231,8 +231,9 @@ class SøknadPdfV1GeneratorTest {
                         jobberNormaltTimer = 27.0,
                         historiskArbeid = ArbeidIPeriode(
                             jobberIPerioden = JobberIPeriodeSvar.JA,
-                            jobberSomVanlig = true,
-                            erLiktHverUke = false,
+                            jobberSomVanlig = false,
+                            jobberProsent = 50.0,
+                            erLiktHverUke = true,
                             enkeltdager = listOf(
                                 Enkeltdag(dato = LocalDate.now(), tid = Duration.ofHours(4)),
                                 Enkeltdag(dato = LocalDate.now().plusDays(3), tid = Duration.ofHours(5)),
