@@ -8,7 +8,6 @@ data class Arbeidsforhold(
 
 data class ArbeidIPeriode(
     val jobberIPerioden: JobberIPeriodeSvar,
-    val jobberSomVanlig: Boolean? = null,
     val erLiktHverUke: Boolean? = null,
     val enkeltdager: List<Enkeltdag>? = null,
     val fasteDager: PlanUkedager? = null,
@@ -17,13 +16,12 @@ data class ArbeidIPeriode(
 
 enum class JobberIPeriodeSvar(val pdfTekst: String) {
     JA("Ja"),
-    NEI("Nei"),
-    VET_IKKE("Vet ikke");
+    NEI("Nei");
 
     fun tilBoolean(): Boolean{
         return when(this){
             JA -> true
-            NEI, VET_IKKE -> false
+            NEI -> false
         }
     }
 }

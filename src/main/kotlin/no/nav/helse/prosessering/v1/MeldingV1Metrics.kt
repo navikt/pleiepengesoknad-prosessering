@@ -197,14 +197,10 @@ internal fun MeldingV1.reportMetrics() {
 
     val skalJobbe = planlagtJobberSvar.contains(JobberIPeriodeSvar.JA)
     val skalIkkeJobbe = planlagtJobberSvar.isEmpty() || planlagtJobberSvar.all { it == JobberIPeriodeSvar.NEI }
-    val vetIkke = planlagtJobberSvar.contains( JobberIPeriodeSvar.VET_IKKE)
 
     when {
         skalJobbe -> jobbIPeriodenCounter.labels("planlagt", "skalJobbe").inc()
-        else -> when {
-            skalIkkeJobbe ->jobbIPeriodenCounter.labels("planlagt", "skalIkkeJobbe").inc()
-            vetIkke -> jobbIPeriodenCounter.labels("planlagt", "vetIkke").inc()
-        }
+        skalIkkeJobbe -> jobbIPeriodenCounter.labels("planlagt", "skalIkkeJobbe").inc()
     }
 
     when {
