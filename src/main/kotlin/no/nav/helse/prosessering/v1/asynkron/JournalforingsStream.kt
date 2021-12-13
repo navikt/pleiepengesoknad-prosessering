@@ -4,10 +4,6 @@ import no.nav.helse.CorrelationId
 import no.nav.helse.felles.tilTpsNavn
 import no.nav.helse.joark.JoarkGateway
 import no.nav.helse.kafka.*
-import no.nav.helse.kafka.KafkaConfig
-import no.nav.helse.kafka.ManagedKafkaStreams
-import no.nav.helse.kafka.ManagedStreamHealthy
-import no.nav.helse.kafka.ManagedStreamReady
 import no.nav.helse.prosessering.v1.PreprossesertMeldingV1
 import org.apache.kafka.streams.StreamsBuilder
 import org.apache.kafka.streams.Topology
@@ -36,7 +32,7 @@ internal class JournalforingsStream(
 
         private fun topology(joarkGateway: JoarkGateway): Topology {
             val builder = StreamsBuilder()
-            val fraPreprossesert: Topic<TopicEntry<PreprossesertMeldingV1>> = Topics.PREPROSSESERT
+            val fraPreprossesert: Topic<TopicEntry<PreprossesertMeldingV1>> = Topics.PREPROSESSERT
             val tilCleanup: Topic<TopicEntry<Cleanup>> = Topics.CLEANUP
 
             builder
@@ -50,7 +46,6 @@ internal class JournalforingsStream(
                         logger.info("Journalfører dokumenter.")
                         val journaPostId = joarkGateway.journalfoer(
                             mottatt = entry.data.mottatt,
-                            aktoerId = entry.data.søker.aktørId,
                             sokerNavn = entry.data.søker.tilTpsNavn(),
                             correlationId = CorrelationId(entry.metadata.correlationId),
                             dokumenter = entry.data.dokumentUrls,

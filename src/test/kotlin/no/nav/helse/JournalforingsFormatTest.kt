@@ -1,6 +1,6 @@
 package no.nav.helse
 
-import no.nav.helse.dokument.JournalforingsFormat
+import no.nav.helse.k9mellomlagring.JournalforingsFormat
 import org.skyscreamer.jsonassert.JSONAssert
 import java.util.*
 import kotlin.test.Test

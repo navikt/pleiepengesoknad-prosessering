@@ -1,4 +1,4 @@
-package no.nav.helse.dokument
+package no.nav.helse.k9mellomlagring
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies
 import com.fasterxml.jackson.databind.SerializationFeature

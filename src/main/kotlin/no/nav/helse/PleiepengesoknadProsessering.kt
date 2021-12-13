@@ -12,8 +12,6 @@ import io.ktor.routing.*
 import io.prometheus.client.CollectorRegistry
 import io.prometheus.client.hotspot.DefaultExports
 import no.nav.helse.auth.AccessTokenClientResolver
-import no.nav.helse.dokument.DokumentGateway
-import no.nav.helse.dokument.DokumentService
 import no.nav.helse.dusseldorf.ktor.auth.clients
 import no.nav.helse.dusseldorf.ktor.client.HttpRequestHealthCheck
 import no.nav.helse.dusseldorf.ktor.client.HttpRequestHealthConfig
@@ -25,6 +23,8 @@ import no.nav.helse.dusseldorf.ktor.health.HealthService
 import no.nav.helse.dusseldorf.ktor.jackson.dusseldorfConfigured
 import no.nav.helse.dusseldorf.ktor.metrics.MetricsRoute
 import no.nav.helse.joark.JoarkGateway
+import no.nav.helse.k9mellomlagring.K9MellomlagringGateway
+import no.nav.helse.k9mellomlagring.K9MellomlagringService
 import no.nav.helse.prosessering.v1.PdfV1Generator
 import no.nav.helse.prosessering.v1.PreprosseseringV1Service
 import no.nav.helse.prosessering.v1.asynkron.AsynkronProsesseringV1Service
@@ -51,23 +51,22 @@ fun Application.pleiepengesoknadProsessering() {
 
     val accessTokenClientResolver = AccessTokenClientResolver(environment.config.clients())
 
-    val dokumentGateway = DokumentGateway(
-        baseUrl = configuration.getK9DokumentBaseUrl(),
-        accessTokenClient = accessTokenClientResolver.dokumentAccessTokenClient(),
-        lagreDokumentScopes = configuration.getLagreDokumentScopes(),
-        sletteDokumentScopes = configuration.getSletteDokumentScopes()
+    val k9MellomlagringGateway = K9MellomlagringGateway(
+        baseUrl = configuration.getK9MellomlagringBaseUrl(),
+        accessTokenClient = accessTokenClientResolver.accessTokenClient(),
+        k9MellomlagringScopes = configuration.getK9MellomlagringScopes(),
     )
-    val dokumentService = DokumentService(dokumentGateway)
+
+    val k9MellomlagringService = K9MellomlagringService(k9MellomlagringGateway)
 
     val preprosseseringV1Service = PreprosseseringV1Service(
         pdfV1Generator = PdfV1Generator(),
-        dokumentService = dokumentService
+        k9MellomlagringService = k9MellomlagringService
     )
-
 
     val joarkGateway = JoarkGateway(
         baseUrl = configuration.getk9JoarkBaseUrl(),
-        accessTokenClient = accessTokenClientResolver.joarkAccessTokenClient(),
+        accessTokenClient = accessTokenClientResolver.accessTokenClient(),
         journalforeScopes = configuration.getJournalforeScopes()
     )
 
@@ -75,7 +74,7 @@ fun Application.pleiepengesoknadProsessering() {
         kafkaConfig = configuration.getKafkaConfig(),
         preprosseseringV1Service = preprosseseringV1Service,
         joarkGateway = joarkGateway,
-        dokumentService = dokumentService
+        k9MellomlagringService = k9MellomlagringService
     )
 
 
@@ -100,11 +99,11 @@ fun Application.pleiepengesoknadProsessering() {
         HealthRoute(
             healthService = HealthService(
                 healthChecks = mutableSetOf(
-                    dokumentGateway,
+                    k9MellomlagringGateway,
                     joarkGateway,
                     HttpRequestHealthCheck(
                         mapOf(
-                            Url.healthURL(configuration.getK9DokumentBaseUrl()) to HttpRequestHealthConfig(
+                            Url.healthURL(configuration.getK9MellomlagringBaseUrl()) to HttpRequestHealthConfig(
                                 expectedStatus = HttpStatusCode.OK
                             ),
                             Url.healthURL(configuration.getk9JoarkBaseUrl()) to HttpRequestHealthConfig(

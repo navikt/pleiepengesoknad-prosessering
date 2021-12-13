@@ -27,11 +27,11 @@ internal data class Topic<V>(
 }
 
 internal object Topics {
-    val MOTTATT = Topic(
-        name = "dusseldorf.privat-pleiepengesoknad-mottatt",
+    val MOTTATT_V2 = Topic(
+        name = "dusseldorf.privat-pleiepengesoknad-mottatt-v2",
         serDes = MottattSoknadSerDes()
     )
-    val PREPROSSESERT = Topic(
+    val PREPROSESSERT = Topic(
         name = "dusseldorf.privat-pleiepengesoknad-preprosessert",
         serDes = PreprossesertSerDes()
     )
