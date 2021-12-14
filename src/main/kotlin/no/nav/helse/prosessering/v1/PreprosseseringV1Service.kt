@@ -3,6 +3,7 @@ package no.nav.helse.prosessering.v1
 import no.nav.helse.CorrelationId
 import no.nav.helse.k9mellomlagring.Dokument
 import no.nav.helse.k9mellomlagring.DokumentEier
+import no.nav.helse.k9mellomlagring.JournalforingsFormat
 import no.nav.helse.k9mellomlagring.K9MellomlagringService
 import no.nav.helse.prosessering.Metadata
 import no.nav.helse.prosessering.SoknadId
@@ -46,7 +47,7 @@ internal class PreprosseseringV1Service(
         val soknadJsonUrl = k9MellomlagringService.lagreDokument(
             dokument = Dokument(
                 eier = dokumentEier,
-                content = oppsummeringPdf,
+                content = JournalforingsFormat.somJson(melding.k9FormatSøknad),
                 contentType = "application/json",
                 title = "Søknad om pleiepenger som JSON"
             ),
