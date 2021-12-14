@@ -15,7 +15,7 @@
     "K9_MELLOMLAGRING_BASE_URL": "https://k9-mellomlagring.dev.intern.nav.no",
     "K9_MELLOMLAGRING_SCOPE": "8d0460bd-ea81-4b08-b524-cf04874a794c/.default",
     "JOURNALFORE_SCOPES": "b32ae17c-0276-4006-9507-4ef49e0e5e20/.default",
-    "KAFKA_AUTO_OFFSET_RESET": "earliest"
+    "KAFKA_AUTO_OFFSET_RESET": "latest"
   },
   "slack-channel": "sif-alerts-dev",
   "slack-notify-type": "<!here> | pleiepengesoknad-prosessering | "
