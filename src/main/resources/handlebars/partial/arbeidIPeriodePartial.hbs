@@ -18,36 +18,15 @@
     </li>
 {{/if}}
 
-{{#if arbeidIPeriode.skalViseJobberSomVanlig}}
-    {{#if arbeidIPeriode.jobberSomVanlig}}
-        <li>
-            {{#if historisk}}
-                Har jobbet
-            {{else}}
-                Skal jobbe
-            {{/if}}
-            som normalt
-        </li>
-    {{else}}
-        <li>
-            {{#if historisk}}
-                Har jobbet
-            {{else}}
-                Skal jobbe
-            {{/if}}
-            mindre enn normalt
-        </li>
-        {{#if arbeidIPeriode.jobberProsent}}
-            <li>
-                {{#if historisk}}
-                    Har jobbet
-                {{else}}
-                    Skal jobbe
-                {{/if}}
-                {{arbeidIPeriode.jobberProsent}} prosent, i snitt {{arbeidIPeriode.snittTimerPerUkedag}} hver ukedag
-            </li>
+{{#if arbeidIPeriode.jobberProsent}}
+    <li>
+        {{#if historisk}}
+            Har jobbet
+        {{else}}
+            Skal jobbe
         {{/if}}
-    {{/if}}
+        {{arbeidIPeriode.jobberProsent}} prosent, i snitt {{arbeidIPeriode.snittTimerPerUkedag}} hver dag
+    </li>
 {{/if}}
 
 <!-- Viser erLiktHverUke dersom jobberProsent ikke er satt. -->
@@ -60,7 +39,7 @@
                 {{else}}
                     Skal jobbe
                 {{/if}}
-                likt hver uke
+                likt hver dag
             </li>
         {{else}}
             <li>
@@ -69,7 +48,7 @@
                 {{else}}
                     Skal jobbe
                 {{/if}}
-                variert hver uke
+                variert
             </li>
         {{/if}}
     {{/if}}

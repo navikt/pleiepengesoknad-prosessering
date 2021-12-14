@@ -1,7 +1,7 @@
 package no.nav.helse.prosessering.v1.asynkron
 
-import no.nav.helse.dokument.DokumentService
 import no.nav.helse.joark.JoarkGateway
+import no.nav.helse.k9mellomlagring.K9MellomlagringService
 import no.nav.helse.kafka.KafkaConfig
 import no.nav.helse.prosessering.v1.PreprosseseringV1Service
 import org.slf4j.LoggerFactory
@@ -10,7 +10,7 @@ internal class AsynkronProsesseringV1Service(
     kafkaConfig: KafkaConfig,
     preprosseseringV1Service: PreprosseseringV1Service,
     joarkGateway: JoarkGateway,
-    dokumentService: DokumentService
+    k9MellomlagringService: K9MellomlagringService
 ) {
 
     private companion object {
@@ -29,7 +29,7 @@ internal class AsynkronProsesseringV1Service(
 
     private val cleanupStream = CleanupStream(
         kafkaConfig = kafkaConfig,
-        dokumentService = dokumentService
+        k9MellomlagringService = k9MellomlagringService
     )
 
     private val healthChecks = setOf(

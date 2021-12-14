@@ -11,6 +11,12 @@ import no.nav.helse.prosessering.v1.asynkron.SøknadTopics.CLEANUP
 import no.nav.helse.prosessering.v1.asynkron.SøknadTopics.MOTTATT
 import no.nav.helse.prosessering.v1.asynkron.SøknadTopics.PREPROSSESERT
 import no.nav.helse.prosessering.v1.asynkron.Topic
+import no.nav.helse.prosessering.v1.MeldingV1
+import no.nav.helse.prosessering.v1.PreprossesertMeldingV1
+import no.nav.helse.prosessering.v1.asynkron.Topics
+import no.nav.helse.prosessering.v1.asynkron.Topics.CLEANUP
+import no.nav.helse.prosessering.v1.asynkron.Topics.MOTTATT_V2
+import no.nav.helse.prosessering.v1.asynkron.Topics.PREPROSESSERT
 import org.apache.kafka.clients.CommonClientConfigs
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.clients.consumer.KafkaConsumer
@@ -34,8 +40,8 @@ object KafkaWrapper {
             withSchemaRegistry = false,
             withSecurity = true,
             topicNames = listOf(
-                MOTTATT.name,
-                PREPROSSESERT.name,
+                MOTTATT_V2.name,
+                PREPROSESSERT.name,
                 CLEANUP.name,
                 ENDRINGSMELDING_MOTTATT.name,
                 ENDRINGSMELDING_PREPROSSESERT.name,

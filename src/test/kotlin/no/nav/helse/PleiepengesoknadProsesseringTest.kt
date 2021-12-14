@@ -46,7 +46,7 @@ class PleiepengesoknadProsesseringTest {
             .withNaisStsSupport()
             .withAzureSupport()
             .build()
-            .stubK9DokumentHealth()
+            .stubK9MellomlagringHealth()
             .stubPleiepengerJoarkHealth()
             .stubJournalfor()
             .stubLagreDokument()
