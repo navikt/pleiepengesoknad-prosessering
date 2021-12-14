@@ -1,12 +1,11 @@
 package no.nav.helse.prosessering.v1
 
 import no.nav.helse.CorrelationId
-import no.nav.helse.dokument.DokumentService
-import no.nav.helse.pdf.SøknadPDFGenerator
 import no.nav.helse.k9mellomlagring.Dokument
 import no.nav.helse.k9mellomlagring.DokumentEier
 import no.nav.helse.k9mellomlagring.JournalforingsFormat
 import no.nav.helse.k9mellomlagring.K9MellomlagringService
+import no.nav.helse.pdf.SøknadPDFGenerator
 import no.nav.helse.prosessering.Metadata
 import no.nav.helse.prosessering.SoknadId
 import org.slf4j.LoggerFactory
@@ -29,10 +28,9 @@ internal class PreprosseseringV1Service(
 
         val correlationId = CorrelationId(metadata.correlationId)
         val dokumentEier = DokumentEier(melding.søker.fødselsnummer)
-        val søkerAktørId = melding.søker.aktørId
 
         logger.info("Genererer Oppsummerings-PDF av søknaden.")
-        val oppsummeringPdf = pdfV1Generator.generateSoknadOppsummeringPdf(melding)
+        val oppsummeringPdf = søknadPDFGenerator.genererPDF(melding)
 
         logger.info("Mellomlagrer Oppsummerings-PDF.")
         val soknadOppsummeringPdfUrl = k9MellomlagringService.lagreDokument(

@@ -1,34 +1,9 @@
 package no.nav.helse.pdf
 
 import com.fasterxml.jackson.core.type.TypeReference
-import no.nav.helse.felles.ArbeidIPeriode
-import no.nav.helse.felles.Arbeidsforhold
-import no.nav.helse.felles.Beredskap
-import no.nav.helse.felles.Bosted
-import no.nav.helse.felles.Enkeltdag
-import no.nav.helse.felles.Ferieuttak
-import no.nav.helse.felles.Frilans
-import no.nav.helse.felles.HistoriskOmsorgstilbud
-import no.nav.helse.felles.JobberIPeriodeSvar
-import no.nav.helse.felles.Land
-import no.nav.helse.felles.Nattevåk
-import no.nav.helse.felles.Næringstyper
-import no.nav.helse.felles.Periode
-import no.nav.helse.felles.PlanUkedager
-import no.nav.helse.felles.PlanlagtOmsorgstilbud
-import no.nav.helse.felles.Regnskapsfører
-import no.nav.helse.felles.SelvstendigNæringsdrivende
-import no.nav.helse.felles.Søker
-import no.nav.helse.felles.Utenlandsopphold
-import no.nav.helse.felles.VarigEndring
-import no.nav.helse.felles.Virksomhet
-import no.nav.helse.felles.YrkesaktivSisteTreFerdigliknedeÅrene
+import no.nav.helse.felles.*
 import no.nav.helse.pdf.PDFGenerator.Companion.DATE_FORMATTER
-import no.nav.helse.prosessering.v1.ArbeidsforholdAnsatt
-import no.nav.helse.prosessering.v1.MeldingV1
-import no.nav.helse.prosessering.v1.erFørDagensDato
-import no.nav.helse.prosessering.v1.erLikEllerEtterDagensDato
-import no.nav.helse.prosessering.v1.somTekst
+import no.nav.helse.prosessering.v1.*
 import no.nav.helse.utils.DateUtils
 import no.nav.helse.utils.somNorskDag
 import no.nav.helse.utils.somNorskMåned
@@ -222,7 +197,6 @@ private fun Arbeidsforhold.somMap(
 
 private fun ArbeidIPeriode.somMap() : Map<String, Any?> = mapOf(
     "jobberIPerioden" to jobberIPerioden.tilBoolean(),
-    "jobberSomVanlig" to jobberSomVanlig,
     "jobberProsent" to jobberProsent,
     "skalViseJobberSomVanlig" to (jobberIPerioden == JobberIPeriodeSvar.JA),
     "erLiktHverUkeSatt" to (erLiktHverUke != null),

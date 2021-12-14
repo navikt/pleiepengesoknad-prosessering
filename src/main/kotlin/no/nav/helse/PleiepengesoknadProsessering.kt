@@ -23,11 +23,10 @@ import no.nav.helse.dusseldorf.ktor.health.HealthService
 import no.nav.helse.dusseldorf.ktor.jackson.dusseldorfConfigured
 import no.nav.helse.dusseldorf.ktor.metrics.MetricsRoute
 import no.nav.helse.joark.JoarkGateway
-import no.nav.helse.pdf.EndringsmeldingPDFGenerator
-import no.nav.helse.pdf.SøknadPDFGenerator
 import no.nav.helse.k9mellomlagring.K9MellomlagringGateway
 import no.nav.helse.k9mellomlagring.K9MellomlagringService
-import no.nav.helse.prosessering.v1.PdfV1Generator
+import no.nav.helse.pdf.EndringsmeldingPDFGenerator
+import no.nav.helse.pdf.SøknadPDFGenerator
 import no.nav.helse.prosessering.v1.PreprosseseringV1Service
 import no.nav.helse.prosessering.v1.asynkron.AsynkronProsesseringV1Service
 import no.nav.helse.prosessering.v1.asynkron.endringsmelding.AsynkronEndringsmeldingProsesseringV1Service
@@ -64,14 +63,13 @@ fun Application.pleiepengesoknadProsessering() {
     val k9MellomlagringService = K9MellomlagringService(k9MellomlagringGateway)
 
     val preprosseseringV1Service = PreprosseseringV1Service(
-        pdfV1Generator = PdfV1Generator(),
-        k9MellomlagringService = k9MellomlagringService
+        k9MellomlagringService = k9MellomlagringService,
         søknadPDFGenerator = SøknadPDFGenerator()
     )
 
     val endringsmeldingPreprosseseringV1Service = EndringsmeldingPreprosseseringV1Service(
         endringsmeldingPDFGenerator = EndringsmeldingPDFGenerator(),
-        dokumentService = dokumentService
+        k9MellomlagringService = k9MellomlagringService
     )
 
     val joarkGateway = JoarkGateway(
@@ -91,7 +89,7 @@ fun Application.pleiepengesoknadProsessering() {
         kafkaConfig = configuration.getKafkaConfig(TYPE.ENDRINGSMELDING),
         endringsmeldingPreprosseseringV1Service = endringsmeldingPreprosseseringV1Service,
         joarkGateway = joarkGateway,
-        dokumentService = dokumentService
+        k9MellomlagringService = k9MellomlagringService
     )
 
 

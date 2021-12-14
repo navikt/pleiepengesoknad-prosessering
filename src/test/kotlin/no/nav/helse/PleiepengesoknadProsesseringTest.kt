@@ -59,8 +59,8 @@ class PleiepengesoknadProsesseringTest {
         )
 
         private val søknadKafkaProducer = kafkaEnvironment.testProducer<MeldingV1>(
-            producerClientId = "pleiepengesoknad-mottak",
-            topic = SøknadTopics.MOTTATT
+            producerClientId = "pleiepengesoknad-api",
+            topic = SøknadTopics.MOTTATT_v2
         )
 
         private val søknadKafkaConsumer =
@@ -162,7 +162,7 @@ class PleiepengesoknadProsesseringTest {
             søknadId = UUID.randomUUID().toString()
         )
 
-        søknadKafkaProducer.leggPåMelding(melding.søknadId, melding, topic = SøknadTopics.MOTTATT)
+        søknadKafkaProducer.leggPåMelding(melding.søknadId, melding, topic = SøknadTopics.MOTTATT_v2)
         søknadcleanupConsumer
             .hentCleanupMelding(melding.søknadId, topic = SøknadTopics.CLEANUP)
             .assertJournalførtFormat()
@@ -174,7 +174,7 @@ class PleiepengesoknadProsesseringTest {
 
         wireMockServer.stubJournalfor(500) // Simulerer feil ved journalføring
 
-        søknadKafkaProducer.leggPåMelding(melding.søknadId, melding, topic = SøknadTopics.MOTTATT)
+        søknadKafkaProducer.leggPåMelding(melding.søknadId, melding, topic = SøknadTopics.MOTTATT_v2)
         ventPaaAtRetryMekanismeIStreamProsessering()
         readyGir200HealthGir503()
 
@@ -200,7 +200,7 @@ class PleiepengesoknadProsesseringTest {
     fun `Melding som gjeder søker med D-nummer`() {
         val melding = SøknadUtils.defaultSøknad
 
-        søknadKafkaProducer.leggPåMelding(melding.søknadId, melding, topic = SøknadTopics.MOTTATT)
+        søknadKafkaProducer.leggPåMelding(melding.søknadId, melding, topic = SøknadTopics.MOTTATT_v2)
         søknadcleanupConsumer
             .hentCleanupMelding(melding.søknadId, topic = SøknadTopics.CLEANUP)
             .assertJournalførtFormat()
@@ -213,7 +213,7 @@ class PleiepengesoknadProsesseringTest {
             vedleggUrls = listOf(URI("http://localhost:8080/jeg-skal-feile/1"))
         )
 
-        søknadKafkaProducer.leggPåMelding(melding.søknadId, melding, topic = SøknadTopics.MOTTATT)
+        søknadKafkaProducer.leggPåMelding(melding.søknadId, melding, topic = SøknadTopics.MOTTATT_v2)
         søknadcleanupConsumer
             .hentCleanupMelding(melding.søknadId, topic = SøknadTopics.CLEANUP)
             .assertJournalførtFormat()
@@ -228,7 +228,7 @@ class PleiepengesoknadProsesseringTest {
             barn = defaultBarn.copy(fødselsnummer = dNummerA, navn = "Barn med D-nummer")
         )
 
-        søknadKafkaProducer.leggPåMelding(melding.søknadId, melding, topic = SøknadTopics.MOTTATT)
+        søknadKafkaProducer.leggPåMelding(melding.søknadId, melding, topic = SøknadTopics.MOTTATT_v2)
 
         val preprosessertMelding: TopicEntry<PreprossesertMeldingV1> =
             søknadKafkaConsumer.hentMelding(melding.søknadId, topic = SøknadTopics.PREPROSSESERT)
@@ -250,7 +250,7 @@ class PleiepengesoknadProsesseringTest {
             barn = defaultBarn.copy(fødselsnummer = forventetFodselsNummer, navn = "KLØKTIG SUPERKONSOLL")
         )
 
-        søknadKafkaProducer.leggPåMelding(melding.søknadId, melding, topic = SøknadTopics.MOTTATT)
+        søknadKafkaProducer.leggPåMelding(melding.søknadId, melding, topic = SøknadTopics.MOTTATT_v2)
         val preprosessertMelding: TopicEntry<PreprossesertMeldingV1> =
             søknadKafkaConsumer.hentMelding(melding.søknadId, topic = SøknadTopics.PREPROSSESERT)
         assertEquals(forventetFodselsNummer, preprosessertMelding.data.barn.fødselsnummer)
@@ -352,7 +352,7 @@ class PleiepengesoknadProsesseringTest {
             k9FormatSøknad = SøknadUtils.defaultK9FormatPSB()
         )
 
-        søknadKafkaProducer.leggPåMelding(melding.søknadId, melding, topic = SøknadTopics.MOTTATT)
+        søknadKafkaProducer.leggPåMelding(melding.søknadId, melding, topic = SøknadTopics.MOTTATT_v2)
 
         søknadcleanupConsumer
             .hentCleanupMelding(melding.søknadId, topic = SøknadTopics.CLEANUP)

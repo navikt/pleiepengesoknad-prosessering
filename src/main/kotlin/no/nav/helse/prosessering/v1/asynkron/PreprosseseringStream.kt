@@ -1,11 +1,5 @@
 package no.nav.helse.prosessering.v1.asynkron
 
-import no.nav.helse.kafka.KafkaConfig
-import no.nav.helse.kafka.ManagedKafkaStreams
-import no.nav.helse.kafka.ManagedStreamHealthy
-import no.nav.helse.kafka.ManagedStreamReady
-import no.nav.helse.kafka.TopicEntry
-import no.nav.helse.kafka.process
 import no.nav.helse.kafka.*
 import no.nav.helse.prosessering.v1.MeldingV1
 import no.nav.helse.prosessering.v1.PreprosseseringV1Service
@@ -36,7 +30,7 @@ internal class PreprosseseringStream(
 
         private fun topology(preprosseseringV1Service: PreprosseseringV1Service) : Topology {
             val builder = StreamsBuilder()
-            val fromTopic = SøknadTopics.MOTTATT
+            val fromTopic = SøknadTopics.MOTTATT_v2
             val toTopic = SøknadTopics.PREPROSSESERT
 
             builder

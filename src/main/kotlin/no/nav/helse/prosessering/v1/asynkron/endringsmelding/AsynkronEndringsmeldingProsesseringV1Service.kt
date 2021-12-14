@@ -1,7 +1,7 @@
 package no.nav.helse.prosessering.v1.asynkron.endringsmelding
 
-import no.nav.helse.dokument.DokumentService
 import no.nav.helse.joark.JoarkGateway
+import no.nav.helse.k9mellomlagring.K9MellomlagringService
 import no.nav.helse.kafka.KafkaConfig
 import org.slf4j.LoggerFactory
 
@@ -9,7 +9,7 @@ internal class AsynkronEndringsmeldingProsesseringV1Service(
     kafkaConfig: KafkaConfig,
     endringsmeldingPreprosseseringV1Service: EndringsmeldingPreprosseseringV1Service,
     joarkGateway: JoarkGateway,
-    dokumentService: DokumentService
+    k9MellomlagringService: K9MellomlagringService
 ) {
 
     private companion object {
@@ -28,7 +28,7 @@ internal class AsynkronEndringsmeldingProsesseringV1Service(
 
     private val endringsmeldingCleanupStream = EndringsmeldingCleanupStream(
         kafkaConfig = kafkaConfig,
-        dokumentService = dokumentService
+        k9MellomlagringService = k9MellomlagringService
     )
 
     private val healthChecks = setOf(
@@ -45,7 +45,6 @@ internal class AsynkronEndringsmeldingProsesseringV1Service(
 
     internal fun stop() {
         logger.info("Stopper streams.")
-
         endringsmeldingPreprosseseringStream.stop()
         endringsmeldingJournalforingsStream.stop()
         endringsmeldingCleanupStream.stop()

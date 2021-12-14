@@ -1,15 +1,17 @@
 package no.nav.helse.prosessering.v1.asynkron.endringsmelding
 
 import no.nav.helse.CorrelationId
-import no.nav.helse.dokument.DokumentService
+import no.nav.helse.k9mellomlagring.Dokument
+import no.nav.helse.k9mellomlagring.DokumentEier
+import no.nav.helse.k9mellomlagring.JournalforingsFormat
+import no.nav.helse.k9mellomlagring.K9MellomlagringService
 import no.nav.helse.pdf.EndringsmeldingPDFGenerator
 import no.nav.helse.prosessering.Metadata
-import no.nav.helse.prosessering.SoknadId
 import org.slf4j.LoggerFactory
 
 internal class EndringsmeldingPreprosseseringV1Service(
     private val endringsmeldingPDFGenerator: EndringsmeldingPDFGenerator,
-    private val dokumentService: DokumentService
+    private val k9MellomlagringService: K9MellomlagringService
 ) {
 
     private companion object {
@@ -20,40 +22,36 @@ internal class EndringsmeldingPreprosseseringV1Service(
         endringsmelding: EndringsmeldingV1,
         metadata: Metadata
     ): PreprossesertEndringsmeldingV1 {
+        logger.info("Preprosseserer endringsmelding med søknadId ${endringsmelding.k9Format.søknadId}")
+
         val k9Format = endringsmelding.k9Format
-        val soknadId = SoknadId(k9Format.søknadId.id)
-        logger.info("Preprosseserer endringsmelding med søknadId $soknadId")
-
         val correlationId = CorrelationId(metadata.correlationId)
+        val dokumentEier = DokumentEier(endringsmelding.søker.fødselsnummer)
 
-        val søkerAktørId = endringsmelding.søker.aktørId
-
-        logger.trace("Genererer Oppsummerings-PDF av endringsmelding.")
-
+        logger.info("Genererer Oppsummerings-PDF av endringsmelding.")
         val endringsmeldingOppsummeringPdf = endringsmeldingPDFGenerator.genererPDF(endringsmelding)
 
-        logger.trace("Generering av Oppsummerings-PDF for endringsmelding OK.")
-        logger.trace("Mellomlagrer Oppsummerings-PDF av endringsmelding.")
-
-        val endringsmeldingOppsummeringPdfUrl = dokumentService.lagrePdf(
-            pdf = endringsmeldingOppsummeringPdf,
-            correlationId = correlationId,
-            aktørId = søkerAktørId,
-            dokumentbeskrivelse = "Endringsmelding om pleiepenger"
-        )
-
-        logger.trace("Mellomlagring av Oppsummerings-PDF for endringsmelding OK")
-
-        logger.trace("Mellomlagrer Oppsummerings-JSON for endringsmelding")
-
-        val endringsmeldingJsonUrl = dokumentService.lagreJsonMelding(
-            k9FormatSøknad = k9Format,
-            aktørId = søkerAktørId,
+        logger.info("Mellomlagrer Oppsummerings-PDF av endringsmelding.")
+        val endringsmeldingOppsummeringPdfUrl = k9MellomlagringService.lagreDokument(
+            dokument = Dokument(
+                eier = dokumentEier,
+                content = endringsmeldingOppsummeringPdf,
+                contentType = "application/pdf",
+                title = "Endringsmelding om pleiepenger"
+            ),
             correlationId = correlationId
         )
 
-        logger.trace("Mellomlagring av oppsummerings-JSON for endringsmelding OK.")
-
+        logger.info("Mellomlagrer Oppsummerings-JSON for endringsmelding")
+        val endringsmeldingJsonUrl = k9MellomlagringService.lagreDokument(
+            dokument = Dokument(
+                eier = dokumentEier,
+                content = JournalforingsFormat.somJson(k9Format),
+                contentType = "application/json",
+                title = "Endringsmelding om pleiepenger som JSON"
+            ),
+            correlationId = correlationId
+        )
 
         val komplettDokumentUrls = mutableListOf(
             listOf(

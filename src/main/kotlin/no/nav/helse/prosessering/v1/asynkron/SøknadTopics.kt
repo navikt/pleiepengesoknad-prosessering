@@ -36,8 +36,8 @@ data class Topic<V>(
 }
 
 internal object SøknadTopics {
-    val MOTTATT = Topic(
-        name = "dusseldorf.privat-pleiepengesoknad-mottatt",
+    val MOTTATT_v2 = Topic(
+        name = "dusseldorf.privat-pleiepengesoknad-mottatt-v2",
         serDes = MottattSoknadSerDes()
     )
     val PREPROSSESERT = Topic(
