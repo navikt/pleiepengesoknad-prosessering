@@ -3,7 +3,6 @@ import com.github.tomakehurst.wiremock.WireMockServer
 import no.nav.common.KafkaEnvironment
 import no.nav.helse.dusseldorf.testsupport.jws.ClientCredentials
 import no.nav.helse.dusseldorf.testsupport.wiremock.getAzureV2WellKnownUrl
-import no.nav.helse.dusseldorf.testsupport.wiremock.getNaisStsWellKnownUrl
 
 object TestConfiguration {
 
@@ -21,13 +20,6 @@ object TestConfiguration {
         )
 
         // Clients
-        if (wireMockServer != null) {
-            map["nav.auth.clients.0.alias"] = "nais-sts"
-            map["nav.auth.clients.0.client_id"] = "srvpps-prosessering"
-            map["nav.auth.clients.0.client_secret"] = "very-secret"
-            map["nav.auth.clients.0.discovery_endpoint"] = wireMockServer.getNaisStsWellKnownUrl()
-        }
-
         if (wireMockServer != null) {
             map["nav.auth.clients.1.alias"] = "azure-v2"
             map["nav.auth.clients.1.client_id"] = "pleiepengesoknad-prosessering"
