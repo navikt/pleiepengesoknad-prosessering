@@ -18,11 +18,11 @@ internal class EndringsmeldingPreprosseseringV1Service(
         private val logger = LoggerFactory.getLogger(EndringsmeldingPreprosseseringV1Service::class.java)
     }
 
-    internal suspend fun preprosseser(
+    internal suspend fun preprosesser(
         endringsmelding: EndringsmeldingV1,
         metadata: Metadata
     ): PreprossesertEndringsmeldingV1 {
-        logger.info("Preprosseserer endringsmelding med søknadId ${endringsmelding.k9Format.søknadId}")
+        logger.info("Preprosesserer endringsmelding med søknadId ${endringsmelding.k9Format.søknadId}")
 
         val k9Format = endringsmelding.k9Format
         val correlationId = CorrelationId(metadata.correlationId)

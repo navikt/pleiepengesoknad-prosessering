@@ -1,11 +1,6 @@
 package no.nav.helse.prosessering.v1.asynkron.endringsmelding
 
-import no.nav.helse.kafka.KafkaConfig
-import no.nav.helse.kafka.ManagedKafkaStreams
-import no.nav.helse.kafka.ManagedStreamHealthy
-import no.nav.helse.kafka.ManagedStreamReady
-import no.nav.helse.kafka.TopicEntry
-import no.nav.helse.kafka.process
+import no.nav.helse.kafka.*
 import no.nav.helse.prosessering.v1.asynkron.EndringsmeldingTopics
 import org.apache.kafka.streams.StreamsBuilder
 import org.apache.kafka.streams.Topology
@@ -47,7 +42,7 @@ internal class EndringsmeldingPreprosseseringStream(
                     process(NAME, soknadId, entry) {
                         logger.info("Preprosesserer endringsmelding.")
                         val preprossesertMelding: PreprossesertEndringsmeldingV1 =
-                            endringsmeldingPreprosseseringV1Service.preprosseser(
+                            endringsmeldingPreprosseseringV1Service.preprosesser(
                                 endringsmelding = entry.data,
                                 metadata = entry.metadata
                             )
