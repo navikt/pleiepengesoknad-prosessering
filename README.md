@@ -3,7 +3,7 @@
 ![CI / CD](https://github.com/navikt/pleiepengesoknad-prosessering/workflows/Alerts/badge.svg)
 
 Tjeneste som prosesserer søknader om pleiepenger.
-Leser søknader fra Kafka topic `privat-pleiepengesoknad-mottatt` som legges der av [pleiepengesoknad-mottak](https://github.com/navikt/pleiepengesoknad-mottak)
+Leser søknader fra Kafka topic `privat-pleiepengesoknad-mottatt-v2` som legges der av [pleiepengesoknad-api](https://github.com/navikt/pleiepengesoknad-api)
 
 ## Prosessering
 - Genererer Søknad-PDF
