@@ -28,6 +28,8 @@ apiVersion: kafka.nais.io/v1
 kind: Topic
 metadata:
   name: privat-pleiepengesoknad-mottatt
+  annotations:
+    kafka.nais.io/removeDataWhenResourceIsDeleted: "true"
   namespace: dusseldorf
   labels:
     team: dusseldorf
