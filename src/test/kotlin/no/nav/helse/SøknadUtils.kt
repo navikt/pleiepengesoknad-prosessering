@@ -151,7 +151,6 @@ internal object SøknadUtils {
                 jobberNormaltTimer = 30.0,
                 historiskArbeid = ArbeidIPeriode(
                     jobberIPerioden = JobberIPeriodeSvar.JA,
-                    jobberSomVanlig = false,
                     jobberProsent = 50.0,
                     erLiktHverUke = false,
                     enkeltdager = listOf(
@@ -162,7 +161,6 @@ internal object SøknadUtils {
                 ),
                 planlagtArbeid = ArbeidIPeriode(
                     jobberIPerioden = JobberIPeriodeSvar.JA,
-                    jobberSomVanlig = false,
                     erLiktHverUke = true,
                     enkeltdager = null,
                     fasteDager = PlanUkedager(
@@ -189,7 +187,6 @@ internal object SøknadUtils {
                 jobberNormaltTimer = 30.0,
                 historiskArbeid = ArbeidIPeriode(
                     jobberIPerioden = JobberIPeriodeSvar.JA,
-                    jobberSomVanlig = false,
                     erLiktHverUke = false,
                     enkeltdager = listOf(
                         Enkeltdag(dato = LocalDate.now(), tid = Duration.ofHours(4)),
@@ -199,7 +196,6 @@ internal object SøknadUtils {
                 ),
                 planlagtArbeid = ArbeidIPeriode(
                     jobberIPerioden = JobberIPeriodeSvar.JA,
-                    jobberSomVanlig = false,
                     erLiktHverUke = true,
                     enkeltdager = null,
                     fasteDager = PlanUkedager(
@@ -221,7 +217,6 @@ internal object SøknadUtils {
                     jobberNormaltTimer = 40.0,
                     historiskArbeid = ArbeidIPeriode(
                         jobberIPerioden = JobberIPeriodeSvar.JA,
-                        jobberSomVanlig = false,
                         erLiktHverUke = false,
                         enkeltdager = listOf(
                             Enkeltdag(dato = LocalDate.now(), tid = Duration.ofHours(4)),
@@ -237,8 +232,7 @@ internal object SøknadUtils {
                         )
                     ),
                     planlagtArbeid = ArbeidIPeriode(
-                        jobberIPerioden = JobberIPeriodeSvar.VET_IKKE,
-                        jobberSomVanlig = false,
+                        jobberIPerioden = JobberIPeriodeSvar.JA,
                         erLiktHverUke = true,
                         enkeltdager = null,
                         fasteDager = PlanUkedager(
@@ -259,7 +253,6 @@ internal object SøknadUtils {
                     jobberNormaltTimer = 40.0,
                     historiskArbeid = ArbeidIPeriode(
                         jobberIPerioden = JobberIPeriodeSvar.JA,
-                        jobberSomVanlig = false,
                         erLiktHverUke = false,
                         enkeltdager = listOf(
                             Enkeltdag(dato = LocalDate.now(), tid = Duration.ofHours(4)),
@@ -275,8 +268,7 @@ internal object SøknadUtils {
                         )
                     ),
                     planlagtArbeid = ArbeidIPeriode(
-                        jobberIPerioden = JobberIPeriodeSvar.VET_IKKE,
-                        jobberSomVanlig = false,
+                        jobberIPerioden = JobberIPeriodeSvar.JA,
                         erLiktHverUke = true,
                         enkeltdager = null,
                         fasteDager = PlanUkedager(

@@ -19,7 +19,6 @@ import no.nav.helse.felles.Enkeltdag
 import no.nav.helse.felles.Ferieuttak
 import no.nav.helse.felles.Frilans
 import no.nav.helse.felles.HistoriskOmsorgstilbud
-import no.nav.helse.felles.JobberIPeriodeSvar
 import no.nav.helse.felles.Land
 import no.nav.helse.felles.Nattevåk
 import no.nav.helse.felles.Næringstyper
@@ -330,9 +329,7 @@ private fun Arbeidsforhold.somMap(
 
 private fun ArbeidIPeriode.somMap() : Map<String, Any?> = mapOf(
     "jobberIPerioden" to jobberIPerioden.tilBoolean(),
-    "jobberSomVanlig" to jobberSomVanlig,
     "jobberProsent" to jobberProsent,
-    "skalViseJobberSomVanlig" to (jobberIPerioden == JobberIPeriodeSvar.JA),
     "erLiktHverUkeSatt" to (erLiktHverUke != null),
     "erLiktHverUke" to erLiktHverUke,
     "enkeltdagerPerMnd" to enkeltdager?.somMapPerMnd(),
