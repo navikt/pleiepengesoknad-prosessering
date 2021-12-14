@@ -12,8 +12,7 @@ import java.time.temporal.ChronoUnit
 data class Configuration(private val config: ApplicationConfig) {
 
     fun getk9JoarkBaseUrl() = URI(config.getRequiredString("nav.k9_joark_base_url", secret = false))
-    fun getK9DokumentBaseUrl() = URI(config.getRequiredString("nav.k9_dokument_base_url", secret = false))
-
+    fun getK9MellomlagringBaseUrl() = URI(config.getRequiredString("nav.k9_mellomlagring_base_url", secret = false))
 
     private fun unreadyAfterStreamStoppedIn() = Duration.of(
         config.getRequiredString("nav.kafka.unready_after_stream_stopped_in.amount", secret = false).toLong(),
@@ -56,6 +55,5 @@ data class Configuration(private val config: ApplicationConfig) {
         config.getRequiredList("nav.auth.scopes.$operation", secret = false, builder = { it }).toSet()
 
     internal fun getJournalforeScopes() = getScopesFor("journalfore")
-    internal fun getLagreDokumentScopes() = getScopesFor("lagre-dokument")
-    internal fun getSletteDokumentScopes() = getScopesFor("slette-dokument")
+    internal fun getK9MellomlagringScopes() = getScopesFor("k9_mellomlagring")
 }

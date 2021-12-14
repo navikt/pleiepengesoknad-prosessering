@@ -1,7 +1,7 @@
 package no.nav.helse
 
 import com.github.tomakehurst.wiremock.WireMockServer
-import io.ktor.server.testing.withApplication
+import io.ktor.server.testing.*
 import no.nav.helse.dusseldorf.testsupport.asArguments
 import no.nav.helse.dusseldorf.testsupport.wiremock.WireMockBuilder
 import org.slf4j.Logger
@@ -20,7 +20,7 @@ class PleiepengesoknadProsesseringWithMocks {
                 .withNaisStsSupport()
                 .withAzureSupport()
                 .build()
-                .stubK9DokumentHealth()
+                .stubK9MellomlagringHealth()
                 .stubPleiepengerJoarkHealth()
                 .stubJournalfor()
                 .stubLagreDokument()

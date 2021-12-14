@@ -55,7 +55,6 @@ class JoarkGateway(
     }
 
     suspend fun journalfoer(
-        aktoerId: String,
         norskIdent: String,
         sokerNavn: Navn,
         mottatt: ZonedDateTime,
@@ -66,7 +65,6 @@ class JoarkGateway(
         val authorizationHeader = cachedAccessTokenClient.getAccessToken(journalforeScopes).asAuthoriationHeader()
 
         val joarkRequest = JoarkRequest(
-            aktoerId = aktoerId,
             norskIdent = norskIdent,
             mottatt = mottatt,
             sokerNavn = sokerNavn,
@@ -114,7 +112,6 @@ class JoarkGateway(
 }
 private data class JoarkRequest(
     val norskIdent: String,
-    val aktoerId: String,
     val sokerNavn: Navn,
     val mottatt: ZonedDateTime,
     val dokumenter: List<List<URI>>

@@ -8,8 +8,8 @@ import no.nav.helse.prosessering.v1.MeldingV1
 import no.nav.helse.prosessering.v1.PreprossesertMeldingV1
 import no.nav.helse.prosessering.v1.asynkron.Topics
 import no.nav.helse.prosessering.v1.asynkron.Topics.CLEANUP
-import no.nav.helse.prosessering.v1.asynkron.Topics.MOTTATT
-import no.nav.helse.prosessering.v1.asynkron.Topics.PREPROSSESERT
+import no.nav.helse.prosessering.v1.asynkron.Topics.MOTTATT_V2
+import no.nav.helse.prosessering.v1.asynkron.Topics.PREPROSESSERT
 import org.apache.kafka.clients.CommonClientConfigs
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.clients.consumer.KafkaConsumer
@@ -33,8 +33,8 @@ object KafkaWrapper {
             withSchemaRegistry = false,
             withSecurity = true,
             topicNames= listOf(
-                MOTTATT.name,
-                PREPROSSESERT.name,
+                MOTTATT_V2.name,
+                PREPROSESSERT.name,
                 CLEANUP.name
             )
         )
@@ -67,9 +67,9 @@ fun KafkaEnvironment.testConsumer() : KafkaConsumer<String, TopicEntry<Preprosse
     val consumer = KafkaConsumer<String, TopicEntry<PreprossesertMeldingV1>>(
         testConsumerProperties("PleiepengesoknadProsesseringTestConsumer"),
         StringDeserializer(),
-        PREPROSSESERT.serDes
+        PREPROSESSERT.serDes
     )
-    consumer.subscribe(listOf(PREPROSSESERT.name))
+    consumer.subscribe(listOf(PREPROSESSERT.name))
     return consumer
 }
 
@@ -86,8 +86,8 @@ fun KafkaEnvironment.cleanupConsumer(): KafkaConsumer<String, String> {
 
 fun KafkaEnvironment.testProducer() = KafkaProducer(
     testProducerProperties(),
-    Topics.MOTTATT.keySerializer,
-    Topics.MOTTATT.serDes
+    Topics.MOTTATT_V2.keySerializer,
+    Topics.MOTTATT_V2.serDes
 )
 
 fun KafkaConsumer<String, TopicEntry<PreprossesertMeldingV1>>.hentPreprosessertMelding(
@@ -98,7 +98,7 @@ fun KafkaConsumer<String, TopicEntry<PreprossesertMeldingV1>>.hentPreprosessertM
     while (System.currentTimeMillis() < end) {
         seekToBeginning(assignment())
         val entries = poll(Duration.ofSeconds(1))
-            .records(PREPROSSESERT.name)
+            .records(PREPROSESSERT.name)
             .filter { it.key() == soknadId }
 
         if (entries.isNotEmpty()) {
@@ -131,7 +131,7 @@ fun KafkaConsumer<String, String>.hentCleanupMelding(
 fun KafkaProducer<String, TopicEntry<MeldingV1>>.leggSoknadTilProsessering(soknad: MeldingV1) {
     send(
         ProducerRecord(
-            Topics.MOTTATT.name,
+            Topics.MOTTATT_V2.name,
             soknad.søknadId,
             TopicEntry(
                 metadata = Metadata(
