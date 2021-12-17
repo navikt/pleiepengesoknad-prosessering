@@ -298,7 +298,7 @@ internal object SøknadUtils {
         PleiepengerSyktBarn()
             .medSøknadsperiode(K9Periode(LocalDate.parse("2020-01-01"), LocalDate.parse("2020-01-10")))
             .medSøknadInfo(DataBruktTilUtledning(true, true, true, true, true))
-            .medBarn(K9Barn(NorskIdentitetsnummer.of("10987654321"), null))
+            .medBarn(K9Barn().medNorskIdentitetsnummer(NorskIdentitetsnummer.of("10987654321")))
             .medOpptjeningAktivitet(
                 OpptjeningAktivitet()
                     .medSelvstendigNæringsdrivende(
@@ -311,18 +311,17 @@ internal object SøknadUtils {
                                         K9Periode(
                                             LocalDate.parse("2018-01-01"),
                                             LocalDate.parse("2020-01-01")
-                                        ) to SelvstendigNæringsdrivende.SelvstendigNæringsdrivendePeriodeInfo.builder()
-                                            .erNyoppstartet(true)
-                                            .registrertIUtlandet(false)
-                                            .bruttoInntekt(BigDecimal(5_000_000))
-                                            .erVarigEndring(true)
-                                            .endringDato(LocalDate.parse("2020-01-01"))
-                                            .endringBegrunnelse("Grunnet Covid-19")
-                                            .landkode(Landkode.NORGE)
-                                            .regnskapsførerNavn("Regnskapsfører Svensen")
-                                            .regnskapsførerTelefon("+4799887766")
-                                            .virksomhetstyper(listOf(VirksomhetType.DAGMAMMA, VirksomhetType.ANNEN))
-                                            .build()
+                                        ) to SelvstendigNæringsdrivende.SelvstendigNæringsdrivendePeriodeInfo()
+                                            .medErNyoppstartet(true)
+                                            .medRegistrertIUtlandet(false)
+                                            .medBruttoInntekt(BigDecimal(5_000_000))
+                                            .medErVarigEndring(true)
+                                            .medEndringDato(LocalDate.parse("2020-01-01"))
+                                            .medEndringBegrunnelse("Grunnet Covid-19")
+                                            .medLandkode(Landkode.NORGE)
+                                            .medRegnskapsførerNavn("Regnskapsfører Svensen")
+                                            .medRegnskapsførerTlf("+4799887766")
+                                            .medVirksomhetstyper(listOf(VirksomhetType.DAGMAMMA, VirksomhetType.ANNEN))
                                     )
                                 ),
                             SelvstendigNæringsdrivende()
@@ -333,18 +332,13 @@ internal object SøknadUtils {
                                         K9Periode(
                                             LocalDate.parse("2015-01-01"),
                                             LocalDate.parse("2017-01-01")
-                                        ) to SelvstendigNæringsdrivende.SelvstendigNæringsdrivendePeriodeInfo.builder()
-                                            .erNyoppstartet(false)
-                                            .registrertIUtlandet(true)
-                                            .bruttoInntekt(BigDecimal(500_000))
-                                            .erVarigEndring(false)
-                                            .endringDato(null)
-                                            .endringBegrunnelse(null)
-                                            .landkode(Landkode.SPANIA)
-                                            .regnskapsførerNavn(null)
-                                            .regnskapsførerTelefon(null)
-                                            .virksomhetstyper(listOf(VirksomhetType.FISKE))
-                                            .build()
+                                        ) to SelvstendigNæringsdrivende.SelvstendigNæringsdrivendePeriodeInfo()
+                                            .medErNyoppstartet(false)
+                                            .medRegistrertIUtlandet(true)
+                                            .medBruttoInntekt(BigDecimal(500_000))
+                                            .medErVarigEndring(false)
+                                            .medLandkode(Landkode.SPANIA)
+                                            .medVirksomhetstyper(listOf(VirksomhetType.FISKE))
                                     )
                                 )
                         )
@@ -396,23 +390,26 @@ internal object SøknadUtils {
             .medArbeidstid(
                 Arbeidstid().medArbeidstaker(
                     listOf(
-                        Arbeidstaker(
-                            NorskIdentitetsnummer.of("12345678910"),
-                            Organisasjonsnummer.of("926032925"),
-                            ArbeidstidInfo()
+                        Arbeidstaker()
+                            .medNorskIdentitetsnummer(NorskIdentitetsnummer.of("12345678910"))
+                            .medOrganisasjonsnummer(Organisasjonsnummer.of("926032925"))
+                            .medArbeidstidInfo(ArbeidstidInfo()
                                 .medPerioder(
                                     mapOf(
                                         K9Periode(
                                             LocalDate.parse("2018-01-01"),
                                             LocalDate.parse("2020-01-05")
-                                        ) to ArbeidstidPeriodeInfo(Duration.ofHours(8), Duration.ofHours(4)),
+                                        ) to ArbeidstidPeriodeInfo()
+                                            .medJobberNormaltTimerPerDag(Duration.ofHours(8))
+                                            .medFaktiskArbeidTimerPerDag(Duration.ofHours(4)),
                                         K9Periode(
                                             LocalDate.parse("2020-01-06"),
                                             LocalDate.parse("2020-01-10")
-                                        ) to ArbeidstidPeriodeInfo(Duration.ofHours(8), Duration.ofHours(2))
+                                        ) to ArbeidstidPeriodeInfo()
+                                            .medJobberNormaltTimerPerDag(Duration.ofHours(8))
+                                            .medFaktiskArbeidTimerPerDag(Duration.ofHours(2))
                                     )
-                                )
-                        )
+                                ))
                     )
                 )
             )
