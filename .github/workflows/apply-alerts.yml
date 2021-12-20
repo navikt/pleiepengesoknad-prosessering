@@ -4,16 +4,16 @@ on:
   push:
     paths:
       - 'nais/alerterator.yml'
-      - 'nais/dev-fss.json'
-      - 'nais/prod-fss.json'
+      - 'nais/dev-gcp.json'
+      - 'nais/prod-gcp.json'
       - '.github/workflows/apply-alerts.yml'
     branches:
       - 'master'
       - 'dev-**'
 
 jobs:
-  deploy-dev-fss:
-    name: Deploy to dev-fss
+  deploy-dev-gcp:
+    name: Deploy to dev-gcp
     if: startsWith(github.ref, 'refs/heads/dev-') || startsWith(github.ref, 'refs/heads/master') # Deploy if branch is either master or dev-*
     runs-on: ubuntu-latest
     steps:
@@ -21,12 +21,12 @@ jobs:
       - uses: nais/deploy/actions/deploy@v1
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
-          CLUSTER: dev-fss
+          CLUSTER: dev-gcp
           RESOURCE: nais/alerterator.yml
-          VARS: nais/dev-fss.json
+          VARS: nais/dev-gcp.json
 
-  deploy-prod-fss:
-    name: Deploy to prod-fss
+  deploy-prod-gcp:
+    name: Deploy to prod-gcp
     if: startsWith(github.ref, 'refs/heads/master')  # If the branch is master
     runs-on: ubuntu-latest
     steps:
@@ -34,6 +34,6 @@ jobs:
       - uses: nais/deploy/actions/deploy@v1
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
-          CLUSTER: prod-fss
+          CLUSTER: prod-gcp
           RESOURCE: nais/alerterator.yml
-          VARS: nais/prod-fss.json
+          VARS: nais/prod-gcp.json
