@@ -56,8 +56,8 @@ jobs:
           docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} -p ${GITHUB_TOKEN}
           docker push ${IMAGE}
 
-  deploy-dev-fss:
-    name: Deploy to dev-fss
+  deploy-dev-gcp:
+    name: Deploy to dev-gcp
     if: startsWith(github.ref, 'refs/heads/dev-') || startsWith(github.ref, 'refs/heads/master') # Deploy if branch is either master or dev-*
     needs: build-code-and-push-docker # Depends on build-code-and-push-docker job
     runs-on: ubuntu-latest
@@ -66,12 +66,12 @@ jobs:
       - uses: nais/deploy/actions/deploy@v1
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
-          CLUSTER: dev-fss
+          CLUSTER: dev-gcp
           RESOURCE: nais/naiserator.yml
-          VARS: nais/dev-fss.json
+          VARS: nais/dev-gcp.json
 
-  deploy-prod-fss:
-    name: Deploy to prod-fss
+  deploy-prod-gcp:
+    name: Deploy to prod-gcp
     if: startsWith(github.ref, 'refs/heads/master')  # If the branch is master
     needs: build-code-and-push-docker # Depends on build-code-and-push-docker job
     runs-on: ubuntu-latest
@@ -80,6 +80,6 @@ jobs:
       - uses: nais/deploy/actions/deploy@v1
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
-          CLUSTER: prod-fss
+          CLUSTER: prod-gcp
           RESOURCE: nais/naiserator.yml
-          VARS: nais/prod-fss.json
+          VARS: nais/prod-gcp.json
