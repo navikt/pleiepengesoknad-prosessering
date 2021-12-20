@@ -132,7 +132,7 @@ internal fun MeldingV1.reportMetrics() {
                 }
 
                 historisk?.let {
-                    if (it.enkeltdager.isNotEmpty()) {
+                    if (!it.enkeltdager.isNullOrEmpty()) {
                         omsorgstilbudCounter.labels("omsorgstilbud", "historiskeEnkeltdager").inc()
                     }
                 }

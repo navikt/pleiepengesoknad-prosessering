@@ -292,6 +292,15 @@
                         </li>
                     {{/each}}
                 </ul>
+
+                {{#if omsorgstilbud.historisk.ukedager}}
+                    <p><b>Mandager:</b> {{omsorgstilbud.planlagt.ukedager.mandag}}</p>
+                    <p><b>Tirsdager:</b> {{omsorgstilbud.planlagt.ukedager.tirsdag}}</p>
+                    <p><b>Onsdager:</b> {{omsorgstilbud.planlagt.ukedager.onsdag}}</p>
+                    <p><b>Torsdager:</b> {{omsorgstilbud.planlagt.ukedager.torsdag}}</p>
+                    <p><b>Fredager:</b> {{omsorgstilbud.planlagt.ukedager.fredag}}</p>
+                    <br/>
+                {{/if}}
             {{else}}
                 <p>Nei</p>
             {{/if}}

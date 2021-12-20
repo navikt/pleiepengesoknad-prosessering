@@ -11,27 +11,7 @@ import com.openhtmltopdf.outputdevice.helper.BaseRendererBuilder
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder
 import com.openhtmltopdf.util.XRLog
 import no.nav.helse.dusseldorf.ktor.core.fromResources
-import no.nav.helse.felles.ArbeidIPeriode
-import no.nav.helse.felles.Arbeidsforhold
-import no.nav.helse.felles.Beredskap
-import no.nav.helse.felles.Bosted
-import no.nav.helse.felles.Enkeltdag
-import no.nav.helse.felles.Ferieuttak
-import no.nav.helse.felles.Frilans
-import no.nav.helse.felles.HistoriskOmsorgstilbud
-import no.nav.helse.felles.Land
-import no.nav.helse.felles.Nattevåk
-import no.nav.helse.felles.Næringstyper
-import no.nav.helse.felles.Periode
-import no.nav.helse.felles.PlanUkedager
-import no.nav.helse.felles.PlanlagtOmsorgstilbud
-import no.nav.helse.felles.Regnskapsfører
-import no.nav.helse.felles.SelvstendigNæringsdrivende
-import no.nav.helse.felles.Søker
-import no.nav.helse.felles.Utenlandsopphold
-import no.nav.helse.felles.VarigEndring
-import no.nav.helse.felles.Virksomhet
-import no.nav.helse.felles.YrkesaktivSisteTreFerdigliknedeÅrene
+import no.nav.helse.felles.*
 import no.nav.helse.pleiepengerKonfiguert
 import no.nav.helse.prosessering.v1.PdfV1Generator.Companion.DATE_FORMATTER
 import no.nav.helse.utils.DateUtils
@@ -298,7 +278,8 @@ private fun List<Enkeltdag>.somMapPerUke(): List<Map<String, Any>> {
 }
 
 private fun HistoriskOmsorgstilbud.somMap(): Map<String, Any?> = mutableMapOf(
-    "enkeltdagerPerMnd" to enkeltdager.somMapPerMnd()
+    "enkeltdagerPerMnd" to enkeltdager?.somMapPerMnd(),
+    "ukedager" to ukedager?.somMap()
 )
 
 private fun PlanlagtOmsorgstilbud.somMap(): Map<String, Any?> = mutableMapOf(
