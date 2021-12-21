@@ -395,10 +395,10 @@ class PdfV1GeneratorTest {
                     historisk = Omsorgsdager(
                         ukedager = PlanUkedager(
                             mandag = null,
-                            tirsdag = Duration.ofHours(7).plusMinutes(30),
+                            tirsdag = Duration.ofHours(5).plusMinutes(30),
                             onsdag = null,
-                            torsdag = Duration.ofHours(7).plusMinutes(30),
-                            fredag = Duration.ofHours(7).plusMinutes(30),
+                            torsdag = Duration.ofHours(5).plusMinutes(30),
+                            fredag = Duration.ofHours(5).plusMinutes(30),
                         )
                     ),
                     planlagt = Omsorgsdager(
