@@ -4,16 +4,11 @@ import java.time.Duration
 import java.time.LocalDate
 
 data class Omsorgstilbud(
-    val historisk: HistoriskOmsorgstilbud? = null,
-    val planlagt: PlanlagtOmsorgstilbud? = null
+    val historisk: Omsorgsdager? = null,
+    val planlagt: Omsorgsdager? = null
 )
 
-data class PlanlagtOmsorgstilbud(
-    val enkeltdager: List<Enkeltdag>? = null,
-    val ukedager: PlanUkedager? = null
-)
-
-data class HistoriskOmsorgstilbud(
+data class Omsorgsdager(
     val enkeltdager: List<Enkeltdag>? = null,
     val ukedager: PlanUkedager? = null
 )

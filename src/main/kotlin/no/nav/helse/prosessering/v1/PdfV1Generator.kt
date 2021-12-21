@@ -238,7 +238,7 @@ private fun MeldingV1.omsorgstilbudSomMap(fraOgMed: LocalDate, tilOgMed: LocalDa
         "periodenAvsluttesIFremtiden" to (tilOgMed.isAfter(GÅRSDAGENS_DATO)),
         "fremtidFraOgMed" to if(fraOgMed.isAfter(DAGENS_DATO)) DATE_FORMATTER.format(fraOgMed) else DATE_FORMATTER.format(DAGENS_DATO),
         "historisk" to omsorgstilbud?.historisk?.somMap(),
-        "planlagt" to omsorgstilbud?.planlagt?.somMap(),
+        "planlagt" to omsorgstilbud?.planlagt?.somMap()
     )
 }
 
@@ -277,12 +277,7 @@ private fun List<Enkeltdag>.somMapPerUke(): List<Map<String, Any>> {
     }
 }
 
-private fun HistoriskOmsorgstilbud.somMap(): Map<String, Any?> = mutableMapOf(
-    "enkeltdagerPerMnd" to enkeltdager?.somMapPerMnd(),
-    "ukedager" to ukedager?.somMap()
-)
-
-private fun PlanlagtOmsorgstilbud.somMap(): Map<String, Any?> = mutableMapOf(
+private fun Omsorgsdager.somMap(): Map<String, Any?> = mutableMapOf(
     "enkeltdagerPerMnd" to enkeltdager?.somMapPerMnd(),
     "ukedager" to ukedager?.somMap()
 )
