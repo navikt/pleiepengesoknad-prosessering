@@ -311,15 +311,7 @@
 
             {{#if omsorgstilbud.planlagt}}
                 <p>Ja</p>
-
-                {{#if omsorgstilbud.planlagt.harSvartPåErLiktHverDag}}
-                    <p><span class="sporsmalstekst">Er tiden barnet skal være i omsorgstilbudet lik for hver dag i perioden du søker om? Det
-                                    vil si at alle mandager er like, alle tirsdager er like og så videre</span></p>
-                    <p>{{ jaNeiSvar omsorgstilbud.planlagt.erLiktHverDag }}</p>
-                {{/if}}
-
                 <br/>
-
                 <p class="sporsmalstekst">Tid barnet skal være i omsorgstilbudet:</p>
                 <ul class="ul-no-indent">
                     {{#each omsorgstilbud.planlagt.enkeltdagerPerMnd as |enkeltdagerPerMnd|~}}

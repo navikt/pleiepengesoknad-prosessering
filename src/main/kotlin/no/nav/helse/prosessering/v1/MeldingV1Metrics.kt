@@ -142,7 +142,7 @@ internal fun MeldingV1.reportMetrics() {
                         omsorgstilbudCounter.labels("omsorgstilbud", "planlagteEnkeltdager").inc()
                     }
 
-                    if (it.erLiktHverDag !== null && it.erLiktHverDag) {
+                    if (it.ukedager != null) {
                         omsorgstilbudCounter.labels("omsorgstilbud", "planlagteUkedagerErLiktHverDag").inc()
                     }
                 }

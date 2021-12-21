@@ -436,8 +436,7 @@ class PdfV1GeneratorTest {
                             Enkeltdag(LocalDate.now().plusDays(2), Duration.ofHours(7).plusMinutes(30)),
                             Enkeltdag(LocalDate.now().plusDays(3), Duration.ofHours(7).plusMinutes(30)),
                             Enkeltdag(LocalDate.now().plusDays(4), Duration.ofHours(0))
-                        ),
-                        erLiktHverDag = false
+                        )
                     )
                 )
             )

@@ -10,8 +10,7 @@ data class Omsorgstilbud(
 
 data class PlanlagtOmsorgstilbud(
     val enkeltdager: List<Enkeltdag>? = null,
-    val ukedager: PlanUkedager? = null,
-    val erLiktHverDag: Boolean? = null
+    val ukedager: PlanUkedager? = null
 )
 
 data class HistoriskOmsorgstilbud(
