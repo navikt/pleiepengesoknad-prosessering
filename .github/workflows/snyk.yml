@@ -21,3 +21,4 @@ jobs:
         with:
           command: monitor
           args: --org=dusseldorf --configuration-matching=^runtimeClasspath$|^compileClasspath$ --project-name=${{ github.repository }} --remote-repo-url=https://github.com/${{ github.repository }}.git
+
