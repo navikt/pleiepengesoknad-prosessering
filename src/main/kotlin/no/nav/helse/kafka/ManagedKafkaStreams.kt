@@ -7,6 +7,7 @@ import no.nav.helse.dusseldorf.ktor.health.Result
 import no.nav.helse.dusseldorf.ktor.health.UnHealthy
 import org.apache.kafka.streams.KafkaStreams
 import org.apache.kafka.streams.Topology
+import org.apache.kafka.streams.errors.StreamsUncaughtExceptionHandler
 import org.slf4j.LoggerFactory
 import java.time.Duration
 import java.time.LocalDateTime
@@ -94,7 +95,7 @@ internal class ManagedKafkaStreams(
             }
         }
 
-        streams.setUncaughtExceptionHandler { _, _ -> stop(becauseOfError = true) }
+        streams.setUncaughtExceptionHandler { _ -> StreamsUncaughtExceptionHandler.StreamThreadExceptionResponse.SHUTDOWN_CLIENT }
 
         Runtime.getRuntime().addShutdownHook(Thread {
             stop(becauseOfError = false)
