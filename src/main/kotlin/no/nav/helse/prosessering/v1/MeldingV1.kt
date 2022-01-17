@@ -2,7 +2,6 @@ package no.nav.helse.prosessering.v1
 
 import no.nav.helse.felles.*
 import no.nav.k9.søknad.Søknad
-import java.net.URI
 import java.time.LocalDate
 import java.time.ZonedDateTime
 
@@ -14,7 +13,6 @@ data class MeldingV1 (
     val tilOgMed : LocalDate,
     val søker : Søker,
     val barn : Barn,
-    var vedleggUrls : List<URI> = listOf(),
     var vedleggId : List<String> = listOf(),
     val medlemskap: Medlemskap,
     val utenlandsoppholdIPerioden: UtenlandsoppholdIPerioden,

@@ -449,4 +449,4 @@ private fun String.sprakTilTekst() = when (this.lowercase()) {
     else -> this
 }
 
-private fun MeldingV1.sjekkOmHarIkkeVedlegg(): Boolean = (vedleggUrls.isEmpty() && vedleggId.isEmpty())
+private fun MeldingV1.sjekkOmHarIkkeVedlegg(): Boolean = vedleggId.isEmpty()
