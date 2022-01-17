@@ -15,6 +15,7 @@ data class MeldingV1 (
     val søker : Søker,
     val barn : Barn,
     var vedleggUrls : List<URI> = listOf(),
+    var vedleggId : List<String> = listOf(),
     val medlemskap: Medlemskap,
     val utenlandsoppholdIPerioden: UtenlandsoppholdIPerioden,
     val ferieuttakIPerioden: FerieuttakIPerioden?,

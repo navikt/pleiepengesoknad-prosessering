@@ -40,7 +40,7 @@ internal class CleanupStream(
                     process(NAME, soknadId, entry) {
                         logger.info("Sletter dokumenter.")
                         k9MellomlagringService.slettDokumeter(
-                            urlBolks = entry.data.melding.dokumentUrls,
+                            dokumentIdBolks = entry.data.melding.dokumentId,
                             dokumentEier = DokumentEier(entry.data.melding.søker.fødselsnummer),
                             correlationId = CorrelationId(entry.metadata.correlationId)
                         )

@@ -2,14 +2,13 @@ package no.nav.helse.prosessering.v1
 
 import no.nav.helse.felles.*
 import no.nav.k9.søknad.Søknad
-import java.net.URI
 import java.time.LocalDate
 import java.time.ZonedDateTime
 
 data class PreprossesertMeldingV1(
     val språk: String?,
     val søknadId: String,
-    val dokumentUrls: List<List<URI>>,
+    val dokumentId: List<List<String>>,
     val mottatt: ZonedDateTime,
     val fraOgMed: LocalDate,
     val tilOgMed: LocalDate,
@@ -35,11 +34,11 @@ data class PreprossesertMeldingV1(
 ) {
     internal constructor(
         melding: MeldingV1,
-        dokumentUrls: List<List<URI>>
+        dokumentId: List<List<String>>
     ) : this(
         språk = melding.språk,
         søknadId = melding.søknadId,
-        dokumentUrls = dokumentUrls,
+        dokumentId = dokumentId,
         mottatt = melding.mottatt,
         fraOgMed = melding.fraOgMed,
         tilOgMed = melding.tilOgMed,
