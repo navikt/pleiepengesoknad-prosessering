@@ -294,11 +294,25 @@
                 </ul>
 
                 {{#if omsorgstilbud.historisk.ukedager}}
-                    <p><b>Mandager:</b> {{omsorgstilbud.historisk.ukedager.mandag}}</p>
-                    <p><b>Tirsdager:</b> {{omsorgstilbud.historisk.ukedager.tirsdag}}</p>
-                    <p><b>Onsdager:</b> {{omsorgstilbud.historisk.ukedager.onsdag}}</p>
-                    <p><b>Torsdager:</b> {{omsorgstilbud.historisk.ukedager.torsdag}}</p>
-                    <p><b>Fredager:</b> {{omsorgstilbud.historisk.ukedager.fredag}}</p>
+                    {{#if omsorgstilbud.historisk.ukedager.mandag}}
+                        <p><b>Mandager:</b> {{omsorgstilbud.historisk.ukedager.mandag}}</p>
+                    {{/if}}
+
+                    {{#if omsorgstilbud.historisk.ukedager.tirsdag}}
+                        <p><b>Tirsdager:</b> {{omsorgstilbud.historisk.ukedager.tirsdag}}</p>
+                    {{/if}}
+
+                    {{#if omsorgstilbud.historisk.ukedager.onsdag}}
+                        <p><b>Onsdager:</b> {{omsorgstilbud.historisk.ukedager.onsdag}}</p>
+                    {{/if}}
+
+                    {{#if omsorgstilbud.historisk.ukedager.torsdag}}
+                        <p><b>Torsdager:</b> {{omsorgstilbud.historisk.ukedager.torsdag}}</p>
+                    {{/if}}
+
+                    {{#if omsorgstilbud.historisk.ukedager.fredag}}
+                        <p><b>Fredager:</b> {{omsorgstilbud.historisk.ukedager.fredag}}</p>
+                    {{/if}}
                     <br/>
                 {{/if}}
             {{else}}
@@ -336,11 +350,25 @@
                 </ul>
 
                 {{#if omsorgstilbud.planlagt.ukedager}}
-                    <p><b>Mandager:</b> {{omsorgstilbud.planlagt.ukedager.mandag}}</p>
-                    <p><b>Tirsdager:</b> {{omsorgstilbud.planlagt.ukedager.tirsdag}}</p>
-                    <p><b>Onsdager:</b> {{omsorgstilbud.planlagt.ukedager.onsdag}}</p>
-                    <p><b>Torsdager:</b> {{omsorgstilbud.planlagt.ukedager.torsdag}}</p>
-                    <p><b>Fredager:</b> {{omsorgstilbud.planlagt.ukedager.fredag}}</p>
+                    {{#if omsorgstilbud.planlagt.ukedager.mandag}}
+                        <p><b>Mandager:</b> {{omsorgstilbud.planlagt.ukedager.mandag}}</p>
+                    {{/if}}
+
+                    {{#if omsorgstilbud.planlagt.ukedager.tirsdag}}
+                        <p><b>Tirsdager:</b> {{omsorgstilbud.planlagt.ukedager.tirsdag}}</p>
+                    {{/if}}
+
+                    {{#if omsorgstilbud.planlagt.ukedager.onsdag}}
+                        <p><b>Onsdager:</b> {{omsorgstilbud.planlagt.ukedager.onsdag}}</p>
+                    {{/if}}
+
+                    {{#if omsorgstilbud.planlagt.ukedager.torsdag}}
+                        <p><b>Torsdager:</b> {{omsorgstilbud.planlagt.ukedager.torsdag}}</p>
+                    {{/if}}
+
+                    {{#if omsorgstilbud.planlagt.ukedager.fredag}}
+                        <p><b>Fredager:</b> {{omsorgstilbud.planlagt.ukedager.fredag}}</p>
+                    {{/if}}
                     <br/>
                 {{/if}}
             {{else}}

@@ -258,7 +258,7 @@ fun List<Enkeltdag>.somMapPerMnd(): List<Map<String, Any>> {
     return omsorgsdagerPerMnd.map {
         mapOf(
             "år" to it.value.first().dato.year,
-            "måned" to it.key.somNorskMåned().lowercase(),
+            "måned" to it.key.somNorskMåned().capitalizeName(),
             "enkeltdagerPerUke" to it.value.somMapPerUke()
         )
     }
@@ -283,12 +283,14 @@ private fun Omsorgsdager.somMap(): Map<String, Any?> = mutableMapOf(
 )
 
 private fun PlanUkedager.somMap() = mapOf<String, Any?>(
-    "mandag" to (mandag?.somTekst() ?: "0 timer"),
-    "tirsdag" to (tirsdag?.somTekst() ?: "0 timer"),
-    "onsdag" to (onsdag?.somTekst() ?: "0 timer"),
-    "torsdag" to (torsdag?.somTekst() ?: "0 timer"),
-    "fredag" to (fredag?.somTekst() ?: "0 timer")
-)
+        "mandag" to if(mandag.harGyldigVerdi()) mandag!!.somTekst() else null,
+        "tirsdag" to if(tirsdag.harGyldigVerdi()) tirsdag!!.somTekst() else null,
+        "onsdag" to if(onsdag.harGyldigVerdi()) onsdag!!.somTekst() else null,
+        "torsdag" to if(torsdag.harGyldigVerdi()) torsdag!!.somTekst() else null,
+        "fredag" to if(fredag.harGyldigVerdi()) fredag!!.somTekst() else null,
+    )
+
+private fun Duration?.harGyldigVerdi() = this != null && this != Duration.ZERO
 
 private fun Arbeidsforhold.somMap(
     skalViseHistoriskArbeid: Boolean = true,
