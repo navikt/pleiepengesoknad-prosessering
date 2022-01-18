@@ -238,7 +238,7 @@ private fun MeldingV1.omsorgstilbudSomMap(fraOgMed: LocalDate, tilOgMed: LocalDa
         "periodenAvsluttesIFremtiden" to (tilOgMed.isAfter(GÅRSDAGENS_DATO)),
         "fremtidFraOgMed" to if(fraOgMed.isAfter(DAGENS_DATO)) DATE_FORMATTER.format(fraOgMed) else DATE_FORMATTER.format(DAGENS_DATO),
         "historisk" to omsorgstilbud?.historisk?.somMap(),
-        "planlagt" to omsorgstilbud?.planlagt?.somMap(),
+        "planlagt" to omsorgstilbud?.planlagt?.somMap()
     )
 }
 
@@ -258,7 +258,7 @@ fun List<Enkeltdag>.somMapPerMnd(): List<Map<String, Any>> {
     return omsorgsdagerPerMnd.map {
         mapOf(
             "år" to it.value.first().dato.year,
-            "måned" to it.key.somNorskMåned().lowercase(),
+            "måned" to it.key.somNorskMåned().capitalizeName(),
             "enkeltdagerPerUke" to it.value.somMapPerUke()
         )
     }
@@ -277,24 +277,20 @@ private fun List<Enkeltdag>.somMapPerUke(): List<Map<String, Any>> {
     }
 }
 
-private fun HistoriskOmsorgstilbud.somMap(): Map<String, Any?> = mutableMapOf(
-    "enkeltdagerPerMnd" to enkeltdager.somMapPerMnd()
-)
-
-private fun PlanlagtOmsorgstilbud.somMap(): Map<String, Any?> = mutableMapOf(
+private fun Omsorgsdager.somMap(): Map<String, Any?> = mutableMapOf(
     "enkeltdagerPerMnd" to enkeltdager?.somMapPerMnd(),
-    "ukedager" to ukedager?.somMap(),
-    "erLiktHverDag" to  erLiktHverDag,
-    "harSvartPåErLiktHverDag" to  (erLiktHverDag != null)
+    "ukedager" to ukedager?.somMap()
 )
 
 private fun PlanUkedager.somMap() = mapOf<String, Any?>(
-    "mandag" to (mandag?.somTekst() ?: "0 timer"),
-    "tirsdag" to (tirsdag?.somTekst() ?: "0 timer"),
-    "onsdag" to (onsdag?.somTekst() ?: "0 timer"),
-    "torsdag" to (torsdag?.somTekst() ?: "0 timer"),
-    "fredag" to (fredag?.somTekst() ?: "0 timer")
+    "mandag" to if (mandag.harGyldigVerdi()) mandag!!.somTekst() else null,
+    "tirsdag" to if (tirsdag.harGyldigVerdi()) tirsdag!!.somTekst() else null,
+    "onsdag" to if (onsdag.harGyldigVerdi()) onsdag!!.somTekst() else null,
+    "torsdag" to if (torsdag.harGyldigVerdi()) torsdag!!.somTekst() else null,
+    "fredag" to if (fredag.harGyldigVerdi()) fredag!!.somTekst() else null,
 )
+
+private fun Duration?.harGyldigVerdi() = this != null && this != Duration.ZERO
 
 private fun Arbeidsforhold.somMap(
     skalViseHistoriskArbeid: Boolean = true,
