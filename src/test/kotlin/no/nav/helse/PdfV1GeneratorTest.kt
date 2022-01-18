@@ -5,7 +5,6 @@ import no.nav.helse.prosessering.v1.ArbeidsforholdAnsatt
 import no.nav.helse.prosessering.v1.MeldingV1
 import no.nav.helse.prosessering.v1.PdfV1Generator
 import java.io.File
-import java.net.URI
 import java.time.Duration
 import java.time.LocalDate
 import java.time.ZonedDateTime
@@ -35,11 +34,7 @@ class PdfV1GeneratorTest {
                 fødselsnummer = "02119970078",
                 navn = "OLE DOLE"
             ),
-            vedleggUrls = listOf(
-                URI("http:localhost:8080/vedlegg1"),
-                URI("http:localhost:8080/vedlegg2"),
-                URI("http:localhost:8080/vedlegg3")
-            ),
+            vedleggId = listOf("123", "456"),
             medlemskap = Medlemskap(
                 harBoddIUtlandetSiste12Mnd = true,
                 utenlandsoppholdSiste12Mnd = listOf(
@@ -381,7 +376,7 @@ class PdfV1GeneratorTest {
         pdf = generator.generateSoknadOppsummeringPdf(
             melding = fullGyldigMelding(id).copy(
                 harMedsøker = true,
-                vedleggUrls = listOf(URI("noe"))
+                vedleggId = listOf("12345")
             )
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)

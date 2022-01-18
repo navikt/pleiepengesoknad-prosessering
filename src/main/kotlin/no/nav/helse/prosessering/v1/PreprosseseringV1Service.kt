@@ -8,6 +8,7 @@ import no.nav.helse.k9mellomlagring.K9MellomlagringService
 import no.nav.helse.prosessering.Metadata
 import no.nav.helse.prosessering.SoknadId
 import org.slf4j.LoggerFactory
+import java.net.URI
 
 internal class PreprosseseringV1Service(
     private val pdfV1Generator: PdfV1Generator,
@@ -33,7 +34,7 @@ internal class PreprosseseringV1Service(
         val oppsummeringPdf = pdfV1Generator.generateSoknadOppsummeringPdf(melding)
 
         logger.info("Mellomlagrer Oppsummerings-PDF.")
-        val soknadOppsummeringPdfUrl = k9MellomlagringService.lagreDokument(
+        val oppsummeringPdDokumentId = k9MellomlagringService.lagreDokument(
             dokument = Dokument(
                 eier = dokumentEier,
                 content = oppsummeringPdf,
@@ -41,10 +42,10 @@ internal class PreprosseseringV1Service(
                 title = "Søknad om pleiepenger"
             ),
             correlationId = correlationId
-        )
+        ).dokumentId()
 
         logger.info("Mellomlagrer Oppsummerings-JSON")
-        val soknadJsonUrl = k9MellomlagringService.lagreDokument(
+        val soknadJsonDokumentId = k9MellomlagringService.lagreDokument(
             dokument = Dokument(
                 eier = dokumentEier,
                 content = JournalforingsFormat.somJson(melding.k9FormatSøknad),
@@ -52,28 +53,31 @@ internal class PreprosseseringV1Service(
                 title = "Søknad om pleiepenger som JSON"
             ),
             correlationId = correlationId
-        )
+        ).dokumentId()
 
-        val komplettDokumentUrls = mutableListOf(
+        val komplettDokumentId = mutableListOf(
             listOf(
-                soknadOppsummeringPdfUrl,
-                soknadJsonUrl
+                oppsummeringPdDokumentId,
+                soknadJsonDokumentId
             )
         )
 
-        if (melding.vedleggUrls.isNotEmpty()) {
-            logger.trace("Legger til ${melding.vedleggUrls.size} vedlegg URL's fra meldingen som dokument.")
-            melding.vedleggUrls.forEach { komplettDokumentUrls.add(listOf(it)) }
+        if (melding.vedleggId.isNotEmpty()) {
+            logger.info("Legger til ${melding.vedleggId.size} vedlegg Id's fra meldingen som dokument.")
+            melding.vedleggId.forEach { komplettDokumentId.add(listOf(it)) }
         }
 
-        logger.trace("Totalt ${komplettDokumentUrls.size} dokumentbolker.")
+        logger.info("Totalt ${komplettDokumentId.size} dokumentbolker med totalt ${komplettDokumentId.flatten().size} dokumenter")
 
         val preprossesertMeldingV1 = PreprossesertMeldingV1(
             melding = melding,
-            dokumentUrls = komplettDokumentUrls.toList()
+            dokumentId = komplettDokumentId.toList()
         )
         melding.reportMetrics()
         preprossesertMeldingV1.reportMetrics()
         return preprossesertMeldingV1
     }
 }
+
+
+fun URI.dokumentId() = this.toString().substringAfterLast("/")

@@ -100,7 +100,7 @@ fun LocalDate.erEtterDagensDato() = isAfter(LocalDate.now())
 fun LocalDate.erLikEllerEtterDagensDato() = erLikDagensDato() || erEtterDagensDato()
 
 internal fun MeldingV1.reportMetrics() {
-    opplastedeVedleggHistogram.observe(vedleggUrls.size.toDouble())
+    opplastedeVedleggHistogram.observe(vedleggId.size.toDouble())
 
     if (fraOgMed.erFørDagensDato() && (tilOgMed.erFørDagensDato() || tilOgMed.erLikDagensDato())) {
         søknadsperiodeCounter.labels("fortid").inc()
