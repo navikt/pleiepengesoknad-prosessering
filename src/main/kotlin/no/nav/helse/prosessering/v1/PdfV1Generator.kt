@@ -283,12 +283,12 @@ private fun Omsorgsdager.somMap(): Map<String, Any?> = mutableMapOf(
 )
 
 private fun PlanUkedager.somMap() = mapOf<String, Any?>(
-        "mandag" to if(mandag.harGyldigVerdi()) mandag!!.somTekst() else null,
-        "tirsdag" to if(tirsdag.harGyldigVerdi()) tirsdag!!.somTekst() else null,
-        "onsdag" to if(onsdag.harGyldigVerdi()) onsdag!!.somTekst() else null,
-        "torsdag" to if(torsdag.harGyldigVerdi()) torsdag!!.somTekst() else null,
-        "fredag" to if(fredag.harGyldigVerdi()) fredag!!.somTekst() else null,
-    )
+    "mandag" to if (mandag.harGyldigVerdi()) mandag!!.somTekst() else null,
+    "tirsdag" to if (tirsdag.harGyldigVerdi()) tirsdag!!.somTekst() else null,
+    "onsdag" to if (onsdag.harGyldigVerdi()) onsdag!!.somTekst() else null,
+    "torsdag" to if (torsdag.harGyldigVerdi()) torsdag!!.somTekst() else null,
+    "fredag" to if (fredag.harGyldigVerdi()) fredag!!.somTekst() else null,
+)
 
 private fun Duration?.harGyldigVerdi() = this != null && this != Duration.ZERO
 
