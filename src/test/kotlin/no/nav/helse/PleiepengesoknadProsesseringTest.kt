@@ -18,7 +18,6 @@ import no.nav.helse.prosessering.v1.PreprossesertMeldingV1
 import org.junit.AfterClass
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import java.net.URI
 import java.time.Duration
 import java.time.LocalDate
 import java.time.ZonedDateTime
@@ -171,7 +170,7 @@ class PleiepengesoknadProsesseringTest {
     fun `Melding lagt til prosessering selv om sletting av vedlegg feiler`() {
         val melding = SøknadUtils.defaultSøknad.copy(
             søknadId = UUID.randomUUID().toString(),
-            vedleggUrls = listOf(URI("http://localhost:8080/jeg-skal-feile/1"))
+            vedleggId = listOf("1")
         )
 
         kafkaTestProducer.leggSoknadTilProsessering(melding)
