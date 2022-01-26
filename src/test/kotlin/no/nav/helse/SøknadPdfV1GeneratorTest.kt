@@ -5,7 +5,6 @@ import no.nav.helse.pdf.SøknadPDFGenerator
 import no.nav.helse.prosessering.v1.ArbeidsforholdAnsatt
 import no.nav.helse.prosessering.v1.MeldingV1
 import java.io.File
-import java.net.URI
 import java.time.Duration
 import java.time.LocalDate
 import java.time.ZonedDateTime
@@ -35,11 +34,7 @@ class SøknadPdfV1GeneratorTest {
                 fødselsnummer = "02119970078",
                 navn = "OLE DOLE"
             ),
-            vedleggUrls = listOf(
-                URI("http:localhost:8080/vedlegg1"),
-                URI("http:localhost:8080/vedlegg2"),
-                URI("http:localhost:8080/vedlegg3")
-            ),
+            vedleggId = listOf("123", "456"),
             medlemskap = Medlemskap(
                 harBoddIUtlandetSiste12Mnd = true,
                 utenlandsoppholdSiste12Mnd = listOf(
@@ -381,7 +376,7 @@ class SøknadPdfV1GeneratorTest {
         pdf = generator.genererPDF(
             melding = fullGyldigMelding(id).copy(
                 harMedsøker = true,
-                vedleggUrls = listOf(URI("noe"))
+                vedleggId = listOf("12345")
             )
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
@@ -392,14 +387,16 @@ class SøknadPdfV1GeneratorTest {
                 fraOgMed = LocalDate.now().minusDays(10),
                 tilOgMed = LocalDate.now().plusDays(10),
                 omsorgstilbud = Omsorgstilbud(
-                    historisk = HistoriskOmsorgstilbud(
-                        enkeltdager = listOf(
-                            Enkeltdag(LocalDate.now().minusDays(3), Duration.ofHours(7).plusMinutes(30)),
-                            Enkeltdag(LocalDate.now().minusDays(2), Duration.ofHours(7).plusMinutes(30)),
-                            Enkeltdag(LocalDate.now().minusDays(1), Duration.ofHours(7).plusMinutes(30)),
+                    historisk = Omsorgsdager(
+                        ukedager = PlanUkedager(
+                            mandag = null,
+                            tirsdag = Duration.ofHours(5).plusMinutes(30),
+                            onsdag = null,
+                            torsdag = Duration.ofHours(5).plusMinutes(30),
+                            fredag = Duration.ofHours(5).plusMinutes(30),
                         )
                     ),
-                    planlagt = PlanlagtOmsorgstilbud(
+                    planlagt = Omsorgsdager(
                         ukedager = PlanUkedager(
                             mandag = null,
                             tirsdag = Duration.ofHours(7).plusMinutes(30),
@@ -420,7 +417,7 @@ class SøknadPdfV1GeneratorTest {
                 fraOgMed = LocalDate.now().minusDays(10),
                 tilOgMed = LocalDate.now().plusDays(10),
                 omsorgstilbud = Omsorgstilbud(
-                    historisk = HistoriskOmsorgstilbud(
+                    historisk = Omsorgsdager(
                         enkeltdager = listOf(
                             Enkeltdag(LocalDate.parse("2021-01-01"), Duration.ofHours(7).plusMinutes(30)),
                             Enkeltdag(LocalDate.now().minusDays(3), Duration.ofHours(7).plusMinutes(30)),
@@ -428,14 +425,13 @@ class SøknadPdfV1GeneratorTest {
                             Enkeltdag(LocalDate.now().minusDays(1), Duration.ofHours(7).plusMinutes(30))
                         )
                     ),
-                    planlagt = PlanlagtOmsorgstilbud(
+                    planlagt = Omsorgsdager(
                         enkeltdager = listOf(
                             Enkeltdag(LocalDate.now().plusDays(1), Duration.ofHours(7).plusMinutes(30)),
                             Enkeltdag(LocalDate.now().plusDays(2), Duration.ofHours(7).plusMinutes(30)),
                             Enkeltdag(LocalDate.now().plusDays(3), Duration.ofHours(7).plusMinutes(30)),
                             Enkeltdag(LocalDate.now().plusDays(4), Duration.ofHours(0))
-                        ),
-                        erLiktHverDag = false
+                        )
                     )
                 )
             )

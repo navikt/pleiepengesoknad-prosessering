@@ -58,7 +58,7 @@ class JoarkGateway(
         norskIdent: String,
         sokerNavn: Navn,
         mottatt: ZonedDateTime,
-        dokumenter: List<List<URI>>,
+        dokumentId: List<List<String>>,
         correlationId: CorrelationId
     ) : JournalPostId {
 
@@ -68,7 +68,7 @@ class JoarkGateway(
             norskIdent = norskIdent,
             mottatt = mottatt,
             sokerNavn = sokerNavn,
-            dokumenter = dokumenter
+            dokumentId = dokumentId
         )
 
         val body = objectMapper.writeValueAsBytes(joarkRequest)
@@ -114,7 +114,7 @@ private data class JoarkRequest(
     val norskIdent: String,
     val sokerNavn: Navn,
     val mottatt: ZonedDateTime,
-    val dokumenter: List<List<URI>>
+    val dokumentId: List<List<String>>
 )
 
 data class JournalPostId(val journalPostId: String)

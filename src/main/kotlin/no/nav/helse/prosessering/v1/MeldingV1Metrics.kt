@@ -100,7 +100,7 @@ fun LocalDate.erEtterDagensDato() = isAfter(LocalDate.now())
 fun LocalDate.erLikEllerEtterDagensDato() = erLikDagensDato() || erEtterDagensDato()
 
 internal fun MeldingV1.reportMetrics() {
-    opplastedeVedleggHistogram.observe(vedleggUrls.size.toDouble())
+    opplastedeVedleggHistogram.observe(vedleggId.size.toDouble())
 
     if (fraOgMed.erFørDagensDato() && (tilOgMed.erFørDagensDato() || tilOgMed.erLikDagensDato())) {
         søknadsperiodeCounter.labels("fortid").inc()
@@ -132,8 +132,11 @@ internal fun MeldingV1.reportMetrics() {
                 }
 
                 historisk?.let {
-                    if (it.enkeltdager.isNotEmpty()) {
+                    if (!it.enkeltdager.isNullOrEmpty()) {
                         omsorgstilbudCounter.labels("omsorgstilbud", "historiskeEnkeltdager").inc()
+                    }
+                    if (it.ukedager != null) {
+                        omsorgstilbudCounter.labels("omsorgstilbud", "historiskeUkedagerErLiktHverDag").inc()
                     }
                 }
 
@@ -142,7 +145,7 @@ internal fun MeldingV1.reportMetrics() {
                         omsorgstilbudCounter.labels("omsorgstilbud", "planlagteEnkeltdager").inc()
                     }
 
-                    if (it.erLiktHverDag !== null && it.erLiktHverDag) {
+                    if (it.ukedager != null) {
                         omsorgstilbudCounter.labels("omsorgstilbud", "planlagteUkedagerErLiktHverDag").inc()
                     }
                 }
