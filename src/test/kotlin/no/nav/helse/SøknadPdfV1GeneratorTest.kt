@@ -1,19 +1,19 @@
 package no.nav.helse
 
 import no.nav.helse.felles.*
+import no.nav.helse.pdf.SøknadPDFGenerator
 import no.nav.helse.prosessering.v1.ArbeidsforholdAnsatt
 import no.nav.helse.prosessering.v1.MeldingV1
-import no.nav.helse.prosessering.v1.PdfV1Generator
 import java.io.File
 import java.time.Duration
 import java.time.LocalDate
 import java.time.ZonedDateTime
 import kotlin.test.Test
 
-class PdfV1GeneratorTest {
+class SøknadPdfV1GeneratorTest {
 
     private companion object {
-        private val generator = PdfV1Generator()
+        private val generator = SøknadPDFGenerator()
     }
 
     private fun fullGyldigMelding(soknadsId: String): MeldingV1 {
@@ -21,7 +21,7 @@ class PdfV1GeneratorTest {
             språk = "nb",
             søknadId = soknadsId,
             mottatt = ZonedDateTime.now(),
-            fraOgMed = LocalDate.now().minusDays(6),
+            fraOgMed = LocalDate.now().plusDays(6),
             tilOgMed = LocalDate.now().plusDays(35),
             søker = Søker(
                 aktørId = "123456",
@@ -308,19 +308,19 @@ class PdfV1GeneratorTest {
 
     private fun genererOppsummeringsPdfer(writeBytes: Boolean) {
         var id = "1-full-søknad"
-        var pdf = generator.generateSoknadOppsummeringPdf(
+        var pdf = generator.genererPDF(
             melding = fullGyldigMelding(soknadsId = id)
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
         id = "2-utenMedsøker"
-        pdf = generator.generateSoknadOppsummeringPdf(
+        pdf = generator.genererPDF(
             melding = fullGyldigMelding(id).copy(harMedsøker = false)
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
         id = "3-medsøkerSamtidigHjemme"
-        pdf = generator.generateSoknadOppsummeringPdf(
+        pdf = generator.genererPDF(
             melding = fullGyldigMelding(id).copy(
                 harMedsøker = true,
                 samtidigHjemme = true
@@ -329,7 +329,7 @@ class PdfV1GeneratorTest {
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
         id = "4-medsøkerIkkeSamtidigHjemme"
-        pdf = generator.generateSoknadOppsummeringPdf(
+        pdf = generator.genererPDF(
             melding = fullGyldigMelding(id).copy(
                 harMedsøker = true,
                 samtidigHjemme = false
@@ -338,19 +338,19 @@ class PdfV1GeneratorTest {
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
         id = "5-utenSpråk"
-        pdf = generator.generateSoknadOppsummeringPdf(
+        pdf = generator.genererPDF(
             melding = fullGyldigMelding(id).copy(harMedsøker = false, språk = null)
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
         id = "6-utenArbeidsgivere"
-        pdf = generator.generateSoknadOppsummeringPdf(
+        pdf = generator.genererPDF(
             melding = fullGyldigMelding(id).copy(arbeidsgivere = null)
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
         id = "7-flerePlanlagteUtenlandsopphold"
-        pdf = generator.generateSoknadOppsummeringPdf(
+        pdf = generator.genererPDF(
             melding = fullGyldigMelding(id).copy(
                 medlemskap = Medlemskap(
                     harBoddIUtlandetSiste12Mnd = false,
@@ -373,7 +373,7 @@ class PdfV1GeneratorTest {
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
         id = "8-har-lastet-opp-vedlegg"
-        pdf = generator.generateSoknadOppsummeringPdf(
+        pdf = generator.genererPDF(
             melding = fullGyldigMelding(id).copy(
                 harMedsøker = true,
                 vedleggId = listOf("12345")
@@ -382,7 +382,7 @@ class PdfV1GeneratorTest {
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
         id = "9-omsorgstilbud-v2-med-historisk-og-planlagte-ukedager"
-        pdf = generator.generateSoknadOppsummeringPdf(
+        pdf = generator.genererPDF(
             melding = fullGyldigMelding(id).copy(
                 fraOgMed = LocalDate.now().minusDays(10),
                 tilOgMed = LocalDate.now().plusDays(10),
@@ -412,7 +412,7 @@ class PdfV1GeneratorTest {
 
 
         id = "10-omsorgstilbud-v2-med-historisk-og-planlagte-enkeltdager"
-        pdf = generator.generateSoknadOppsummeringPdf(
+        pdf = generator.genererPDF(
             melding = fullGyldigMelding(id).copy(
                 fraOgMed = LocalDate.now().minusDays(10),
                 tilOgMed = LocalDate.now().plusDays(10),
@@ -439,7 +439,7 @@ class PdfV1GeneratorTest {
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
         id = "11-omsorgstilbud-nei-til-omsorgstilbud"
-        pdf = generator.generateSoknadOppsummeringPdf(
+        pdf = generator.genererPDF(
             melding = fullGyldigMelding(id).copy(
                 omsorgstilbud = null
             )
@@ -447,7 +447,7 @@ class PdfV1GeneratorTest {
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
         id = "12-kun-frilans-arbeidsforhold"
-        pdf = generator.generateSoknadOppsummeringPdf(
+        pdf = generator.genererPDF(
             melding = fullGyldigMelding(id).copy(
                 selvstendigNæringsdrivende = null,
                 arbeidsgivere = null

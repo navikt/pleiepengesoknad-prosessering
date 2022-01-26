@@ -25,9 +25,12 @@ import no.nav.helse.dusseldorf.ktor.metrics.MetricsRoute
 import no.nav.helse.joark.JoarkGateway
 import no.nav.helse.k9mellomlagring.K9MellomlagringGateway
 import no.nav.helse.k9mellomlagring.K9MellomlagringService
-import no.nav.helse.prosessering.v1.PdfV1Generator
+import no.nav.helse.pdf.EndringsmeldingPDFGenerator
+import no.nav.helse.pdf.SøknadPDFGenerator
 import no.nav.helse.prosessering.v1.PreprosseseringV1Service
 import no.nav.helse.prosessering.v1.asynkron.AsynkronProsesseringV1Service
+import no.nav.helse.prosessering.v1.asynkron.endringsmelding.AsynkronEndringsmeldingProsesseringV1Service
+import no.nav.helse.prosessering.v1.asynkron.endringsmelding.EndringsmeldingPreprosseseringV1Service
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.net.URI
@@ -60,7 +63,12 @@ fun Application.pleiepengesoknadProsessering() {
     val k9MellomlagringService = K9MellomlagringService(k9MellomlagringGateway)
 
     val preprosseseringV1Service = PreprosseseringV1Service(
-        pdfV1Generator = PdfV1Generator(),
+        k9MellomlagringService = k9MellomlagringService,
+        søknadPDFGenerator = SøknadPDFGenerator()
+    )
+
+    val endringsmeldingPreprosseseringV1Service = EndringsmeldingPreprosseseringV1Service(
+        endringsmeldingPDFGenerator = EndringsmeldingPDFGenerator(),
         k9MellomlagringService = k9MellomlagringService
     )
 
@@ -71,8 +79,15 @@ fun Application.pleiepengesoknadProsessering() {
     )
 
     val asynkronProsesseringV1Service = AsynkronProsesseringV1Service(
-        kafkaConfig = configuration.getKafkaConfig(),
+        kafkaConfig = configuration.getKafkaConfig(TYPE.SØKNAD),
         preprosseseringV1Service = preprosseseringV1Service,
+        joarkGateway = joarkGateway,
+        k9MellomlagringService = k9MellomlagringService
+    )
+
+    val asynkronEndringsmeldingProsesseringV1Service = AsynkronEndringsmeldingProsesseringV1Service(
+        kafkaConfig = configuration.getKafkaConfig(TYPE.ENDRINGSMELDING),
+        endringsmeldingPreprosseseringV1Service = endringsmeldingPreprosseseringV1Service,
         joarkGateway = joarkGateway,
         k9MellomlagringService = k9MellomlagringService
     )
@@ -81,8 +96,13 @@ fun Application.pleiepengesoknadProsessering() {
     environment.monitor.subscribe(ApplicationStopping) {
         logger.info("Stopper AsynkronProsesseringV1Service.")
         asynkronProsesseringV1Service.stop()
-        CollectorRegistry.defaultRegistry.clear()
         logger.info("AsynkronProsesseringV1Service Stoppet.")
+
+        logger.info("Stopper asynkronEndringsmeldingProsesseringV1Service.")
+        asynkronEndringsmeldingProsesseringV1Service.stop()
+        logger.info("asynkronEndringsmeldingProsesseringV1Service Stoppet.")
+
+        CollectorRegistry.defaultRegistry.clear()
     }
 
     install(Routing) {
@@ -113,6 +133,7 @@ fun Application.pleiepengesoknadProsessering() {
                     )
                 )
                     .plus(asynkronProsesseringV1Service.healthChecks()).toSet()
+                    .plus(asynkronEndringsmeldingProsesseringV1Service.healthChecks()).toSet()
             )
         )
     }

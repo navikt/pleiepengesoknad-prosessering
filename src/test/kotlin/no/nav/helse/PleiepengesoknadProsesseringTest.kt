@@ -9,12 +9,19 @@ import io.ktor.server.testing.*
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.time.delay
 import no.nav.common.KafkaEnvironment
+import no.nav.helse.EndringsmeldingUtils.defaultEndringsmelding
 import no.nav.helse.dusseldorf.testsupport.wiremock.WireMockBuilder
 import no.nav.helse.felles.*
 import no.nav.helse.k9format.assertJournalførtFormat
 import no.nav.helse.kafka.TopicEntry
 import no.nav.helse.prosessering.v1.MeldingV1
 import no.nav.helse.prosessering.v1.PreprossesertMeldingV1
+import no.nav.helse.prosessering.v1.asynkron.Cleanup
+import no.nav.helse.prosessering.v1.asynkron.CleanupEndringsmelding
+import no.nav.helse.prosessering.v1.asynkron.EndringsmeldingTopics
+import no.nav.helse.prosessering.v1.asynkron.SøknadTopics
+import no.nav.helse.prosessering.v1.asynkron.endringsmelding.EndringsmeldingV1
+import no.nav.helse.prosessering.v1.asynkron.endringsmelding.PreprossesertEndringsmeldingV1
 import org.junit.AfterClass
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -25,6 +32,7 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
 
 
 class PleiepengesoknadProsesseringTest {
@@ -44,9 +52,34 @@ class PleiepengesoknadProsesseringTest {
             .stubSlettDokument()
 
         private val kafkaEnvironment = KafkaWrapper.bootstrap()
-        private val kafkaTestConsumer = kafkaEnvironment.testConsumer()
-        private val cleanupConsumer = kafkaEnvironment.cleanupConsumer()
-        private val kafkaTestProducer = kafkaEnvironment.testProducer()
+        private val søknadcleanupConsumer = kafkaEnvironment.cleanupConsumer<Cleanup>(
+            topic = SøknadTopics.CLEANUP,
+            consumerClientId = "sif-innsyn-api"
+        )
+
+        private val søknadKafkaProducer = kafkaEnvironment.testProducer<MeldingV1>(
+            producerClientId = "pleiepengesoknad-api",
+            topic = SøknadTopics.MOTTATT_v2
+        )
+
+        private val søknadKafkaConsumer =
+            kafkaEnvironment.testConsumer<PreprossesertMeldingV1>(topic = SøknadTopics.PREPROSSESERT)
+
+        private val endringsmeldingKafkaProducer = kafkaEnvironment.testProducer<EndringsmeldingV1>(
+            producerClientId = "pleiepengesoknad-api",
+            topic = EndringsmeldingTopics.ENDRINGSMELDING_MOTTATT
+        )
+
+        private val endringsmeldingKafkConsumer =
+            kafkaEnvironment.testConsumer<PreprossesertEndringsmeldingV1>(
+                topic = EndringsmeldingTopics.ENDRINGSMELDING_PREPROSSESERT
+            )
+
+        private val endringsmeldingCleanupConsumer =
+            kafkaEnvironment.cleanupConsumer<CleanupEndringsmelding>(
+                topic = EndringsmeldingTopics.ENDRINGSMELDING_CLEANUP,
+                consumerClientId = "sif-innsyn-api"
+            )
 
         // Se https://github.com/navikt/dusseldorf-ktor#f%C3%B8dselsnummer
         private val gyldigFodselsnummerA = "02119970078"
@@ -87,9 +120,15 @@ class PleiepengesoknadProsesseringTest {
         fun tearDown() {
             logger.info("Tearing down")
             wireMockServer.stop()
-            kafkaTestConsumer.close()
-            kafkaTestProducer.close()
-            cleanupConsumer.close()
+
+            søknadKafkaProducer.close()
+            søknadKafkaConsumer.close()
+            søknadcleanupConsumer.close()
+
+            endringsmeldingKafkaProducer.close()
+            endringsmeldingKafkConsumer.close()
+            endringsmeldingCleanupConsumer.close()
+
             stopEngine()
             kafkaEnvironment.tearDown()
 
@@ -122,9 +161,9 @@ class PleiepengesoknadProsesseringTest {
             søknadId = UUID.randomUUID().toString()
         )
 
-        kafkaTestProducer.leggSoknadTilProsessering(melding)
-        cleanupConsumer
-            .hentCleanupMelding(melding.søknadId)
+        søknadKafkaProducer.leggPåMelding(melding.søknadId, melding, topic = SøknadTopics.MOTTATT_v2)
+        søknadcleanupConsumer
+            .hentCleanupMelding(melding.søknadId, topic = SøknadTopics.CLEANUP)
             .assertJournalførtFormat()
     }
 
@@ -134,14 +173,14 @@ class PleiepengesoknadProsesseringTest {
 
         wireMockServer.stubJournalfor(500) // Simulerer feil ved journalføring
 
-        kafkaTestProducer.leggSoknadTilProsessering(melding)
+        søknadKafkaProducer.leggPåMelding(melding.søknadId, melding, topic = SøknadTopics.MOTTATT_v2)
         ventPaaAtRetryMekanismeIStreamProsessering()
         readyGir200HealthGir503()
 
         wireMockServer.stubJournalfor(201) // Simulerer journalføring fungerer igjen
         restartEngine()
-        cleanupConsumer
-            .hentCleanupMelding(melding.søknadId)
+        søknadcleanupConsumer
+            .hentCleanupMelding(melding.søknadId, topic = SøknadTopics.CLEANUP)
             .assertJournalførtFormat()
     }
 
@@ -160,9 +199,9 @@ class PleiepengesoknadProsesseringTest {
     fun `Melding som gjeder søker med D-nummer`() {
         val melding = SøknadUtils.defaultSøknad
 
-        kafkaTestProducer.leggSoknadTilProsessering(melding)
-        cleanupConsumer
-            .hentCleanupMelding(melding.søknadId)
+        søknadKafkaProducer.leggPåMelding(melding.søknadId, melding, topic = SøknadTopics.MOTTATT_v2)
+        søknadcleanupConsumer
+            .hentCleanupMelding(melding.søknadId, topic = SøknadTopics.CLEANUP)
             .assertJournalførtFormat()
     }
 
@@ -173,9 +212,9 @@ class PleiepengesoknadProsesseringTest {
             vedleggId = listOf("1")
         )
 
-        kafkaTestProducer.leggSoknadTilProsessering(melding)
-        cleanupConsumer
-            .hentCleanupMelding(melding.søknadId)
+        søknadKafkaProducer.leggPåMelding(melding.søknadId, melding, topic = SøknadTopics.MOTTATT_v2)
+        søknadcleanupConsumer
+            .hentCleanupMelding(melding.søknadId, topic = SøknadTopics.CLEANUP)
             .assertJournalførtFormat()
     }
 
@@ -188,12 +227,14 @@ class PleiepengesoknadProsesseringTest {
             barn = defaultBarn.copy(fødselsnummer = dNummerA, navn = "Barn med D-nummer")
         )
 
-        kafkaTestProducer.leggSoknadTilProsessering(melding)
+        søknadKafkaProducer.leggPåMelding(melding.søknadId, melding, topic = SøknadTopics.MOTTATT_v2)
+
         val preprosessertMelding: TopicEntry<PreprossesertMeldingV1> =
-            kafkaTestConsumer.hentPreprosessertMelding(melding.søknadId)
+            søknadKafkaConsumer.hentMelding(melding.søknadId, topic = SøknadTopics.PREPROSSESERT)
+
         assertEquals("Barn med D-nummer", preprosessertMelding.data.barn.navn)
-        cleanupConsumer
-            .hentCleanupMelding(melding.søknadId)
+        søknadcleanupConsumer
+            .hentCleanupMelding(melding.søknadId, topic = SøknadTopics.CLEANUP)
             .assertJournalførtFormat()
     }
 
@@ -208,12 +249,12 @@ class PleiepengesoknadProsesseringTest {
             barn = defaultBarn.copy(fødselsnummer = forventetFodselsNummer, navn = "KLØKTIG SUPERKONSOLL")
         )
 
-        kafkaTestProducer.leggSoknadTilProsessering(melding)
+        søknadKafkaProducer.leggPåMelding(melding.søknadId, melding, topic = SøknadTopics.MOTTATT_v2)
         val preprosessertMelding: TopicEntry<PreprossesertMeldingV1> =
-            kafkaTestConsumer.hentPreprosessertMelding(melding.søknadId)
+            søknadKafkaConsumer.hentMelding(melding.søknadId, topic = SøknadTopics.PREPROSSESERT)
         assertEquals(forventetFodselsNummer, preprosessertMelding.data.barn.fødselsnummer)
-        cleanupConsumer
-            .hentCleanupMelding(melding.søknadId)
+        søknadcleanupConsumer
+            .hentCleanupMelding(melding.søknadId, topic = SøknadTopics.CLEANUP)
             .assertJournalførtFormat()
     }
 
@@ -310,11 +351,36 @@ class PleiepengesoknadProsesseringTest {
             k9FormatSøknad = SøknadUtils.defaultK9FormatPSB()
         )
 
-        kafkaTestProducer.leggSoknadTilProsessering(melding)
+        søknadKafkaProducer.leggPåMelding(melding.søknadId, melding, topic = SøknadTopics.MOTTATT_v2)
 
-        cleanupConsumer
-            .hentCleanupMelding(melding.søknadId)
+        søknadcleanupConsumer
+            .hentCleanupMelding(melding.søknadId, topic = SøknadTopics.CLEANUP)
             .assertJournalførtFormat()
+    }
+
+    @Test
+    fun endringsmelding() {
+        val søknadsId = UUID.randomUUID()
+        val endringsmelding = defaultEndringsmelding(søknadsId)
+        endringsmeldingKafkaProducer.leggPåMelding(
+            søknadsId.toString(),
+            endringsmelding,
+            EndringsmeldingTopics.ENDRINGSMELDING_MOTTATT
+        )
+
+        val preprosessertEndringsMelding: TopicEntry<PreprossesertEndringsmeldingV1> =
+            endringsmeldingKafkConsumer.hentMelding(
+                soknadId = søknadsId.toString(),
+                topic = EndringsmeldingTopics.ENDRINGSMELDING_PREPROSSESERT
+            )
+
+        assertNotNull(preprosessertEndringsMelding)
+        val cleanupEndringsmelding = endringsmeldingCleanupConsumer.hentCleanupMelding(
+            soknadId = søknadsId.toString(),
+            topic = EndringsmeldingTopics.ENDRINGSMELDING_CLEANUP
+        )
+        assertNotNull(cleanupEndringsmelding)
+        cleanupEndringsmelding.assertJournalførtFormat()
     }
 
     private fun ventPaaAtRetryMekanismeIStreamProsessering() = runBlocking { delay(Duration.ofSeconds(30)) }

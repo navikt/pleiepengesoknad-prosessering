@@ -329,25 +329,25 @@
                 <p class="sporsmalstekst">Tid barnet skal være i omsorgstilbudet:</p>
                 <ul class="ul-no-indent">
                     {{#each omsorgstilbud.planlagt.enkeltdagerPerMnd as |enkeltdagerPerMnd|~}}
-                        <li>
-                            <p><b>{{enkeltdagerPerMnd.måned}} {{enkeltdagerPerMnd.år}}</b></p>
-                            <ul class="ul-no-indent">
-                                {{#each enkeltdagerPerMnd.enkeltdagerPerUke as |enkeltdagerPerUke|~}}
-                                    <li>
-                                        <p>Uke {{enkeltdagerPerUke.uke}}</p>
-                                        <ul>
-                                            {{#each enkeltdagerPerUke.dager as |enkeltdag|~}}
-                                                <li>
-                                                    <p>{{enkeltdag.dato}}:    {{enkeltdag.tid}}</p>
-                                                </li>
-                                            {{/each}}
-                                        </ul>
-                                    </li>
-                                {{/each}}
-                            </ul>
-                        </li>
-                    {{/each}}
-                </ul>
+                                <li>
+                                    <p><b>{{enkeltdagerPerMnd.måned}} {{enkeltdagerPerMnd.år}}</b></p>
+                                    <ul class="ul-no-indent">
+                                        {{#each enkeltdagerPerMnd.enkeltdagerPerUke as |enkeltdagerPerUke|~}}
+                                            <li>
+                                                <p>Uke {{enkeltdagerPerUke.uke}}</p>
+                                                <ul>
+                                                    {{#each enkeltdagerPerUke.dager as |enkeltdag|~}}
+                                                        <li>
+                                                            <p>{{enkeltdag.dato}}:    {{enkeltdag.tid}}</p>
+                                                        </li>
+                                                    {{/each}}
+                                                </ul>
+                                            </li>
+                                        {{/each}}
+                                    </ul>
+                                </li>
+                            {{/each}}
+                        </ul>
 
                 {{#if omsorgstilbud.planlagt.ukedager}}
                     {{#if omsorgstilbud.planlagt.ukedager.mandag}}

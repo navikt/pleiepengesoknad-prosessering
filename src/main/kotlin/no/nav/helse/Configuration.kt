@@ -19,7 +19,7 @@ data class Configuration(private val config: ApplicationConfig) {
         ChronoUnit.valueOf(config.getRequiredString("nav.kafka.unready_after_stream_stopped_in.unit", secret = false))
     )
 
-    internal fun getKafkaConfig() =
+    internal fun getKafkaConfig(type: TYPE) =
         config.getRequiredString("nav.kafka.bootstrap_servers", secret = false).let { bootstrapServers ->
             val trustStore = config.getOptionalString("nav.kafka.truststore_path", secret = false)?.let { trustStorePath ->
                 config.getOptionalString("nav.kafka.credstore_password", secret = true)?.let { credstorePassword ->
@@ -33,12 +33,17 @@ data class Configuration(private val config: ApplicationConfig) {
                 }
             }
 
-            val autoOffsetReset = when(val offsetReset = config.getOptionalString(key = "nav.kafka.auto_offset_reset", secret = false)?.lowercase()) {
+            val key = when(type) {
+                TYPE.SØKNAD -> "nav.kafka.${type.verdi}_auto_offset_reset"
+                TYPE.ENDRINGSMELDING -> "nav.kafka.${type.verdi}_auto_offset_reset"
+            }
+
+            val autoOffsetReset = when(val offsetReset = config.getOptionalString(key = key, secret = false)?.lowercase()) {
                 null -> "none"
                 "none" -> offsetReset
                 "latest" -> offsetReset
                 "earliest" -> offsetReset
-                else -> throw IllegalArgumentException("Ugyldig verdi for nav.kafka.auto_offset_reset: $offsetReset")
+                else -> throw IllegalArgumentException("Ugyldig verdi for $key: $offsetReset")
             }
 
             KafkaConfig(
@@ -56,4 +61,9 @@ data class Configuration(private val config: ApplicationConfig) {
 
     internal fun getJournalforeScopes() = getScopesFor("journalfore")
     internal fun getK9MellomlagringScopes() = getScopesFor("k9_mellomlagring")
+}
+
+enum class TYPE(val verdi: String) {
+    SØKNAD("soknad"),
+    ENDRINGSMELDING("endringsmelding")
 }

@@ -30,8 +30,8 @@ internal class PreprosseseringStream(
 
         private fun topology(preprosseseringV1Service: PreprosseseringV1Service) : Topology {
             val builder = StreamsBuilder()
-            val fromTopic = Topics.MOTTATT_V2
-            val toTopic = Topics.PREPROSESSERT
+            val fromTopic = SøknadTopics.MOTTATT_v2
+            val toTopic = SøknadTopics.PREPROSSESERT
 
             builder
                 .stream<String, TopicEntry<MeldingV1>>(fromTopic.name, Consumed.with(fromTopic.keySerde, fromTopic.valueSerde))

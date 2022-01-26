@@ -5,13 +5,14 @@ import no.nav.helse.k9mellomlagring.Dokument
 import no.nav.helse.k9mellomlagring.DokumentEier
 import no.nav.helse.k9mellomlagring.JournalforingsFormat
 import no.nav.helse.k9mellomlagring.K9MellomlagringService
+import no.nav.helse.pdf.SøknadPDFGenerator
 import no.nav.helse.prosessering.Metadata
 import no.nav.helse.prosessering.SoknadId
 import org.slf4j.LoggerFactory
 import java.net.URI
 
 internal class PreprosseseringV1Service(
-    private val pdfV1Generator: PdfV1Generator,
+    private val søknadPDFGenerator: SøknadPDFGenerator,
     private val k9MellomlagringService: K9MellomlagringService
 ) {
 
@@ -28,10 +29,9 @@ internal class PreprosseseringV1Service(
 
         val correlationId = CorrelationId(metadata.correlationId)
         val dokumentEier = DokumentEier(melding.søker.fødselsnummer)
-        val søkerAktørId = melding.søker.aktørId
 
         logger.info("Genererer Oppsummerings-PDF av søknaden.")
-        val oppsummeringPdf = pdfV1Generator.generateSoknadOppsummeringPdf(melding)
+        val oppsummeringPdf = søknadPDFGenerator.genererPDF(melding)
 
         logger.info("Mellomlagrer Oppsummerings-PDF.")
         val oppsummeringPdDokumentId = k9MellomlagringService.lagreDokument(
