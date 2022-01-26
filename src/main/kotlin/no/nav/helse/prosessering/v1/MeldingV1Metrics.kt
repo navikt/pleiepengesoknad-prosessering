@@ -156,11 +156,13 @@ internal fun MeldingV1.reportMetrics() {
     when (beredskap?.beredskap) {
         true -> beredskapCounter.labels("beredskap", "ja").inc()
         false -> beredskapCounter.labels("beredskap", "nei").inc()
+        else -> {}
     }
 
     when (nattevåk?.harNattevåk) {
         true -> nattevaakCounter.labels("nattevåk", "ja").inc()
         false -> nattevaakCounter.labels("nattevåk", "nei").inc()
+        else -> {}
     }
 
     val jobberIPerioden = arbeidsgivere?.mapNotNull {

@@ -7,6 +7,7 @@ import no.nav.helse.k9mellomlagring.JournalforingsFormat
 import no.nav.helse.k9mellomlagring.K9MellomlagringService
 import no.nav.helse.pdf.EndringsmeldingPDFGenerator
 import no.nav.helse.prosessering.Metadata
+import no.nav.helse.prosessering.v1.dokumentId
 import org.slf4j.LoggerFactory
 
 internal class EndringsmeldingPreprosseseringV1Service(
@@ -32,7 +33,7 @@ internal class EndringsmeldingPreprosseseringV1Service(
         val endringsmeldingOppsummeringPdf = endringsmeldingPDFGenerator.genererPDF(endringsmelding)
 
         logger.info("Mellomlagrer Oppsummerings-PDF av endringsmelding.")
-        val endringsmeldingOppsummeringPdfUrl = k9MellomlagringService.lagreDokument(
+        val endringsmeldingOppsummeringPdfDokumentId: String = k9MellomlagringService.lagreDokument(
             dokument = Dokument(
                 eier = dokumentEier,
                 content = endringsmeldingOppsummeringPdf,
@@ -40,10 +41,10 @@ internal class EndringsmeldingPreprosseseringV1Service(
                 title = "Endringsmelding om pleiepenger"
             ),
             correlationId = correlationId
-        )
+        ).dokumentId()
 
         logger.info("Mellomlagrer Oppsummerings-JSON for endringsmelding")
-        val endringsmeldingJsonUrl = k9MellomlagringService.lagreDokument(
+        val endringsmeldingJsonDokumentId: String = k9MellomlagringService.lagreDokument(
             dokument = Dokument(
                 eier = dokumentEier,
                 content = JournalforingsFormat.somJson(k9Format),
@@ -51,21 +52,21 @@ internal class EndringsmeldingPreprosseseringV1Service(
                 title = "Endringsmelding om pleiepenger som JSON"
             ),
             correlationId = correlationId
-        )
+        ).dokumentId()
 
-        val komplettDokumentUrls = mutableListOf(
+        val komplettDokumentIds = mutableListOf(
             listOf(
-                endringsmeldingOppsummeringPdfUrl,
-                endringsmeldingJsonUrl
+                endringsmeldingOppsummeringPdfDokumentId,
+                endringsmeldingJsonDokumentId
             )
         )
 
-        logger.trace("Totalt ${komplettDokumentUrls.size} dokumentbolker.")
+        logger.trace("Totalt ${komplettDokumentIds.size} dokumentbolker.")
 
         return PreprossesertEndringsmeldingV1(
             endringsmelding = endringsmelding,
             k9Format = k9Format,
-            dokumentUrls = komplettDokumentUrls.toList()
+            dokumentId = komplettDokumentIds.toList()
         )
     }
 }

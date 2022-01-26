@@ -3,7 +3,12 @@ package no.nav.helse.prosessering.v1.asynkron.endringsmelding
 import no.nav.helse.CorrelationId
 import no.nav.helse.k9mellomlagring.DokumentEier
 import no.nav.helse.k9mellomlagring.K9MellomlagringService
-import no.nav.helse.kafka.*
+import no.nav.helse.kafka.KafkaConfig
+import no.nav.helse.kafka.ManagedKafkaStreams
+import no.nav.helse.kafka.ManagedStreamHealthy
+import no.nav.helse.kafka.ManagedStreamReady
+import no.nav.helse.kafka.TopicEntry
+import no.nav.helse.kafka.process
 import no.nav.helse.prosessering.v1.asynkron.CleanupEndringsmelding
 import no.nav.helse.prosessering.v1.asynkron.EndringsmeldingTopics
 import no.nav.helse.prosessering.v1.asynkron.Topic
@@ -45,7 +50,7 @@ internal class EndringsmeldingCleanupStream(
 
                         k9MellomlagringService.slettDokumeter(
                             dokumentEier = DokumentEier(entry.data.melding.søker.fødselsnummer),
-                            urlBolks = entry.data.melding.dokumentUrls,
+                            dokumentIdBolks = entry.data.melding.dokumentId,
                             correlationId = CorrelationId(entry.metadata.correlationId)
                         )
 

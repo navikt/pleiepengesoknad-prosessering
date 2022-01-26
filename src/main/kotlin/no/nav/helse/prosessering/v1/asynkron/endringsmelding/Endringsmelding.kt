@@ -3,7 +3,6 @@ package no.nav.helse.prosessering.v1.asynkron.endringsmelding
 import com.fasterxml.jackson.databind.node.ObjectNode
 import no.nav.helse.felles.Søker
 import no.nav.k9.søknad.Søknad
-import java.net.URI
 
 data class EndringsmeldingV1(
     val søker: Søker,
@@ -21,15 +20,15 @@ data class EndringsmeldingMottatt(
 data class PreprossesertEndringsmeldingV1(
     val søker: Søker,
     val k9FormatSøknad: Søknad,
-    val dokumentUrls: List<List<URI>>
+    val dokumentId: List<List<String>>
 ) {
     internal constructor(
         endringsmelding: EndringsmeldingV1,
-        dokumentUrls: List<List<URI>>,
+        dokumentId: List<List<String>>,
         k9Format: Søknad
     ) : this(
         søker = endringsmelding.søker,
         k9FormatSøknad = k9Format,
-        dokumentUrls = dokumentUrls
+        dokumentId = dokumentId
     )
 }

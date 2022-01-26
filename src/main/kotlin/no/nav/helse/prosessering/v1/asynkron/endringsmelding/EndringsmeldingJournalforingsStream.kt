@@ -3,7 +3,12 @@ package no.nav.helse.prosessering.v1.asynkron.endringsmelding
 import no.nav.helse.CorrelationId
 import no.nav.helse.felles.tilTpsNavn
 import no.nav.helse.joark.JoarkGateway
-import no.nav.helse.kafka.*
+import no.nav.helse.kafka.KafkaConfig
+import no.nav.helse.kafka.ManagedKafkaStreams
+import no.nav.helse.kafka.ManagedStreamHealthy
+import no.nav.helse.kafka.ManagedStreamReady
+import no.nav.helse.kafka.TopicEntry
+import no.nav.helse.kafka.process
 import no.nav.helse.prosessering.v1.asynkron.CleanupEndringsmelding
 import no.nav.helse.prosessering.v1.asynkron.EndringsmeldingTopics
 import no.nav.helse.prosessering.v1.asynkron.Journalfort
@@ -51,7 +56,7 @@ internal class EndringsmeldingJournalforingsStream(
                             mottatt = entry.data.k9FormatSøknad.mottattDato,
                             sokerNavn = entry.data.søker.tilTpsNavn(),
                             correlationId = CorrelationId(entry.metadata.correlationId),
-                            dokumenter = entry.data.dokumentUrls,
+                            dokumentId = entry.data.dokumentId,
                             norskIdent = entry.data.søker.fødselsnummer
                         )
                         logger.info("Dokumenter journalført med ID = ${journaPostId.journalPostId}.")
