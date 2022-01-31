@@ -110,7 +110,8 @@ fun Application.pleiepengesoknadProsessering() {
         HealthRoute(
             path = Paths.DEFAULT_ALIVE_PATH,
             healthService = HealthService(
-                healthChecks = asynkronProsesseringV1Service.isReadyChecks()
+                healthChecks = asynkronProsesseringV1Service.isReadyChecks().toSet()
+                    .plus(asynkronEndringsmeldingProsesseringV1Service.isReadyChecks().toSet())
             )
         )
         get(Paths.DEFAULT_READY_PATH) {
