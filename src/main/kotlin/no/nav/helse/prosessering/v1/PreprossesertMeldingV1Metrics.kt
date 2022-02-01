@@ -44,12 +44,15 @@ val barnetsAlderIUkerCounter = Counter.build()
 internal fun PreprossesertMeldingV1.reportMetrics() {
     val barnetsFodselsdato = barn.fødselsdato()
 
-    val barnetsAlder = barnetsFodselsdato.aarSiden()
-    barnetsAlderHistogram.observe(barnetsAlder)
+    if(barnetsFodselsdato != null){
+        val barnetsAlder = barnetsFodselsdato.aarSiden()
+        barnetsAlderHistogram.observe(barnetsAlder)
 
-    if (barnetsAlder.erUnderEttAar()) {
-        barnetsAlderIUkerCounter.labels(barnetsFodselsdato.ukerSiden()).inc()
+        if (barnetsAlder.erUnderEttAar()) {
+            barnetsAlderIUkerCounter.labels(barnetsFodselsdato.ukerSiden()).inc()
+        }
     }
+
 
     valgteArbeidsgivereHistogram.observe(arbeidsgivere?.size?.toDouble() ?: 0.0)
     idTypePaaBarnCounter.labels(barn.idType()).inc()

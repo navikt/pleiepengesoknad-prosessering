@@ -24,12 +24,20 @@ data class Søker(
 }
 
 data class Barn(
-    val fødselsnummer: String,
-    val navn : String
-) {
+    val navn : String,
+    val fødselsnummer: String? = null,
+    val fødselsdato: LocalDate? = null,
+    val årsakManglerIdentitetsnummer: ÅrsakManglerIdentitetsnummer? = null
+    ) {
     override fun toString(): String {
         return "Barn()"
     }
+}
+
+enum class ÅrsakManglerIdentitetsnummer(val pdfTekst: String) {
+    NYFØDT ("Barnet er nyfødt, og har ikke fått fødselsnummer enda"),
+    BARNET_BOR_I_UTLANDET ("Barnet bor i utlandet"),
+    ANNET ("Annet")
 }
 
 data class Medlemskap(
