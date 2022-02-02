@@ -52,19 +52,16 @@
                 <span class="ikke_satt">Navn ikke angitt</span>
             {{/if}}
         </p>
-        <p>
-            {{# if barn.id }}
-                {{ barn.id }}
-            {{else}}
-                <span class="ikke_satt">ID ikke angitt</span>
-            {{/if}}
-        </p>
+        {{# if barn.id }}
+            <p>{{ barn.id }}</p>
+        {{/if}}
+        {{#if barn.fødselsdato}}
+            <p>Fødsesldato: {{barn.fødselsdato}}</p>
+        {{/if}}
         {{#if barn.årsakManglerIdentitetsnummer}}
             <p>Oppgitt grunn for at barnet ikke har fødselsnummer/D-nummer: {{barn.årsakManglerIdentitetsnummer}}</p>
         {{/if}}
-        {{#if barn.fødselsdato}}
-            <p>{{barn.fødselsdato}}</p>
-        {{/if}}
+
     </div>
 
     <section id="relasjonTilBarnet">
