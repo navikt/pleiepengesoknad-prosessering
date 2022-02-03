@@ -1,38 +1,13 @@
 package no.nav.helse.pdf
 
 import com.fasterxml.jackson.core.type.TypeReference
-import no.nav.helse.felles.ArbeidIPeriode
-import no.nav.helse.felles.Arbeidsforhold
-import no.nav.helse.felles.Beredskap
-import no.nav.helse.felles.Bosted
-import no.nav.helse.felles.Enkeltdag
-import no.nav.helse.felles.Ferieuttak
-import no.nav.helse.felles.Frilans
-import no.nav.helse.felles.JobberIPeriodeSvar
-import no.nav.helse.felles.Land
-import no.nav.helse.felles.Nattevåk
-import no.nav.helse.felles.Næringstyper
-import no.nav.helse.felles.Omsorgsdager
-import no.nav.helse.felles.Periode
-import no.nav.helse.felles.PlanUkedager
-import no.nav.helse.felles.Regnskapsfører
-import no.nav.helse.felles.SelvstendigNæringsdrivende
-import no.nav.helse.felles.Søker
-import no.nav.helse.felles.Utenlandsopphold
-import no.nav.helse.felles.VarigEndring
-import no.nav.helse.felles.Virksomhet
-import no.nav.helse.felles.YrkesaktivSisteTreFerdigliknedeÅrene
+import no.nav.helse.felles.*
 import no.nav.helse.pdf.PDFGenerator.Companion.DATE_FORMATTER
-import no.nav.helse.prosessering.v1.ArbeidsforholdAnsatt
-import no.nav.helse.prosessering.v1.MeldingV1
-import no.nav.helse.prosessering.v1.erFørDagensDato
-import no.nav.helse.prosessering.v1.erLikEllerEtterDagensDato
-import no.nav.helse.prosessering.v1.somTekst
+import no.nav.helse.prosessering.v1.*
 import no.nav.helse.utils.DateUtils
 import no.nav.helse.utils.somNorskDag
 import no.nav.helse.utils.somNorskMåned
 import java.time.Duration
-import java.time.LocalDate
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.time.temporal.WeekFields
@@ -80,7 +55,7 @@ class SøknadPDFGenerator : PDFGenerator<MeldingV1>() {
             "ingen_arbeidsgivere" to (arbeidsgivere == null),
             "sprak" to språk?.sprakTilTekst()
         ),
-        "omsorgstilbud" to omsorgstilbudSomMap(fraOgMed, tilOgMed),
+        "omsorgstilbud" to omsorgstilbud?.somMap(),
         "nattevaak" to nattevåk(nattevåk),
         "beredskap" to beredskap(beredskap),
         "utenlandsoppholdIPerioden" to mapOf(
@@ -138,19 +113,11 @@ private fun beredskap(beredskap: Beredskap?) = when {
     }
 }
 
-private fun MeldingV1.omsorgstilbudSomMap(fraOgMed: LocalDate, tilOgMed: LocalDate): Map<String, Any?> {
-    val DAGENS_DATO = LocalDate.now()
-    val GÅRSDAGENS_DATO = DAGENS_DATO.minusDays(1)
-
+private fun Omsorgstilbud.somMap(): Map<String, Any?> {
     return mapOf(
-        "søknadsperiodeFraOgMed" to DATE_FORMATTER.format(fraOgMed),
-        "søknadsperiodeTilOgMed" to DATE_FORMATTER.format(tilOgMed),
-        "periodenStarterIFortid" to (fraOgMed.isBefore(DAGENS_DATO)),
-        "fortidTilOgMed" to if(tilOgMed.isBefore(DAGENS_DATO)) DATE_FORMATTER.format(tilOgMed) else DATE_FORMATTER.format(GÅRSDAGENS_DATO),
-        "periodenAvsluttesIFremtiden" to (tilOgMed.isAfter(GÅRSDAGENS_DATO)),
-        "fremtidFraOgMed" to if(fraOgMed.isAfter(DAGENS_DATO)) DATE_FORMATTER.format(fraOgMed) else DATE_FORMATTER.format(DAGENS_DATO),
-        "historisk" to omsorgstilbud?.historisk?.somMap(),
-        "planlagt" to omsorgstilbud?.planlagt?.somMap()
+        "erLiktHverDag" to erLiktHverDag,
+        "enkeltdagerPerMnd" to enkeltdager?.somMapPerMnd(),
+        "ukedager" to ukedager?.somMap()
     )
 }
 
@@ -188,11 +155,6 @@ private fun List<Enkeltdag>.somMapPerUke(): List<Map<String, Any>> {
         )
     }
 }
-
-private fun Omsorgsdager.somMap(): Map<String, Any?> = mutableMapOf(
-    "enkeltdagerPerMnd" to enkeltdager?.somMapPerMnd(),
-    "ukedager" to ukedager?.somMap()
-)
 
 private fun PlanUkedager.somMap() = mapOf<String, Any?>(
     "mandag" to if (mandag.harGyldigVerdi()) mandag!!.somTekst() else null,

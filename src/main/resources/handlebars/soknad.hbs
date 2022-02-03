@@ -264,15 +264,17 @@
 
     <section id="omsorgstilbud">
         <h2>Omsorgstilbud</h2>
-        {{#if omsorgstilbud.periodenStarterIFortid}}
-            <p class="sporsmalstekst">Har barnet vært fast og regelmessig i et omsorgstilbud i perioden {{omsorgstilbud.søknadsperiodeFraOgMed}} til {{omsorgstilbud.fortidTilOgMed}}?</p>
+        <p class="sporsmalstekst">Er barnet fast og regelmessig i et omsorgstilbud i søknadsperioden?</p>
+        {{#if omsorgstilbud}}
+            <p>Ja</p>
 
-            {{#if omsorgstilbud.historisk}}
-                <p>Ja</p>
-                <br/>
-                <p class="sporsmalstekst">Tid barnet var i omsorgstilbud:</p>
+            <p class="sporsmalstekst">Er omsorgstilbudet likt fra dag til dag?</p>
+            <p>{{ jaNeiSvar omsorgstilbud.erLiktHverDag}}</p>
+
+            {{#if omsorgstilbud.enkeltdagerPerMnd}}
+                <p><b>Enkeltdager barnet er i omsorgstilbud:</b></p>
                 <ul class="ul-no-indent">
-                    {{#each omsorgstilbud.historisk.enkeltdagerPerMnd as |enkeltdagerPerMnd|~}}
+                    {{#each omsorgstilbud.enkeltdagerPerMnd as |enkeltdagerPerMnd|~}}
                         <li>
                             <p><b>{{enkeltdagerPerMnd.måned}} {{enkeltdagerPerMnd.år}}</b></p>
                             <ul class="ul-no-indent">
@@ -292,88 +294,36 @@
                         </li>
                     {{/each}}
                 </ul>
+            {{/if}}
 
-                {{#if omsorgstilbud.historisk.ukedager}}
-                    {{#if omsorgstilbud.historisk.ukedager.mandag}}
-                        <p><b>Mandager:</b> {{omsorgstilbud.historisk.ukedager.mandag}}</p>
+            {{#if omsorgstilbud.ukedager}}
+                <p><b>Faste dager barnet er i omsorgstilbud:</b></p>
+                {{#if omsorgstilbud.ukedager}}
+                    {{#if omsorgstilbud.ukedager.mandag}}
+                        <p><b>Mandager:</b> {{omsorgstilbud.ukedager.mandag}}</p>
                     {{/if}}
 
-                    {{#if omsorgstilbud.historisk.ukedager.tirsdag}}
-                        <p><b>Tirsdager:</b> {{omsorgstilbud.historisk.ukedager.tirsdag}}</p>
+                    {{#if omsorgstilbud.ukedager.tirsdag}}
+                        <p><b>Tirsdager:</b> {{omsorgstilbud.ukedager.tirsdag}}</p>
                     {{/if}}
 
-                    {{#if omsorgstilbud.historisk.ukedager.onsdag}}
-                        <p><b>Onsdager:</b> {{omsorgstilbud.historisk.ukedager.onsdag}}</p>
+                    {{#if omsorgstilbud.ukedager.onsdag}}
+                        <p><b>Onsdager:</b> {{omsorgstilbud.ukedager.onsdag}}</p>
                     {{/if}}
 
-                    {{#if omsorgstilbud.historisk.ukedager.torsdag}}
-                        <p><b>Torsdager:</b> {{omsorgstilbud.historisk.ukedager.torsdag}}</p>
+                    {{#if omsorgstilbud.ukedager.torsdag}}
+                        <p><b>Torsdager:</b> {{omsorgstilbud.ukedager.torsdag}}</p>
                     {{/if}}
 
-                    {{#if omsorgstilbud.historisk.ukedager.fredag}}
-                        <p><b>Fredager:</b> {{omsorgstilbud.historisk.ukedager.fredag}}</p>
+                    {{#if omsorgstilbud.ukedager.fredag}}
+                        <p><b>Fredager:</b> {{omsorgstilbud.ukedager.fredag}}</p>
                     {{/if}}
                     <br/>
                 {{/if}}
-            {{else}}
-                <p>Nei</p>
             {{/if}}
-        {{/if}}
 
-        {{#if omsorgstilbud.periodenAvsluttesIFremtiden}}
-            <p class="sporsmalstekst">Skal barnet være fast og regelmessig i et omsorgstilbud i perioden {{omsorgstilbud.fremtidFraOgMed}} til {{omsorgstilbud.søknadsperiodeTilOgMed}}?</p>
-
-            {{#if omsorgstilbud.planlagt}}
-                <p>Ja</p>
-                <br/>
-                <p class="sporsmalstekst">Tid barnet skal være i omsorgstilbudet:</p>
-                <ul class="ul-no-indent">
-                    {{#each omsorgstilbud.planlagt.enkeltdagerPerMnd as |enkeltdagerPerMnd|~}}
-                                <li>
-                                    <p><b>{{enkeltdagerPerMnd.måned}} {{enkeltdagerPerMnd.år}}</b></p>
-                                    <ul class="ul-no-indent">
-                                        {{#each enkeltdagerPerMnd.enkeltdagerPerUke as |enkeltdagerPerUke|~}}
-                                            <li>
-                                                <p>Uke {{enkeltdagerPerUke.uke}}</p>
-                                                <ul>
-                                                    {{#each enkeltdagerPerUke.dager as |enkeltdag|~}}
-                                                        <li>
-                                                            <p>{{enkeltdag.dato}}:    {{enkeltdag.tid}}</p>
-                                                        </li>
-                                                    {{/each}}
-                                                </ul>
-                                            </li>
-                                        {{/each}}
-                                    </ul>
-                                </li>
-                            {{/each}}
-                        </ul>
-
-                {{#if omsorgstilbud.planlagt.ukedager}}
-                    {{#if omsorgstilbud.planlagt.ukedager.mandag}}
-                        <p><b>Mandager:</b> {{omsorgstilbud.planlagt.ukedager.mandag}}</p>
-                    {{/if}}
-
-                    {{#if omsorgstilbud.planlagt.ukedager.tirsdag}}
-                        <p><b>Tirsdager:</b> {{omsorgstilbud.planlagt.ukedager.tirsdag}}</p>
-                    {{/if}}
-
-                    {{#if omsorgstilbud.planlagt.ukedager.onsdag}}
-                        <p><b>Onsdager:</b> {{omsorgstilbud.planlagt.ukedager.onsdag}}</p>
-                    {{/if}}
-
-                    {{#if omsorgstilbud.planlagt.ukedager.torsdag}}
-                        <p><b>Torsdager:</b> {{omsorgstilbud.planlagt.ukedager.torsdag}}</p>
-                    {{/if}}
-
-                    {{#if omsorgstilbud.planlagt.ukedager.fredag}}
-                        <p><b>Fredager:</b> {{omsorgstilbud.planlagt.ukedager.fredag}}</p>
-                    {{/if}}
-                    <br/>
-                {{/if}}
-            {{else}}
-                <p>Nei</p>
-            {{/if}}
+        {{else}}
+            <p>Nei</p>
         {{/if}}
     </section>
 

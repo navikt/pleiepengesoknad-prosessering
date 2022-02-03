@@ -302,7 +302,22 @@ class SøknadPdfV1GeneratorTest {
             harVærtEllerErVernepliktig = true,
             barnRelasjon = BarnRelasjon.ANNET,
             barnRelasjonBeskrivelse = "Blaabla annet",
-            k9FormatSøknad = SøknadUtils.defaultK9FormatPSB(), omsorgstilbud = null
+            k9FormatSøknad = SøknadUtils.defaultK9FormatPSB(),
+            omsorgstilbud = Omsorgstilbud(
+                erLiktHverDag = true,
+                ukedager = PlanUkedager(
+                    mandag = Duration.ofHours(3),
+                    onsdag = Duration.ofHours(3),
+                    fredag = Duration.ofHours(3)
+                ),
+                enkeltdager = listOf(
+                    Enkeltdag(LocalDate.now(), Duration.ofHours(3)),
+                    Enkeltdag(LocalDate.now().plusDays(3), Duration.ofHours(2)),
+                    Enkeltdag(LocalDate.now().plusWeeks(4), Duration.ofHours(4)),
+                    Enkeltdag(LocalDate.now().plusWeeks(4), Duration.ofHours(6).plusMinutes(45)),
+                    Enkeltdag(LocalDate.now().plusWeeks(9).plusDays(2), Duration.ofHours(3))
+                )
+            )
         )
     }
 
@@ -381,67 +396,42 @@ class SøknadPdfV1GeneratorTest {
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
-        id = "9-omsorgstilbud-v2-med-historisk-og-planlagte-ukedager"
-        pdf = generator.genererPDF(
-            melding = fullGyldigMelding(id).copy(
-                fraOgMed = LocalDate.now().minusDays(10),
-                tilOgMed = LocalDate.now().plusDays(10),
-                omsorgstilbud = Omsorgstilbud(
-                    historisk = Omsorgsdager(
-                        ukedager = PlanUkedager(
-                            mandag = null,
-                            tirsdag = Duration.ofHours(5).plusMinutes(30),
-                            onsdag = null,
-                            torsdag = Duration.ofHours(5).plusMinutes(30),
-                            fredag = Duration.ofHours(5).plusMinutes(30),
-                        )
-                    ),
-                    planlagt = Omsorgsdager(
-                        ukedager = PlanUkedager(
-                            mandag = null,
-                            tirsdag = Duration.ofHours(7).plusMinutes(30),
-                            onsdag = null,
-                            torsdag = Duration.ofHours(7).plusMinutes(30),
-                            fredag = Duration.ofHours(7).plusMinutes(30),
-                        )
-                    )
-                )
-            )
-        )
-        if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
-
-
-        id = "10-omsorgstilbud-v2-med-historisk-og-planlagte-enkeltdager"
-        pdf = generator.genererPDF(
-            melding = fullGyldigMelding(id).copy(
-                fraOgMed = LocalDate.now().minusDays(10),
-                tilOgMed = LocalDate.now().plusDays(10),
-                omsorgstilbud = Omsorgstilbud(
-                    historisk = Omsorgsdager(
-                        enkeltdager = listOf(
-                            Enkeltdag(LocalDate.parse("2021-01-01"), Duration.ofHours(7).plusMinutes(30)),
-                            Enkeltdag(LocalDate.now().minusDays(3), Duration.ofHours(7).plusMinutes(30)),
-                            Enkeltdag(LocalDate.now().minusDays(2), Duration.ofHours(7).plusMinutes(30)),
-                            Enkeltdag(LocalDate.now().minusDays(1), Duration.ofHours(7).plusMinutes(30))
-                        )
-                    ),
-                    planlagt = Omsorgsdager(
-                        enkeltdager = listOf(
-                            Enkeltdag(LocalDate.now().plusDays(1), Duration.ofHours(7).plusMinutes(30)),
-                            Enkeltdag(LocalDate.now().plusDays(2), Duration.ofHours(7).plusMinutes(30)),
-                            Enkeltdag(LocalDate.now().plusDays(3), Duration.ofHours(7).plusMinutes(30)),
-                            Enkeltdag(LocalDate.now().plusDays(4), Duration.ofHours(0))
-                        )
-                    )
-                )
-            )
-        )
-        if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
-
-        id = "11-omsorgstilbud-nei-til-omsorgstilbud"
+        id = "9-omsorgstilbud-nei-til-omsorgstilbud"
         pdf = generator.genererPDF(
             melding = fullGyldigMelding(id).copy(
                 omsorgstilbud = null
+            )
+        )
+        if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
+
+        id = "10-omsorgstilbud-omsorgstilbud-enkeltdager"
+        pdf = generator.genererPDF(
+            melding = fullGyldigMelding(id).copy(
+                omsorgstilbud = Omsorgstilbud(
+                    erLiktHverDag = false,
+                    enkeltdager = listOf(
+                        Enkeltdag(LocalDate.now(), Duration.ofHours(3)),
+                        Enkeltdag(LocalDate.now().plusDays(3), Duration.ofHours(2)),
+                        Enkeltdag(LocalDate.now().plusWeeks(4), Duration.ofHours(4)),
+                        Enkeltdag(LocalDate.now().plusWeeks(4), Duration.ofHours(6).plusMinutes(45)),
+                        Enkeltdag(LocalDate.now().plusWeeks(9).plusDays(2), Duration.ofHours(3))
+                    )
+                )
+            )
+        )
+        if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
+
+        id = "11-omsorgstilbud-omsorgstilbud-ukedager"
+        pdf = generator.genererPDF(
+            melding = fullGyldigMelding(id).copy(
+                omsorgstilbud = Omsorgstilbud(
+                    erLiktHverDag = true,
+                    ukedager = PlanUkedager(
+                        mandag = Duration.ofHours(3),
+                        onsdag = Duration.ofHours(3),
+                        fredag = Duration.ofHours(3)
+                    ),
+                )
             )
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
