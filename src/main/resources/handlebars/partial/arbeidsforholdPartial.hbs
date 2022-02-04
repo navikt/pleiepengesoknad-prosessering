@@ -1,27 +1,10 @@
 <li class="li-style-none">
     <ul>
         <li class="sporsmalstekst">Jobber normalt {{arbeidsforhold.jobberNormaltTimer}} timer</li>
-        {{#if arbeidsforhold.skalViseHistoriskArbeid}}
-            {{#if arbeidsforhold.historiskArbeid}}
-                <li class="li-style-none">
-                    <b>Jobb tilbake i tid:</b>
-                    <ul>
-                        {{> partial/arbeidIPeriodePartial historisk=true arbeidIPeriode=arbeidsforhold.historiskArbeid}}
-                    </ul>
-                </li>
-            {{/if}}
-        {{/if}}
-
-        {{#if arbeidsforhold.skalVisePlanlagtArbeid}}
-            {{#if arbeidsforhold.planlagtArbeid}}
-                <li class="li-style-none">
-                    <b>Jobb frem i tid:</b>
-                    <ul>
-                        {{> partial/arbeidIPeriodePartial historisk=false arbeidIPeriode=arbeidsforhold.planlagtArbeid}}
-                    </ul>
-                </li>
-            {{/if}}
-        {{/if}}
-
+            <li class="li-style-none">
+                <ul>
+                    {{> partial/arbeidIPeriodePartial arbeidIPeriode=arbeidsforhold.arbeidIPeriode}}
+                </ul>
+            </li>
     </ul>
 </li>

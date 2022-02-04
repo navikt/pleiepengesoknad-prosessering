@@ -3,7 +3,6 @@ package no.nav.helse.prosessering.v1
 import io.prometheus.client.Counter
 import io.prometheus.client.Histogram
 import no.nav.helse.felles.Arbeidsforhold
-import no.nav.helse.felles.JobberIPeriodeSvar
 import java.time.LocalDate
 
 val opplastedeVedleggHistogram = Histogram.build()
@@ -137,6 +136,8 @@ internal fun MeldingV1.reportMetrics() {
         else -> {}
     }
 
+
+    /*
     val jobberIPerioden = arbeidsgivere?.mapNotNull {
         val historisk = if(it.arbeidsforhold?.historiskArbeid != null) {
             "historisk_" + it.arbeidsforhold.historiskArbeid.jobberIPerioden.name.lowercase()
@@ -153,9 +154,11 @@ internal fun MeldingV1.reportMetrics() {
         arbeidsgivereCounter.labels(arbeidsgivere.size.toString(), jobberIPerioden).inc()
     }
 
+     */
+
     val arbeidsforhold: MutableList<Arbeidsforhold?> = mutableListOf(frilans?.arbeidsforhold, selvstendigNæringsdrivende?.arbeidsforhold)
     arbeidsgivere?.let { arbeidsgiver -> arbeidsforhold.addAll(arbeidsgiver.map { it.arbeidsforhold }) }
-
+    /*
     val historiskJobberSvar = arbeidsforhold
         .filterNotNull()
         .mapNotNull { it.historiskArbeid?.jobberIPerioden }
@@ -179,7 +182,7 @@ internal fun MeldingV1.reportMetrics() {
         skalJobbe -> jobbIPeriodenCounter.labels("planlagt", "skalJobbe").inc()
         skalIkkeJobbe -> jobbIPeriodenCounter.labels("planlagt", "skalIkkeJobbe").inc()
     }
-
+   */
     when {
         erArbeidstaker() -> arbeidstakerCounter.inc()
         erArbeidstakerOgFrilanser() -> frilansOgArbeidstaker.inc()

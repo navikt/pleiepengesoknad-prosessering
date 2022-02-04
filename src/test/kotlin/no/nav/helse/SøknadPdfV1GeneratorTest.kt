@@ -119,25 +119,9 @@ class SøknadPdfV1GeneratorTest {
                 jobberFortsattSomFrilans = false,
                 arbeidsforhold = Arbeidsforhold(
                     jobberNormaltTimer = 23.0,
-                    historiskArbeid = ArbeidIPeriode(
+                    arbeidIPeriode = ArbeidIPeriode(
                         jobberIPerioden = JobberIPeriodeSvar.JA,
                         erLiktHverUke = null,
-                        enkeltdager = listOf(
-                            Enkeltdag(dato = LocalDate.now(), tid = Duration.ofHours(1)),
-                            Enkeltdag(dato = LocalDate.now().plusDays(3), tid = Duration.ofHours(1)),
-                            Enkeltdag(dato = LocalDate.now().plusWeeks(1), tid = Duration.ofHours(1))
-                        ),
-                        fasteDager = PlanUkedager(
-                            mandag = Duration.ofHours(1),
-                            tirsdag = Duration.ofHours(1),
-                            onsdag = null,
-                            torsdag = Duration.ofHours(1).plusMinutes(45),
-                            fredag = null
-                        )
-                    ),
-                    planlagtArbeid = ArbeidIPeriode(
-                        jobberIPerioden = JobberIPeriodeSvar.JA,
-                        erLiktHverUke = true,
                         enkeltdager = listOf(
                             Enkeltdag(dato = LocalDate.now(), tid = Duration.ofHours(1)),
                             Enkeltdag(dato = LocalDate.now().plusDays(3), tid = Duration.ofHours(1)),
@@ -179,25 +163,9 @@ class SøknadPdfV1GeneratorTest {
                 ),
                 arbeidsforhold = Arbeidsforhold(
                     jobberNormaltTimer = 40.0,
-                    historiskArbeid = ArbeidIPeriode(
+                    arbeidIPeriode = ArbeidIPeriode(
                         jobberIPerioden = JobberIPeriodeSvar.JA,
                         erLiktHverUke = false,
-                        enkeltdager = listOf(
-                            Enkeltdag(dato = LocalDate.now(), tid = Duration.ofHours(4)),
-                            Enkeltdag(dato = LocalDate.now().plusDays(3), tid = Duration.ofHours(4)),
-                            Enkeltdag(dato = LocalDate.now().plusWeeks(1), tid = Duration.ofHours(4))
-                        ),
-                        fasteDager = PlanUkedager(
-                            mandag = Duration.ofHours(4),
-                            tirsdag = Duration.ofHours(7),
-                            onsdag = null,
-                            torsdag = Duration.ofHours(5).plusMinutes(45),
-                            fredag = null
-                        )
-                    ),
-                    planlagtArbeid = ArbeidIPeriode(
-                        jobberIPerioden = JobberIPeriodeSvar.JA,
-                        erLiktHverUke = true,
                         enkeltdager = listOf(
                             Enkeltdag(dato = LocalDate.now(), tid = Duration.ofHours(4)),
                             Enkeltdag(dato = LocalDate.now().plusDays(3), tid = Duration.ofHours(4)),
@@ -220,29 +188,13 @@ class SøknadPdfV1GeneratorTest {
                     erAnsatt = true,
                     arbeidsforhold = Arbeidsforhold(
                         jobberNormaltTimer = 27.0,
-                        historiskArbeid = ArbeidIPeriode(
+                        arbeidIPeriode = ArbeidIPeriode(
                             jobberIPerioden = JobberIPeriodeSvar.JA,
                             jobberProsent = 50.0,
                             erLiktHverUke = true,
                             enkeltdager = listOf(
                                 Enkeltdag(dato = LocalDate.now(), tid = Duration.ofHours(4)),
                                 Enkeltdag(dato = LocalDate.now().plusDays(3), tid = Duration.ofHours(5)),
-                                Enkeltdag(dato = LocalDate.now().plusWeeks(1), tid = Duration.ofHours(5))
-                            ),
-                            fasteDager = PlanUkedager(
-                                mandag = Duration.ofHours(4),
-                                tirsdag = Duration.ofHours(7),
-                                onsdag = null,
-                                torsdag = Duration.ofHours(5).plusMinutes(45),
-                                fredag = null
-                            )
-                        ),
-                        planlagtArbeid = ArbeidIPeriode(
-                            jobberIPerioden = JobberIPeriodeSvar.NEI,
-                            erLiktHverUke = true,
-                            enkeltdager = listOf(
-                                Enkeltdag(dato = LocalDate.now(), tid = Duration.ofHours(5)),
-                                Enkeltdag(dato = LocalDate.now().plusDays(3), tid = Duration.ofHours(4)),
                                 Enkeltdag(dato = LocalDate.now().plusWeeks(1), tid = Duration.ofHours(5))
                             ),
                             fasteDager = PlanUkedager(
@@ -261,7 +213,7 @@ class SøknadPdfV1GeneratorTest {
                     erAnsatt = true,
                     arbeidsforhold = Arbeidsforhold(
                         jobberNormaltTimer = 40.0,
-                        historiskArbeid = ArbeidIPeriode(
+                        arbeidIPeriode = ArbeidIPeriode(
                             jobberIPerioden = JobberIPeriodeSvar.JA,
                             erLiktHverUke = true,
                             enkeltdager = listOf(
@@ -272,18 +224,6 @@ class SøknadPdfV1GeneratorTest {
                             fasteDager = PlanUkedager(
                                 mandag = Duration.ofHours(4),
                                 tirsdag = Duration.ofHours(6),
-                                onsdag = null,
-                                torsdag = Duration.ofHours(5).plusMinutes(45),
-                                fredag = null
-                            )
-                        ),
-                        planlagtArbeid = ArbeidIPeriode(
-                            jobberIPerioden = JobberIPeriodeSvar.JA,
-                            erLiktHverUke = true,
-                            enkeltdager = null,
-                            fasteDager = PlanUkedager(
-                                mandag = Duration.ofHours(4),
-                                tirsdag = Duration.ofHours(7),
                                 onsdag = null,
                                 torsdag = Duration.ofHours(5).plusMinutes(45),
                                 fredag = null

@@ -3,7 +3,9 @@ package no.nav.helse.pdf
 import com.fasterxml.jackson.core.type.TypeReference
 import no.nav.helse.felles.*
 import no.nav.helse.pdf.PDFGenerator.Companion.DATE_FORMATTER
-import no.nav.helse.prosessering.v1.*
+import no.nav.helse.prosessering.v1.ArbeidsforholdAnsatt
+import no.nav.helse.prosessering.v1.MeldingV1
+import no.nav.helse.prosessering.v1.somTekst
 import no.nav.helse.utils.DateUtils
 import no.nav.helse.utils.somNorskDag
 import no.nav.helse.utils.somNorskMåned
@@ -166,21 +168,14 @@ private fun PlanUkedager.somMap() = mapOf<String, Any?>(
 
 private fun Duration?.harGyldigVerdi() = this != null && this != Duration.ZERO
 
-private fun Arbeidsforhold.somMap(
-    skalViseHistoriskArbeid: Boolean = true,
-    skalVisePlanlagtArbeid: Boolean = true
-): Map<String, Any?> = mapOf(
+private fun Arbeidsforhold.somMap(): Map<String, Any?> = mapOf(
     "jobberNormaltTimer" to jobberNormaltTimer,
-    "historiskArbeid" to historiskArbeid?.somMap(),
-    "planlagtArbeid" to planlagtArbeid?.somMap(),
-    "skalViseHistoriskArbeid" to skalViseHistoriskArbeid,
-    "skalVisePlanlagtArbeid" to skalVisePlanlagtArbeid
+    "arbeidIPeriode" to arbeidIPeriode.somMap()
 )
 
 private fun ArbeidIPeriode.somMap() : Map<String, Any?> = mapOf(
     "jobberIPerioden" to jobberIPerioden.tilBoolean(),
     "jobberProsent" to jobberProsent,
-    "skalViseJobberSomVanlig" to (jobberIPerioden == JobberIPeriodeSvar.JA),
     "erLiktHverUkeSatt" to (erLiktHverUke != null),
     "erLiktHverUke" to erLiktHverUke,
     "enkeltdagerPerMnd" to enkeltdager?.somMapPerMnd(),
@@ -192,10 +187,7 @@ private fun Frilans.somMap() : Map<String, Any?> = mapOf(
     "startdato" to DATE_FORMATTER.format(startdato),
     "sluttdato" to if(sluttdato != null) DATE_FORMATTER.format(sluttdato) else null,
     "jobberFortsattSomFrilans" to jobberFortsattSomFrilans,
-    "arbeidsforhold" to arbeidsforhold?.somMap(
-        skalViseHistoriskArbeid = startdato.erFørDagensDato(),
-        skalVisePlanlagtArbeid = sluttdato?.erLikEllerEtterDagensDato() ?: true //Hvis vedkommende fortsatt er frilans skal planlagt vises.
-    )
+    "arbeidsforhold" to arbeidsforhold?.somMap()
 )
 
 private fun SelvstendigNæringsdrivende.somMap() : Map<String, Any?> = mapOf(
