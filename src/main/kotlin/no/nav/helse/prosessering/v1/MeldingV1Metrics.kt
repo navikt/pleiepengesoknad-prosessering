@@ -114,6 +114,7 @@ internal fun MeldingV1.reportMetrics() {
     when (omsorgstilbud) {
         null -> omsorgstilbudCounter.labels("omsorgstilbud", "nei").inc()
         else -> {
+            omsorgstilbudCounter.labels("omsorgstilbud", "ja").inc()
             if (omsorgstilbud.enkeltdager != null){
                 omsorgstilbudPlanEllerDagForDagCounter.labels("enkeltdager").inc()
             } else if(omsorgstilbud.ukedager != null){
