@@ -2,6 +2,7 @@ package no.nav.helse.prosessering.v1
 
 import io.prometheus.client.Counter
 import io.prometheus.client.Histogram
+import no.nav.helse.felles.JobberIPeriodeSvar
 import java.time.LocalDate
 
 val opplastedeVedleggHistogram = Histogram.build()
@@ -14,11 +15,6 @@ val omsorgstilbudCounter = Counter.build()
     .name("omsorgstilbud_counter")
     .help("Teller for svar på ja på spørsmål om tilsynsordning i søknaden")
     .labelNames("spm", "svar")
-    .register()
-val omsorgstilbudPlanEllerDagForDagCounter = Counter.build()
-    .name("omsorgstilbud_plan_eller_dag_for_dag_counter")
-    .help("Teller de som søker 6mnd frem i tid og har omsorgstilbud")
-    .labelNames("type")
     .register()
 
 val beredskapCounter = Counter.build()
@@ -68,16 +64,16 @@ val selvstendigVirksomhetCounter = Counter.build()
     .help("Teller for selvstending næringsdrivende")
     .register()
 
-val arbeidsgivereCounter = Counter.build()
-    .name("arbeidsgivereCounter")
-    .help("Teller for arbeidsgivere")
-    .labelNames("antallArbeidsgivere", "skalJobbe")
+val antallArbeidsgivereCounter = Counter.build()
+    .name("antallArbeidsgivereCounter")
+    .help("Teller for antall arbeidsgivere")
+    .labelNames("antallArbeidsgivere")
     .register()
 
-val jobbIPeriodenCounter = Counter.build()
-    .name("jobbIPeriodenCounter")
-    .help("Teller for om søker har jobbet i perioden")
-    .labelNames("periode", "svar")
+val jobberIPeriodenCounter = Counter.build()
+    .name("jobberIPeriodenCounter")
+    .help("Teller for om søker jobber i perioden")
+    .labelNames("spm", "svar")
     .register()
 
 val ingenInntektCounter = Counter.build()
@@ -113,14 +109,7 @@ internal fun MeldingV1.reportMetrics() {
 
     when (omsorgstilbud) {
         null -> omsorgstilbudCounter.labels("omsorgstilbud", "nei").inc()
-        else -> {
-            omsorgstilbudCounter.labels("omsorgstilbud", "ja").inc()
-            if (omsorgstilbud.enkeltdager != null){
-                omsorgstilbudPlanEllerDagForDagCounter.labels("enkeltdager").inc()
-            } else if(omsorgstilbud.ukedager != null){
-                omsorgstilbudPlanEllerDagForDagCounter.labels("ukedager").inc()
-            }
-        }
+        else -> omsorgstilbudCounter.labels("omsorgstilbud", "ja").inc()
     }
 
     when (beredskap?.beredskap) {
@@ -134,7 +123,16 @@ internal fun MeldingV1.reportMetrics() {
         false -> nattevaakCounter.labels("nattevåk", "nei").inc()
         else -> {}
     }
-    // TODO: 04/02/2022 Metrikker for arbeid i perioden. Fast eller ukedager etc
+
+    antallArbeidsgivereCounter.labels( "${arbeidsgivere.size}").inc()
+
+    if(arbeidsgivere.isNotEmpty()){
+        if(arbeidsgivere.any { it.arbeidsforhold?.arbeidIPeriode?.jobberIPerioden == JobberIPeriodeSvar.JA }){
+            jobberIPeriodenCounter.labels("jobber", "ja").inc()
+        } else {
+            jobberIPeriodenCounter.labels("jobber", "nei").inc()
+        }
+    }
 
     when {
         erArbeidstaker() -> arbeidstakerCounter.inc()
