@@ -74,7 +74,7 @@ class SøknadPDFGenerator : PDFGenerator<MeldingV1>() {
         "frilans" to frilans?.somMap(),
         "selvstendigNæringsdrivende" to selvstendigNæringsdrivende?.somMap(),
         "arbeidsgivere" to arbeidsgivere.somMapAnsatt(),
-        "hjelper" to mapOf( // TODO: 04/06/2021 Kan fjerne hjelpemetoden når feltet er prodsatt i api og front
+        "hjelper" to mapOf(
             "harFlereAktiveVirksomheterErSatt" to harFlereAktiveVirksomehterSatt(),
             "harVærtEllerErVernepliktigErSatt" to erBooleanSatt(harVærtEllerErVernepliktig)
         )
