@@ -1,20 +1,20 @@
 {{#if arbeidIPeriode.jobberIPerioden}}
-    <li>Skal jobbe i perioden</li>
+    <li>Jobbe i perioden</li>
 {{else}}
-    <li>Skal ikke jobbe i perioden</li>
+    <li>Jobber ikke i perioden</li>
 {{/if}}
 
 {{#if arbeidIPeriode.jobberProsent}}
-    <li>Skal jobbe {{arbeidIPeriode.jobberProsent}} prosent, i snitt {{arbeidIPeriode.snittTimerPerUkedag}} hver dag.</li>
+    <li>Jobber {{arbeidIPeriode.jobberProsent}} prosent, i snitt {{arbeidIPeriode.snittTimerPerUkedag}} hver dag.</li>
 {{/if}}
 
 <!-- Viser erLiktHverUke dersom jobberProsent ikke er satt. -->
 {{#unless arbeidIPeriode.jobberProsent}}
     {{#if arbeidIPeriode.erLiktHverUkeSatt}}
         {{#if arbeidIPeriode.erLiktHverUke}}
-            <li>Skal jobbe likt hver dag</li>
+            <li>Jobbe likt hver uke</li>
         {{else}}
-            <li>Skal jobbe variert</li>
+            <li>Jobber variert</li>
         {{/if}}
     {{/if}}
 {{/unless}}
