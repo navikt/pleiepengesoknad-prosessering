@@ -54,7 +54,7 @@ class SøknadPDFGenerator : PDFGenerator<MeldingV1>() {
         ),
         "hjelp" to mapOf(
             "har_medsoker" to harMedsøker,
-            "ingen_arbeidsgivere" to (arbeidsgivere == null),
+            "ingen_arbeidsgivere" to arbeidsgivere.isEmpty(),
             "sprak" to språk?.sprakTilTekst()
         ),
         "omsorgstilbud" to omsorgstilbud?.somMap(),
@@ -73,7 +73,7 @@ class SøknadPDFGenerator : PDFGenerator<MeldingV1>() {
         "harVærtEllerErVernepliktig" to harVærtEllerErVernepliktig,
         "frilans" to frilans?.somMap(),
         "selvstendigNæringsdrivende" to selvstendigNæringsdrivende?.somMap(),
-        "arbeidsgivere" to arbeidsgivere?.somMapAnsatt(),
+        "arbeidsgivere" to arbeidsgivere.somMapAnsatt(),
         "hjelper" to mapOf( // TODO: 04/06/2021 Kan fjerne hjelpemetoden når feltet er prodsatt i api og front
             "harFlereAktiveVirksomheterErSatt" to harFlereAktiveVirksomehterSatt(),
             "harVærtEllerErVernepliktigErSatt" to erBooleanSatt(harVærtEllerErVernepliktig)

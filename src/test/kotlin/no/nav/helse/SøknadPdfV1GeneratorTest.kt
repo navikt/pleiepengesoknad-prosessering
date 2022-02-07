@@ -300,7 +300,7 @@ class SøknadPdfV1GeneratorTest {
 
         id = "6-utenArbeidsgivere"
         pdf = generator.genererPDF(
-            melding = fullGyldigMelding(id).copy(arbeidsgivere = null)
+            melding = fullGyldigMelding(id).copy(arbeidsgivere = listOf())
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
@@ -380,7 +380,7 @@ class SøknadPdfV1GeneratorTest {
         pdf = generator.genererPDF(
             melding = fullGyldigMelding(id).copy(
                 selvstendigNæringsdrivende = null,
-                arbeidsgivere = null
+                arbeidsgivere = listOf()
             )
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)

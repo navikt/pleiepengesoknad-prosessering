@@ -147,7 +147,7 @@ internal fun MeldingV1.reportMetrics() {
     }
 }
 
-private fun MeldingV1.harArbeidsforhold() = (this.arbeidsgivere != null && this.arbeidsgivere.isNotEmpty())
+private fun MeldingV1.harArbeidsforhold() = this.arbeidsgivere.isNotEmpty()
 
 private fun MeldingV1.erArbeidstaker() =
     this.harArbeidsforhold() && selvstendigNæringsdrivende == null && frilans == null
