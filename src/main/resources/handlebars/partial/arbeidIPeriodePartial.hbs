@@ -45,17 +45,14 @@
     </li>
 {{/if}}
 
-<!-- Viser fasteDager dersom jobberProsent ikke er satt. -->
-{{#unless arbeidIPeriode.jobberProsent}}
-    {{#if arbeidIPeriode.fasteDager}}
-        <li class="li-style-none"><b>Faste dager:</b>
-            <ul>
-                <li>Mandag: {{arbeidIPeriode.fasteDager.mandag}}</li>
-                <li>Tirsdag: {{arbeidIPeriode.fasteDager.tirsdag}}</li>
-                <li>Onsdag: {{arbeidIPeriode.fasteDager.onsdag}}</li>
-                <li>Torsdag: {{arbeidIPeriode.fasteDager.torsdag}}</li>
-                <li>Fredag: {{arbeidIPeriode.fasteDager.fredag}}</li>
-            </ul>
-        </li>
-    {{/if}}
-{{/unless}}
+{{#if arbeidIPeriode.fasteDager}}
+    <li class="li-style-none"><b>Faste dager:</b>
+        <ul>
+            <li>Mandag: {{arbeidIPeriode.fasteDager.mandag}}</li>
+            <li>Tirsdag: {{arbeidIPeriode.fasteDager.tirsdag}}</li>
+            <li>Onsdag: {{arbeidIPeriode.fasteDager.onsdag}}</li>
+            <li>Torsdag: {{arbeidIPeriode.fasteDager.torsdag}}</li>
+            <li>Fredag: {{arbeidIPeriode.fasteDager.fredag}}</li>
+        </ul>
+    </li>
+{{/if}}

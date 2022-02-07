@@ -2,7 +2,6 @@ package no.nav.helse.prosessering.v1
 
 import io.prometheus.client.Counter
 import io.prometheus.client.Histogram
-import no.nav.helse.felles.Arbeidsforhold
 import java.time.LocalDate
 
 val opplastedeVedleggHistogram = Histogram.build()
@@ -96,7 +95,6 @@ val søknadsperiodeCounter = Counter.build()
 fun LocalDate.erFørDagensDato() = isBefore(LocalDate.now())
 fun LocalDate.erLikDagensDato() = isEqual(LocalDate.now())
 fun LocalDate.erEtterDagensDato() = isAfter(LocalDate.now())
-fun LocalDate.erLikEllerEtterDagensDato() = erLikDagensDato() || erEtterDagensDato()
 
 internal fun MeldingV1.reportMetrics() {
     opplastedeVedleggHistogram.observe(vedleggId.size.toDouble())
@@ -135,54 +133,8 @@ internal fun MeldingV1.reportMetrics() {
         false -> nattevaakCounter.labels("nattevåk", "nei").inc()
         else -> {}
     }
+    // TODO: 04/02/2022 Metrikker for arbeid i perioden. Fast eller ukedager etc
 
-
-    /*
-    val jobberIPerioden = arbeidsgivere?.mapNotNull {
-        val historisk = if(it.arbeidsforhold?.historiskArbeid != null) {
-            "historisk_" + it.arbeidsforhold.historiskArbeid.jobberIPerioden.name.lowercase()
-        } else "tom_historisk_"
-
-        val planlagt = if(it.arbeidsforhold?.planlagtArbeid != null) {
-            "planlagt" + it.arbeidsforhold.planlagtArbeid.jobberIPerioden.name.lowercase()
-        } else "tom_planlagt"
-
-        "$historisk|$planlagt"
-    }?.sorted()?.joinToString("|")
-
-    if(arbeidsgivere != null){
-        arbeidsgivereCounter.labels(arbeidsgivere.size.toString(), jobberIPerioden).inc()
-    }
-
-     */
-
-    val arbeidsforhold: MutableList<Arbeidsforhold?> = mutableListOf(frilans?.arbeidsforhold, selvstendigNæringsdrivende?.arbeidsforhold)
-    arbeidsgivere?.let { arbeidsgiver -> arbeidsforhold.addAll(arbeidsgiver.map { it.arbeidsforhold }) }
-    /*
-    val historiskJobberSvar = arbeidsforhold
-        .filterNotNull()
-        .mapNotNull { it.historiskArbeid?.jobberIPerioden }
-
-    val planlagtJobberSvar = arbeidsforhold
-        .filterNotNull()
-        .mapNotNull { it.planlagtArbeid?.jobberIPerioden }
-
-    val harJobbet = historiskJobberSvar.contains(JobberIPeriodeSvar.JA)
-    val harIkkeJobbet = historiskJobberSvar.isEmpty() ||historiskJobberSvar.all { it == JobberIPeriodeSvar.NEI }
-
-    when {
-        harJobbet -> jobbIPeriodenCounter.labels("historisk", "harJobbet").inc()
-        harIkkeJobbet -> jobbIPeriodenCounter.labels("historisk", "harIkkeJobbet").inc()
-    }
-
-    val skalJobbe = planlagtJobberSvar.contains(JobberIPeriodeSvar.JA)
-    val skalIkkeJobbe = planlagtJobberSvar.isEmpty() || planlagtJobberSvar.all { it == JobberIPeriodeSvar.NEI }
-
-    when {
-        skalJobbe -> jobbIPeriodenCounter.labels("planlagt", "skalJobbe").inc()
-        skalIkkeJobbe -> jobbIPeriodenCounter.labels("planlagt", "skalIkkeJobbe").inc()
-    }
-   */
     when {
         erArbeidstaker() -> arbeidstakerCounter.inc()
         erArbeidstakerOgFrilanser() -> frilansOgArbeidstaker.inc()
