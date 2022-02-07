@@ -4,7 +4,7 @@ import java.time.Duration
 import java.time.LocalDate
 
 data class Omsorgstilbud(
-    val erLiktHverDag: Boolean,
+    val erLiktHverUke: Boolean,
     val enkeltdager: List<Enkeltdag>? = null,
     val ukedager: PlanUkedager? = null
 )

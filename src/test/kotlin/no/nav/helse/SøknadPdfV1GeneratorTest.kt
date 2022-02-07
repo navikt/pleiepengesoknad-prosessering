@@ -244,7 +244,7 @@ class SøknadPdfV1GeneratorTest {
             barnRelasjonBeskrivelse = "Blaabla annet",
             k9FormatSøknad = SøknadUtils.defaultK9FormatPSB(),
             omsorgstilbud = Omsorgstilbud(
-                erLiktHverDag = true,
+                erLiktHverUke = true,
                 ukedager = PlanUkedager(
                     mandag = Duration.ofHours(3),
                     onsdag = Duration.ofHours(3),
@@ -348,7 +348,7 @@ class SøknadPdfV1GeneratorTest {
         pdf = generator.genererPDF(
             melding = fullGyldigMelding(id).copy(
                 omsorgstilbud = Omsorgstilbud(
-                    erLiktHverDag = false,
+                    erLiktHverUke = false,
                     enkeltdager = listOf(
                         Enkeltdag(LocalDate.now(), Duration.ofHours(3)),
                         Enkeltdag(LocalDate.now().plusDays(3), Duration.ofHours(2)),
@@ -365,7 +365,7 @@ class SøknadPdfV1GeneratorTest {
         pdf = generator.genererPDF(
             melding = fullGyldigMelding(id).copy(
                 omsorgstilbud = Omsorgstilbud(
-                    erLiktHverDag = true,
+                    erLiktHverUke = true,
                     ukedager = PlanUkedager(
                         mandag = Duration.ofHours(3),
                         onsdag = Duration.ofHours(3),
