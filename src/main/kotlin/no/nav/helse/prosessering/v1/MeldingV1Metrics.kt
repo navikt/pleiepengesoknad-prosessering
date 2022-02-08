@@ -11,6 +11,12 @@ val opplastedeVedleggHistogram = Histogram.build()
     .help("Antall vedlegg lastet opp i søknader")
     .register()
 
+val antallArbeidsgivereHistogram = Histogram.build()
+    .buckets(0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0)
+    .name("antall_arbeidsgivere_histogram")
+    .help("Teller for antall arbeidsgivere")
+    .register()
+
 val omsorgstilbudCounter = Counter.build()
     .name("omsorgstilbud_counter")
     .help("Teller for svar på ja på spørsmål om tilsynsordning i søknaden")
@@ -62,12 +68,6 @@ val frilansOgArbeidstaker = Counter.build()
 val selvstendigVirksomhetCounter = Counter.build()
     .name("selvstendigNaringsdrivendeCounter")
     .help("Teller for selvstending næringsdrivende")
-    .register()
-
-val antallArbeidsgivereCounter = Counter.build()
-    .name("antallArbeidsgivereCounter")
-    .help("Teller for antall arbeidsgivere")
-    .labelNames("antallArbeidsgivere")
     .register()
 
 val jobberIPeriodenCounter = Counter.build()
@@ -124,7 +124,7 @@ internal fun MeldingV1.reportMetrics() {
         else -> {}
     }
 
-    antallArbeidsgivereCounter.labels( "${arbeidsgivere.size}").inc()
+    antallArbeidsgivereHistogram.observe(arbeidsgivere.size.toDouble())
 
     if(arbeidsgivere.isNotEmpty()){
         if(arbeidsgivere.any { it.arbeidsforhold?.arbeidIPeriode?.jobberIPerioden == JobberIPeriodeSvar.JA }){
