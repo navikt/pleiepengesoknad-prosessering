@@ -145,9 +145,11 @@ internal fun MeldingV1.reportMetrics() {
         }
     }
 
-    arbeidsgivere.forEach {
-        if(!it.arbeidsforhold?.arbeidIPeriode?.enkeltdager.isNullOrEmpty()) typeRegistrertTimeCounter.labels("arbeidsgivere", "enkeltdager").inc()
-        if(it.arbeidsforhold?.arbeidIPeriode?.fasteDager != null) typeRegistrertTimeCounter.labels("arbeidsgivere", "fasteDager").inc()
+    arbeidsgivere.forEach { arbeidsforhold ->
+        arbeidsforhold.arbeidsforhold?.arbeidIPeriode?.let {
+            if(!it.enkeltdager.isNullOrEmpty()) typeRegistrertTimeCounter.labels("arbeidsgivere", "enkeltdager").inc()
+            if(it.fasteDager != null) typeRegistrertTimeCounter.labels("arbeidsgivere", "fasteDager").inc()
+        }
     }
 
     when {
