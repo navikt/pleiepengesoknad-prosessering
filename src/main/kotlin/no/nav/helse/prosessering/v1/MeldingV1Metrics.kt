@@ -76,6 +76,12 @@ val jobberIPeriodenCounter = Counter.build()
     .labelNames("spm", "svar")
     .register()
 
+val typeRegistrertTimeCounter = Counter.build()
+    .name("typeRegistrertTimeCounter")
+    .help("Teller for ulik type som brukes for å registrere timer")
+    .labelNames("felt", "type")
+    .register()
+
 val ingenInntektCounter = Counter.build()
     .name("ingenInntektCounter")
     .help("Teller for valg av verken arbeidsgiver, frilanser, eller selvstendig næringsdrivende")
@@ -112,6 +118,11 @@ internal fun MeldingV1.reportMetrics() {
         else -> omsorgstilbudCounter.labels("omsorgstilbud", "ja").inc()
     }
 
+    omsorgstilbud?.let {
+        if(!it.enkeltdager.isNullOrEmpty()) typeRegistrertTimeCounter.labels("omsorgstilbud", "enkeltdager").inc()
+        if(it.ukedager != null) typeRegistrertTimeCounter.labels("omsorgstilbud", "ukedager").inc()
+    }
+
     when (beredskap?.beredskap) {
         true -> beredskapCounter.labels("beredskap", "ja").inc()
         false -> beredskapCounter.labels("beredskap", "nei").inc()
@@ -132,6 +143,11 @@ internal fun MeldingV1.reportMetrics() {
         } else {
             jobberIPeriodenCounter.labels("jobber", "nei").inc()
         }
+    }
+
+    arbeidsgivere.forEach {
+        if(!it.arbeidsforhold?.arbeidIPeriode?.enkeltdager.isNullOrEmpty()) typeRegistrertTimeCounter.labels("arbeidsgivere", "enkeltdager").inc()
+        if(it.arbeidsforhold?.arbeidIPeriode?.fasteDager != null) typeRegistrertTimeCounter.labels("arbeidsgivere", "fasteDager").inc()
     }
 
     when {
