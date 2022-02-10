@@ -1,55 +1,20 @@
 {{#if arbeidIPeriode.jobberIPerioden}}
-    <li>
-        {{#if historisk}}
-            Har jobbet
-        {{else}}
-            Skal jobbe
-        {{/if}}
-        i perioden
-    </li>
+    <li>Jobber i perioden</li>
 {{else}}
-    <li>
-        {{#if historisk}}
-            Har ikke jobbet
-        {{else}}
-            Skal ikke jobbe
-        {{/if}}
-        i perioden
-    </li>
+    <li>Jobber ikke i perioden</li>
 {{/if}}
 
 {{#if arbeidIPeriode.jobberProsent}}
-    <li>
-        {{#if historisk}}
-            Har jobbet
-        {{else}}
-            Skal jobbe
-        {{/if}}
-        {{arbeidIPeriode.jobberProsent}} prosent, i snitt {{arbeidIPeriode.snittTimerPerUkedag}} hver dag
-    </li>
+    <li>Jobber {{arbeidIPeriode.jobberProsent}} prosent, i snitt {{arbeidIPeriode.snittTimerPerUkedag}} hver dag.</li>
 {{/if}}
 
 <!-- Viser erLiktHverUke dersom jobberProsent ikke er satt. -->
 {{#unless arbeidIPeriode.jobberProsent}}
     {{#if arbeidIPeriode.erLiktHverUkeSatt}}
         {{#if arbeidIPeriode.erLiktHverUke}}
-            <li>
-                {{#if historisk}}
-                    Har jobbet
-                {{else}}
-                    Skal jobbe
-                {{/if}}
-                likt hver dag
-            </li>
+            <li>Jobber likt hver uke</li>
         {{else}}
-            <li>
-                {{#if historisk}}
-                    Har jobbet
-                {{else}}
-                    Skal jobbe
-                {{/if}}
-                variert
-            </li>
+            <li>Jobber variert</li>
         {{/if}}
     {{/if}}
 {{/unless}}
@@ -80,7 +45,7 @@
     </li>
 {{/if}}
 
-<!-- Viser fasteDager dersom jobberProsent ikke er satt. -->
+<!-- Viser fasteDager dersom jobberProsent ikke er satt. Hvis prosent er satt er det vi som har mappet opp en ukeplan selv, ikke bruker -->
 {{#unless arbeidIPeriode.jobberProsent}}
     {{#if arbeidIPeriode.fasteDager}}
         <li class="li-style-none"><b>Faste dager:</b>
@@ -94,5 +59,3 @@
         </li>
     {{/if}}
 {{/unless}}
-
-

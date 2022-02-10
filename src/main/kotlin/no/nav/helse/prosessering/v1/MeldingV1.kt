@@ -26,7 +26,7 @@ data class MeldingV1 (
     val nattevåk: Nattevåk?,
     val frilans: Frilans?,
     val selvstendigNæringsdrivende: SelvstendigNæringsdrivende? = null,
-    val arbeidsgivere: List<ArbeidsforholdAnsatt>? = null,
+    val arbeidsgivere: List<ArbeidsforholdAnsatt>,
     val barnRelasjon: BarnRelasjon? = null,
     val barnRelasjonBeskrivelse: String? = null,
     val harVærtEllerErVernepliktig: Boolean? = null,

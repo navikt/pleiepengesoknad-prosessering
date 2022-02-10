@@ -283,6 +283,7 @@ class PleiepengesoknadProsesseringTest {
                 startdato = LocalDate.parse("2018-08-01"),
                 jobberFortsattSomFrilans = true
             ),
+            arbeidsgivere = listOf(),
             medlemskap = Medlemskap(
                 harBoddIUtlandetSiste12Mnd = true,
                 utenlandsoppholdSiste12Mnd = listOf(

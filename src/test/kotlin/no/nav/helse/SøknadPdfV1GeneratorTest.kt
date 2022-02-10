@@ -119,25 +119,9 @@ class SøknadPdfV1GeneratorTest {
                 jobberFortsattSomFrilans = false,
                 arbeidsforhold = Arbeidsforhold(
                     jobberNormaltTimer = 23.0,
-                    historiskArbeid = ArbeidIPeriode(
+                    arbeidIPeriode = ArbeidIPeriode(
                         jobberIPerioden = JobberIPeriodeSvar.JA,
                         erLiktHverUke = null,
-                        enkeltdager = listOf(
-                            Enkeltdag(dato = LocalDate.now(), tid = Duration.ofHours(1)),
-                            Enkeltdag(dato = LocalDate.now().plusDays(3), tid = Duration.ofHours(1)),
-                            Enkeltdag(dato = LocalDate.now().plusWeeks(1), tid = Duration.ofHours(1))
-                        ),
-                        fasteDager = PlanUkedager(
-                            mandag = Duration.ofHours(1),
-                            tirsdag = Duration.ofHours(1),
-                            onsdag = null,
-                            torsdag = Duration.ofHours(1).plusMinutes(45),
-                            fredag = null
-                        )
-                    ),
-                    planlagtArbeid = ArbeidIPeriode(
-                        jobberIPerioden = JobberIPeriodeSvar.JA,
-                        erLiktHverUke = true,
                         enkeltdager = listOf(
                             Enkeltdag(dato = LocalDate.now(), tid = Duration.ofHours(1)),
                             Enkeltdag(dato = LocalDate.now().plusDays(3), tid = Duration.ofHours(1)),
@@ -179,25 +163,9 @@ class SøknadPdfV1GeneratorTest {
                 ),
                 arbeidsforhold = Arbeidsforhold(
                     jobberNormaltTimer = 40.0,
-                    historiskArbeid = ArbeidIPeriode(
+                    arbeidIPeriode = ArbeidIPeriode(
                         jobberIPerioden = JobberIPeriodeSvar.JA,
                         erLiktHverUke = false,
-                        enkeltdager = listOf(
-                            Enkeltdag(dato = LocalDate.now(), tid = Duration.ofHours(4)),
-                            Enkeltdag(dato = LocalDate.now().plusDays(3), tid = Duration.ofHours(4)),
-                            Enkeltdag(dato = LocalDate.now().plusWeeks(1), tid = Duration.ofHours(4))
-                        ),
-                        fasteDager = PlanUkedager(
-                            mandag = Duration.ofHours(4),
-                            tirsdag = Duration.ofHours(7),
-                            onsdag = null,
-                            torsdag = Duration.ofHours(5).plusMinutes(45),
-                            fredag = null
-                        )
-                    ),
-                    planlagtArbeid = ArbeidIPeriode(
-                        jobberIPerioden = JobberIPeriodeSvar.JA,
-                        erLiktHverUke = true,
                         enkeltdager = listOf(
                             Enkeltdag(dato = LocalDate.now(), tid = Duration.ofHours(4)),
                             Enkeltdag(dato = LocalDate.now().plusDays(3), tid = Duration.ofHours(4)),
@@ -220,29 +188,13 @@ class SøknadPdfV1GeneratorTest {
                     erAnsatt = true,
                     arbeidsforhold = Arbeidsforhold(
                         jobberNormaltTimer = 27.0,
-                        historiskArbeid = ArbeidIPeriode(
+                        arbeidIPeriode = ArbeidIPeriode(
                             jobberIPerioden = JobberIPeriodeSvar.JA,
                             jobberProsent = 50.0,
                             erLiktHverUke = true,
                             enkeltdager = listOf(
                                 Enkeltdag(dato = LocalDate.now(), tid = Duration.ofHours(4)),
                                 Enkeltdag(dato = LocalDate.now().plusDays(3), tid = Duration.ofHours(5)),
-                                Enkeltdag(dato = LocalDate.now().plusWeeks(1), tid = Duration.ofHours(5))
-                            ),
-                            fasteDager = PlanUkedager(
-                                mandag = Duration.ofHours(4),
-                                tirsdag = Duration.ofHours(7),
-                                onsdag = null,
-                                torsdag = Duration.ofHours(5).plusMinutes(45),
-                                fredag = null
-                            )
-                        ),
-                        planlagtArbeid = ArbeidIPeriode(
-                            jobberIPerioden = JobberIPeriodeSvar.NEI,
-                            erLiktHverUke = true,
-                            enkeltdager = listOf(
-                                Enkeltdag(dato = LocalDate.now(), tid = Duration.ofHours(5)),
-                                Enkeltdag(dato = LocalDate.now().plusDays(3), tid = Duration.ofHours(4)),
                                 Enkeltdag(dato = LocalDate.now().plusWeeks(1), tid = Duration.ofHours(5))
                             ),
                             fasteDager = PlanUkedager(
@@ -261,7 +213,7 @@ class SøknadPdfV1GeneratorTest {
                     erAnsatt = true,
                     arbeidsforhold = Arbeidsforhold(
                         jobberNormaltTimer = 40.0,
-                        historiskArbeid = ArbeidIPeriode(
+                        arbeidIPeriode = ArbeidIPeriode(
                             jobberIPerioden = JobberIPeriodeSvar.JA,
                             erLiktHverUke = true,
                             enkeltdager = listOf(
@@ -272,18 +224,6 @@ class SøknadPdfV1GeneratorTest {
                             fasteDager = PlanUkedager(
                                 mandag = Duration.ofHours(4),
                                 tirsdag = Duration.ofHours(6),
-                                onsdag = null,
-                                torsdag = Duration.ofHours(5).plusMinutes(45),
-                                fredag = null
-                            )
-                        ),
-                        planlagtArbeid = ArbeidIPeriode(
-                            jobberIPerioden = JobberIPeriodeSvar.JA,
-                            erLiktHverUke = true,
-                            enkeltdager = null,
-                            fasteDager = PlanUkedager(
-                                mandag = Duration.ofHours(4),
-                                tirsdag = Duration.ofHours(7),
                                 onsdag = null,
                                 torsdag = Duration.ofHours(5).plusMinutes(45),
                                 fredag = null
@@ -302,7 +242,22 @@ class SøknadPdfV1GeneratorTest {
             harVærtEllerErVernepliktig = true,
             barnRelasjon = BarnRelasjon.ANNET,
             barnRelasjonBeskrivelse = "Blaabla annet",
-            k9FormatSøknad = SøknadUtils.defaultK9FormatPSB(), omsorgstilbud = null
+            k9FormatSøknad = SøknadUtils.defaultK9FormatPSB(),
+            omsorgstilbud = Omsorgstilbud(
+                erLiktHverUke = true,
+                ukedager = PlanUkedager(
+                    mandag = Duration.ofHours(3),
+                    onsdag = Duration.ofHours(3),
+                    fredag = Duration.ofHours(3)
+                ),
+                enkeltdager = listOf(
+                    Enkeltdag(LocalDate.now(), Duration.ofHours(3)),
+                    Enkeltdag(LocalDate.now().plusDays(3), Duration.ofHours(2)),
+                    Enkeltdag(LocalDate.now().plusWeeks(4), Duration.ofHours(4)),
+                    Enkeltdag(LocalDate.now().plusWeeks(4), Duration.ofHours(6).plusMinutes(45)),
+                    Enkeltdag(LocalDate.now().plusWeeks(9).plusDays(2), Duration.ofHours(3))
+                )
+            )
         )
     }
 
@@ -345,7 +300,7 @@ class SøknadPdfV1GeneratorTest {
 
         id = "6-utenArbeidsgivere"
         pdf = generator.genererPDF(
-            melding = fullGyldigMelding(id).copy(arbeidsgivere = null)
+            melding = fullGyldigMelding(id).copy(arbeidsgivere = listOf())
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
@@ -381,67 +336,42 @@ class SøknadPdfV1GeneratorTest {
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
-        id = "9-omsorgstilbud-v2-med-historisk-og-planlagte-ukedager"
-        pdf = generator.genererPDF(
-            melding = fullGyldigMelding(id).copy(
-                fraOgMed = LocalDate.now().minusDays(10),
-                tilOgMed = LocalDate.now().plusDays(10),
-                omsorgstilbud = Omsorgstilbud(
-                    historisk = Omsorgsdager(
-                        ukedager = PlanUkedager(
-                            mandag = null,
-                            tirsdag = Duration.ofHours(5).plusMinutes(30),
-                            onsdag = null,
-                            torsdag = Duration.ofHours(5).plusMinutes(30),
-                            fredag = Duration.ofHours(5).plusMinutes(30),
-                        )
-                    ),
-                    planlagt = Omsorgsdager(
-                        ukedager = PlanUkedager(
-                            mandag = null,
-                            tirsdag = Duration.ofHours(7).plusMinutes(30),
-                            onsdag = null,
-                            torsdag = Duration.ofHours(7).plusMinutes(30),
-                            fredag = Duration.ofHours(7).plusMinutes(30),
-                        )
-                    )
-                )
-            )
-        )
-        if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
-
-
-        id = "10-omsorgstilbud-v2-med-historisk-og-planlagte-enkeltdager"
-        pdf = generator.genererPDF(
-            melding = fullGyldigMelding(id).copy(
-                fraOgMed = LocalDate.now().minusDays(10),
-                tilOgMed = LocalDate.now().plusDays(10),
-                omsorgstilbud = Omsorgstilbud(
-                    historisk = Omsorgsdager(
-                        enkeltdager = listOf(
-                            Enkeltdag(LocalDate.parse("2021-01-01"), Duration.ofHours(7).plusMinutes(30)),
-                            Enkeltdag(LocalDate.now().minusDays(3), Duration.ofHours(7).plusMinutes(30)),
-                            Enkeltdag(LocalDate.now().minusDays(2), Duration.ofHours(7).plusMinutes(30)),
-                            Enkeltdag(LocalDate.now().minusDays(1), Duration.ofHours(7).plusMinutes(30))
-                        )
-                    ),
-                    planlagt = Omsorgsdager(
-                        enkeltdager = listOf(
-                            Enkeltdag(LocalDate.now().plusDays(1), Duration.ofHours(7).plusMinutes(30)),
-                            Enkeltdag(LocalDate.now().plusDays(2), Duration.ofHours(7).plusMinutes(30)),
-                            Enkeltdag(LocalDate.now().plusDays(3), Duration.ofHours(7).plusMinutes(30)),
-                            Enkeltdag(LocalDate.now().plusDays(4), Duration.ofHours(0))
-                        )
-                    )
-                )
-            )
-        )
-        if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
-
-        id = "11-omsorgstilbud-nei-til-omsorgstilbud"
+        id = "9-omsorgstilbud-nei-til-omsorgstilbud"
         pdf = generator.genererPDF(
             melding = fullGyldigMelding(id).copy(
                 omsorgstilbud = null
+            )
+        )
+        if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
+
+        id = "10-omsorgstilbud-omsorgstilbud-enkeltdager"
+        pdf = generator.genererPDF(
+            melding = fullGyldigMelding(id).copy(
+                omsorgstilbud = Omsorgstilbud(
+                    erLiktHverUke = false,
+                    enkeltdager = listOf(
+                        Enkeltdag(LocalDate.now(), Duration.ofHours(3)),
+                        Enkeltdag(LocalDate.now().plusDays(3), Duration.ofHours(2)),
+                        Enkeltdag(LocalDate.now().plusWeeks(4), Duration.ofHours(4)),
+                        Enkeltdag(LocalDate.now().plusWeeks(4), Duration.ofHours(6).plusMinutes(45)),
+                        Enkeltdag(LocalDate.now().plusWeeks(9).plusDays(2), Duration.ofHours(3))
+                    )
+                )
+            )
+        )
+        if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
+
+        id = "11-omsorgstilbud-omsorgstilbud-ukedager"
+        pdf = generator.genererPDF(
+            melding = fullGyldigMelding(id).copy(
+                omsorgstilbud = Omsorgstilbud(
+                    erLiktHverUke = true,
+                    ukedager = PlanUkedager(
+                        mandag = Duration.ofHours(3),
+                        onsdag = Duration.ofHours(3),
+                        fredag = Duration.ofHours(3)
+                    ),
+                )
             )
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
@@ -450,7 +380,7 @@ class SøknadPdfV1GeneratorTest {
         pdf = generator.genererPDF(
             melding = fullGyldigMelding(id).copy(
                 selvstendigNæringsdrivende = null,
-                arbeidsgivere = null
+                arbeidsgivere = listOf()
             )
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
