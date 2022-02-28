@@ -1,10 +1,19 @@
 <li class="li-style-none">
     <ul>
         <li class="sporsmalstekst">Jobber normalt {{arbeidsforhold.jobberNormaltTimer}} timer</li>
+
+        {{#if arbeidsforhold.harFraværIPeriode}}
+            <li class="sporsmalstekst">Har fravær i perioden</li>
+        {{else}}
+            <li class="sporsmalstekst">Har ikke fravær i perioden</li>
+        {{/if}}
+
+        {{#if arbeidsforhold.arbeidIPeriode}}
             <li class="li-style-none">
                 <ul>
                     {{> partial/arbeidIPeriodePartial arbeidIPeriode=arbeidsforhold.arbeidIPeriode}}
                 </ul>
             </li>
+        {{/if}}
     </ul>
 </li>

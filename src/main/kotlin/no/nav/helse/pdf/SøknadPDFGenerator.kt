@@ -3,7 +3,7 @@ package no.nav.helse.pdf
 import com.fasterxml.jackson.core.type.TypeReference
 import no.nav.helse.felles.*
 import no.nav.helse.pdf.PDFGenerator.Companion.DATE_FORMATTER
-import no.nav.helse.prosessering.v1.ArbeidsforholdAnsatt
+import no.nav.helse.prosessering.v1.Arbeidsgiver
 import no.nav.helse.prosessering.v1.MeldingV1
 import no.nav.helse.prosessering.v1.somTekst
 import no.nav.helse.utils.DateUtils
@@ -170,7 +170,8 @@ private fun Duration?.harGyldigVerdi() = this != null && this != Duration.ZERO
 
 private fun Arbeidsforhold.somMap(): Map<String, Any?> = mapOf(
     "jobberNormaltTimer" to jobberNormaltTimer,
-    "arbeidIPeriode" to arbeidIPeriode.somMap()
+    "harFraværIPeriode" to harFraværIPeriode,
+    "arbeidIPeriode" to arbeidIPeriode?.somMap()
 )
 
 private fun ArbeidIPeriode.somMap() : Map<String, Any?> = mapOf(
@@ -237,7 +238,7 @@ private fun VarigEndring.somMap() : Map<String, Any?> = mapOf(
     "forklaring" to forklaring
 )
 
-private fun List<ArbeidsforholdAnsatt>.somMapAnsatt() = map {
+private fun List<Arbeidsgiver>.somMapAnsatt() = map {
     mapOf<String, Any?>(
         "navn" to it.navn,
         "organisasjonsnummer" to it.organisasjonsnummer,
