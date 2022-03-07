@@ -119,9 +119,6 @@
                 <ul class="ul-no-indent">
                     <li class="li-style-none">
                         <ul>
-                            {{#if arbeidsgiver.arbeidsforhold}}
-                                <li class="sporsmalstekst">Jobber normalt {{arbeidsgiver.arbeidsforhold.jobberNormaltTimer}} timer per uke</li>
-                            {{/if}}
                             {{#if arbeidsgiver.erAnsatt}}
                                 <li class="sporsmalstekst">Er ansatt</li>
                             {{else}}
@@ -132,6 +129,9 @@
                                         <p>{{ jaNeiSvar arbeidsgiver.sluttetFørSøknadsperiode }}</p>
                                     </li>
                                 {{/if}}
+                            {{/if}}
+                            {{#if arbeidsgiver.arbeidsforhold}}
+                                <li class="sporsmalstekst">Jobber normalt {{arbeidsgiver.arbeidsforhold.jobberNormaltTimer}} timer per uke</li>
                             {{/if}}
                         </ul>
                     </li>
