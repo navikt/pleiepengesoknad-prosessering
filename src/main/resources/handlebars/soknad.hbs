@@ -247,17 +247,17 @@
 
     <section id="jobbISøknadsperioden">
         <h2>Jobb i søknadsperioden</h2>
-        {{# if hjelp.ingen_arbeidsgivere }}
+        {{# if hjelp.ingen_arbeidsforhold }}
             <ul>
-                <li class="ikke_satt">Du har ikke angitt noen arbeidsgivere i søknaden</li>
+                <li class="ikke_satt">Ingen arbeidsforhold er registrert i søknadsperioden</li>
             </ul>
         {{/if}}
 
         {{#if arbeidsgivere}}
             {{#each arbeidsgivere as |arbeidsgiver|~}}
                 <ul class="ul-no-indent">
-                    <li><b>{{arbeidsgiver.navn}} (orgnr: {{arbeidsgiver.organisasjonsnummer}})</b></li>
                     {{#if arbeidsgiver.arbeidsforhold}}
+                        <li><b>{{arbeidsgiver.navn}} (orgnr: {{arbeidsgiver.organisasjonsnummer}})</b></li>
                         {{> partial/arbeidsforholdPartial arbeidsforhold=arbeidsgiver.arbeidsforhold}}
                     {{/if}}
                 </ul>
@@ -267,9 +267,7 @@
         {{#if frilans.arbeidsforhold}}
             <ul class="ul-no-indent">
                 <li><b>Frilans</b></li>
-                {{#if frilans.arbeidsforhold}}
-                    {{> partial/arbeidsforholdPartial arbeidsforhold=frilans.arbeidsforhold}}
-                {{/if}}
+                {{> partial/arbeidsforholdPartial arbeidsforhold=frilans.arbeidsforhold}}
             </ul>
         {{/if}}
 

@@ -76,7 +76,8 @@ class SøknadPDFGenerator : PDFGenerator<MeldingV1>() {
         "arbeidsgivere" to arbeidsgivere.somMapAnsatt(),
         "hjelper" to mapOf(
             "harFlereAktiveVirksomheterErSatt" to harFlereAktiveVirksomehterSatt(),
-            "harVærtEllerErVernepliktigErSatt" to erBooleanSatt(harVærtEllerErVernepliktig)
+            "harVærtEllerErVernepliktigErSatt" to erBooleanSatt(harVærtEllerErVernepliktig),
+            "ingen_arbeidsforhold" to !harMinstEtArbeidsforhold()
         )
     )
 
@@ -88,6 +89,20 @@ class SøknadPDFGenerator : PDFGenerator<MeldingV1>() {
         object :
             TypeReference<MutableMap<String, Any?>>() {}
     )
+}
+
+private fun MeldingV1.harMinstEtArbeidsforhold() : Boolean{
+    frilans?.let {
+        if(it.arbeidsforhold != null) return true
+    }
+
+    selvstendigNæringsdrivende?.let {
+        if(it.arbeidsforhold != null) return true
+    }
+
+    if(arbeidsgivere.any(){it.arbeidsforhold != null}) return true
+
+    return false
 }
 
 private fun MeldingV1.harFlereAktiveVirksomehterSatt() =
