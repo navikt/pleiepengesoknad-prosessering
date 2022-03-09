@@ -409,6 +409,18 @@ class SøknadPdfV1GeneratorTest {
             )
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
+
+        id = "14-barn-med-årsakManglerIdentitetsnummer"
+        pdf = generator.genererPDF(
+            melding = fullGyldigMelding(id).copy(
+                barn = Barn(
+                    navn = "OLE DOLE",
+                    fødselsdato = LocalDate.now(),
+                    årsakManglerIdentitetsnummer = ÅrsakManglerIdentitetsnummer.NYFØDT
+                )
+            )
+        )
+        if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
     }
 
     private fun pdfPath(soknadId: String) = "${System.getProperty("user.dir")}/generated-pdf-$soknadId.pdf"

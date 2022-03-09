@@ -35,7 +35,9 @@ class SøknadPDFGenerator : PDFGenerator<MeldingV1>() {
         ),
         "barn" to mapOf(
             "id" to barn.fødselsnummer,
-            "navn" to barn.navn.capitalizeName()
+            "navn" to barn.navn.capitalizeName(),
+            "fødselsdato" to if(barn.fødselsdato != null) DATE_FORMATTER.format(barn.fødselsdato) else null,
+            "årsakManglerIdentitetsnummer" to if(barn.årsakManglerIdentitetsnummer != null) barn.årsakManglerIdentitetsnummer.pdfTekst else null
         ),
         "periode" to mapOf(
             "fra_og_med" to DATE_FORMATTER.format(fraOgMed),

@@ -27,11 +27,11 @@ class BarnTest {
     @Test
     fun `Test barnets alder i aar`() {
         for (i in 0..18) {
-            assertEquals(barn(i.toLong()).fødselsdato().aarSiden(), i.toDouble())
+            assertEquals(barn(i.toLong()).fødselsdato()!!.aarSiden(), i.toDouble())
         }
 
         for (i in 19..99) {
-            assertTrue(barn(i.toLong()).fødselsdato().aarSiden() > 18.00)
+            assertTrue(barn(i.toLong()).fødselsdato()!!.aarSiden() > 18.00)
         }
     }
 
