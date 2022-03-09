@@ -3,7 +3,6 @@ package no.nav.helse.pdf
 import com.fasterxml.jackson.core.type.TypeReference
 import no.nav.helse.felles.*
 import no.nav.helse.pdf.PDFGenerator.Companion.DATE_FORMATTER
-import no.nav.helse.prosessering.v1.*
 import no.nav.helse.prosessering.v1.ArbeidsforholdAnsatt
 import no.nav.helse.prosessering.v1.MeldingV1
 import no.nav.helse.prosessering.v1.somTekst
