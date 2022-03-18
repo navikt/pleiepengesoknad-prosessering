@@ -2,7 +2,8 @@ package no.nav.helse.felles
 
 data class Arbeidsforhold(
     val jobberNormaltTimer: Double,
-    val arbeidIPeriode: ArbeidIPeriode
+    val harFraværIPeriode: Boolean,
+    val arbeidIPeriode: ArbeidIPeriode? = null
 )
 
 data class ArbeidIPeriode(

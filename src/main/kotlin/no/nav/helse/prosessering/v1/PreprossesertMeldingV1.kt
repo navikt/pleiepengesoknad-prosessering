@@ -23,7 +23,7 @@ data class PreprossesertMeldingV1(
     val harMedsøker: Boolean,
     val frilans: Frilans? = null,
     val selvstendigNæringsdrivende: SelvstendigNæringsdrivende? = null,
-    val arbeidsgivere: List<ArbeidsforholdAnsatt>,
+    val arbeidsgivere: List<Arbeidsgiver>,
     val barnRelasjon: BarnRelasjon? = null,
     val barnRelasjonBeskrivelse: String? = null,
     val samtidigHjemme: Boolean? = null,

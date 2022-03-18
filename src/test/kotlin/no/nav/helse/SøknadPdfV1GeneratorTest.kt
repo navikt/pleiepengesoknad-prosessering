@@ -2,7 +2,7 @@ package no.nav.helse
 
 import no.nav.helse.felles.*
 import no.nav.helse.pdf.SøknadPDFGenerator
-import no.nav.helse.prosessering.v1.ArbeidsforholdAnsatt
+import no.nav.helse.prosessering.v1.Arbeidsgiver
 import no.nav.helse.prosessering.v1.MeldingV1
 import java.io.File
 import java.time.Duration
@@ -134,7 +134,8 @@ class SøknadPdfV1GeneratorTest {
                             torsdag = Duration.ofHours(1).plusMinutes(45),
                             fredag = null
                         )
-                    )
+                    ),
+                    harFraværIPeriode = true
                 )
             ),
             selvstendigNæringsdrivende = SelvstendigNæringsdrivende(
@@ -163,6 +164,7 @@ class SøknadPdfV1GeneratorTest {
                 ),
                 arbeidsforhold = Arbeidsforhold(
                     jobberNormaltTimer = 40.0,
+                    harFraværIPeriode = true,
                     arbeidIPeriode = ArbeidIPeriode(
                         jobberIPerioden = JobberIPeriodeSvar.JA,
                         erLiktHverUke = false,
@@ -182,7 +184,7 @@ class SøknadPdfV1GeneratorTest {
                 )
             ),
             arbeidsgivere = listOf(
-                ArbeidsforholdAnsatt(
+                Arbeidsgiver(
                     navn = "Peppes",
                     organisasjonsnummer = "917755736",
                     erAnsatt = true,
@@ -204,10 +206,11 @@ class SøknadPdfV1GeneratorTest {
                                 torsdag = Duration.ofHours(5).plusMinutes(45),
                                 fredag = null
                             )
-                        )
+                        ),
+                        harFraværIPeriode = true
                     )
                 ),
-                ArbeidsforholdAnsatt(
+                Arbeidsgiver(
                     navn = "Pizzabakeren",
                     organisasjonsnummer = "917755736",
                     erAnsatt = true,
@@ -228,10 +231,11 @@ class SøknadPdfV1GeneratorTest {
                                 torsdag = Duration.ofHours(5).plusMinutes(45),
                                 fredag = null
                             )
-                        )
+                        ),
+                        harFraværIPeriode = true
                     )
                 ),
-                ArbeidsforholdAnsatt(
+                Arbeidsgiver(
                     navn = "Sluttaaaa",
                     organisasjonsnummer = "917755736",
                     erAnsatt = false,
@@ -385,7 +389,28 @@ class SøknadPdfV1GeneratorTest {
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
-        id = "13-barn-med-årsakManglerIdentitetsnummer"
+        id = "13-harFraværIPeriode-false"
+        pdf = generator.genererPDF(
+            melding = fullGyldigMelding(id).copy(
+                selvstendigNæringsdrivende = null,
+                frilans = null,
+                arbeidsgivere = listOf(
+                    Arbeidsgiver(
+                        navn = "Peppes",
+                        organisasjonsnummer = "917755736",
+                        erAnsatt = true,
+                        arbeidsforhold = Arbeidsforhold(
+                            jobberNormaltTimer = 27.0,
+                            arbeidIPeriode = null,
+                            harFraværIPeriode = false
+                        )
+                    )
+                )
+            )
+        )
+        if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
+
+        id = "14-barn-med-årsakManglerIdentitetsnummer"
         pdf = generator.genererPDF(
             melding = fullGyldigMelding(id).copy(
                 barn = Barn(

@@ -3,7 +3,7 @@ package no.nav.helse
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.helse.dusseldorf.ktor.jackson.dusseldorfConfigured
 import no.nav.helse.felles.*
-import no.nav.helse.prosessering.v1.ArbeidsforholdAnsatt
+import no.nav.helse.prosessering.v1.Arbeidsgiver
 import no.nav.helse.prosessering.v1.MeldingV1
 import no.nav.k9.søknad.Søknad
 import no.nav.k9.søknad.felles.Versjon
@@ -149,7 +149,8 @@ internal object SøknadUtils {
                         Enkeltdag(dato = LocalDate.now().plusDays(3), tid = Duration.ofHours(4)),
                         Enkeltdag(dato = LocalDate.now().plusWeeks(1), tid = Duration.ofHours(4))
                     )
-                )
+                ),
+                harFraværIPeriode = true
             )
         ),
         selvstendigNæringsdrivende = no.nav.helse.felles.SelvstendigNæringsdrivende(
@@ -172,11 +173,12 @@ internal object SøknadUtils {
                         Enkeltdag(dato = LocalDate.now().plusDays(3), tid = Duration.ofHours(4)),
                         Enkeltdag(dato = LocalDate.now().plusWeeks(1), tid = Duration.ofHours(4))
                     )
-                )
+                ),
+                harFraværIPeriode = true
             )
         ),
         arbeidsgivere = listOf(
-            ArbeidsforholdAnsatt(
+            Arbeidsgiver(
                 navn = "Peppes",
                 organisasjonsnummer = "917755736",
                 erAnsatt = true,
@@ -197,10 +199,11 @@ internal object SøknadUtils {
                             torsdag = Duration.ofHours(5).plusMinutes(45),
                             fredag = null
                         )
-                    )
+                    ),
+                    harFraværIPeriode = true
                 )
             ),
-            ArbeidsforholdAnsatt(
+            Arbeidsgiver(
                 navn = "Pizzabakeren",
                 organisasjonsnummer = "917755736",
                 erAnsatt = true,
@@ -221,7 +224,8 @@ internal object SøknadUtils {
                             torsdag = Duration.ofHours(5).plusMinutes(45),
                             fredag = null
                         )
-                    )
+                    ),
+                    harFraværIPeriode = true
                 )
             )
         ),

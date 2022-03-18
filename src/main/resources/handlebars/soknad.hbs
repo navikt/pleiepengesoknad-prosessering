@@ -13,7 +13,8 @@
         <bookmark name="Relasjon til barnet" href="#relasjonTilBarnet"/>
         <bookmark name="Perioder" href="#perioder"/>
         <bookmark name="Utenlandsopphold" href="#utenlandsopphold"/>
-        <bookmark name="Arbeidsforhold" href="#arbeidsforhold"/>
+        <bookmark name="Arbeidsgivere" href="#arbeidsgivere"/>
+        <bookmark name="Jobb i søknadsperioden" href="#jobbISøknadsperioden"/>
         <bookmark name="Omsorgstilbud" href="#omsorgstilbud"/>
         <bookmark name="Verneplikt" href="#verneplikt"/>
         <bookmark name="Nattevåk" href="#nattevaak"/>
@@ -107,18 +108,18 @@
         </ul>
     </section>
 
-    <section id="arbeidsforhold">
-        <h2>Arbeidssituasjonen din</h2>
+    <section id="arbeidsgivere">
         {{# if hjelp.ingen_arbeidsgivere }}
+            <h2>Arbeidsgivere</h2>
             <ul>
-                <li class="ikke_satt">Du har ikke angitt noen arbeidsgivere i søknaden</li>
+                <li class="ikke_satt">Søker har ikke angitt noen arbeidsgivere i søknaden.</li>
             </ul>
         {{/if}}
 
         {{#if arbeidsgivere}}
             {{#each arbeidsgivere as |arbeidsgiver|~}}
+                <h2>{{arbeidsgiver.navn}} (orgnr: {{arbeidsgiver.organisasjonsnummer}})</h2>
                 <ul class="ul-no-indent">
-                    <li><b>{{arbeidsgiver.navn}} (orgnr: {{arbeidsgiver.organisasjonsnummer}})</b></li>
                     <li class="li-style-none">
                         <ul>
                             {{#if arbeidsgiver.erAnsatt}}
@@ -132,31 +133,14 @@
                                     </li>
                                 {{/if}}
                             {{/if}}
+                            {{#if arbeidsgiver.arbeidsforhold}}
+                                <li class="sporsmalstekst">Jobber normalt {{arbeidsgiver.arbeidsforhold.jobberNormaltTimer}} timer per uke</li>
+                            {{/if}}
                         </ul>
                     </li>
-                    {{#if arbeidsgiver.arbeidsforhold}}
-                        {{> partial/arbeidsforholdPartial arbeidsforhold=arbeidsgiver.arbeidsforhold}}
-                    {{/if}}
                 </ul>
             {{/each}}
         {{/if}}
-
-        {{#if frilans.arbeidsforhold}}
-            <ul class="ul-no-indent">
-                <li><b>Frilans</b></li>
-                {{#if frilans.arbeidsforhold}}
-                    {{> partial/arbeidsforholdPartial arbeidsforhold=frilans.arbeidsforhold}}
-                {{/if}}
-            </ul>
-        {{/if}}
-
-        {{#if selvstendigNæringsdrivende.arbeidsforhold}}
-            <ul class="ul-no-indent">
-                <li><b>Selvstendig næringsdrivende</b></li>
-                {{> partial/arbeidsforholdPartial arbeidsforhold=selvstendigNæringsdrivende.arbeidsforhold}}
-            </ul>
-        {{/if}}
-
     </section>
 
     <section id="frilans">
@@ -166,9 +150,12 @@
             <p>{{ jaNeiSvar true }}</p>
             <p class="sporsmalstekst">Når startet du som frilanser?</p>
             <p>{{frilans.startdato}}</p>
+
+            {{#if frilans.arbeidsforhold}}
+                <p class="sporsmalstekst">Jobber normalt {{frilans.arbeidsforhold.jobberNormaltTimer}} timer per uke</p>
+            {{/if}}
             <p class="sporsmalstekst">Jobber du fremdeles som frilanser?</p>
             <p>{{ jaNeiSvar frilans.jobberFortsattSomFrilans }}</p>
-
             {{#unless frilans.jobberFortsattSomFrilans}}
                 <p class="sporsmalstekst">Når sluttet du som frilanser?</p>
                 <p>{{frilans.sluttdato}}</p>
@@ -189,6 +176,10 @@
 
             {{#if selvstendigNæringsdrivende.virksomhet.yrkesaktivSisteTreFerdigliknedeÅrene}}
                 <p>Oppgi dato for når du ble yrkesaktiv: {{selvstendigNæringsdrivende.virksomhet.yrkesaktivSisteTreFerdigliknedeÅrene.oppstartsdato}}</p>
+            {{/if}}
+
+            {{#if selvstendigNæringsdrivende.arbeidsforhold}}
+                <p class="sporsmalstekst">Jobber normalt {{selvstendigNæringsdrivende.arbeidsforhold.jobberNormaltTimer}} timer per uke</p>
             {{/if}}
 
             {{#if selvstendigNæringsdrivende.virksomhet.varigEndring}}
@@ -255,6 +246,41 @@
             <h2>Selvstendig næringsdrivende</h2>
             <p>Har ikke vært selvstending næringsdrivende i perioden det søkes om.</p>
         {{/if}}
+    </section>
+
+    <section id="jobbISøknadsperioden">
+        <h2>Jobb i søknadsperioden</h2>
+        {{# if hjelp.ingen_arbeidsforhold }}
+            <ul>
+                <li class="ikke_satt">Ingen arbeidsforhold er registrert i søknadsperioden</li>
+            </ul>
+        {{/if}}
+
+        {{#if arbeidsgivere}}
+            {{#each arbeidsgivere as |arbeidsgiver|~}}
+                <ul class="ul-no-indent">
+                    {{#if arbeidsgiver.arbeidsforhold}}
+                        <li><b>{{arbeidsgiver.navn}} (orgnr: {{arbeidsgiver.organisasjonsnummer}})</b></li>
+                        {{> partial/arbeidsforholdPartial arbeidsforhold=arbeidsgiver.arbeidsforhold}}
+                    {{/if}}
+                </ul>
+            {{/each}}
+        {{/if}}
+
+        {{#if frilans.arbeidsforhold}}
+            <ul class="ul-no-indent">
+                <li><b>Frilans</b></li>
+                {{> partial/arbeidsforholdPartial arbeidsforhold=frilans.arbeidsforhold}}
+            </ul>
+        {{/if}}
+
+        {{#if selvstendigNæringsdrivende.arbeidsforhold}}
+            <ul class="ul-no-indent">
+                <li><b>Selvstendig næringsdrivende</b></li>
+                {{> partial/arbeidsforholdPartial arbeidsforhold=selvstendigNæringsdrivende.arbeidsforhold}}
+            </ul>
+        {{/if}}
+
     </section>
 
     <section id="verneplikt">

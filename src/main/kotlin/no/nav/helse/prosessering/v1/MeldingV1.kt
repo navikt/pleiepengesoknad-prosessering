@@ -26,14 +26,14 @@ data class MeldingV1 (
     val nattevåk: Nattevåk?,
     val frilans: Frilans?,
     val selvstendigNæringsdrivende: SelvstendigNæringsdrivende? = null,
-    val arbeidsgivere: List<ArbeidsforholdAnsatt>,
+    val arbeidsgivere: List<Arbeidsgiver>,
     val barnRelasjon: BarnRelasjon? = null,
     val barnRelasjonBeskrivelse: String? = null,
     val harVærtEllerErVernepliktig: Boolean? = null,
     val k9FormatSøknad: Søknad
 )
 
-data class ArbeidsforholdAnsatt(
+data class Arbeidsgiver(
     val navn: String? = null,
     val organisasjonsnummer: String,
     val erAnsatt: Boolean,
