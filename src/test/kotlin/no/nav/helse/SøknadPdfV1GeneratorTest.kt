@@ -114,6 +114,7 @@ class SøknadPdfV1GeneratorTest {
                 )
             ),
             frilans = Frilans(
+                harInntektSomFrilanser = true,
                 startdato = LocalDate.now().minusYears(3),
                 sluttdato = LocalDate.now(),
                 jobberFortsattSomFrilans = false,
@@ -129,6 +130,7 @@ class SøknadPdfV1GeneratorTest {
                 )
             ),
             selvstendigNæringsdrivende = SelvstendigNæringsdrivende(
+                harInntektSomSelvstendig = true,
                 virksomhet = Virksomhet(
                     næringstyper = listOf(Næringstyper.JORDBRUK_SKOGBRUK, Næringstyper.DAGMAMMA, Næringstyper.FISKE),
                     fiskerErPåBladB = true,
@@ -342,7 +344,7 @@ class SøknadPdfV1GeneratorTest {
         id = "12-kun-frilans-arbeidsforhold"
         pdf = generator.genererPDF(
             melding = fullGyldigMelding(id).copy(
-                selvstendigNæringsdrivende = null,
+                selvstendigNæringsdrivende = SelvstendigNæringsdrivende(harInntektSomSelvstendig = false),
                 arbeidsgivere = listOf()
             )
         )

@@ -281,9 +281,11 @@ class PleiepengesoknadProsesseringTest {
             ),
             frilans = Frilans(
                 startdato = LocalDate.parse("2018-08-01"),
-                jobberFortsattSomFrilans = true
+                jobberFortsattSomFrilans = true,
+                harInntektSomFrilanser = true
             ),
             arbeidsgivere = listOf(),
+            selvstendigNæringsdrivende = SelvstendigNæringsdrivende(harInntektSomSelvstendig = false),
             medlemskap = Medlemskap(
                 harBoddIUtlandetSiste12Mnd = true,
                 utenlandsoppholdSiste12Mnd = listOf(

@@ -141,7 +141,7 @@
     </section>
 
     <section id="frilans">
-        {{# if frilans }}
+        {{# if frilans.harInntektSomFrilanser }}
             <h2>Frilans</h2>
             <p class="sporsmalstekst">Er du frilanser i perioden du søker for?</p>
             <p>{{ jaNeiSvar true }}</p>
@@ -161,7 +161,7 @@
     </section>
 
     <section id="selvstendig">
-        {{#if selvstendigNæringsdrivende}}
+        {{#if selvstendigNæringsdrivende.harInntektSomSelvstendig}}
             <h2>Selvstendig næringsdrivende</h2>
 
             {{#if selvstendigNæringsdrivende.virksomhet.næringsinntekt}}

@@ -136,6 +136,7 @@ internal object SøknadUtils {
             )
         ),
         frilans = Frilans(
+            harInntektSomFrilanser = true,
             startdato = LocalDate.parse("2019-01-01"),
             jobberFortsattSomFrilans = true,
             arbeidsforhold = Arbeidsforhold(
@@ -149,7 +150,8 @@ internal object SøknadUtils {
                 )
             )
         ),
-        selvstendigNæringsdrivende = no.nav.helse.felles.SelvstendigNæringsdrivende(
+        selvstendigNæringsdrivende = SelvstendigNæringsdrivende(
+            harInntektSomSelvstendig = true,
             virksomhet = Virksomhet(
                 næringstyper = listOf(Næringstyper.ANNEN),
                 fraOgMed = LocalDate.parse("2021-01-01"),
