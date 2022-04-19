@@ -139,18 +139,14 @@ internal object SøknadUtils {
             startdato = LocalDate.parse("2019-01-01"),
             jobberFortsattSomFrilans = true,
             arbeidsforhold = Arbeidsforhold(
-                jobberNormaltTimer = 30.0,
-                arbeidIPeriode = ArbeidIPeriode(
-                    jobberIPerioden = JobberIPeriodeSvar.JA,
-                    jobberProsent = 50.0,
-                    erLiktHverUke = false,
-                    enkeltdager = listOf(
-                        Enkeltdag(dato = LocalDate.now(), tid = Duration.ofHours(4)),
-                        Enkeltdag(dato = LocalDate.now().plusDays(3), tid = Duration.ofHours(4)),
-                        Enkeltdag(dato = LocalDate.now().plusWeeks(1), tid = Duration.ofHours(4))
-                    )
+                normalarbeidstid = NormalArbeidstid(
+                    erLiktHverUke = true,
+                    timerPerUkeISnitt = 37.5
                 ),
-                harFraværIPeriode = true
+                arbeidIPeriode = ArbeidIPeriode(
+                    type = ArbeidIPeriodeType.ARBEIDER_VANLIG,
+                    arbeiderIPerioden = ArbeiderIPeriodenSvar.SOM_VANLIG
+                )
             )
         ),
         selvstendigNæringsdrivende = no.nav.helse.felles.SelvstendigNæringsdrivende(
@@ -164,17 +160,14 @@ internal object SøknadUtils {
                 organisasjonsnummer = "111111"
             ),
             arbeidsforhold = Arbeidsforhold(
-                jobberNormaltTimer = 30.0,
-                arbeidIPeriode = ArbeidIPeriode(
-                    jobberIPerioden = JobberIPeriodeSvar.JA,
-                    erLiktHverUke = false,
-                    enkeltdager = listOf(
-                        Enkeltdag(dato = LocalDate.now(), tid = Duration.ofHours(4)),
-                        Enkeltdag(dato = LocalDate.now().plusDays(3), tid = Duration.ofHours(4)),
-                        Enkeltdag(dato = LocalDate.now().plusWeeks(1), tid = Duration.ofHours(4))
-                    )
+                normalarbeidstid = NormalArbeidstid(
+                    erLiktHverUke = true,
+                    timerPerUkeISnitt = 37.5
                 ),
-                harFraværIPeriode = true
+                arbeidIPeriode = ArbeidIPeriode(
+                    type = ArbeidIPeriodeType.ARBEIDER_VANLIG,
+                    arbeiderIPerioden = ArbeiderIPeriodenSvar.SOM_VANLIG
+                )
             )
         ),
         arbeidsgivere = listOf(
@@ -183,24 +176,14 @@ internal object SøknadUtils {
                 organisasjonsnummer = "917755736",
                 erAnsatt = true,
                 arbeidsforhold = Arbeidsforhold(
-                    jobberNormaltTimer = 40.0,
-                    arbeidIPeriode = ArbeidIPeriode(
-                        jobberIPerioden = JobberIPeriodeSvar.JA,
-                        erLiktHverUke = false,
-                        enkeltdager = listOf(
-                            Enkeltdag(dato = LocalDate.now(), tid = Duration.ofHours(4)),
-                            Enkeltdag(dato = LocalDate.now().plusDays(3), tid = Duration.ofHours(4)),
-                            Enkeltdag(dato = LocalDate.now().plusWeeks(1), tid = Duration.ofHours(4))
-                        ),
-                        fasteDager = PlanUkedager(
-                            mandag = Duration.ofHours(4),
-                            tirsdag = Duration.ofHours(7),
-                            onsdag = null,
-                            torsdag = Duration.ofHours(5).plusMinutes(45),
-                            fredag = null
-                        )
+                    normalarbeidstid = NormalArbeidstid(
+                        erLiktHverUke = true,
+                        timerPerUkeISnitt = 37.5
                     ),
-                    harFraværIPeriode = true
+                    arbeidIPeriode = ArbeidIPeriode(
+                        type = ArbeidIPeriodeType.ARBEIDER_VANLIG,
+                        arbeiderIPerioden = ArbeiderIPeriodenSvar.SOM_VANLIG
+                    )
                 )
             ),
             Arbeidsgiver(
@@ -208,24 +191,14 @@ internal object SøknadUtils {
                 organisasjonsnummer = "917755736",
                 erAnsatt = true,
                 arbeidsforhold = Arbeidsforhold(
-                    jobberNormaltTimer = 40.0,
-                    arbeidIPeriode = ArbeidIPeriode(
-                        jobberIPerioden = JobberIPeriodeSvar.JA,
-                        erLiktHverUke = false,
-                        enkeltdager = listOf(
-                            Enkeltdag(dato = LocalDate.now(), tid = Duration.ofHours(4)),
-                            Enkeltdag(dato = LocalDate.now().plusDays(3), tid = Duration.ofHours(4)),
-                            Enkeltdag(dato = LocalDate.now().plusWeeks(1), tid = Duration.ofHours(4))
-                        ),
-                        fasteDager = PlanUkedager(
-                            mandag = Duration.ofHours(4),
-                            tirsdag = Duration.ofHours(7),
-                            onsdag = null,
-                            torsdag = Duration.ofHours(5).plusMinutes(45),
-                            fredag = null
-                        )
+                    normalarbeidstid = NormalArbeidstid(
+                        erLiktHverUke = true,
+                        timerPerUkeISnitt = 37.5
                     ),
-                    harFraværIPeriode = true
+                    arbeidIPeriode = ArbeidIPeriode(
+                        type = ArbeidIPeriodeType.ARBEIDER_VANLIG,
+                        arbeiderIPerioden = ArbeiderIPeriodenSvar.SOM_VANLIG
+                    )
                 )
             )
         ),

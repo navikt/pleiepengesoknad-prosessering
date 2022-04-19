@@ -118,24 +118,14 @@ class SøknadPdfV1GeneratorTest {
                 sluttdato = LocalDate.now(),
                 jobberFortsattSomFrilans = false,
                 arbeidsforhold = Arbeidsforhold(
-                    jobberNormaltTimer = 23.0,
-                    arbeidIPeriode = ArbeidIPeriode(
-                        jobberIPerioden = JobberIPeriodeSvar.JA,
-                        erLiktHverUke = null,
-                        enkeltdager = listOf(
-                            Enkeltdag(dato = LocalDate.now(), tid = Duration.ofHours(1)),
-                            Enkeltdag(dato = LocalDate.now().plusDays(3), tid = Duration.ofHours(1)),
-                            Enkeltdag(dato = LocalDate.now().plusWeeks(1), tid = Duration.ofHours(1))
-                        ),
-                        fasteDager = PlanUkedager(
-                            mandag = Duration.ofHours(1),
-                            tirsdag = Duration.ofHours(1),
-                            onsdag = null,
-                            torsdag = Duration.ofHours(1).plusMinutes(45),
-                            fredag = null
-                        )
+                    normalarbeidstid = NormalArbeidstid(
+                        erLiktHverUke = true,
+                        timerPerUkeISnitt = 37.5
                     ),
-                    harFraværIPeriode = true
+                    arbeidIPeriode = ArbeidIPeriode(
+                        type = ArbeidIPeriodeType.ARBEIDER_VANLIG,
+                        arbeiderIPerioden = ArbeiderIPeriodenSvar.SOM_VANLIG
+                    )
                 )
             ),
             selvstendigNæringsdrivende = SelvstendigNæringsdrivende(
@@ -163,23 +153,13 @@ class SøknadPdfV1GeneratorTest {
                     harFlereAktiveVirksomheter = true
                 ),
                 arbeidsforhold = Arbeidsforhold(
-                    jobberNormaltTimer = 40.0,
-                    harFraværIPeriode = true,
+                    normalarbeidstid = NormalArbeidstid(
+                        erLiktHverUke = true,
+                        timerPerUkeISnitt = 37.5
+                    ),
                     arbeidIPeriode = ArbeidIPeriode(
-                        jobberIPerioden = JobberIPeriodeSvar.JA,
-                        erLiktHverUke = false,
-                        enkeltdager = listOf(
-                            Enkeltdag(dato = LocalDate.now(), tid = Duration.ofHours(4)),
-                            Enkeltdag(dato = LocalDate.now().plusDays(3), tid = Duration.ofHours(4)),
-                            Enkeltdag(dato = LocalDate.now().plusWeeks(1), tid = Duration.ofHours(4))
-                        ),
-                        fasteDager = PlanUkedager(
-                            mandag = Duration.ofHours(4),
-                            tirsdag = Duration.ofHours(7),
-                            onsdag = null,
-                            torsdag = Duration.ofHours(5).plusMinutes(45),
-                            fredag = null
-                        )
+                        type = ArbeidIPeriodeType.ARBEIDER_VANLIG,
+                        arbeiderIPerioden = ArbeiderIPeriodenSvar.SOM_VANLIG
                     )
                 )
             ),
@@ -189,25 +169,14 @@ class SøknadPdfV1GeneratorTest {
                     organisasjonsnummer = "917755736",
                     erAnsatt = true,
                     arbeidsforhold = Arbeidsforhold(
-                        jobberNormaltTimer = 27.0,
-                        arbeidIPeriode = ArbeidIPeriode(
-                            jobberIPerioden = JobberIPeriodeSvar.JA,
-                            jobberProsent = 50.0,
+                        normalarbeidstid = NormalArbeidstid(
                             erLiktHverUke = true,
-                            enkeltdager = listOf(
-                                Enkeltdag(dato = LocalDate.now(), tid = Duration.ofHours(4)),
-                                Enkeltdag(dato = LocalDate.now().plusDays(3), tid = Duration.ofHours(5)),
-                                Enkeltdag(dato = LocalDate.now().plusWeeks(1), tid = Duration.ofHours(5))
-                            ),
-                            fasteDager = PlanUkedager(
-                                mandag = Duration.ofHours(4),
-                                tirsdag = Duration.ofHours(7),
-                                onsdag = null,
-                                torsdag = Duration.ofHours(5).plusMinutes(45),
-                                fredag = null
-                            )
+                            timerPerUkeISnitt = 37.5
                         ),
-                        harFraværIPeriode = true
+                        arbeidIPeriode = ArbeidIPeriode(
+                            type = ArbeidIPeriodeType.ARBEIDER_VANLIG,
+                            arbeiderIPerioden = ArbeiderIPeriodenSvar.SOM_VANLIG
+                        )
                     )
                 ),
                 Arbeidsgiver(
@@ -215,24 +184,14 @@ class SøknadPdfV1GeneratorTest {
                     organisasjonsnummer = "917755736",
                     erAnsatt = true,
                     arbeidsforhold = Arbeidsforhold(
-                        jobberNormaltTimer = 40.0,
-                        arbeidIPeriode = ArbeidIPeriode(
-                            jobberIPerioden = JobberIPeriodeSvar.JA,
+                        normalarbeidstid = NormalArbeidstid(
                             erLiktHverUke = true,
-                            enkeltdager = listOf(
-                                Enkeltdag(dato = LocalDate.now(), tid = Duration.ofHours(4)),
-                                Enkeltdag(dato = LocalDate.now().plusDays(3), tid = Duration.ofHours(9)),
-                                Enkeltdag(dato = LocalDate.now().plusWeeks(1), tid = Duration.ofHours(9))
-                            ),
-                            fasteDager = PlanUkedager(
-                                mandag = Duration.ofHours(4),
-                                tirsdag = Duration.ofHours(6),
-                                onsdag = null,
-                                torsdag = Duration.ofHours(5).plusMinutes(45),
-                                fredag = null
-                            )
+                            timerPerUkeISnitt = 37.5
                         ),
-                        harFraværIPeriode = true
+                        arbeidIPeriode = ArbeidIPeriode(
+                            type = ArbeidIPeriodeType.ARBEIDER_VANLIG,
+                            arbeiderIPerioden = ArbeiderIPeriodenSvar.SOM_VANLIG
+                        )
                     )
                 ),
                 Arbeidsgiver(
@@ -389,28 +348,7 @@ class SøknadPdfV1GeneratorTest {
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
-        id = "13-harFraværIPeriode-false"
-        pdf = generator.genererPDF(
-            melding = fullGyldigMelding(id).copy(
-                selvstendigNæringsdrivende = null,
-                frilans = null,
-                arbeidsgivere = listOf(
-                    Arbeidsgiver(
-                        navn = "Peppes",
-                        organisasjonsnummer = "917755736",
-                        erAnsatt = true,
-                        arbeidsforhold = Arbeidsforhold(
-                            jobberNormaltTimer = 27.0,
-                            arbeidIPeriode = null,
-                            harFraværIPeriode = false
-                        )
-                    )
-                )
-            )
-        )
-        if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
-
-        id = "14-barn-med-årsakManglerIdentitetsnummer"
+        id = "13-barn-med-årsakManglerIdentitetsnummer"
         pdf = generator.genererPDF(
             melding = fullGyldigMelding(id).copy(
                 barn = Barn(

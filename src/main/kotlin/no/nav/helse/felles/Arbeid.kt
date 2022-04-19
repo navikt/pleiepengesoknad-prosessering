@@ -1,27 +1,52 @@
 package no.nav.helse.felles
 
+import java.time.Duration
+import java.time.LocalDate
+
+data class NormalArbeidstid (
+    val erLiktHverUke: Boolean? = null,
+    val timerPerUkeISnitt: Double? = null,
+    val timerFasteDager: PlanUkedager? = null
+)
+
 data class Arbeidsforhold(
-    val jobberNormaltTimer: Double,
-    val harFraværIPeriode: Boolean,
-    val arbeidIPeriode: ArbeidIPeriode? = null
+    val normalarbeidstid: NormalArbeidstid,
+    val arbeidIPeriode: ArbeidIPeriode
 )
 
 data class ArbeidIPeriode(
-    val jobberIPerioden: JobberIPeriodeSvar,
+    val type: ArbeidIPeriodeType,
+    val arbeiderIPerioden: ArbeiderIPeriodenSvar,
     val erLiktHverUke: Boolean? = null,
-    val enkeltdager: List<Enkeltdag>? = null,
     val fasteDager: PlanUkedager? = null,
-    val jobberProsent: Double? = null
+    val prosentAvNormalt: Double? = null,
+    val timerPerUke: Duration? = null,
+    val enkeltdager: List<ArbeidstidEnkeltdag>? = null
 )
 
-enum class JobberIPeriodeSvar(val pdfTekst: String) {
-    JA("Ja"),
-    NEI("Nei");
+data class ArbeidstidEnkeltdag(
+    val dato: LocalDate,
+    val arbeidstimer: Arbeidstimer
+)
 
-    fun tilBoolean(): Boolean{
-        return when(this){
-            JA -> true
-            NEI -> false
-        }
-    }
+data class Arbeidstimer(
+    val normalTimer: Duration,
+    val faktiskTimer: Duration
+)
+
+enum class ArbeiderIPeriodenSvar {
+    SOM_VANLIG,
+    REDUSERT,
+    HELT_FRAVÆR;
+
+    fun jobber() = this != HELT_FRAVÆR
+}
+
+enum class ArbeidIPeriodeType {
+    ARBEIDER_IKKE,
+    ARBEIDER_VANLIG,
+    ARBEIDER_ENKELTDAGER,
+    ARBEIDER_FASTE_UKEDAGER,
+    ARBEIDER_PROSENT_AV_NORMALT,
+    ARBEIDER_TIMER_I_SNITT_PER_UKE,
 }

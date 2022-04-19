@@ -186,19 +186,7 @@ private fun PlanUkedager.somMap() = mapOf<String, Any?>(
 private fun Duration?.harGyldigVerdi() = this != null && this != Duration.ZERO
 
 private fun Arbeidsforhold.somMap(): Map<String, Any?> = mapOf(
-    "jobberNormaltTimer" to jobberNormaltTimer,
-    "harFraværIPeriode" to harFraværIPeriode,
-    "arbeidIPeriode" to arbeidIPeriode?.somMap()
-)
-
-private fun ArbeidIPeriode.somMap() : Map<String, Any?> = mapOf(
-    "jobberIPerioden" to jobberIPerioden.tilBoolean(),
-    "jobberProsent" to jobberProsent,
-    "erLiktHverUkeSatt" to (erLiktHverUke != null),
-    "erLiktHverUke" to erLiktHverUke,
-    "enkeltdagerPerMnd" to enkeltdager?.somMapPerMnd(),
-    "fasteDager" to fasteDager?.somMap(),
-    "snittTimerPerUkedag" to fasteDager?.mandag?.somTekst() // alle dager er like dersom jobberProsent er satt.
+    "data" to this.toString()
 )
 
 private fun Frilans.somMap() : Map<String, Any?> = mapOf(

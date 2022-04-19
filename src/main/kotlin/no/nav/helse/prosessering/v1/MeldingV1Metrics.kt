@@ -2,7 +2,6 @@ package no.nav.helse.prosessering.v1
 
 import io.prometheus.client.Counter
 import io.prometheus.client.Histogram
-import no.nav.helse.felles.JobberIPeriodeSvar
 import java.time.LocalDate
 
 val opplastedeVedleggHistogram = Histogram.build()
@@ -138,7 +137,7 @@ internal fun MeldingV1.reportMetrics() {
     antallArbeidsgivereHistogram.observe(arbeidsgivere.size.toDouble())
 
     if(arbeidsgivere.isNotEmpty()){
-        if(arbeidsgivere.any { it.arbeidsforhold?.arbeidIPeriode?.jobberIPerioden == JobberIPeriodeSvar.JA }){
+        if(arbeidsgivere.any { it.arbeidsforhold?.arbeidIPeriode?.arbeiderIPerioden?.jobber() == true }){
             jobberIPeriodenCounter.labels("jobber", "ja").inc()
         } else {
             jobberIPeriodenCounter.labels("jobber", "nei").inc()

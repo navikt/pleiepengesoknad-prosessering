@@ -133,9 +133,6 @@
                                     </li>
                                 {{/if}}
                             {{/if}}
-                            {{#if arbeidsgiver.arbeidsforhold}}
-                                <li class="sporsmalstekst">Jobber normalt {{arbeidsgiver.arbeidsforhold.jobberNormaltTimer}} timer per uke</li>
-                            {{/if}}
                         </ul>
                     </li>
                 </ul>
@@ -151,9 +148,6 @@
             <p class="sporsmalstekst">Når startet du som frilanser?</p>
             <p>{{frilans.startdato}}</p>
 
-            {{#if frilans.arbeidsforhold}}
-                <p class="sporsmalstekst">Jobber normalt {{frilans.arbeidsforhold.jobberNormaltTimer}} timer per uke</p>
-            {{/if}}
             <p class="sporsmalstekst">Jobber du fremdeles som frilanser?</p>
             <p>{{ jaNeiSvar frilans.jobberFortsattSomFrilans }}</p>
             {{#unless frilans.jobberFortsattSomFrilans}}
@@ -176,10 +170,6 @@
 
             {{#if selvstendigNæringsdrivende.virksomhet.yrkesaktivSisteTreFerdigliknedeÅrene}}
                 <p>Oppgi dato for når du ble yrkesaktiv: {{selvstendigNæringsdrivende.virksomhet.yrkesaktivSisteTreFerdigliknedeÅrene.oppstartsdato}}</p>
-            {{/if}}
-
-            {{#if selvstendigNæringsdrivende.arbeidsforhold}}
-                <p class="sporsmalstekst">Jobber normalt {{selvstendigNæringsdrivende.arbeidsforhold.jobberNormaltTimer}} timer per uke</p>
             {{/if}}
 
             {{#if selvstendigNæringsdrivende.virksomhet.varigEndring}}
@@ -261,7 +251,7 @@
                 <ul class="ul-no-indent">
                     {{#if arbeidsgiver.arbeidsforhold}}
                         <li><b>{{arbeidsgiver.navn}} (orgnr: {{arbeidsgiver.organisasjonsnummer}})</b></li>
-                        {{> partial/arbeidsforholdPartial arbeidsforhold=arbeidsgiver.arbeidsforhold}}
+                        <li><p>{{arbeidsgiver.arbeidsforhold.data}}</p></li>
                     {{/if}}
                 </ul>
             {{/each}}
@@ -270,14 +260,14 @@
         {{#if frilans.arbeidsforhold}}
             <ul class="ul-no-indent">
                 <li><b>Frilans</b></li>
-                {{> partial/arbeidsforholdPartial arbeidsforhold=frilans.arbeidsforhold}}
+                <li><p>{{frilans.arbeidsforhold.data}}</p></li>
             </ul>
         {{/if}}
 
         {{#if selvstendigNæringsdrivende.arbeidsforhold}}
             <ul class="ul-no-indent">
                 <li><b>Selvstendig næringsdrivende</b></li>
-                {{> partial/arbeidsforholdPartial arbeidsforhold=selvstendigNæringsdrivende.arbeidsforhold}}
+                <li><p>{{selvstendigNæringsdrivende.arbeidsforhold.data}}</p></li>
             </ul>
         {{/if}}
 
