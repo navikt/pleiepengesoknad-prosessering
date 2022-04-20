@@ -192,8 +192,9 @@ private fun Arbeidsforhold.somMap(): Map<String, Any?> = mapOf(
 )
 
 private fun ArbeidIPeriode.somMap(): Map<String, Any?> = mapOf(
-    "data" to this.toString(),
-    "type" to this.type.name
+    "type" to this.type.name,
+    "timerPerUke" to this.timerPerUke?.tilString(),
+    "prosentAvNormalt" to this.prosentAvNormalt
 )
 
 private fun NormalArbeidstid.somMap(): Map<String, Any?> = mapOf(

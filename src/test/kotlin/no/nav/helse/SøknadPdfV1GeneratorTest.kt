@@ -199,8 +199,9 @@ class SøknadPdfV1GeneratorTest {
                             timerPerUkeISnitt = Duration.ofHours(37).plusMinutes(30)
                         ),
                         arbeidIPeriode = ArbeidIPeriode(
-                            type = ArbeidIPeriodeType.ARBEIDER_VANLIG,
-                            arbeiderIPerioden = ArbeiderIPeriodenSvar.SOM_VANLIG
+                            type = ArbeidIPeriodeType.ARBEIDER_PROSENT_AV_NORMALT,
+                            arbeiderIPerioden = ArbeiderIPeriodenSvar.REDUSERT,
+                            prosentAvNormalt = 50.0
                         )
                     )
                 ),
