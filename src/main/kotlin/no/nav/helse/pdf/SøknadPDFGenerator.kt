@@ -252,7 +252,7 @@ private fun VarigEndring.somMap() : Map<String, Any?> = mapOf(
 )
 
 private fun List<Arbeidsgiver>.somMapAnsatt() = map {
-    mapOf<String, Any?>(
+    mapOf(
         "navn" to it.navn,
         "organisasjonsnummer" to it.organisasjonsnummer,
         "erAnsatt" to it.erAnsatt,
