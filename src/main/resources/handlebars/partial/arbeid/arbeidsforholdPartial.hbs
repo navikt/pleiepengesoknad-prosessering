@@ -1,0 +1,26 @@
+<li class="li-style-none">
+    <ul>
+        <li>
+            {{#with arbeidsforhold.arbeidIPeriode}}
+                {{#eq type "ARBEIDER_IKKE" }}
+                    {{> partial/arbeid/arbeidIPeriode/arbeiderIkkePartial}}
+                {{/eq}}
+                {{#eq type "ARBEIDER_VANLIG" }}
+                    {{> partial/arbeid/arbeidIPeriode/arbeiderVanligPartial}}
+                {{/eq}}
+                {{#eq type "ARBEIDER_ENKELTDAGER" }}
+                    {{> partial/arbeid/arbeidIPeriode/arbeiderEnkeltdagerPartial}}
+                {{/eq}}
+                {{#eq type "ARBEIDER_FASTE_UKEDAGER" }}
+                    {{> partial/arbeid/arbeidIPeriode/arbeiderFasteUkedagerPartial}}
+                {{/eq}}
+                {{#eq type "ARBEIDER_PROSENT_AV_NORMALT" }}
+                    {{> partial/arbeid/arbeidIPeriode/arbeiderProsentAvNormaltPartial}}
+                {{/eq}}
+                {{#eq type "ARBEIDER_TIMER_I_SNITT_PER_UKE" }}
+                    {{> partial/arbeid/arbeidIPeriode/arbeiderTimerISnittPerUkePartial}}
+                {{/eq}}
+            {{/with}}
+        </li>
+    </ul>
+</li>

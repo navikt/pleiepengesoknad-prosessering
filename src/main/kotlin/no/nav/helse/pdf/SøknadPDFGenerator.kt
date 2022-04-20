@@ -187,7 +187,13 @@ private fun Duration?.harGyldigVerdi() = this != null && this != Duration.ZERO
 
 private fun Arbeidsforhold.somMap(): Map<String, Any?> = mapOf(
     "data" to this.toString(),
-    "normalarbeidstid" to this.normalarbeidstid.somMap()
+    "normalarbeidstid" to this.normalarbeidstid.somMap(),
+    "arbeidIPeriode" to this.arbeidIPeriode.somMap()
+)
+
+private fun ArbeidIPeriode.somMap(): Map<String, Any?> = mapOf(
+    "data" to this.toString(),
+    "type" to this.type.name
 )
 
 private fun NormalArbeidstid.somMap(): Map<String, Any?> = mapOf(
@@ -275,7 +281,7 @@ private fun List<Bosted>.somMapBosted(): List<Map<String, Any?>> {
 private fun List<Utenlandsopphold>.somMapUtenlandsopphold(): List<Map<String, Any?>> {
     val dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy").withZone(ZoneId.of("Europe/Oslo"))
     return map {
-        mapOf<String, Any?>(
+        mapOf(
             "landnavn" to it.landnavn,
             "landkode" to it.landkode,
             "fraOgMed" to dateFormatter.format(it.fraOgMed),

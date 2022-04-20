@@ -50,7 +50,7 @@
                         <li>
                             <b>Organisasjonsnummer</b>: {{arbeidsgiver.organisasjonsnummer}} <br/>
                             <b>Arbeidstidsinfo:</b> <br/>
-                            {{> partial/arbeidstidinfoPartial arbeidstidinfo=arbeidsgiver.arbeidstidInfo}}
+                            {{> partial/arbeid/arbeidstidinfoPartial arbeidstidinfo=arbeidsgiver.arbeidstidInfo}}
                         </li>
                     {{/each}}
                 </ul>
@@ -59,13 +59,13 @@
             {{#if arbeidstid.frilanserArbeidstidInfo}}
                 <h2>Endringer i arbeidstid som frilanser</h2>
                 <b>Arbeidstidsinfo:</b> <br/>
-                {{> partial/arbeidstidinfoPartial arbeidstidinfo=arbeidstid.frilanserArbeidstidInfo}}
+                {{> partial/arbeid/arbeidstidinfoPartial arbeidstidinfo=arbeidstid.frilanserArbeidstidInfo}}
             {{/if}}
 
             {{#if arbeidstid.selvstendigNæringsdrivendeArbeidstidInfo}}
                 <h2>Endringer i arbeidstid som selvstendig næringsdrivende</h2>
                 <b>Arbeidstidsinfo:</b> <br/>
-                {{> partial/arbeidstidinfoPartial arbeidstidinfo=arbeidstid.selvstendigNæringsdrivendeArbeidstidInfo}}
+                {{> partial/arbeid/arbeidstidinfoPartial arbeidstidinfo=arbeidstid.selvstendigNæringsdrivendeArbeidstidInfo}}
             {{/if}}
 
         </section>
