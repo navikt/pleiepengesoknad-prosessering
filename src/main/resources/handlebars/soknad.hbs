@@ -136,6 +136,9 @@
                         </ul>
                     </li>
                 </ul>
+                {{#if arbeidsgiver.arbeidsforhold}}
+                    {{> partial/normalArbeidstidPartial normalarbeidstid=arbeidsgiver.arbeidsforhold.normalarbeidstid}}
+                {{/if}}
             {{/each}}
         {{/if}}
     </section>
@@ -147,7 +150,9 @@
             <p>{{ jaNeiSvar true }}</p>
             <p class="sporsmalstekst">Når startet du som frilanser?</p>
             <p>{{frilans.startdato}}</p>
-
+            {{#if frilans.arbeidsforhold}}
+                {{> partial/normalArbeidstidPartial normalarbeidstid=frilans.arbeidsforhold.normalarbeidstid}}
+            {{/if}}
             <p class="sporsmalstekst">Jobber du fremdeles som frilanser?</p>
             <p>{{ jaNeiSvar frilans.jobberFortsattSomFrilans }}</p>
             {{#unless frilans.jobberFortsattSomFrilans}}
@@ -170,6 +175,10 @@
 
             {{#if selvstendigNæringsdrivende.virksomhet.yrkesaktivSisteTreFerdigliknedeÅrene}}
                 <p>Oppgi dato for når du ble yrkesaktiv: {{selvstendigNæringsdrivende.virksomhet.yrkesaktivSisteTreFerdigliknedeÅrene.oppstartsdato}}</p>
+            {{/if}}
+
+            {{#if selvstendigNæringsdrivende.arbeidsforhold}}
+                {{> partial/normalArbeidstidPartial normalarbeidstid=selvstendigNæringsdrivende.arbeidsforhold.normalarbeidstid}}
             {{/if}}
 
             {{#if selvstendigNæringsdrivende.virksomhet.varigEndring}}

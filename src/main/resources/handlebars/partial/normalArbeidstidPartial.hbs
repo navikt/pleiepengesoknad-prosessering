@@ -1,0 +1,27 @@
+{{#if normalarbeidstid.timerPerDagFraSnitt}}
+    <li class="li-style-none">
+        <b>Jobber normalt {{normalarbeidstid.timerPerDagFraSnitt}} timer per dag i snitt.</b>
+    </li>
+{{/if}}
+
+{{#if normalarbeidstid.timerFasteDager}}
+    <li class="li-style-none"><b>Jobber normalt hver uke:</b>
+        <ul>
+            {{#if normalarbeidstid.timerFasteDager.mandag}}
+                <li>Mandag: {{normalarbeidstid.timerFasteDager.mandag}}</li>
+            {{/if}}
+            {{#if normalarbeidstid.timerFasteDager.tirsdag}}
+                <li>Tirsdag: {{normalarbeidstid.timerFasteDager.tirsdag}}</li>
+            {{/if}}
+            {{#if normalarbeidstid.timerFasteDager.onsdag}}
+                <li>Onsdag: {{normalarbeidstid.timerFasteDager.onsdag}}</li>
+            {{/if}}
+            {{#if normalarbeidstid.timerFasteDager.torsdag}}
+                <li>Torsdag: {{normalarbeidstid.timerFasteDager.torsdag}}</li>
+            {{/if}}
+            {{#if normalarbeidstid.timerFasteDager.fredag}}
+                <li>Fredag: {{normalarbeidstid.timerFasteDager.fredag}}</li>
+            {{/if}}
+        </ul>
+    </li>
+{{/if}}

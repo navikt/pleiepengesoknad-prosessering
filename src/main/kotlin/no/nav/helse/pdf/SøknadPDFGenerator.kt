@@ -186,7 +186,15 @@ private fun PlanUkedager.somMap() = mapOf<String, Any?>(
 private fun Duration?.harGyldigVerdi() = this != null && this != Duration.ZERO
 
 private fun Arbeidsforhold.somMap(): Map<String, Any?> = mapOf(
-    "data" to this.toString()
+    "data" to this.toString(),
+    "normalarbeidstid" to this.normalarbeidstid.somMap()
+)
+
+const val DAGER_PER_UKE = 5
+
+private fun NormalArbeidstid.somMap(): Map<String, Any?> = mapOf(
+    "timerPerDagFraSnitt" to this.timerPerUkeISnitt?.dividedBy(DAGER_PER_UKE.toLong())?.tilString(),
+    "timerFasteDager" to this.timerFasteDager?.somMap()
 )
 
 private fun Frilans.somMap() : Map<String, Any?> = mapOf(

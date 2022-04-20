@@ -142,7 +142,7 @@ internal object SøknadUtils {
             arbeidsforhold = Arbeidsforhold(
                 normalarbeidstid = NormalArbeidstid(
                     erLiktHverUke = true,
-                    timerPerUkeISnitt = 37.5
+                    timerPerUkeISnitt = Duration.ofHours(37).plusMinutes(30)
                 ),
                 arbeidIPeriode = ArbeidIPeriode(
                     type = ArbeidIPeriodeType.ARBEIDER_VANLIG,
@@ -164,7 +164,7 @@ internal object SøknadUtils {
             arbeidsforhold = Arbeidsforhold(
                 normalarbeidstid = NormalArbeidstid(
                     erLiktHverUke = true,
-                    timerPerUkeISnitt = 37.5
+                    timerPerUkeISnitt = Duration.ofHours(37).plusMinutes(30)
                 ),
                 arbeidIPeriode = ArbeidIPeriode(
                     type = ArbeidIPeriodeType.ARBEIDER_VANLIG,
@@ -180,7 +180,7 @@ internal object SøknadUtils {
                 arbeidsforhold = Arbeidsforhold(
                     normalarbeidstid = NormalArbeidstid(
                         erLiktHverUke = true,
-                        timerPerUkeISnitt = 37.5
+                        timerPerUkeISnitt = Duration.ofHours(37).plusMinutes(30)
                     ),
                     arbeidIPeriode = ArbeidIPeriode(
                         type = ArbeidIPeriodeType.ARBEIDER_VANLIG,
@@ -195,7 +195,7 @@ internal object SøknadUtils {
                 arbeidsforhold = Arbeidsforhold(
                     normalarbeidstid = NormalArbeidstid(
                         erLiktHverUke = true,
-                        timerPerUkeISnitt = 37.5
+                        timerPerUkeISnitt = Duration.ofHours(37).plusMinutes(30)
                     ),
                     arbeidIPeriode = ArbeidIPeriode(
                         type = ArbeidIPeriodeType.ARBEIDER_VANLIG,

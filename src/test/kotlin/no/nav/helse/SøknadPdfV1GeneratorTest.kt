@@ -121,7 +121,11 @@ class SøknadPdfV1GeneratorTest {
                 arbeidsforhold = Arbeidsforhold(
                     normalarbeidstid = NormalArbeidstid(
                         erLiktHverUke = true,
-                        timerPerUkeISnitt = 37.5
+                        timerFasteDager = PlanUkedager(
+                            mandag = Duration.ofHours(3),
+                            onsdag = Duration.ofHours(3),
+                            fredag = Duration.ofHours(3)
+                        ),
                     ),
                     arbeidIPeriode = ArbeidIPeriode(
                         type = ArbeidIPeriodeType.ARBEIDER_VANLIG,
@@ -157,7 +161,7 @@ class SøknadPdfV1GeneratorTest {
                 arbeidsforhold = Arbeidsforhold(
                     normalarbeidstid = NormalArbeidstid(
                         erLiktHverUke = true,
-                        timerPerUkeISnitt = 37.5
+                        timerPerUkeISnitt = Duration.ofHours(37).plusMinutes(30)
                     ),
                     arbeidIPeriode = ArbeidIPeriode(
                         type = ArbeidIPeriodeType.ARBEIDER_VANLIG,
@@ -173,7 +177,7 @@ class SøknadPdfV1GeneratorTest {
                     arbeidsforhold = Arbeidsforhold(
                         normalarbeidstid = NormalArbeidstid(
                             erLiktHverUke = true,
-                            timerPerUkeISnitt = 37.5
+                            timerPerUkeISnitt = Duration.ofHours(37).plusMinutes(30)
                         ),
                         arbeidIPeriode = ArbeidIPeriode(
                             type = ArbeidIPeriodeType.ARBEIDER_VANLIG,
@@ -188,7 +192,7 @@ class SøknadPdfV1GeneratorTest {
                     arbeidsforhold = Arbeidsforhold(
                         normalarbeidstid = NormalArbeidstid(
                             erLiktHverUke = true,
-                            timerPerUkeISnitt = 37.5
+                            timerPerUkeISnitt = Duration.ofHours(37).plusMinutes(30)
                         ),
                         arbeidIPeriode = ArbeidIPeriode(
                             type = ArbeidIPeriodeType.ARBEIDER_VANLIG,

@@ -5,7 +5,7 @@ import java.time.LocalDate
 
 data class NormalArbeidstid (
     val erLiktHverUke: Boolean? = null,
-    val timerPerUkeISnitt: Double? = null,
+    val timerPerUkeISnitt: Duration? = null,
     val timerFasteDager: PlanUkedager? = null
 )
 
