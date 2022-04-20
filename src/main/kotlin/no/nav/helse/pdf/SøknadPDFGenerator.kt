@@ -313,9 +313,11 @@ private fun List<Periode>.somMapPerioder(): List<Map<String, Any?>> {
 }
 
 fun Duration.tilString(): String = when (this.toMinutesPart()) {
-    0 -> "${this.toHoursPart()} timer"
-    else -> "${this.toHoursPart()} timer og ${this.toMinutesPart()} minutter"
+    0 -> "${this.timer()} timer"
+    else -> "${this.timer()} timer og ${this.toMinutesPart()} minutter"
 }
+
+fun Duration.timer() = (this.toDaysPart()*24) + this.toHoursPart()
 
 fun Søker.formatertNavn() = if (mellomnavn != null) "$fornavn $mellomnavn $etternavn" else "$fornavn $etternavn"
 
