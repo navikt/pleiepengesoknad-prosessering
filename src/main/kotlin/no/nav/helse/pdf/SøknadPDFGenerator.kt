@@ -190,10 +190,8 @@ private fun Arbeidsforhold.somMap(): Map<String, Any?> = mapOf(
     "normalarbeidstid" to this.normalarbeidstid.somMap()
 )
 
-const val DAGER_PER_UKE = 5
-
 private fun NormalArbeidstid.somMap(): Map<String, Any?> = mapOf(
-    "timerPerDagFraSnitt" to this.timerPerUkeISnitt?.dividedBy(DAGER_PER_UKE.toLong())?.tilString(),
+    "timerPerUkeISnitt" to this.timerPerUkeISnitt?.tilString(),
     "timerFasteDager" to this.timerFasteDager?.somMap()
 )
 
