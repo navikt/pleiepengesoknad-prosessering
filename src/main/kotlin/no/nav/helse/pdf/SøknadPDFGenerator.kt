@@ -175,12 +175,12 @@ private fun List<Enkeltdag>.somMapPerUke(): List<Map<String, Any>> {
     }
 }
 
-private fun PlanUkedager.somMap() = mapOf<String, Any?>(
-    "mandag" to if (mandag.harGyldigVerdi()) mandag!!.somTekst() else null,
-    "tirsdag" to if (tirsdag.harGyldigVerdi()) tirsdag!!.somTekst() else null,
-    "onsdag" to if (onsdag.harGyldigVerdi()) onsdag!!.somTekst() else null,
-    "torsdag" to if (torsdag.harGyldigVerdi()) torsdag!!.somTekst() else null,
-    "fredag" to if (fredag.harGyldigVerdi()) fredag!!.somTekst() else null,
+private fun PlanUkedager.somMap(avkort: Boolean = true) = mapOf<String, Any?>(
+    "mandag" to if (mandag.harGyldigVerdi()) mandag!!.somTekst(avkort) else null,
+    "tirsdag" to if (tirsdag.harGyldigVerdi()) tirsdag!!.somTekst(avkort) else null,
+    "onsdag" to if (onsdag.harGyldigVerdi()) onsdag!!.somTekst(avkort) else null,
+    "torsdag" to if (torsdag.harGyldigVerdi()) torsdag!!.somTekst(avkort) else null,
+    "fredag" to if (fredag.harGyldigVerdi()) fredag!!.somTekst(avkort) else null,
 )
 
 private fun Duration?.harGyldigVerdi() = this != null && this != Duration.ZERO
@@ -194,9 +194,18 @@ private fun Arbeidsforhold.somMap(): Map<String, Any?> = mapOf(
 private fun ArbeidIPeriode.somMap(): Map<String, Any?> = mapOf(
     "type" to this.type.name,
     "timerPerUke" to this.timerPerUke?.tilString(),
-    "prosentAvNormalt" to this.prosentAvNormalt
+    "prosentAvNormalt" to this.prosentAvNormalt,
+    "enkeltdager" to this.enkeltdager?.somMap(),
+    "fasteDager" to this.fasteDager?.somMap(false)
 )
 
+private fun List<ArbeidstidEnkeltdag>.somMap() = map {
+    mapOf(
+        "dato" to DATE_FORMATTER.format(it.dato),
+        "normalTimer" to it.arbeidstimer.normalTimer.tilString(),
+        "faktiskTimer" to it.arbeidstimer.faktiskTimer.tilString()
+    )
+}
 private fun NormalArbeidstid.somMap(): Map<String, Any?> = mapOf(
     "timerPerUkeISnitt" to this.timerPerUkeISnitt?.tilString(),
     "timerFasteDager" to this.timerFasteDager?.somMap()
