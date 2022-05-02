@@ -73,8 +73,8 @@ class SøknadPDFGenerator : PDFGenerator<MeldingV1>() {
         "barnRelasjon" to barnRelasjon?.utskriftsvennlig,
         "barnRelasjonBeskrivelse" to barnRelasjonBeskrivelse,
         "harVærtEllerErVernepliktig" to harVærtEllerErVernepliktig,
-        "frilans" to frilans?.somMap(),
-        "selvstendigNæringsdrivende" to selvstendigNæringsdrivende?.somMap(),
+        "frilans" to frilans.somMap(),
+        "selvstendigNæringsdrivende" to selvstendigNæringsdrivende.somMap(),
         "arbeidsgivere" to arbeidsgivere.somMapAnsatt(),
         "hjelper" to mapOf(
             "harFlereAktiveVirksomheterErSatt" to harFlereAktiveVirksomehterSatt(),
@@ -93,22 +93,18 @@ class SøknadPDFGenerator : PDFGenerator<MeldingV1>() {
     )
 }
 
-private fun MeldingV1.harMinstEtArbeidsforhold() : Boolean{
-    frilans?.let {
-        if(it.arbeidsforhold != null) return true
-    }
+private fun MeldingV1.harMinstEtArbeidsforhold(): Boolean {
+    if (frilans.arbeidsforhold != null) return true
 
-    selvstendigNæringsdrivende?.let {
-        if(it.arbeidsforhold != null) return true
-    }
+    if (selvstendigNæringsdrivende.arbeidsforhold != null) return true
 
-    if(arbeidsgivere.any(){it.arbeidsforhold != null}) return true
+    if (arbeidsgivere.any() { it.arbeidsforhold != null }) return true
 
     return false
 }
 
 private fun MeldingV1.harFlereAktiveVirksomehterSatt() =
-    (this.selvstendigNæringsdrivende?.virksomhet?.harFlereAktiveVirksomheter != null)
+    (this.selvstendigNæringsdrivende.virksomhet?.harFlereAktiveVirksomheter != null)
 
 private fun erBooleanSatt(verdi: Boolean?) = verdi != null
 
