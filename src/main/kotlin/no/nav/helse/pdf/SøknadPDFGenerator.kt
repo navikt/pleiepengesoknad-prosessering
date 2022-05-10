@@ -204,7 +204,7 @@ private fun List<ArbeidstidEnkeltdag>.somMap() = map {
 }
 private fun NormalArbeidstid.somMap(): Map<String, Any?> = mapOf(
     "timerPerUkeISnitt" to this.timerPerUkeISnitt?.tilString(),
-    "timerFasteDager" to this.timerFasteDager?.somMap()
+    "timerFasteDager" to this.timerFasteDager?.somMap(false)
 )
 
 private fun Frilans.somMap() : Map<String, Any?> = mapOf(
