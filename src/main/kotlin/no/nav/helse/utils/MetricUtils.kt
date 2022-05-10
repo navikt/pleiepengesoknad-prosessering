@@ -16,7 +16,7 @@ internal fun Barn.idType(): String = when {
 }
 
 internal fun Barn.fødselsdato(): LocalDate? {
-    if(fødselsnummer == null) return null
+    if (fødselsnummer == null) return null
 
     val dag = if (fødselsnummer.erDnummer()) {
         val førsteSiffer = fødselsnummer.substring(0, 1).toInt().minus(4)
@@ -25,7 +25,11 @@ internal fun Barn.fødselsdato(): LocalDate? {
         fødselsnummer.dagdel().toInt()
     }
 
-    val måned = fødselsnummer.månedsdel().toInt()
+    val måned = fødselsnummer.månedsdel().replaceFirstChar {
+            if (it.digitToInt() > 1) it.minus(8) // Håndterer syntetisk personidentifikator.
+            else it
+        }.toInt()
+
     val år = fødselsnummer.årsdel().tosifretÅrTilFiresifretÅr().toInt()
     return LocalDate.of(år, måned, dag)
 }
