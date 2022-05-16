@@ -1,0 +1,23 @@
+<p>Arbeider faste ukedager i perioden.</p>
+
+{{#if arbeidsforhold.arbeidIPeriode.fasteDager}}
+    <li class="li-style-none">
+        <ul>
+            {{#if arbeidsforhold.arbeidIPeriode.fasteDager.mandag}}
+                <li>Mandag: {{arbeidsforhold.arbeidIPeriode.fasteDager.mandag}}</li>
+            {{/if}}
+            {{#if arbeidsforhold.arbeidIPeriode.fasteDager.tirsdag}}
+                <li>Tirsdag: {{arbeidsforhold.arbeidIPeriode.fasteDager.tirsdag}}</li>
+            {{/if}}
+            {{#if arbeidsforhold.arbeidIPeriode.fasteDager.onsdag}}
+                <li>Onsdag: {{arbeidsforhold.arbeidIPeriode.fasteDager.onsdag}}</li>
+            {{/if}}
+            {{#if arbeidsforhold.arbeidIPeriode.fasteDager.torsdag}}
+                <li>Torsdag: {{arbeidsforhold.arbeidIPeriode.fasteDager.torsdag}}</li>
+            {{/if}}
+            {{#if arbeidsforhold.arbeidIPeriode.fasteDager.fredag}}
+                <li>Fredag: {{arbeidsforhold.arbeidIPeriode.fasteDager.fredag}}</li>
+            {{/if}}
+        </ul>
+    </li>
+{{/if}}

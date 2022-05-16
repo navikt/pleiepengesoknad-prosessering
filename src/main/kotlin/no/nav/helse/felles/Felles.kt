@@ -57,11 +57,12 @@ data class Nattevåk(
 }
 
 data class Frilans(
+    val harInntektSomFrilanser: Boolean,
     @JsonFormat(pattern = "yyyy-MM-dd")
-    val startdato: LocalDate,
+    val startdato: LocalDate? = null,
     @JsonFormat(pattern = "yyyy-MM-dd")
     val sluttdato: LocalDate? = null,
-    val jobberFortsattSomFrilans: Boolean,
+    val jobberFortsattSomFrilans: Boolean? = null,
     val arbeidsforhold: Arbeidsforhold? = null
 )
 

@@ -133,26 +133,25 @@
                                     </li>
                                 {{/if}}
                             {{/if}}
-                            {{#if arbeidsgiver.arbeidsforhold}}
-                                <li class="sporsmalstekst">Jobber normalt {{arbeidsgiver.arbeidsforhold.jobberNormaltTimer}} timer per uke</li>
-                            {{/if}}
                         </ul>
                     </li>
                 </ul>
+                {{#if arbeidsgiver.arbeidsforhold}}
+                    {{> partial/arbeid/normalArbeidstidPartial normalarbeidstid=arbeidsgiver.arbeidsforhold.normalarbeidstid}}
+                {{/if}}
             {{/each}}
         {{/if}}
     </section>
 
     <section id="frilans">
-        {{# if frilans }}
+        {{# if frilans.harInntektSomFrilanser }}
             <h2>Frilans</h2>
             <p class="sporsmalstekst">Er du frilanser i perioden du søker for?</p>
             <p>{{ jaNeiSvar true }}</p>
             <p class="sporsmalstekst">Når startet du som frilanser?</p>
             <p>{{frilans.startdato}}</p>
-
             {{#if frilans.arbeidsforhold}}
-                <p class="sporsmalstekst">Jobber normalt {{frilans.arbeidsforhold.jobberNormaltTimer}} timer per uke</p>
+                {{> partial/arbeid/normalArbeidstidPartial normalarbeidstid=frilans.arbeidsforhold.normalarbeidstid}}
             {{/if}}
             <p class="sporsmalstekst">Jobber du fremdeles som frilanser?</p>
             <p>{{ jaNeiSvar frilans.jobberFortsattSomFrilans }}</p>
@@ -167,7 +166,7 @@
     </section>
 
     <section id="selvstendig">
-        {{#if selvstendigNæringsdrivende}}
+        {{#if selvstendigNæringsdrivende.harInntektSomSelvstendig}}
             <h2>Selvstendig næringsdrivende</h2>
 
             {{#if selvstendigNæringsdrivende.virksomhet.næringsinntekt}}
@@ -179,7 +178,7 @@
             {{/if}}
 
             {{#if selvstendigNæringsdrivende.arbeidsforhold}}
-                <p class="sporsmalstekst">Jobber normalt {{selvstendigNæringsdrivende.arbeidsforhold.jobberNormaltTimer}} timer per uke</p>
+                {{> partial/arbeid/normalArbeidstidPartial normalarbeidstid=selvstendigNæringsdrivende.arbeidsforhold.normalarbeidstid}}
             {{/if}}
 
             {{#if selvstendigNæringsdrivende.virksomhet.varigEndring}}
@@ -261,7 +260,7 @@
                 <ul class="ul-no-indent">
                     {{#if arbeidsgiver.arbeidsforhold}}
                         <li><b>{{arbeidsgiver.navn}} (orgnr: {{arbeidsgiver.organisasjonsnummer}})</b></li>
-                        {{> partial/arbeidsforholdPartial arbeidsforhold=arbeidsgiver.arbeidsforhold}}
+                        {{> partial/arbeid/arbeidsforholdPartial arbeidsforhold=arbeidsgiver.arbeidsforhold}}
                     {{/if}}
                 </ul>
             {{/each}}
@@ -270,14 +269,14 @@
         {{#if frilans.arbeidsforhold}}
             <ul class="ul-no-indent">
                 <li><b>Frilans</b></li>
-                {{> partial/arbeidsforholdPartial arbeidsforhold=frilans.arbeidsforhold}}
+                {{> partial/arbeid/arbeidsforholdPartial arbeidsforhold=frilans.arbeidsforhold}}
             </ul>
         {{/if}}
 
         {{#if selvstendigNæringsdrivende.arbeidsforhold}}
             <ul class="ul-no-indent">
                 <li><b>Selvstendig næringsdrivende</b></li>
-                {{> partial/arbeidsforholdPartial arbeidsforhold=selvstendigNæringsdrivende.arbeidsforhold}}
+                {{> partial/arbeid/arbeidsforholdPartial arbeidsforhold=selvstendigNæringsdrivende.arbeidsforhold}}
             </ul>
         {{/if}}
 

@@ -1,0 +1,5 @@
+<p>Arbeider enkeltdager i perioden.</p>
+
+{{#each arbeidsforhold.arbeidIPeriode.enkeltdager as |enkeltdag|~}}
+    <p>Dato: {{enkeltdag.dato}}, Normaltimer: {{enkeltdag.normalTimer}}, Faktisktimer: {{enkeltdag.faktiskTimer}}</p>
+{{/each}}

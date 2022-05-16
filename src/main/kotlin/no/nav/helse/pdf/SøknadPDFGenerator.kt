@@ -73,8 +73,8 @@ class SøknadPDFGenerator : PDFGenerator<MeldingV1>() {
         "barnRelasjon" to barnRelasjon?.utskriftsvennlig,
         "barnRelasjonBeskrivelse" to barnRelasjonBeskrivelse,
         "harVærtEllerErVernepliktig" to harVærtEllerErVernepliktig,
-        "frilans" to frilans?.somMap(),
-        "selvstendigNæringsdrivende" to selvstendigNæringsdrivende?.somMap(),
+        "frilans" to frilans.somMap(),
+        "selvstendigNæringsdrivende" to selvstendigNæringsdrivende.somMap(),
         "arbeidsgivere" to arbeidsgivere.somMapAnsatt(),
         "hjelper" to mapOf(
             "harFlereAktiveVirksomheterErSatt" to harFlereAktiveVirksomehterSatt(),
@@ -93,22 +93,18 @@ class SøknadPDFGenerator : PDFGenerator<MeldingV1>() {
     )
 }
 
-private fun MeldingV1.harMinstEtArbeidsforhold() : Boolean{
-    frilans?.let {
-        if(it.arbeidsforhold != null) return true
-    }
+private fun MeldingV1.harMinstEtArbeidsforhold(): Boolean {
+    if (frilans.arbeidsforhold != null) return true
 
-    selvstendigNæringsdrivende?.let {
-        if(it.arbeidsforhold != null) return true
-    }
+    if (selvstendigNæringsdrivende.arbeidsforhold != null) return true
 
-    if(arbeidsgivere.any(){it.arbeidsforhold != null}) return true
+    if (arbeidsgivere.any() { it.arbeidsforhold != null }) return true
 
     return false
 }
 
 private fun MeldingV1.harFlereAktiveVirksomehterSatt() =
-    (this.selvstendigNæringsdrivende?.virksomhet?.harFlereAktiveVirksomheter != null)
+    (this.selvstendigNæringsdrivende.virksomhet?.harFlereAktiveVirksomheter != null)
 
 private fun erBooleanSatt(verdi: Boolean?) = verdi != null
 
@@ -175,41 +171,53 @@ private fun List<Enkeltdag>.somMapPerUke(): List<Map<String, Any>> {
     }
 }
 
-private fun PlanUkedager.somMap() = mapOf<String, Any?>(
-    "mandag" to if (mandag.harGyldigVerdi()) mandag!!.somTekst() else null,
-    "tirsdag" to if (tirsdag.harGyldigVerdi()) tirsdag!!.somTekst() else null,
-    "onsdag" to if (onsdag.harGyldigVerdi()) onsdag!!.somTekst() else null,
-    "torsdag" to if (torsdag.harGyldigVerdi()) torsdag!!.somTekst() else null,
-    "fredag" to if (fredag.harGyldigVerdi()) fredag!!.somTekst() else null,
+private fun PlanUkedager.somMap(avkort: Boolean = true) = mapOf<String, Any?>(
+    "mandag" to if (mandag.harGyldigVerdi()) mandag!!.somTekst(avkort) else null,
+    "tirsdag" to if (tirsdag.harGyldigVerdi()) tirsdag!!.somTekst(avkort) else null,
+    "onsdag" to if (onsdag.harGyldigVerdi()) onsdag!!.somTekst(avkort) else null,
+    "torsdag" to if (torsdag.harGyldigVerdi()) torsdag!!.somTekst(avkort) else null,
+    "fredag" to if (fredag.harGyldigVerdi()) fredag!!.somTekst(avkort) else null,
 )
 
 private fun Duration?.harGyldigVerdi() = this != null && this != Duration.ZERO
 
 private fun Arbeidsforhold.somMap(): Map<String, Any?> = mapOf(
-    "jobberNormaltTimer" to jobberNormaltTimer,
-    "harFraværIPeriode" to harFraværIPeriode,
-    "arbeidIPeriode" to arbeidIPeriode?.somMap()
+    "data" to this.toString(),
+    "normalarbeidstid" to this.normalarbeidstid.somMap(),
+    "arbeidIPeriode" to this.arbeidIPeriode.somMap()
 )
 
-private fun ArbeidIPeriode.somMap() : Map<String, Any?> = mapOf(
-    "jobberIPerioden" to jobberIPerioden.tilBoolean(),
-    "jobberProsent" to jobberProsent,
-    "erLiktHverUkeSatt" to (erLiktHverUke != null),
-    "erLiktHverUke" to erLiktHverUke,
-    "enkeltdagerPerMnd" to enkeltdager?.somMapPerMnd(),
-    "fasteDager" to fasteDager?.somMap(),
-    "snittTimerPerUkedag" to fasteDager?.mandag?.somTekst() // alle dager er like dersom jobberProsent er satt.
+private fun ArbeidIPeriode.somMap(): Map<String, Any?> = mapOf(
+    "type" to this.type.name,
+    "timerPerUke" to this.timerPerUke?.tilString(),
+    "prosentAvNormalt" to this.prosentAvNormalt,
+    "enkeltdager" to this.enkeltdager?.somMap(),
+    "fasteDager" to this.fasteDager?.somMap(false)
+)
+
+private fun List<ArbeidstidEnkeltdag>.somMap() = map {
+    mapOf(
+        "dato" to DATE_FORMATTER.format(it.dato),
+        "normalTimer" to it.arbeidstimer.normalTimer.tilString(),
+        "faktiskTimer" to it.arbeidstimer.faktiskTimer.tilString()
+    )
+}
+private fun NormalArbeidstid.somMap(): Map<String, Any?> = mapOf(
+    "timerPerUkeISnitt" to this.timerPerUkeISnitt?.tilString(),
+    "timerFasteDager" to this.timerFasteDager?.somMap(false)
 )
 
 private fun Frilans.somMap() : Map<String, Any?> = mapOf(
-    "startdato" to DATE_FORMATTER.format(startdato),
+    "harInntektSomFrilanser" to harInntektSomFrilanser,
+    "startdato" to if(startdato != null) DATE_FORMATTER.format(startdato) else null,
     "sluttdato" to if(sluttdato != null) DATE_FORMATTER.format(sluttdato) else null,
     "jobberFortsattSomFrilans" to jobberFortsattSomFrilans,
     "arbeidsforhold" to arbeidsforhold?.somMap()
 )
 
 private fun SelvstendigNæringsdrivende.somMap() : Map<String, Any?> = mapOf(
-    "virksomhet" to virksomhet.somMap(),
+    "harInntektSomSelvstendig" to harInntektSomSelvstendig,
+    "virksomhet" to virksomhet?.somMap(),
     "arbeidsforhold" to arbeidsforhold?.somMap()
 )
 
@@ -256,7 +264,7 @@ private fun VarigEndring.somMap() : Map<String, Any?> = mapOf(
 )
 
 private fun List<Arbeidsgiver>.somMapAnsatt() = map {
-    mapOf<String, Any?>(
+    mapOf(
         "navn" to it.navn,
         "organisasjonsnummer" to it.organisasjonsnummer,
         "erAnsatt" to it.erAnsatt,
@@ -279,7 +287,7 @@ private fun List<Bosted>.somMapBosted(): List<Map<String, Any?>> {
 private fun List<Utenlandsopphold>.somMapUtenlandsopphold(): List<Map<String, Any?>> {
     val dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy").withZone(ZoneId.of("Europe/Oslo"))
     return map {
-        mapOf<String, Any?>(
+        mapOf(
             "landnavn" to it.landnavn,
             "landkode" to it.landkode,
             "fraOgMed" to dateFormatter.format(it.fraOgMed),
@@ -311,9 +319,11 @@ private fun List<Periode>.somMapPerioder(): List<Map<String, Any?>> {
 }
 
 fun Duration.tilString(): String = when (this.toMinutesPart()) {
-    0 -> "${this.toHoursPart()} timer"
-    else -> "${this.toHoursPart()} timer og ${this.toMinutesPart()} minutter"
+    0 -> "${this.timer()} timer"
+    else -> "${this.timer()} timer og ${this.toMinutesPart()} minutter"
 }
+
+fun Duration.timer() = (this.toDaysPart()*24) + this.toHoursPart()
 
 fun Søker.formatertNavn() = if (mellomnavn != null) "$fornavn $mellomnavn $etternavn" else "$fornavn $etternavn"
 
