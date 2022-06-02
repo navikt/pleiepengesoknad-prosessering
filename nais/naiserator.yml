@@ -11,6 +11,10 @@ spec:
     application:
       enabled: true
       tenant: {{tenant}}
+  accessPolicy:
+    outbound:
+      rules:
+        - application: k9-joark
   kafka:
     pool: {{kafka-pool}}
   port: 8080

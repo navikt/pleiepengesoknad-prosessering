@@ -13,8 +13,8 @@
   "env": {
     "K9_MELLOMLAGRING_BASE_URL": "https://k9-mellomlagring.intern.nav.no",
     "K9_MELLOMLAGRING_SCOPE": "19aaf0b2-f40a-4a64-bf7f-fd2dd62f0552/.default",
-    "K9_JOARK_BASE_URL": "https://k9-joark.prod-fss-pub.nais.io",
-    "JOURNALFORE_SCOPES": "cb751642-883c-48d3-9f82-06cc72c3e4b9/.default",
+    "K9_JOARK_BASE_URL": "http://k9-joark",
+    "JOURNALFORE_SCOPES": "ca07da88-66d6-4063-8990-9d24589c38e0/.default",
     "KAFKA_AUTO_OFFSET_RESET": "none",
     "ENDRINGSMELDING_KAFKA_AUTO_OFFSET_RESET": "earliest"
   },
