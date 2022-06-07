@@ -374,6 +374,25 @@ class SøknadPdfV1GeneratorTest {
             )
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
+
+        id = "14-med-opptjening-i-utlandet"
+        pdf = generator.genererPDF(
+            melding = fullGyldigMelding(id).copy(
+                opptjeningIUtlandet = listOf(
+                    OpptjeningIUtlandet(
+                        navn = "Kiwi AS",
+                        opptjeningType = OpptjeningType.ARBEIDSTAKER,
+                        land = Land(
+                            landkode = "IKKE GYLDIG",
+                            landnavn = "Belgia",
+                        ),
+                        fraOgMed = LocalDate.parse("2022-01-01"),
+                        tilOgMed = LocalDate.parse("2022-01-10")
+                    )
+                )
+            )
+        )
+        if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
     }
 
     private fun pdfPath(soknadId: String) = "${System.getProperty("user.dir")}/generated-pdf-$soknadId.pdf"
