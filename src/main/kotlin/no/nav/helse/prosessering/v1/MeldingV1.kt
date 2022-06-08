@@ -17,7 +17,7 @@ data class MeldingV1 (
     val medlemskap: Medlemskap,
     val utenlandsoppholdIPerioden: UtenlandsoppholdIPerioden,
     val ferieuttakIPerioden: FerieuttakIPerioden?,
-    val opptjeningIUtlandet: List<OpptjeningIUtlandet>? = null, // TODO: 08/06/2022 Fjerne nullable når frontend er prodsatt
+    val opptjeningIUtlandet: List<OpptjeningIUtlandet>,
     val harMedsøker : Boolean,
     val samtidigHjemme: Boolean? = null,
     val harForståttRettigheterOgPlikter : Boolean,
