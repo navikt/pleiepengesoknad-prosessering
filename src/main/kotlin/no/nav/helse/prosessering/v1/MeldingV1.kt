@@ -17,7 +17,7 @@ data class MeldingV1 (
     val medlemskap: Medlemskap,
     val utenlandsoppholdIPerioden: UtenlandsoppholdIPerioden,
     val ferieuttakIPerioden: FerieuttakIPerioden?,
-    val opptjeningIUtlandet: List<OpptjeningIUtlandet>,
+    val opptjeningIUtlandet: List<OpptjeningIUtlandet> = listOf(),
     val harMedsøker : Boolean,
     val samtidigHjemme: Boolean? = null,
     val harForståttRettigheterOgPlikter : Boolean,
