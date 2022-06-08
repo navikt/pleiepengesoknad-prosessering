@@ -59,6 +59,7 @@ class SøknadPDFGenerator : PDFGenerator<MeldingV1>() {
             "ingen_arbeidsgivere" to arbeidsgivere.isEmpty(),
             "sprak" to språk?.sprakTilTekst()
         ),
+        "opptjeningIUtlandet" to opptjeningIUtlandet?.somMapOpptjeningIUtlandet(),
         "omsorgstilbud" to omsorgstilbud?.somMap(),
         "nattevaak" to nattevåk(nattevåk),
         "beredskap" to beredskap(beredskap),
@@ -178,6 +179,19 @@ private fun PlanUkedager.somMap(avkort: Boolean = true) = mapOf<String, Any?>(
     "torsdag" to if (torsdag.harGyldigVerdi()) torsdag!!.somTekst(avkort) else null,
     "fredag" to if (fredag.harGyldigVerdi()) fredag!!.somTekst(avkort) else null,
 )
+
+private fun List<OpptjeningIUtlandet>.somMapOpptjeningIUtlandet(): List<Map<String, Any?>>? {
+    if(isEmpty()) return null
+    return map {
+        mapOf<String, Any?>(
+            "navn" to it.navn,
+            "land" to it.land.somMap(),
+            "opptjeningType" to it.opptjeningType.pdfTekst,
+            "fraOgMed" to DATE_FORMATTER.format(it.fraOgMed),
+            "tilOgMed" to DATE_FORMATTER.format(it.tilOgMed)
+        )
+    }
+}
 
 private fun Duration?.harGyldigVerdi() = this != null && this != Duration.ZERO
 

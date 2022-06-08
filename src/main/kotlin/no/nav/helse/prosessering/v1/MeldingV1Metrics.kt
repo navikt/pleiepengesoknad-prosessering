@@ -172,22 +172,22 @@ internal fun MeldingV1.reportMetrics() {
 private fun MeldingV1.harArbeidsforhold() = this.arbeidsgivere.isNotEmpty()
 
 private fun MeldingV1.erArbeidstaker() =
-    this.harArbeidsforhold() && selvstendigNæringsdrivende == null && frilans == null
+    this.harArbeidsforhold() && !selvstendigNæringsdrivende.harInntektSomSelvstendig && !frilans.harInntektSomFrilanser
 
 private fun MeldingV1.erArbeidstakerOgFrilanser() =
-    this.harArbeidsforhold() && selvstendigNæringsdrivende == null  && frilans != null
+    this.harArbeidsforhold() && !selvstendigNæringsdrivende.harInntektSomSelvstendig  && frilans.harInntektSomFrilanser
 
 private fun MeldingV1.erArbeidstakerOgSelvstendigNæringsdrivende() =
-    this.harArbeidsforhold() && selvstendigNæringsdrivende != null  && frilans == null
+    this.harArbeidsforhold() && selvstendigNæringsdrivende.harInntektSomSelvstendig && !frilans.harInntektSomFrilanser
 
 private fun MeldingV1.erArbeidstakerFrilanserOgSelvstendigNæringsdrivende() =
-    this.harArbeidsforhold() && selvstendigNæringsdrivende != null && frilans != null
+    this.harArbeidsforhold() && selvstendigNæringsdrivende.harInntektSomSelvstendig && frilans.harInntektSomFrilanser
 
 private fun MeldingV1.erFrilanserOgSelvstendigNæringsdrivende() =
-    !this.harArbeidsforhold() && selvstendigNæringsdrivende != null && frilans != null
+    !this.harArbeidsforhold() && selvstendigNæringsdrivende.harInntektSomSelvstendig && frilans.harInntektSomFrilanser
 
 private fun MeldingV1.erFrilanser() =
-    !this.harArbeidsforhold() && selvstendigNæringsdrivende == null && frilans != null
+    !this.harArbeidsforhold() && !selvstendigNæringsdrivende.harInntektSomSelvstendig && frilans.harInntektSomFrilanser
 
 private fun MeldingV1.erSelvstendigNæringsdrivende() =
-    !this.harArbeidsforhold() && selvstendigNæringsdrivende != null && frilans == null
+    !this.harArbeidsforhold() && selvstendigNæringsdrivende.harInntektSomSelvstendig && !frilans.harInntektSomFrilanser

@@ -282,6 +282,27 @@
 
     </section>
 
+    <section id="opptjeningIUtlandet">
+        {{#if opptjeningIUtlandet}}
+            <h2>Jobbet i annet EØS-land</h2>
+            {{#if opptjeningIUtlandet}}
+                {{#each opptjeningIUtlandet as |opptjeningIUtlandet|~}}
+                    <ul>
+                        <li>
+                            <p>Jobbet i {{opptjeningIUtlandet.land.landnavn}}
+                                som {{opptjeningIUtlandet.opptjeningType}}
+                                hos {{opptjeningIUtlandet.navn}}
+                                {{opptjeningIUtlandet.fraOgMed}} - {{opptjeningIUtlandet.tilOgMed}}.
+                            </p>
+                        </li>
+                    </ul>
+                {{/each}}
+            {{else}}
+                <p>Nei</p>
+            {{/if}}
+        {{/if}}
+    </section>
+
     <section id="verneplikt">
         {{# if hjelper.harVærtEllerErVernepliktigErSatt}}
             <h2>Verneplikt</h2>
