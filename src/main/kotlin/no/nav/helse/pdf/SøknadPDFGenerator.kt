@@ -59,7 +59,7 @@ class SøknadPDFGenerator : PDFGenerator<MeldingV1>() {
             "ingen_arbeidsgivere" to arbeidsgivere.isEmpty(),
             "sprak" to språk?.sprakTilTekst()
         ),
-        "opptjeningIUtlandet" to opptjeningIUtlandet.somMapOpptjeningIUtlandet(),
+        "opptjeningIUtlandet" to opptjeningIUtlandet?.somMapOpptjeningIUtlandet(),
         "omsorgstilbud" to omsorgstilbud?.somMap(),
         "nattevaak" to nattevåk(nattevåk),
         "beredskap" to beredskap(beredskap),
