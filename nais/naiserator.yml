@@ -15,6 +15,7 @@ spec:
     outbound:
       rules:
         - application: k9-joark
+        - application: k9-mellomlagring
   kafka:
     pool: {{kafka-pool}}
   port: 8080

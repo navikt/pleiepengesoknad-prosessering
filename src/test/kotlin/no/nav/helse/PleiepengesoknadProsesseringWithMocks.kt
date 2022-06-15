@@ -42,7 +42,7 @@ class PleiepengesoknadProsesseringWithMocks {
                     logger.info("Tear down complete")
                 }
             })
-            withApplication { no.nav.helse.main(testArgs) }
+            testApplication { no.nav.helse.main(testArgs) }
         }
     }
 }

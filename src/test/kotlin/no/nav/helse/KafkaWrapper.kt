@@ -122,7 +122,7 @@ fun <V> KafkaConsumer<String, TopicEntry<V>>.hentMelding(
 
 fun <V> KafkaConsumer<String, String>.hentCleanupMelding(
     soknadId: String,
-    maxWaitInSeconds: Long = 20,
+    maxWaitInSeconds: Long = 60,
     topic: Topic<TopicEntry<V>>
 ): String {
     val end = System.currentTimeMillis() + Duration.ofSeconds(maxWaitInSeconds).toMillis()
@@ -159,6 +159,3 @@ fun <V> KafkaProducer<String, TopicEntry<V>>.leggPåMelding(
         )
     ).get()
 }
-
-fun KafkaEnvironment.username() = username
-fun KafkaEnvironment.password() = password

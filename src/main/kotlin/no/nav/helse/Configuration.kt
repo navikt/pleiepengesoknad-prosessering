@@ -1,6 +1,6 @@
 package no.nav.helse
 
-import io.ktor.config.*
+import io.ktor.server.config.*
 import no.nav.helse.dusseldorf.ktor.core.getOptionalString
 import no.nav.helse.dusseldorf.ktor.core.getRequiredList
 import no.nav.helse.dusseldorf.ktor.core.getRequiredString
