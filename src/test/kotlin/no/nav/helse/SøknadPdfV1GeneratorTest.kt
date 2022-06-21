@@ -113,6 +113,15 @@ class SøknadPdfV1GeneratorTest {
                     Ferieuttak(fraOgMed = LocalDate.parse("2020-02-01"), tilOgMed = LocalDate.parse("2020-02-05"))
                 )
             ),
+            utenlandskNæring = listOf(
+                UtenlandskNæring(
+                    næringstype = Næringstyper.FISKE,
+                    navnPåVirksomheten = "Fiskeriet AS",
+                    land = Land(landkode = "NDL", landnavn = "Nederland"),
+                    identifikasjonsnummer = "123ABC",
+                    fraOgMed = LocalDate.parse("2020-01-09")
+                )
+            ),
             frilans = Frilans(
                 harInntektSomFrilanser = true,
                 startdato = LocalDate.now().minusYears(3),
@@ -388,6 +397,33 @@ class SøknadPdfV1GeneratorTest {
                         ),
                         fraOgMed = LocalDate.parse("2022-01-01"),
                         tilOgMed = LocalDate.parse("2022-01-10")
+                    )
+                )
+            )
+        )
+        if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
+
+        id = "15-med-utenlandsk-næring"
+        pdf = generator.genererPDF(
+            melding = fullGyldigMelding(id).copy(
+                selvstendigNæringsdrivende = SelvstendigNæringsdrivende(false),
+                frilans = Frilans(false),
+                arbeidsgivere = listOf(),
+                utenlandskNæring = listOf(
+                    UtenlandskNæring(
+                        næringstype = Næringstyper.FISKE,
+                        navnPåVirksomheten = "Fiskeriet AS",
+                        land = Land(landkode = "NDL", landnavn = "Nederland"),
+                        identifikasjonsnummer = "123ABC",
+                        fraOgMed = LocalDate.parse("2020-01-09")
+                    ),
+                    UtenlandskNæring(
+                        næringstype = Næringstyper.DAGMAMMA,
+                        navnPåVirksomheten = "Dagmamma AS",
+                        land = Land(landkode = "NDL", landnavn = "Nederland"),
+                        identifikasjonsnummer = "123ABC",
+                        fraOgMed = LocalDate.parse("2020-01-09"),
+                        tilOgMed = LocalDate.parse("2022-01-09")
                     )
                 )
             )
