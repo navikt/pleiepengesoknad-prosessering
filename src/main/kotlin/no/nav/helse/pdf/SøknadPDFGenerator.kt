@@ -60,6 +60,7 @@ class SøknadPDFGenerator : PDFGenerator<MeldingV1>() {
             "sprak" to språk?.sprakTilTekst()
         ),
         "opptjeningIUtlandet" to opptjeningIUtlandet.somMapOpptjeningIUtlandet(),
+        "utenlandskNæring" to utenlandskNæring?.somMapUtenlandskNæring(),
         "omsorgstilbud" to omsorgstilbud?.somMap(),
         "nattevaak" to nattevåk(nattevåk),
         "beredskap" to beredskap(beredskap),
@@ -78,6 +79,7 @@ class SøknadPDFGenerator : PDFGenerator<MeldingV1>() {
         "selvstendigNæringsdrivende" to selvstendigNæringsdrivende.somMap(),
         "arbeidsgivere" to arbeidsgivere.somMapAnsatt(),
         "hjelper" to mapOf(
+            "utenlandskNæringSatt" to (utenlandskNæring != null),
             "harFlereAktiveVirksomheterErSatt" to harFlereAktiveVirksomehterSatt(),
             "harVærtEllerErVernepliktigErSatt" to erBooleanSatt(harVærtEllerErVernepliktig),
             "ingen_arbeidsforhold" to !harMinstEtArbeidsforhold()
@@ -189,6 +191,20 @@ private fun List<OpptjeningIUtlandet>.somMapOpptjeningIUtlandet(): List<Map<Stri
             "opptjeningType" to it.opptjeningType.pdfTekst,
             "fraOgMed" to DATE_FORMATTER.format(it.fraOgMed),
             "tilOgMed" to DATE_FORMATTER.format(it.tilOgMed)
+        )
+    }
+}
+
+private fun List<UtenlandskNæring>.somMapUtenlandskNæring(): List<Map<String, Any?>>? {
+    if(isEmpty()) return null
+    return map {
+        mapOf(
+            "næringstype" to it.næringstype.beskrivelse,
+            "navnPåVirksomheten" to it.navnPåVirksomheten,
+            "land" to it.land.somMap(),
+            "identifikasjonsnummer" to it.identifikasjonsnummer,
+            "fraOgMed" to DATE_FORMATTER.format(it.fraOgMed),
+            "tilOgMed" to if(it.tilOgMed != null) DATE_FORMATTER.format(it.tilOgMed) else null
         )
     }
 }

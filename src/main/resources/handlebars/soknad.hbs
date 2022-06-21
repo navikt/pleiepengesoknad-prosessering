@@ -15,6 +15,8 @@
         <bookmark name="Utenlandsopphold" href="#utenlandsopphold"/>
         <bookmark name="Arbeidsgivere" href="#arbeidsgivere"/>
         <bookmark name="Jobb i søknadsperioden" href="#jobbISøknadsperioden"/>
+        <bookmark name="Opptjening i utlandet" href="#opptjeningIUtlandet"/>
+        <bookmark name="Utenlandsk næring" href="#utenlandskNæring"/>
         <bookmark name="Omsorgstilbud" href="#omsorgstilbud"/>
         <bookmark name="Verneplikt" href="#verneplikt"/>
         <bookmark name="Nattevåk" href="#nattevaak"/>
@@ -298,6 +300,28 @@
             {{/each}}
         {{else}}
             <p>Nei</p>
+        {{/if}}
+    </section>
+
+    <section id="utenlandskNæring">
+        {{#if hjelper.utenlandskNæringSatt}}
+            <h2>Utenlandsk næring</h2>
+            <h3>Har du jobbet som selvstendig næringsdrivende i et annet EØS-land i løpet av de 3 siste årene før perioden du søker om?</h3>
+            {{#if utenlandskNæring}}
+                <p>Ja</p>
+                {{#each utenlandskNæring as |næring|~}}
+                    <ul>
+                        <li>
+                            <p><b>{{næring.navnPåVirksomheten}} ({{næring.fraOgMed}} - {{næring.tilOgMed}})</b></p>
+                            <p>{{næring.land.landnavn}} {{næring.land.landkode}}</p>
+                            <p>Identifikasjonsnummer: {{næring.identifikasjonsnummer}}</p>
+                            <p>Næringstype: {{næring.næringstype}}</p>
+                        </li>
+                    </ul>
+                {{/each}}
+            {{else}}
+                <p>Nei</p>
+            {{/if}}
         {{/if}}
     </section>
 
