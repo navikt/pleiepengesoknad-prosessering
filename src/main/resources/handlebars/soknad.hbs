@@ -251,7 +251,7 @@
 
     <section id="jobbISøknadsperioden">
         <h2>Jobb i søknadsperioden</h2>
-        {{# if hjelp.ingen_arbeidsforhold }}
+        {{# if hjelper.ingen_arbeidsforhold }}
             <ul>
                 <li class="ikke_satt">Ingen arbeidsforhold er registrert i søknadsperioden</li>
             </ul>
@@ -306,15 +306,13 @@
     <section id="utenlandskNæring">
         {{#if hjelper.utenlandskNæringSatt}}
             <h2>Utenlandsk næring</h2>
-            <h3>Har du jobbet som selvstendig næringsdrivende i et annet EØS-land i løpet av de 3 siste årene før perioden du søker om?</h3>
             {{#if utenlandskNæring}}
-                <p>Ja</p>
                 {{#each utenlandskNæring as |næring|~}}
                     <ul>
                         <li>
                             <p><b>{{næring.navnPåVirksomheten}} ({{næring.fraOgMed}} - {{næring.tilOgMed}})</b></p>
                             <p>{{næring.land.landnavn}} {{næring.land.landkode}}</p>
-                            <p>Identifikasjonsnummer: {{næring.identifikasjonsnummer}}</p>
+                            <p>Organisasjonsnummer: {{næring.organisasjonsnummer}}</p>
                             <p>Næringstype: {{næring.næringstype}}</p>
                         </li>
                     </ul>

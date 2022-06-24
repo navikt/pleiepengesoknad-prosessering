@@ -202,7 +202,7 @@ private fun List<UtenlandskNæring>.somMapUtenlandskNæring(): List<Map<String, 
             "næringstype" to it.næringstype.beskrivelse,
             "navnPåVirksomheten" to it.navnPåVirksomheten,
             "land" to it.land.somMap(),
-            "identifikasjonsnummer" to it.identifikasjonsnummer,
+            "organisasjonsnummer" to it.organisasjonsnummer,
             "fraOgMed" to DATE_FORMATTER.format(it.fraOgMed),
             "tilOgMed" to if(it.tilOgMed != null) DATE_FORMATTER.format(it.tilOgMed) else null
         )
