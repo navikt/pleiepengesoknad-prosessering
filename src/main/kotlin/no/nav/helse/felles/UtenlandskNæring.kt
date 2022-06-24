@@ -6,7 +6,7 @@ class UtenlandskNæring(
     val næringstype: Næringstyper,
     val navnPåVirksomheten: String,
     val land: Land,
-    val identifikasjonsnummer: String,
+    val organisasjonsnummer: String,
     val fraOgMed: LocalDate,
     val tilOgMed: LocalDate? = null
 )

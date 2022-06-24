@@ -118,7 +118,7 @@ class SøknadPdfV1GeneratorTest {
                     næringstype = Næringstyper.FISKE,
                     navnPåVirksomheten = "Fiskeriet AS",
                     land = Land(landkode = "NDL", landnavn = "Nederland"),
-                    identifikasjonsnummer = "123ABC",
+                    organisasjonsnummer = "123ABC",
                     fraOgMed = LocalDate.parse("2020-01-09")
                 )
             ),
@@ -415,14 +415,14 @@ class SøknadPdfV1GeneratorTest {
                         næringstype = Næringstyper.FISKE,
                         navnPåVirksomheten = "Fiskeriet AS",
                         land = Land(landkode = "NDL", landnavn = "Nederland"),
-                        identifikasjonsnummer = "123ABC",
+                        organisasjonsnummer = "123ABC",
                         fraOgMed = LocalDate.parse("2020-01-09")
                     ),
                     UtenlandskNæring(
                         næringstype = Næringstyper.DAGMAMMA,
                         navnPåVirksomheten = "Dagmamma AS",
                         land = Land(landkode = "NDL", landnavn = "Nederland"),
-                        identifikasjonsnummer = "123ABC",
+                        organisasjonsnummer = "123ABC",
                         fraOgMed = LocalDate.parse("2020-01-09"),
                         tilOgMed = LocalDate.parse("2022-01-09")
                     )
