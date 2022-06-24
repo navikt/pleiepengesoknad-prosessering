@@ -387,6 +387,7 @@ class SøknadPdfV1GeneratorTest {
         id = "14-med-opptjening-i-utlandet"
         pdf = generator.genererPDF(
             melding = fullGyldigMelding(id).copy(
+                utenlandskNæring = listOf(),
                 opptjeningIUtlandet = listOf(
                     OpptjeningIUtlandet(
                         navn = "Kiwi AS",
