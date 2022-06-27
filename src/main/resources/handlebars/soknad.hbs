@@ -312,7 +312,9 @@
                         <li>
                             <p><b>{{næring.navnPåVirksomheten}} ({{næring.fraOgMed}} - {{næring.tilOgMed}})</b></p>
                             <p>{{næring.land.landnavn}} {{næring.land.landkode}}</p>
-                            <p>Organisasjonsnummer: {{næring.organisasjonsnummer}}</p>
+                            {{#if næring.organisasjonsnummer}}
+                                <p>Organisasjonsnummer: {{næring.organisasjonsnummer}}</p>
+                            {{/if}}
                             <p>Næringstype: {{næring.næringstype}}</p>
                         </li>
                     </ul>

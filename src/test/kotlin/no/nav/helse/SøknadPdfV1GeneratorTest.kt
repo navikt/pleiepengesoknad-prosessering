@@ -422,7 +422,7 @@ class SøknadPdfV1GeneratorTest {
                         næringstype = Næringstyper.DAGMAMMA,
                         navnPåVirksomheten = "Dagmamma AS",
                         land = Land(landkode = "NDL", landnavn = "Nederland"),
-                        organisasjonsnummer = "123ABC",
+                        organisasjonsnummer = null,
                         fraOgMed = LocalDate.parse("2020-01-09"),
                         tilOgMed = LocalDate.parse("2022-01-09")
                     )
