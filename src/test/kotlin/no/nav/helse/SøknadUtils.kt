@@ -209,7 +209,24 @@ internal object SøknadUtils {
         samtidigHjemme = null,
         omsorgstilbud = null,
         barnRelasjon = null,
-        barnRelasjonBeskrivelse = null
+        barnRelasjonBeskrivelse = null,
+        utenlandskNæring = listOf(
+            UtenlandskNæring(
+                næringstype = Næringstyper.DAGMAMMA,
+                navnPåVirksomheten = "Dagmamma AS",
+                land = Land(landkode = "NDL", landnavn = "Nederland"),
+                fraOgMed = LocalDate.parse("2020-01-01")
+            )
+        ),
+        opptjeningIUtlandet = listOf(
+            OpptjeningIUtlandet(
+                navn = "Yolo AS",
+                opptjeningType = OpptjeningType.ARBEIDSTAKER,
+                land = Land(landkode = "NDL", landnavn = "Nederland"),
+                fraOgMed = LocalDate.parse("2020-01-01"),
+                tilOgMed = LocalDate.parse("2020-10-01")
+            )
+        )
     )
 
     fun defaultK9FormatPSB(søknadId: UUID = UUID.randomUUID()) = Søknad(
