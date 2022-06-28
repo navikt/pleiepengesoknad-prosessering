@@ -17,7 +17,7 @@ data class PreprossesertMeldingV1(
     val medlemskap: Medlemskap,
     val utenlandsoppholdIPerioden: UtenlandsoppholdIPerioden,
     val opptjeningIUtlandet: List<OpptjeningIUtlandet>,
-    val utenlandskNæring: List<UtenlandskNæring>? = null,
+    val utenlandskNæring: List<UtenlandskNæring>,
     val ferieuttakIPerioden: FerieuttakIPerioden?,
     val beredskap: Beredskap?,
     val nattevåk: Nattevåk?,

@@ -244,7 +244,16 @@ class SøknadPdfV1GeneratorTest {
                     Enkeltdag(LocalDate.now().plusWeeks(4), Duration.ofHours(6).plusMinutes(45)),
                     Enkeltdag(LocalDate.now().plusWeeks(9).plusDays(2), Duration.ofHours(3))
                 )
-            )
+            ),
+            opptjeningIUtlandet = listOf(
+                OpptjeningIUtlandet(
+                    navn = "Yolo AS",
+                    opptjeningType = OpptjeningType.ARBEIDSTAKER,
+                    land = Land(landkode = "NDL", landnavn = "Nederland"),
+                    fraOgMed = LocalDate.parse("2020-01-01"),
+                    tilOgMed = LocalDate.parse("2020-10-01")
+                )
+            ),
         )
     }
 

@@ -304,24 +304,22 @@
     </section>
 
     <section id="utenlandskNæring">
-        {{#if hjelper.utenlandskNæringSatt}}
-            <h2>Utenlandsk næring</h2>
-            {{#if utenlandskNæring}}
-                {{#each utenlandskNæring as |næring|~}}
-                    <ul>
-                        <li>
-                            <p><b>{{næring.navnPåVirksomheten}} ({{næring.fraOgMed}} - {{næring.tilOgMed}})</b></p>
-                            <p>{{næring.land.landnavn}} {{næring.land.landkode}}</p>
-                            {{#if næring.organisasjonsnummer}}
-                                <p>Organisasjonsnummer: {{næring.organisasjonsnummer}}</p>
-                            {{/if}}
-                            <p>Næringstype: {{næring.næringstype}}</p>
-                        </li>
-                    </ul>
-                {{/each}}
-            {{else}}
-                <p>Nei</p>
-            {{/if}}
+        <h2>Utenlandsk næring</h2>
+        {{#if utenlandskNæring}}
+            {{#each utenlandskNæring as |næring|~}}
+                <ul>
+                    <li>
+                        <p><b>{{næring.navnPåVirksomheten}} ({{næring.fraOgMed}} - {{næring.tilOgMed}})</b></p>
+                        <p>{{næring.land.landnavn}} {{næring.land.landkode}}</p>
+                        {{#if næring.organisasjonsnummer}}
+                            <p>Organisasjonsnummer: {{næring.organisasjonsnummer}}</p>
+                        {{/if}}
+                        <p>Næringstype: {{næring.næringstype}}</p>
+                    </li>
+                </ul>
+            {{/each}}
+        {{else}}
+            <p>Nei</p>
         {{/if}}
     </section>
 

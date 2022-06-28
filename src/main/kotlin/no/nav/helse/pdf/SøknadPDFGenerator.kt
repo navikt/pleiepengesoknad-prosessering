@@ -60,7 +60,7 @@ class SøknadPDFGenerator : PDFGenerator<MeldingV1>() {
             "sprak" to språk?.sprakTilTekst()
         ),
         "opptjeningIUtlandet" to opptjeningIUtlandet.somMapOpptjeningIUtlandet(),
-        "utenlandskNæring" to utenlandskNæring?.somMapUtenlandskNæring(),
+        "utenlandskNæring" to utenlandskNæring.somMapUtenlandskNæring(),
         "omsorgstilbud" to omsorgstilbud?.somMap(),
         "nattevaak" to nattevåk(nattevåk),
         "beredskap" to beredskap(beredskap),
@@ -79,7 +79,6 @@ class SøknadPDFGenerator : PDFGenerator<MeldingV1>() {
         "selvstendigNæringsdrivende" to selvstendigNæringsdrivende.somMap(),
         "arbeidsgivere" to arbeidsgivere.somMapAnsatt(),
         "hjelper" to mapOf(
-            "utenlandskNæringSatt" to (utenlandskNæring != null),
             "harFlereAktiveVirksomheterErSatt" to harFlereAktiveVirksomehterSatt(),
             "harVærtEllerErVernepliktigErSatt" to erBooleanSatt(harVærtEllerErVernepliktig),
             "ingen_arbeidsforhold" to !harMinstEtArbeidsforhold()
