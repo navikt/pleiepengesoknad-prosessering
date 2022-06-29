@@ -145,7 +145,7 @@ class SøknadPdfV1GeneratorTest {
             selvstendigNæringsdrivende = SelvstendigNæringsdrivende(
                 harInntektSomSelvstendig = true,
                 virksomhet = Virksomhet(
-                    næringstyper = listOf(Næringstyper.JORDBRUK_SKOGBRUK, Næringstyper.DAGMAMMA, Næringstyper.FISKE),
+                    næringstype = Næringstyper.FISKE,
                     fiskerErPåBladB = true,
                     fraOgMed = LocalDate.now(),
                     næringsinntekt = 1111,

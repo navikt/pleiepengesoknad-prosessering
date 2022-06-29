@@ -210,21 +210,15 @@
                     er pågående)
                 {{/if}}</h3>
 
-            <p>Næringstype:
-                {{# each selvstendigNæringsdrivende.virksomhet.næringstyper as |næringstype|~}}
-                    {{#if @first}}
-                        {{næringstype.navn}}
+            <p>Næringstype: {{selvstendigNæringsdrivende.virksomhet.næringstypeBeskrivelse}}
+                {{#eq selvstendigNæringsdrivende.virksomhet.næringstypeBeskrivelse "Fiske"}}
+                    {{#if selvstendigNæringsdrivende.virksomhet.fiskerErPåBladB}}
+                        (blad B)
                     {{else}}
-                        , {{næringstype.navn}}
+                        (ikke blad B)
                     {{/if}}
-                    {{#eq næringstype.navn "Fiske"}}
-                        {{#if selvstendigNæringsdrivende.virksomhet.fiskerErPåBladB}}
-                            (blad B)
-                        {{else}}
-                            (ikke blad B)
-                        {{/if}}
-                    {{/eq}}
-                {{/each}}</p>
+                {{/eq}}
+            </p>
 
             {{#if selvstendigNæringsdrivende.virksomhet.registrertINorge}}
                 <p>Registrert i Norge</p>

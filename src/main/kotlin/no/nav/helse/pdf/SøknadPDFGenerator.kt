@@ -251,7 +251,7 @@ private fun SelvstendigNæringsdrivende.somMap() : Map<String, Any?> = mapOf(
 )
 
 private fun Virksomhet.somMap() : Map<String, Any?> = mapOf(
-    "næringstyper" to næringstyper,
+    "næringstypeBeskrivelse" to næringstype.beskrivelse,
     "næringsinntekt" to næringsinntekt,
     "yrkesaktivSisteTreFerdigliknedeÅrene" to yrkesaktivSisteTreFerdigliknedeÅrene?.somMap(),
     "varigEndring" to varigEndring?.somMap(),
@@ -259,19 +259,12 @@ private fun Virksomhet.somMap() : Map<String, Any?> = mapOf(
     "navnPåVirksomheten" to navnPåVirksomheten,
     "fraOgMed" to DATE_FORMATTER.format(fraOgMed),
     "tilOgMed" to if(tilOgMed != null) DATE_FORMATTER.format(tilOgMed) else null,
-    "næringstyper" to næringstyper.somMapNæringstyper(),
     "fiskerErPåBladB" to fiskerErPåBladB,
     "registrertINorge" to registrertINorge,
     "organisasjonsnummer" to organisasjonsnummer,
     "registrertIUtlandet" to registrertIUtlandet?.somMap(),
     "regnskapsfører" to regnskapsfører?.somMap()
 )
-
-private fun List<Næringstyper>.somMapNæringstyper() = map {
-    mapOf(
-        "navn" to it.beskrivelse
-    )
-}
 
 private fun Regnskapsfører.somMap() = mapOf<String, Any?>(
     "navn" to navn,

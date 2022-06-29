@@ -153,7 +153,7 @@ internal object SøknadUtils {
         selvstendigNæringsdrivende = SelvstendigNæringsdrivende(
             harInntektSomSelvstendig = true,
             virksomhet = Virksomhet(
-                næringstyper = listOf(Næringstyper.ANNEN),
+                næringstype = Næringstyper.ANNEN,
                 fraOgMed = LocalDate.parse("2021-01-01"),
                 tilOgMed = LocalDate.parse("2021-01-10"),
                 navnPåVirksomheten = "Kjells Møbelsnekkeri",
