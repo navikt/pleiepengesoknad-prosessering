@@ -60,7 +60,7 @@ dependencies {
         exclude(group = "org.eclipse.jetty")
     }
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
-    testImplementation("org.skyscreamer:jsonassert:1.5.0")
+    testImplementation("org.skyscreamer:jsonassert:1.5.1")
 }
 
 repositories {
