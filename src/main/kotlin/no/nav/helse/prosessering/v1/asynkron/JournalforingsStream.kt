@@ -9,7 +9,6 @@ import no.nav.helse.kafka.ManagedStreamHealthy
 import no.nav.helse.kafka.ManagedStreamReady
 import no.nav.helse.kafka.TopicEntry
 import no.nav.helse.kafka.process
-import no.nav.helse.kafka.*
 import no.nav.helse.prosessering.v1.PreprossesertMeldingV1
 import org.apache.kafka.streams.StreamsBuilder
 import org.apache.kafka.streams.Topology
@@ -47,6 +46,10 @@ internal class JournalforingsStream(
                     Consumed.with(fraPreprossesert.keySerde, fraPreprossesert.valueSerde)
                 )
                 .filter { _, entry -> 1 == entry.metadata.version }
+                .filterNot { _, entry ->
+                    logger.info("Ignorer duplikat søknad med correlationId = 'generated-e39a87ae-67c9-4095-a955-3c983a245243'")
+                    entry.metadata.correlationId == "generated-e39a87ae-67c9-4095-a955-3c983a245243"
+                }
                 .mapValues { soknadId, entry ->
                     process(NAME, soknadId, entry) {
                         logger.info("Journalfører dokumenter.")
