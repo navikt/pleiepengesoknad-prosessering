@@ -41,14 +41,6 @@ internal class CleanupStream(
                     fraCleanup.name, Consumed.with(fraCleanup.keySerde, fraCleanup.valueSerde)
                 )
                 .filter {_, entry -> 1 == entry.metadata.version }
-                .filterNot { _, entry ->
-                    logger.info("Ignorer duplikat søknad med correlationId = 'generated-e39a87ae-67c9-4095-a955-3c983a245243'")
-                    entry.metadata.correlationId == "generated-e39a87ae-67c9-4095-a955-3c983a245243"
-                }
-                .filterNot { _, entry ->
-                    logger.info("Ignorer duplikat søknad med correlationId = 'generated-d7821930-3de6-48fd-a986-de0ba79a0632'")
-                    entry.metadata.correlationId == "generated-d7821930-3de6-48fd-a986-de0ba79a0632"
-                }
                 .mapValues { soknadId, entry ->
                     process(NAME, soknadId, entry) {
                         logger.info("Sletter dokumenter.")
