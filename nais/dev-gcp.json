@@ -7,9 +7,6 @@
   "tenant" : "trygdeetaten.no",
   "minReplicas": "1",
   "maxReplicas": "2",
-  "ingresses": [
-    "https://pleiepengesoknad-prosessering.nais.preprod.local"
-  ],
   "env": {
     "K9_JOARK_BASE_URL": "http://k9-joark",
     "K9_MELLOMLAGRING_BASE_URL": "http://k9-mellomlagring",
