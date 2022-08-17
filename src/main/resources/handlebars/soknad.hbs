@@ -328,11 +328,17 @@
     <section id="omsorgstilbud">
         <h2>Omsorgstilbud</h2>
         <p class="sporsmalstekst">Er barnet fast og regelmessig i et omsorgstilbud i søknadsperioden?</p>
-        {{#if omsorgstilbud}}
-            <p>Ja</p>
+        {{#if omsorgstilbud}} <!-- OBS Refaktor bort spesiell håndtering når omsorgstilbud endringen er prodsatt i frontend. -->
+            {{#if omsorgstilbud.svar}}
+                <p>{{omsorgstilbud.svar}}</p>
+            {{else}}
+                <p>Ja</p>
+            {{/if}}
 
-            <p class="sporsmalstekst">Er tiden i omsorgstilbudet lik hver uke i perioden?</p>
-            <p>{{ jaNeiSvar omsorgstilbud.erLiktHverUke}}</p>
+            {{#if omsorgstilbud.erLiktHverUkeErSatt}}
+                <p class="sporsmalstekst">Er tiden i omsorgstilbudet lik hver uke i perioden?</p>
+                <p>{{ jaNeiSvar omsorgstilbud.erLiktHverUke}}</p>
+            {{/if}}
 
             {{#if omsorgstilbud.enkeltdagerPerMnd}}
                 <p><b>Enkeltdager barnet er i omsorgstilbud:</b></p>

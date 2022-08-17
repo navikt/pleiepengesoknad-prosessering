@@ -4,10 +4,21 @@ import java.time.Duration
 import java.time.LocalDate
 
 data class Omsorgstilbud(
-    val erLiktHverUke: Boolean,
+    val svar: OmsorgstilbudSvar? = null, //TODO 17/08/2022 - Fjerne nullable etter frontend er prodsatt
+    val erLiktHverUke: Boolean? = null,
     val enkeltdager: List<Enkeltdag>? = null,
     val ukedager: PlanUkedager? = null
 )
+
+enum class OmsorgstilbudSvar {
+    JA, NEI, USIKKER;
+
+    internal fun somTekst() = when(this){
+        JA -> "Ja"
+        NEI -> "Nei"
+        USIKKER -> "Usikker"
+    }
+}
 
 data class Enkeltdag(
     val dato: LocalDate,

@@ -439,6 +439,48 @@ class SøknadPdfV1GeneratorTest {
             )
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
+
+        id = "16-omsorgstilbud-svar-ja"
+        pdf = generator.genererPDF(
+            melding = fullGyldigMelding(id).copy(
+                omsorgstilbud = Omsorgstilbud(
+                    svar = OmsorgstilbudSvar.JA,
+                    erLiktHverUke = true,
+                    ukedager = PlanUkedager(
+                        mandag = Duration.ofHours(3),
+                        onsdag = Duration.ofHours(3),
+                        fredag = Duration.ofHours(3)
+                    ),
+                )
+            )
+        )
+        if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
+
+        id = "17-omsorgstilbud-svar-nei"
+        pdf = generator.genererPDF(
+            melding = fullGyldigMelding(id).copy(
+                omsorgstilbud = Omsorgstilbud(
+                    svar = OmsorgstilbudSvar.NEI
+                )
+            )
+        )
+        if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
+
+        id = "18-omsorgstilbud-svar-usikker"
+        pdf = generator.genererPDF(
+            melding = fullGyldigMelding(id).copy(
+                omsorgstilbud = Omsorgstilbud(
+                    svar = OmsorgstilbudSvar.USIKKER,
+                    erLiktHverUke = false,
+                    ukedager = PlanUkedager(
+                        mandag = Duration.ofHours(3),
+                        onsdag = Duration.ofHours(3),
+                        fredag = Duration.ofHours(3)
+                    ),
+                )
+            )
+        )
+        if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
     }
 
     private fun pdfPath(soknadId: String) = "${System.getProperty("user.dir")}/generated-pdf-$soknadId.pdf"
