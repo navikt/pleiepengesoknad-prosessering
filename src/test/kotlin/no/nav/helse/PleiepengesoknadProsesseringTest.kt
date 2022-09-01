@@ -11,7 +11,24 @@ import kotlinx.coroutines.time.delay
 import no.nav.common.KafkaEnvironment
 import no.nav.helse.EndringsmeldingUtils.defaultEndringsmelding
 import no.nav.helse.dusseldorf.testsupport.wiremock.WireMockBuilder
-import no.nav.helse.felles.*
+import no.nav.helse.felles.Barn
+import no.nav.helse.felles.Beredskap
+import no.nav.helse.felles.Bosted
+import no.nav.helse.felles.Ferieuttak
+import no.nav.helse.felles.FerieuttakIPerioden
+import no.nav.helse.felles.Frilans
+import no.nav.helse.felles.Land
+import no.nav.helse.felles.Medlemskap
+import no.nav.helse.felles.Nattevåk
+import no.nav.helse.felles.Næringstyper
+import no.nav.helse.felles.OpptjeningIUtlandet
+import no.nav.helse.felles.OpptjeningType
+import no.nav.helse.felles.SelvstendigNæringsdrivende
+import no.nav.helse.felles.Søker
+import no.nav.helse.felles.UtenlandskNæring
+import no.nav.helse.felles.Utenlandsopphold
+import no.nav.helse.felles.UtenlandsoppholdIPerioden
+import no.nav.helse.felles.Årsak
 import no.nav.helse.k9format.assertJournalførtFormat
 import no.nav.helse.kafka.TopicEntry
 import no.nav.helse.prosessering.v1.MeldingV1
@@ -277,7 +294,8 @@ class PleiepengesoknadProsesseringTest {
             harMedsøker = false,
             barn = Barn(
                 navn = "Bjarne",
-                fødselsnummer = gyldigFodselsnummerB
+                fødselsnummer = gyldigFodselsnummerB,
+                aktørId = "11111111111"
             ),
             frilans = Frilans(
                 startdato = LocalDate.parse("2018-08-01"),
