@@ -50,7 +50,8 @@ class BarnTest {
     fun `gitt at barnet er født 010193, forvent localdate med 1993-01-01`() {
         val fødselsdato = Barn(
             fødselsnummer = "01019312345",
-            navn = "Ole Dole"
+            navn = "Ole Dole",
+            aktørId = "11111111111"
         ).fødselsdato()
 
         assertEquals(LocalDate.parse("1993-01-01"), fødselsdato)
@@ -60,7 +61,8 @@ class BarnTest {
     fun `gitt at barnet er født 010101, forvent localdate med 2001-01-01`() {
         val fødselsdato = Barn(
             fødselsnummer = "01010112345",
-            navn = "Ole Dole"
+            navn = "Ole Dole",
+            aktørId = "11111111111"
         ).fødselsdato()
 
         assertEquals(LocalDate.parse("2001-01-01"), fødselsdato)
@@ -70,7 +72,8 @@ class BarnTest {
     fun `gitt at barnet er født 010110, forvent localdate med 2010-01-01`() {
         val fødselsdato = Barn(
             fødselsnummer = "01011012345",
-            navn = "Ole Dole"
+            navn = "Ole Dole",
+            aktørId = "11111111111"
         ).fødselsdato()
 
         assertEquals(LocalDate.parse("2010-01-01"), fødselsdato)
@@ -84,7 +87,8 @@ class BarnTest {
         val fodselsnummer = "$dag$maned${ar}12345"
         return Barn(
             fødselsnummer = fodselsnummer,
-            navn = "Ola Nordmann"
+            navn = "Ola Nordmann",
+            aktørId = "11111111111"
         )
     }
 }
