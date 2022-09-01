@@ -27,7 +27,7 @@ data class Barn(
     val navn : String,
     val fødselsnummer: String? = null,
     val fødselsdato: LocalDate? = null,
-    val aktørId: String, // Brukes av sif-innsyn-api
+    val aktørId: String? = null, // Brukes av sif-innsyn-api
     val årsakManglerIdentitetsnummer: ÅrsakManglerIdentitetsnummer? = null
     ) {
     override fun toString(): String {
