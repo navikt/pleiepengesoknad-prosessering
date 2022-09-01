@@ -36,10 +36,6 @@ spec:
     requests:
       cpu: 50m
       memory: 512Mi
-  ingresses:
-  {{#each ingresses as |url|}}
-    - {{url}}
-  {{/each}}
   replicas:
     min: {{minReplicas}}
     max: {{maxReplicas}}
