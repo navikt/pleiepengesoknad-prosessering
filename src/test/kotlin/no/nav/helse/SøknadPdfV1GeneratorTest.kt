@@ -18,6 +18,7 @@ import no.nav.helse.felles.Nattevåk
 import no.nav.helse.felles.NormalArbeidstid
 import no.nav.helse.felles.Næringstyper
 import no.nav.helse.felles.Omsorgstilbud
+import no.nav.helse.felles.OmsorgstilbudSvar
 import no.nav.helse.felles.OpptjeningIUtlandet
 import no.nav.helse.felles.OpptjeningType
 import no.nav.helse.felles.Periode
