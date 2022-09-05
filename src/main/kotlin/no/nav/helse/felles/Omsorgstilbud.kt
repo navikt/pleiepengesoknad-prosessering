@@ -11,11 +11,9 @@ data class Omsorgstilbud(
 )
 
 enum class OmsorgstilbudSvar {
-    JA, NEI, FAST_OG_REGELMESSIG, DELVIS_FAST_OG_REGELMESSIG, IKKE_FAST_OG_REGELMESSIG, IKKE_OMSORGSTILBUD;
+    FAST_OG_REGELMESSIG, DELVIS_FAST_OG_REGELMESSIG, IKKE_FAST_OG_REGELMESSIG, IKKE_OMSORGSTILBUD;
 
     internal fun somTekst() = when(this){
-        JA -> "Ja"
-        NEI -> "Nei"
         FAST_OG_REGELMESSIG -> "Fast og regelmessig i hele perioden."
         DELVIS_FAST_OG_REGELMESSIG -> "Fast og regelmessig i deler av perioden."
         IKKE_FAST_OG_REGELMESSIG -> "Har omsorgstilbud, men ikke fast og regelmessig."
