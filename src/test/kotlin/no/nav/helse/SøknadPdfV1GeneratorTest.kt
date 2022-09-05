@@ -440,11 +440,11 @@ class SøknadPdfV1GeneratorTest {
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
-        id = "16-omsorgstilbud-svar-ja"
+        id = "16-omsorgstilbud-svar-FAST_OG_REGELMESSIG"
         pdf = generator.genererPDF(
             melding = fullGyldigMelding(id).copy(
                 omsorgstilbud = Omsorgstilbud(
-                    svar = OmsorgstilbudSvar.JA,
+                    svar = OmsorgstilbudSvar.FAST_OG_REGELMESSIG,
                     erLiktHverUke = true,
                     ukedager = PlanUkedager(
                         mandag = Duration.ofHours(3),
@@ -456,27 +456,35 @@ class SøknadPdfV1GeneratorTest {
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
-        id = "17-omsorgstilbud-svar-nei"
+        id = "17-omsorgstilbud-svar-DELVIS_FAST_OG_REGELMESSIG"
         pdf = generator.genererPDF(
             melding = fullGyldigMelding(id).copy(
                 omsorgstilbud = Omsorgstilbud(
-                    svar = OmsorgstilbudSvar.NEI
+                    svar = OmsorgstilbudSvar.DELVIS_FAST_OG_REGELMESSIG,
+                    enkeltdager = listOf(
+                        Enkeltdag(LocalDate.now(), Duration.ofHours(3)),
+                        Enkeltdag(LocalDate.now().plusDays(3), Duration.ofHours(2)),
+                    )
                 )
             )
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
-        id = "18-omsorgstilbud-svar-usikker"
+        id = "18-omsorgstilbud-svar-IKKE_FAST_OG_REGELMESSIG"
         pdf = generator.genererPDF(
             melding = fullGyldigMelding(id).copy(
                 omsorgstilbud = Omsorgstilbud(
-                    svar = OmsorgstilbudSvar.USIKKER,
-                    erLiktHverUke = false,
-                    ukedager = PlanUkedager(
-                        mandag = Duration.ofHours(3),
-                        onsdag = Duration.ofHours(3),
-                        fredag = Duration.ofHours(3)
-                    ),
+                    svar = OmsorgstilbudSvar.IKKE_FAST_OG_REGELMESSIG
+                )
+            )
+        )
+        if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
+
+        id = "18-omsorgstilbud-svar-IKKE_OMSORGSTILBUD"
+        pdf = generator.genererPDF(
+            melding = fullGyldigMelding(id).copy(
+                omsorgstilbud = Omsorgstilbud(
+                    svar = OmsorgstilbudSvar.IKKE_OMSORGSTILBUD
                 )
             )
         )
