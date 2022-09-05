@@ -14,10 +14,18 @@ import no.nav.k9.søknad.felles.personopplysninger.Bosteder
 import no.nav.k9.søknad.felles.personopplysninger.Utenlandsopphold.UtenlandsoppholdPeriodeInfo
 import no.nav.k9.søknad.felles.personopplysninger.Utenlandsopphold.UtenlandsoppholdÅrsak.BARNET_INNLAGT_I_HELSEINSTITUSJON_DEKKET_ETTER_AVTALE_MED_ET_ANNET_LAND_OM_TRYGD
 import no.nav.k9.søknad.felles.personopplysninger.Utenlandsopphold.UtenlandsoppholdÅrsak.BARNET_INNLAGT_I_HELSEINSTITUSJON_FOR_NORSK_OFFENTLIG_REGNING
-import no.nav.k9.søknad.felles.type.*
-import no.nav.k9.søknad.ytelse.psb.v1.*
+import no.nav.k9.søknad.felles.type.Landkode
+import no.nav.k9.søknad.felles.type.NorskIdentitetsnummer
+import no.nav.k9.søknad.felles.type.Organisasjonsnummer
+import no.nav.k9.søknad.felles.type.SøknadId
+import no.nav.k9.søknad.felles.type.VirksomhetType
 import no.nav.k9.søknad.ytelse.psb.v1.Beredskap.BeredskapPeriodeInfo
+import no.nav.k9.søknad.ytelse.psb.v1.DataBruktTilUtledning
+import no.nav.k9.søknad.ytelse.psb.v1.LovbestemtFerie
 import no.nav.k9.søknad.ytelse.psb.v1.Nattevåk.NattevåkPeriodeInfo
+import no.nav.k9.søknad.ytelse.psb.v1.Omsorg
+import no.nav.k9.søknad.ytelse.psb.v1.PleiepengerSyktBarn
+import no.nav.k9.søknad.ytelse.psb.v1.Uttak
 import no.nav.k9.søknad.ytelse.psb.v1.arbeidstid.Arbeidstaker
 import no.nav.k9.søknad.ytelse.psb.v1.arbeidstid.Arbeidstid
 import no.nav.k9.søknad.ytelse.psb.v1.arbeidstid.ArbeidstidInfo
@@ -56,7 +64,8 @@ internal object SøknadUtils {
         ),
         barn = Barn(
             navn = "Ole Dole",
-            fødselsnummer = "02119970078"
+            fødselsnummer = "02119970078",
+            aktørId = "11111111111"
         ),
         vedleggId = listOf("123", "456"),
         medlemskap = Medlemskap(
