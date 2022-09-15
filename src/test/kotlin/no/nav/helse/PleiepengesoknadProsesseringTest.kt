@@ -59,7 +59,6 @@ class PleiepengesoknadProsesseringTest {
         private val logger: Logger = LoggerFactory.getLogger(PleiepengesoknadProsesseringTest::class.java)
 
         private val wireMockServer: WireMockServer = WireMockBuilder()
-            .withNaisStsSupport()
             .withAzureSupport()
             .build()
             .stubK9MellomlagringHealth()
