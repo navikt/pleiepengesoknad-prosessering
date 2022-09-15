@@ -4,22 +4,15 @@ import java.time.Duration
 import java.time.LocalDate
 
 data class Omsorgstilbud(
-    val svar: OmsorgstilbudSvar? = null, //TODO 17/08/2022 - Fjerne nullable etter frontend er prodsatt
+    val svarFortid: OmsorgstilbudSvarFortid? = null,
+    val svarFremtid: OmsorgstilbudSvarFremtid? = null,
     val erLiktHverUke: Boolean? = null,
     val enkeltdager: List<Enkeltdag>? = null,
     val ukedager: PlanUkedager? = null
 )
 
-enum class OmsorgstilbudSvar {
-    FAST_OG_REGELMESSIG, DELVIS_FAST_OG_REGELMESSIG, IKKE_FAST_OG_REGELMESSIG, IKKE_OMSORGSTILBUD;
-
-    internal fun somTekst() = when(this){
-        FAST_OG_REGELMESSIG -> "Fast og regelmessig i hele perioden."
-        DELVIS_FAST_OG_REGELMESSIG -> "Fast og regelmessig i deler av perioden."
-        IKKE_FAST_OG_REGELMESSIG -> "Har omsorgstilbud, men ikke fast og regelmessig."
-        IKKE_OMSORGSTILBUD -> "Har ikke omsorgstilbud"
-    }
-}
+enum class OmsorgstilbudSvarFortid(val pdfTekst: String) { JA("Ja"), NEI("Nei")}
+enum class OmsorgstilbudSvarFremtid(val pdfTekst: String) { JA("Ja"), NEI("Nei"), USIKKER("Usikker") }
 
 data class Enkeltdag(
     val dato: LocalDate,
