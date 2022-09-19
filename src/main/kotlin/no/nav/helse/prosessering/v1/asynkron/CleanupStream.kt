@@ -3,12 +3,7 @@ package no.nav.helse.prosessering.v1.asynkron
 import no.nav.helse.CorrelationId
 import no.nav.helse.k9mellomlagring.DokumentEier
 import no.nav.helse.k9mellomlagring.K9MellomlagringService
-import no.nav.helse.kafka.KafkaConfig
-import no.nav.helse.kafka.ManagedKafkaStreams
-import no.nav.helse.kafka.ManagedStreamHealthy
-import no.nav.helse.kafka.ManagedStreamReady
-import no.nav.helse.kafka.TopicEntry
-import no.nav.helse.kafka.process
+import no.nav.helse.kafka.*
 import org.apache.kafka.streams.StreamsBuilder
 import org.apache.kafka.streams.Topology
 import org.apache.kafka.streams.kstream.Consumed
