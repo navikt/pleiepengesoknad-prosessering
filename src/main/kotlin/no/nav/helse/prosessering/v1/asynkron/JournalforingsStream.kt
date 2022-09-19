@@ -41,7 +41,6 @@ internal class JournalforingsStream(
                     Consumed.with(fraPreprossesert.keySerde, fraPreprossesert.valueSerde)
                 )
                 .filter { _, entry -> 1 == entry.metadata.version }
-                .filter { _, entry -> entry.metadata.correlationId != "generated-7a2a9f39-c333-49cb-b8ae-90f7f2b8bf1e" }
                 .mapValues { soknadId, entry ->
                     process(NAME, soknadId, entry) {
                         logger.info("Journalfører dokumenter.")
