@@ -16,7 +16,7 @@ data class Arbeidsforhold(
 
 data class ArbeidIPeriode(
     val type: ArbeidIPeriodeType,
-    val arbeiderIPerioden: ArbeiderIPeriodenSvar,
+    val arbeiderIPerioden: ArbeiderIPeriodenSvar? = null,
     val erLiktHverUke: Boolean? = null,
     val fasteDager: PlanUkedager? = null,
     val prosentAvNormalt: Double? = null,
@@ -47,6 +47,7 @@ enum class ArbeidIPeriodeType {
     ARBEIDER_VANLIG,
     ARBEIDER_ENKELTDAGER,
     ARBEIDER_FASTE_UKEDAGER,
+    ARBEIDER_KUN_SMÅOPPDRAG,
     ARBEIDER_PROSENT_AV_NORMALT,
-    ARBEIDER_TIMER_I_SNITT_PER_UKE,
+    ARBEIDER_TIMER_I_SNITT_PER_UKE
 }

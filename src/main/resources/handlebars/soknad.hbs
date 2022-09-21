@@ -152,6 +152,17 @@
             <p>{{ jaNeiSvar true }}</p>
             <p class="sporsmalstekst">Når startet du som frilanser?</p>
             <p>{{frilans.startdato}}</p>
+            {{#if frilans.mottarFosterhjemsgodtgjørelseSatt}}
+                <p class="sporsmalstekst">Mottar du fosterhjemsgodtgjørelse?</p>
+                <p>{{ jaNeiSvar frilans.mottarFosterhjemsgodtgjørelse }}</p>
+
+                {{#if frilans.mottarFosterhjemsgodtgjørelse}}
+                    <p class="sporsmalstekst">Har du andre frilansoppdrag i tillegg til fosterhjemsgodtgjørelse?</p>
+                    <p>{{ jaNeiSvar frilans.harAndreOppdragEnnFosterhjemsgodtgjørelse }}</p>
+                {{/if}}
+            {{/if}}
+
+
             {{#if frilans.arbeidsforhold}}
                 {{> partial/arbeid/normalArbeidstidPartial normalarbeidstid=frilans.arbeidsforhold.normalarbeidstid}}
             {{/if}}

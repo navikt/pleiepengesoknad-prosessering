@@ -64,7 +64,9 @@ data class Frilans(
     @JsonFormat(pattern = "yyyy-MM-dd")
     val sluttdato: LocalDate? = null,
     val jobberFortsattSomFrilans: Boolean? = null,
-    val arbeidsforhold: Arbeidsforhold? = null
+    val arbeidsforhold: Arbeidsforhold? = null,
+    val mottarFosterhjemsgodtgjørelse: Boolean? = null,
+    val harAndreOppdragEnnFosterhjemsgodtgjørelse: Boolean? = null,
 )
 
 data class Beredskap(
