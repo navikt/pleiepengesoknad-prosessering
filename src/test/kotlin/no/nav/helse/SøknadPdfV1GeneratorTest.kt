@@ -1,38 +1,6 @@
 package no.nav.helse
 
-import no.nav.helse.felles.ArbeidIPeriode
-import no.nav.helse.felles.ArbeidIPeriodeType
-import no.nav.helse.felles.ArbeiderIPeriodenSvar
-import no.nav.helse.felles.Arbeidsforhold
-import no.nav.helse.felles.Barn
-import no.nav.helse.felles.BarnRelasjon
-import no.nav.helse.felles.Beredskap
-import no.nav.helse.felles.Bosted
-import no.nav.helse.felles.Enkeltdag
-import no.nav.helse.felles.Ferieuttak
-import no.nav.helse.felles.FerieuttakIPerioden
-import no.nav.helse.felles.Frilans
-import no.nav.helse.felles.Land
-import no.nav.helse.felles.Medlemskap
-import no.nav.helse.felles.Nattevåk
-import no.nav.helse.felles.NormalArbeidstid
-import no.nav.helse.felles.Næringstyper
-import no.nav.helse.felles.Omsorgstilbud
-import no.nav.helse.felles.OpptjeningIUtlandet
-import no.nav.helse.felles.OpptjeningType
-import no.nav.helse.felles.Periode
-import no.nav.helse.felles.PlanUkedager
-import no.nav.helse.felles.Regnskapsfører
-import no.nav.helse.felles.SelvstendigNæringsdrivende
-import no.nav.helse.felles.Søker
-import no.nav.helse.felles.UtenlandskNæring
-import no.nav.helse.felles.Utenlandsopphold
-import no.nav.helse.felles.UtenlandsoppholdIPerioden
-import no.nav.helse.felles.VarigEndring
-import no.nav.helse.felles.Virksomhet
-import no.nav.helse.felles.YrkesaktivSisteTreFerdigliknedeÅrene
-import no.nav.helse.felles.Årsak
-import no.nav.helse.felles.ÅrsakManglerIdentitetsnummer
+import no.nav.helse.felles.*
 import no.nav.helse.pdf.SøknadPDFGenerator
 import no.nav.helse.prosessering.v1.Arbeidsgiver
 import no.nav.helse.prosessering.v1.MeldingV1
@@ -469,6 +437,66 @@ class SøknadPdfV1GeneratorTest {
                         fraOgMed = LocalDate.parse("2020-01-09"),
                         tilOgMed = LocalDate.parse("2022-01-09")
                     )
+                )
+            )
+        )
+        if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
+
+        id = "16-omsorgstilbud-kunFortid"
+        pdf = generator.genererPDF(
+            melding = fullGyldigMelding(id).copy(
+                omsorgstilbud = Omsorgstilbud(
+                    svarFortid = OmsorgstilbudSvarFortid.JA,
+                    svarFremtid = null,
+                    erLiktHverUke = true,
+                    ukedager = PlanUkedager(
+                        mandag = Duration.ofHours(3),
+                        onsdag = Duration.ofHours(3),
+                        fredag = Duration.ofHours(3)
+                    ),
+                )
+            )
+        )
+        if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
+
+        id = "17-omsorgstilbud-kunFremtid"
+        pdf = generator.genererPDF(
+            melding = fullGyldigMelding(id).copy(
+                omsorgstilbud = Omsorgstilbud(
+                    svarFortid = null,
+                    svarFremtid = OmsorgstilbudSvarFremtid.JA,
+                    enkeltdager = listOf(
+                        Enkeltdag(LocalDate.now(), Duration.ofHours(3)),
+                        Enkeltdag(LocalDate.now().plusDays(3), Duration.ofHours(2)),
+                    )
+                )
+            )
+        )
+        if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
+
+        id = "18-omsorgstilbud-ja-fortidOgFremtid"
+        pdf = generator.genererPDF(
+            melding = fullGyldigMelding(id).copy(
+                omsorgstilbud = Omsorgstilbud(
+                    svarFortid = OmsorgstilbudSvarFortid.JA,
+                    svarFremtid = OmsorgstilbudSvarFremtid.JA,
+                    erLiktHverUke = true,
+                    ukedager = PlanUkedager(
+                        mandag = Duration.ofHours(3),
+                        onsdag = Duration.ofHours(3),
+                        fredag = Duration.ofHours(3)
+                    )
+                )
+            )
+        )
+        if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
+
+        id = "19-omsorgstilbud-nei-fortidOgFremtid"
+        pdf = generator.genererPDF(
+            melding = fullGyldigMelding(id).copy(
+                omsorgstilbud = Omsorgstilbud(
+                    svarFortid = OmsorgstilbudSvarFortid.NEI,
+                    svarFremtid = OmsorgstilbudSvarFremtid.NEI
                 )
             )
         )

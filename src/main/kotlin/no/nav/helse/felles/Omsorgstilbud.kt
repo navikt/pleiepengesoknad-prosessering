@@ -4,10 +4,15 @@ import java.time.Duration
 import java.time.LocalDate
 
 data class Omsorgstilbud(
-    val erLiktHverUke: Boolean,
+    val svarFortid: OmsorgstilbudSvarFortid? = null,
+    val svarFremtid: OmsorgstilbudSvarFremtid? = null,
+    val erLiktHverUke: Boolean? = null,
     val enkeltdager: List<Enkeltdag>? = null,
     val ukedager: PlanUkedager? = null
 )
+
+enum class OmsorgstilbudSvarFortid(val pdfTekst: String) { JA("Ja"), NEI("Nei")}
+enum class OmsorgstilbudSvarFremtid(val pdfTekst: String) { JA("Ja"), NEI("Nei"), USIKKER("Usikker") }
 
 data class Enkeltdag(
     val dato: LocalDate,
