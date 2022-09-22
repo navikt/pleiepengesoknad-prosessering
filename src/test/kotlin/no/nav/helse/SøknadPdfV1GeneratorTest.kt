@@ -443,6 +443,66 @@ class SøknadPdfV1GeneratorTest {
             )
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
+
+        id = "16-omsorgstilbud-kunFortid"
+        pdf = generator.genererPDF(
+            melding = fullGyldigMelding(id).copy(
+                omsorgstilbud = Omsorgstilbud(
+                    svarFortid = OmsorgstilbudSvarFortid.JA,
+                    svarFremtid = null,
+                    erLiktHverUke = true,
+                    ukedager = PlanUkedager(
+                        mandag = Duration.ofHours(3),
+                        onsdag = Duration.ofHours(3),
+                        fredag = Duration.ofHours(3)
+                    ),
+                )
+            )
+        )
+        if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
+
+        id = "17-omsorgstilbud-kunFremtid"
+        pdf = generator.genererPDF(
+            melding = fullGyldigMelding(id).copy(
+                omsorgstilbud = Omsorgstilbud(
+                    svarFortid = null,
+                    svarFremtid = OmsorgstilbudSvarFremtid.JA,
+                    enkeltdager = listOf(
+                        Enkeltdag(LocalDate.now(), Duration.ofHours(3)),
+                        Enkeltdag(LocalDate.now().plusDays(3), Duration.ofHours(2)),
+                    )
+                )
+            )
+        )
+        if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
+
+        id = "18-omsorgstilbud-ja-fortidOgFremtid"
+        pdf = generator.genererPDF(
+            melding = fullGyldigMelding(id).copy(
+                omsorgstilbud = Omsorgstilbud(
+                    svarFortid = OmsorgstilbudSvarFortid.JA,
+                    svarFremtid = OmsorgstilbudSvarFremtid.JA,
+                    erLiktHverUke = true,
+                    ukedager = PlanUkedager(
+                        mandag = Duration.ofHours(3),
+                        onsdag = Duration.ofHours(3),
+                        fredag = Duration.ofHours(3)
+                    )
+                )
+            )
+        )
+        if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
+
+        id = "19-omsorgstilbud-nei-fortidOgFremtid"
+        pdf = generator.genererPDF(
+            melding = fullGyldigMelding(id).copy(
+                omsorgstilbud = Omsorgstilbud(
+                    svarFortid = OmsorgstilbudSvarFortid.NEI,
+                    svarFremtid = OmsorgstilbudSvarFremtid.NEI
+                )
+            )
+        )
+        if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
     }
 
     private fun pdfPath(soknadId: String) = "${System.getProperty("user.dir")}/generated-pdf-$soknadId.pdf"

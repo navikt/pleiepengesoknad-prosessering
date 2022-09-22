@@ -132,6 +132,9 @@ private fun beredskap(beredskap: Beredskap?) = when {
 
 private fun Omsorgstilbud.somMap(): Map<String, Any?> {
     return mapOf(
+        "svarFortid" to svarFortid?.pdfTekst,
+        "svarFremtid" to svarFremtid?.pdfTekst,
+        "erLiktHverUkeErSatt" to (erLiktHverUke != null),
         "erLiktHverUke" to erLiktHverUke,
         "enkeltdagerPerMnd" to enkeltdager?.somMapPerMnd(),
         "ukedager" to ukedager?.somMap()
