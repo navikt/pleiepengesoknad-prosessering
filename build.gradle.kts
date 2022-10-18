@@ -5,7 +5,7 @@ val dusseldorfKtorVersion = "3.2.1.2-ce40a5b"
 val ktorVersion = "2.1.2"
 val k9FormatVersion = "7.0.2"
 val kafkaEmbeddedEnvVersion = "3.2.1"
-val kafkaVersion = "3.2.3"
+val kafkaVersion = "7.2.2-ce"
 val fuelVersion = "2.3.1"
 
 val slf4jVersion = "2.0.3"
