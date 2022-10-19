@@ -11,7 +11,7 @@ val fuelVersion = "2.3.1"
 val slf4jVersion = "2.0.3"
 val kotlinxCoroutinesVersion = "1.6.4"
 val openhtmltopdfVersion = "1.0.10"
-val handlebarsVersion = "4.3.0"
+val handlebarsVersion = "4.3.1"
 val jsonassertVersion = "1.5.1"
 
 val mainClass = "no.nav.helse.PleiepengesoknadProsesseringKt"
