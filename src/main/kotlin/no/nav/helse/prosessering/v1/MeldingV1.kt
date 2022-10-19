@@ -1,6 +1,19 @@
 package no.nav.helse.prosessering.v1
 
-import no.nav.helse.felles.*
+import no.nav.helse.felles.Arbeidsforhold
+import no.nav.helse.felles.Barn
+import no.nav.helse.felles.BarnRelasjon
+import no.nav.helse.felles.Beredskap
+import no.nav.helse.felles.FerieuttakIPerioden
+import no.nav.helse.felles.Frilans
+import no.nav.helse.felles.Medlemskap
+import no.nav.helse.felles.Nattevåk
+import no.nav.helse.felles.Omsorgstilbud
+import no.nav.helse.felles.OpptjeningIUtlandet
+import no.nav.helse.felles.SelvstendigNæringsdrivende
+import no.nav.helse.felles.Søker
+import no.nav.helse.felles.UtenlandskNæring
+import no.nav.helse.felles.UtenlandsoppholdIPerioden
 import no.nav.k9.søknad.Søknad
 import java.time.LocalDate
 import java.time.ZonedDateTime
@@ -14,6 +27,7 @@ data class MeldingV1 (
     val søker : Søker,
     val barn : Barn,
     var vedleggId : List<String> = listOf(),
+    val opplastetIdVedleggId: List<String>? = listOf(), // TODO: Fjern nullabel etter lansering.
     val medlemskap: Medlemskap,
     val utenlandsoppholdIPerioden: UtenlandsoppholdIPerioden,
     val ferieuttakIPerioden: FerieuttakIPerioden?,
