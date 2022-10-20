@@ -546,7 +546,7 @@ class SøknadPdfV1GeneratorTest {
                     aktørId = null,
                     årsakManglerIdentitetsnummer = ÅrsakManglerIdentitetsnummer.NYFØDT
                 ),
-                opplastetIdVedleggId = listOf("123")
+                fødselsattestVedleggId = listOf("123")
             )
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
@@ -561,7 +561,7 @@ class SøknadPdfV1GeneratorTest {
                     aktørId = null,
                     årsakManglerIdentitetsnummer = ÅrsakManglerIdentitetsnummer.BARNET_BOR_I_UTLANDET
                 ),
-                opplastetIdVedleggId = listOf()
+                fødselsattestVedleggId = listOf()
             )
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)

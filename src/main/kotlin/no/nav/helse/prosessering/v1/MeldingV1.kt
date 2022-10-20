@@ -27,7 +27,7 @@ data class MeldingV1 (
     val søker : Søker,
     val barn : Barn,
     var vedleggId : List<String> = listOf(),
-    val opplastetIdVedleggId: List<String>? = listOf(), // TODO: Fjern nullabel etter lansering.
+    val fødselsattestVedleggId: List<String>? = listOf(), // TODO: Fjern nullabel etter lansering.
     val medlemskap: Medlemskap,
     val utenlandsoppholdIPerioden: UtenlandsoppholdIPerioden,
     val ferieuttakIPerioden: FerieuttakIPerioden?,

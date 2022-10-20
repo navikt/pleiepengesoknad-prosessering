@@ -51,7 +51,7 @@ class SøknadPDFGenerator : PDFGenerator<MeldingV1>() {
         "soknad_mottatt" to DATE_TIME_FORMATTER.format(mottatt),
         "har_medsoker" to harMedsøker,
         "harIkkeVedlegg" to sjekkOmHarIkkeVedlegg(),
-        "harLastetOppId" to !opplastetIdVedleggId.isNullOrEmpty(),
+        "harLastetOppFødselsattest" to !fødselsattestVedleggId.isNullOrEmpty(),
         "samtidig_hjemme" to samtidigHjemme,
         "soker" to mapOf(
             "navn" to søker.formatertNavn().capitalizeName(),
