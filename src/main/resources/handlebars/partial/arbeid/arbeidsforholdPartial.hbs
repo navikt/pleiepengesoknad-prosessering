@@ -20,6 +20,9 @@
                 {{#eq type "ARBEIDER_TIMER_I_SNITT_PER_UKE" }}
                     <p>Jobber {{arbeidsforhold.arbeidIPeriode.timerPerUke}} i snitt per uke i perioden.</p>
                 {{/eq}}
+                {{#eq type "ARBEIDER_ULIKE_UKER_TIMER" }}
+                    {{> partial/arbeid/arbeidIPeriode/arbeidsukerPartial}}
+                {{/eq}}
             {{/with}}
         </li>
     </ul>

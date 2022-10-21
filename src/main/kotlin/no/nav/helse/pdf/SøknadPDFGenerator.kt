@@ -2,6 +2,7 @@ package no.nav.helse.pdf
 
 import com.fasterxml.jackson.core.type.TypeReference
 import no.nav.helse.felles.ArbeidIPeriode
+import no.nav.helse.felles.ArbeidsUke
 import no.nav.helse.felles.Arbeidsforhold
 import no.nav.helse.felles.ArbeidstidEnkeltdag
 import no.nav.helse.felles.Barn
@@ -251,7 +252,8 @@ private fun ArbeidIPeriode.somMap(): Map<String, Any?> = mapOf(
     "timerPerUke" to this.timerPerUke?.tilString(),
     "prosentAvNormalt" to this.prosentAvNormalt,
     "enkeltdager" to this.enkeltdager?.somMap(),
-    "fasteDager" to this.fasteDager?.somMap(false)
+    "fasteDager" to this.fasteDager?.somMap(false),
+    "arbeidsuker" to this.arbeidsuker?.somMap()
 )
 
 private fun List<ArbeidstidEnkeltdag>.somMap() = map {
@@ -259,6 +261,15 @@ private fun List<ArbeidstidEnkeltdag>.somMap() = map {
         "dato" to DATE_FORMATTER.format(it.dato),
         "normalTimer" to it.arbeidstimer.normalTimer.tilString(),
         "faktiskTimer" to it.arbeidstimer.faktiskTimer.tilString()
+    )
+}
+
+@JvmName("somMapArbeidsUke")
+private fun List<ArbeidsUke>.somMap() = map {
+    mapOf(
+        "uke" to it.periode.fraOgMed.get(WeekFields.of(Locale.getDefault()).weekOfYear()),
+        "timerPerUke" to it.timer.tilString(),
+        "prosentAvNormalt" to it.prosentAvNormalt
     )
 }
 
