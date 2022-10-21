@@ -1,7 +1,30 @@
 package no.nav.helse.pdf
 
 import com.fasterxml.jackson.core.type.TypeReference
-import no.nav.helse.felles.*
+import no.nav.helse.felles.ArbeidIPeriode
+import no.nav.helse.felles.Arbeidsforhold
+import no.nav.helse.felles.ArbeidstidEnkeltdag
+import no.nav.helse.felles.Barn
+import no.nav.helse.felles.Beredskap
+import no.nav.helse.felles.Bosted
+import no.nav.helse.felles.Enkeltdag
+import no.nav.helse.felles.Ferieuttak
+import no.nav.helse.felles.Frilans
+import no.nav.helse.felles.Land
+import no.nav.helse.felles.Nattevåk
+import no.nav.helse.felles.NormalArbeidstid
+import no.nav.helse.felles.Omsorgstilbud
+import no.nav.helse.felles.OpptjeningIUtlandet
+import no.nav.helse.felles.Periode
+import no.nav.helse.felles.PlanUkedager
+import no.nav.helse.felles.Regnskapsfører
+import no.nav.helse.felles.SelvstendigNæringsdrivende
+import no.nav.helse.felles.Søker
+import no.nav.helse.felles.UtenlandskNæring
+import no.nav.helse.felles.Utenlandsopphold
+import no.nav.helse.felles.VarigEndring
+import no.nav.helse.felles.Virksomhet
+import no.nav.helse.felles.YrkesaktivSisteTreFerdigliknedeÅrene
 import no.nav.helse.pdf.PDFGenerator.Companion.DATE_FORMATTER
 import no.nav.helse.prosessering.v1.Arbeidsgiver
 import no.nav.helse.prosessering.v1.MeldingV1
@@ -21,24 +44,20 @@ class SøknadPDFGenerator : PDFGenerator<MeldingV1>() {
         get() = "soknad"
 
 
-    override fun MeldingV1.tilMap(): Map<String, Any?> =  mapOf(
+    override fun MeldingV1.tilMap(): Map<String, Any?> = mapOf(
         "søknad" to somMap(),
         "soknad_id" to søknadId,
         "soknad_mottatt_dag" to mottatt.withZoneSameInstant(ZONE_ID).somNorskDag(),
         "soknad_mottatt" to DATE_TIME_FORMATTER.format(mottatt),
         "har_medsoker" to harMedsøker,
         "harIkkeVedlegg" to sjekkOmHarIkkeVedlegg(),
+        "harLastetOppFødselsattest" to !fødselsattestVedleggId.isNullOrEmpty(),
         "samtidig_hjemme" to samtidigHjemme,
         "soker" to mapOf(
             "navn" to søker.formatertNavn().capitalizeName(),
             "fodselsnummer" to søker.fødselsnummer
         ),
-        "barn" to mapOf(
-            "id" to barn.fødselsnummer,
-            "navn" to barn.navn.capitalizeName(),
-            "fødselsdato" to if(barn.fødselsdato != null) DATE_FORMATTER.format(barn.fødselsdato) else null,
-            "årsakManglerIdentitetsnummer" to if(barn.årsakManglerIdentitetsnummer != null) barn.årsakManglerIdentitetsnummer.pdfTekst else null
-        ),
+        "barn" to barn.somMap(),
         "periode" to mapOf(
             "fra_og_med" to DATE_FORMATTER.format(fraOgMed),
             "til_og_med" to DATE_FORMATTER.format(tilOgMed),
@@ -94,6 +113,14 @@ class SøknadPDFGenerator : PDFGenerator<MeldingV1>() {
             TypeReference<MutableMap<String, Any?>>() {}
     )
 }
+
+private fun Barn.somMap() = mapOf<String, Any?>(
+    "manglerNorskIdentitetsnummer" to (fødselsnummer == null),
+    "norskIdentitetsnummer" to fødselsnummer,
+    "navn" to navn.capitalizeName(),
+    "fødselsdato" to if (fødselsdato != null) DATE_FORMATTER.format(fødselsdato) else null,
+    "årsakManglerIdentitetsnummer" to årsakManglerIdentitetsnummer?.pdfTekst
+)
 
 private fun MeldingV1.harMinstEtArbeidsforhold(): Boolean {
     if (frilans.arbeidsforhold != null) return true
@@ -166,7 +193,7 @@ fun List<Enkeltdag>.somMapPerMnd(): List<Map<String, Any>> {
 private fun List<Enkeltdag>.somMapPerUke(): List<Map<String, Any>> {
     val omsorgsdagerPerUke = this.groupBy {
         val uketall = it.dato.get(WeekFields.of(Locale.getDefault()).weekOfYear())
-        if(uketall == 0) 53 else uketall
+        if (uketall == 0) 53 else uketall
     }
     return omsorgsdagerPerUke.map {
         mapOf(
@@ -185,7 +212,7 @@ private fun PlanUkedager.somMap(avkort: Boolean = true) = mapOf<String, Any?>(
 )
 
 private fun List<OpptjeningIUtlandet>.somMapOpptjeningIUtlandet(): List<Map<String, Any?>>? {
-    if(isEmpty()) return null
+    if (isEmpty()) return null
     return map {
         mapOf<String, Any?>(
             "navn" to it.navn,
@@ -198,7 +225,7 @@ private fun List<OpptjeningIUtlandet>.somMapOpptjeningIUtlandet(): List<Map<Stri
 }
 
 private fun List<UtenlandskNæring>.somMapUtenlandskNæring(): List<Map<String, Any?>>? {
-    if(isEmpty()) return null
+    if (isEmpty()) return null
     return map {
         mapOf(
             "næringstype" to it.næringstype.beskrivelse,
@@ -206,7 +233,7 @@ private fun List<UtenlandskNæring>.somMapUtenlandskNæring(): List<Map<String, 
             "land" to it.land.somMap(),
             "organisasjonsnummer" to it.organisasjonsnummer,
             "fraOgMed" to DATE_FORMATTER.format(it.fraOgMed),
-            "tilOgMed" to if(it.tilOgMed != null) DATE_FORMATTER.format(it.tilOgMed) else null
+            "tilOgMed" to if (it.tilOgMed != null) DATE_FORMATTER.format(it.tilOgMed) else null
         )
     }
 }
@@ -234,26 +261,27 @@ private fun List<ArbeidstidEnkeltdag>.somMap() = map {
         "faktiskTimer" to it.arbeidstimer.faktiskTimer.tilString()
     )
 }
+
 private fun NormalArbeidstid.somMap(): Map<String, Any?> = mapOf(
     "timerPerUkeISnitt" to this.timerPerUkeISnitt?.tilString(),
     "timerFasteDager" to this.timerFasteDager?.somMap(false)
 )
 
-private fun Frilans.somMap() : Map<String, Any?> = mapOf(
+private fun Frilans.somMap(): Map<String, Any?> = mapOf(
     "harInntektSomFrilanser" to harInntektSomFrilanser,
-    "startdato" to if(startdato != null) DATE_FORMATTER.format(startdato) else null,
-    "sluttdato" to if(sluttdato != null) DATE_FORMATTER.format(sluttdato) else null,
+    "startdato" to if (startdato != null) DATE_FORMATTER.format(startdato) else null,
+    "sluttdato" to if (sluttdato != null) DATE_FORMATTER.format(sluttdato) else null,
     "jobberFortsattSomFrilans" to jobberFortsattSomFrilans,
     "arbeidsforhold" to arbeidsforhold?.somMap()
 )
 
-private fun SelvstendigNæringsdrivende.somMap() : Map<String, Any?> = mapOf(
+private fun SelvstendigNæringsdrivende.somMap(): Map<String, Any?> = mapOf(
     "harInntektSomSelvstendig" to harInntektSomSelvstendig,
     "virksomhet" to virksomhet?.somMap(),
     "arbeidsforhold" to arbeidsforhold?.somMap()
 )
 
-private fun Virksomhet.somMap() : Map<String, Any?> = mapOf(
+private fun Virksomhet.somMap(): Map<String, Any?> = mapOf(
     "næringstypeBeskrivelse" to næringstype.beskrivelse,
     "næringsinntekt" to næringsinntekt,
     "yrkesaktivSisteTreFerdigliknedeÅrene" to yrkesaktivSisteTreFerdigliknedeÅrene?.somMap(),
@@ -261,7 +289,7 @@ private fun Virksomhet.somMap() : Map<String, Any?> = mapOf(
     "harFlereAktiveVirksomheter" to harFlereAktiveVirksomheter,
     "navnPåVirksomheten" to navnPåVirksomheten,
     "fraOgMed" to DATE_FORMATTER.format(fraOgMed),
-    "tilOgMed" to if(tilOgMed != null) DATE_FORMATTER.format(tilOgMed) else null,
+    "tilOgMed" to if (tilOgMed != null) DATE_FORMATTER.format(tilOgMed) else null,
     "fiskerErPåBladB" to fiskerErPåBladB,
     "registrertINorge" to registrertINorge,
     "organisasjonsnummer" to organisasjonsnummer,
@@ -279,10 +307,11 @@ private fun Land.somMap() = mapOf<String, Any?>(
     "landkode" to landkode
 )
 
-private fun YrkesaktivSisteTreFerdigliknedeÅrene.somMap() : Map<String, Any?> = mapOf(
+private fun YrkesaktivSisteTreFerdigliknedeÅrene.somMap(): Map<String, Any?> = mapOf(
     "oppstartsdato" to DATE_FORMATTER.format(oppstartsdato)
 )
-private fun VarigEndring.somMap() : Map<String, Any?> = mapOf(
+
+private fun VarigEndring.somMap(): Map<String, Any?> = mapOf(
     "dato" to DATE_FORMATTER.format(dato),
     "inntektEtterEndring" to inntektEtterEndring,
     "forklaring" to forklaring
@@ -348,7 +377,7 @@ fun Duration.tilString(): String = when (this.toMinutesPart()) {
     else -> "${this.timer()} timer og ${this.toMinutesPart()} minutter"
 }
 
-fun Duration.timer() = (this.toDaysPart()*24) + this.toHoursPart()
+fun Duration.timer() = (this.toDaysPart() * 24) + this.toHoursPart()
 
 fun Søker.formatertNavn() = if (mellomnavn != null) "$fornavn $mellomnavn $etternavn" else "$fornavn $etternavn"
 

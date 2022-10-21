@@ -68,6 +68,7 @@ internal object SøknadUtils {
             aktørId = "11111111111"
         ),
         vedleggId = listOf("123", "456"),
+        fødselsattestVedleggId = listOf("789"),
         medlemskap = Medlemskap(
             harBoddIUtlandetSiste12Mnd = true,
             utenlandsoppholdSiste12Mnd = listOf(

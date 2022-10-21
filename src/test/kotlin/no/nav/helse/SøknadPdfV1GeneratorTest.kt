@@ -1,6 +1,40 @@
 package no.nav.helse
 
-import no.nav.helse.felles.*
+import no.nav.helse.felles.ArbeidIPeriode
+import no.nav.helse.felles.ArbeidIPeriodeType
+import no.nav.helse.felles.ArbeiderIPeriodenSvar
+import no.nav.helse.felles.Arbeidsforhold
+import no.nav.helse.felles.Barn
+import no.nav.helse.felles.BarnRelasjon
+import no.nav.helse.felles.Beredskap
+import no.nav.helse.felles.Bosted
+import no.nav.helse.felles.Enkeltdag
+import no.nav.helse.felles.Ferieuttak
+import no.nav.helse.felles.FerieuttakIPerioden
+import no.nav.helse.felles.Frilans
+import no.nav.helse.felles.Land
+import no.nav.helse.felles.Medlemskap
+import no.nav.helse.felles.Nattevåk
+import no.nav.helse.felles.NormalArbeidstid
+import no.nav.helse.felles.Næringstyper
+import no.nav.helse.felles.Omsorgstilbud
+import no.nav.helse.felles.OmsorgstilbudSvarFortid
+import no.nav.helse.felles.OmsorgstilbudSvarFremtid
+import no.nav.helse.felles.OpptjeningIUtlandet
+import no.nav.helse.felles.OpptjeningType
+import no.nav.helse.felles.Periode
+import no.nav.helse.felles.PlanUkedager
+import no.nav.helse.felles.Regnskapsfører
+import no.nav.helse.felles.SelvstendigNæringsdrivende
+import no.nav.helse.felles.Søker
+import no.nav.helse.felles.UtenlandskNæring
+import no.nav.helse.felles.Utenlandsopphold
+import no.nav.helse.felles.UtenlandsoppholdIPerioden
+import no.nav.helse.felles.VarigEndring
+import no.nav.helse.felles.Virksomhet
+import no.nav.helse.felles.YrkesaktivSisteTreFerdigliknedeÅrene
+import no.nav.helse.felles.Årsak
+import no.nav.helse.felles.ÅrsakManglerIdentitetsnummer
 import no.nav.helse.pdf.SøknadPDFGenerator
 import no.nav.helse.prosessering.v1.Arbeidsgiver
 import no.nav.helse.prosessering.v1.MeldingV1
@@ -498,6 +532,36 @@ class SøknadPdfV1GeneratorTest {
                     svarFortid = OmsorgstilbudSvarFortid.NEI,
                     svarFremtid = OmsorgstilbudSvarFremtid.NEI
                 )
+            )
+        )
+        if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
+
+        id = "20-har-lastet-opp-id-ved-manglende-norskIdentifikator"
+        pdf = generator.genererPDF(
+            melding = fullGyldigMelding(id).copy(
+                barn = Barn(
+                    navn = "Barn uten norsk identifikasjonsnummer",
+                    fødselsnummer = null,
+                    fødselsdato = LocalDate.now().minusDays(7),
+                    aktørId = null,
+                    årsakManglerIdentitetsnummer = ÅrsakManglerIdentitetsnummer.NYFØDT
+                ),
+                fødselsattestVedleggId = listOf("123")
+            )
+        )
+        if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
+
+        id = "21-har-ikke-lastet-opp-id-ved-manglende-norskIdentifikator"
+        pdf = generator.genererPDF(
+            melding = fullGyldigMelding(id).copy(
+                barn = Barn(
+                    navn = "Barn uten norsk identifikasjonsnummer",
+                    fødselsnummer = null,
+                    fødselsdato = LocalDate.now().minusYears(45),
+                    aktørId = null,
+                    årsakManglerIdentitetsnummer = ÅrsakManglerIdentitetsnummer.BARNET_BOR_I_UTLANDET
+                ),
+                fødselsattestVedleggId = listOf()
             )
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
