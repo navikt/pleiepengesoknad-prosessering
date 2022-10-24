@@ -1,5 +1,11 @@
 <p>Arbeider ulikt per uke i perioden.</p>
 
 {{#each arbeidsforhold.arbeidIPeriode.arbeidsuker as |arbeidsuke|~}}
-    <p>Uke {{arbeidsuke.uke}}: {{arbeidsuke.prosentAvNormalt}} prosent ({{arbeidsuke.timerPerUke}})</p>
+    {{#if arbeidsuke.prosentAvNormalt}}
+        <p>Uke {{arbeidsuke.uke}}: Jobber {{arbeidsuke.prosentAvNormalt}} prosent av normalt {{arbeidsuke.normalTimerPerUke}} (tilsvarer {{arbeidsuke.faktiskTimerAvNormalt}})</p>
+    {{/if}}
+
+    {{#if arbeidsuke.faktiskTimerPerUke}}
+        <p>Uke {{arbeidsuke.uke}}: Jobber {{arbeidsuke.faktiskTimerPerUke}} av normalt {{arbeidsuke.normalTimerPerUke}}</p>
+    {{/if}}
 {{/each}}

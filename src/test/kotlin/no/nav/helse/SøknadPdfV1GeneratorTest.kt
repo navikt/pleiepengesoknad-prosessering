@@ -279,32 +279,28 @@ class SøknadPdfV1GeneratorTest {
                                         fraOgMed = LocalDate.parse("2022-10-17"),
                                         tilOgMed = LocalDate.parse("2022-10-23")
                                     ),
-                                    timer = Duration.ofHours(7).plusMinutes(49),
-                                    prosentAvNormalt = 23.0
+                                    timer = Duration.ofHours(7).plusMinutes(49)
                                 ),
                                 ArbeidsUke(
                                     periode = Periode(
                                         fraOgMed = LocalDate.parse("2022-10-24"),
                                         tilOgMed = LocalDate.parse("2022-10-30")
                                     ),
-                                    timer = Duration.ofHours(3).plusMinutes(24),
-                                    prosentAvNormalt = 10.0
+                                    timer = Duration.ofHours(3).plusMinutes(24)
                                 ),
                                 ArbeidsUke(
                                     periode = Periode(
                                         fraOgMed = LocalDate.parse("2022-10-31"),
                                         tilOgMed = LocalDate.parse("2022-11-06")
                                     ),
-                                    timer = Duration.ofHours(1).plusMinutes(22),
-                                    prosentAvNormalt = 4.0
+                                    timer = Duration.ofHours(1).plusMinutes(22)
                                 ),
                                 ArbeidsUke(
                                     periode = Periode(
                                         fraOgMed = LocalDate.parse("2022-11-14"),
                                         tilOgMed = LocalDate.parse("2022-11-20")
                                     ),
-                                    timer = Duration.ofHours(18).plusMinutes(45),
-                                    prosentAvNormalt = 50.0
+                                    timer = Duration.ofHours(18).plusMinutes(45)
                                 )
                             )
                         )
@@ -612,6 +608,60 @@ class SøknadPdfV1GeneratorTest {
                     årsakManglerIdentitetsnummer = ÅrsakManglerIdentitetsnummer.BARNET_BOR_I_UTLANDET
                 ),
                 fødselsattestVedleggId = listOf()
+            )
+        )
+        if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
+
+        id = "22-arbeidsuker-oppgitt-i-prosent"
+        pdf = generator.genererPDF(
+            melding = fullGyldigMelding(id).copy(
+                arbeidsgivere = listOf(
+                    Arbeidsgiver(
+                        navn = "Varierende frisør",
+                        organisasjonsnummer = "917755736",
+                        erAnsatt = true,
+                        arbeidsforhold = Arbeidsforhold(
+                            normalarbeidstid = NormalArbeidstid(
+                                erLiktHverUke = false,
+                                timerPerUkeISnitt = Duration.ofHours(37).plusMinutes(30)
+                            ),
+                            arbeidIPeriode = ArbeidIPeriode(
+                                type = ArbeidIPeriodeType.ARBEIDER_ULIKE_UKER_PROSENT,
+                                arbeiderIPerioden = ArbeiderIPeriodenSvar.REDUSERT,
+                                arbeidsuker = listOf(
+                                    ArbeidsUke(
+                                        periode = Periode(
+                                            fraOgMed = LocalDate.parse("2022-10-17"),
+                                            tilOgMed = LocalDate.parse("2022-10-23")
+                                        ),
+                                        prosentAvNormalt = 50.0
+                                    ),
+                                    ArbeidsUke(
+                                        periode = Periode(
+                                            fraOgMed = LocalDate.parse("2022-10-24"),
+                                            tilOgMed = LocalDate.parse("2022-10-30")
+                                        ),
+                                        prosentAvNormalt = 25.0
+                                    ),
+                                    ArbeidsUke(
+                                        periode = Periode(
+                                            fraOgMed = LocalDate.parse("2022-10-31"),
+                                            tilOgMed = LocalDate.parse("2022-11-06")
+                                        ),
+                                        prosentAvNormalt = 75.0
+                                    ),
+                                    ArbeidsUke(
+                                        periode = Periode(
+                                            fraOgMed = LocalDate.parse("2022-11-14"),
+                                            tilOgMed = LocalDate.parse("2022-11-20")
+                                        ),
+                                        prosentAvNormalt = 10.0
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
             )
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)

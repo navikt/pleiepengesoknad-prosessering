@@ -38,6 +38,8 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.time.temporal.WeekFields
 import java.util.*
+import kotlin.time.toJavaDuration
+import kotlin.time.toKotlinDuration
 
 class SøknadPDFGenerator : PDFGenerator<MeldingV1>() {
 
@@ -244,16 +246,16 @@ private fun Duration?.harGyldigVerdi() = this != null && this != Duration.ZERO
 private fun Arbeidsforhold.somMap(): Map<String, Any?> = mapOf(
     "data" to this.toString(),
     "normalarbeidstid" to this.normalarbeidstid.somMap(),
-    "arbeidIPeriode" to this.arbeidIPeriode.somMap()
+    "arbeidIPeriode" to this.arbeidIPeriode.somMap(normalarbeidstid)
 )
 
-private fun ArbeidIPeriode.somMap(): Map<String, Any?> = mapOf(
+private fun ArbeidIPeriode.somMap(normalArbeidstid: NormalArbeidstid): Map<String, Any?> = mapOf(
     "type" to this.type.name,
     "timerPerUke" to this.timerPerUke?.tilString(),
     "prosentAvNormalt" to this.prosentAvNormalt,
     "enkeltdager" to this.enkeltdager?.somMap(),
     "fasteDager" to this.fasteDager?.somMap(false),
-    "arbeidsuker" to this.arbeidsuker?.somMap()
+    "arbeidsuker" to this.arbeidsuker?.somMap(normalArbeidstid)
 )
 
 private fun List<ArbeidstidEnkeltdag>.somMap() = map {
@@ -265,11 +267,18 @@ private fun List<ArbeidstidEnkeltdag>.somMap() = map {
 }
 
 @JvmName("somMapArbeidsUke")
-private fun List<ArbeidsUke>.somMap() = map {
+private fun List<ArbeidsUke>.somMap(normalArbeidstid: NormalArbeidstid) = map {
+    val faktiskTimerAvNormalArbeidstimer = normalArbeidstid.timerPerUkeISnitt?.toKotlinDuration()
+        ?.div(100)
+        ?.times(it.prosentAvNormalt ?: 0.0)
+        ?.toJavaDuration()
+
     mapOf(
         "uke" to it.periode.fraOgMed.get(WeekFields.of(Locale.getDefault()).weekOfYear()),
-        "timerPerUke" to it.timer.tilString(),
-        "prosentAvNormalt" to it.prosentAvNormalt
+        "faktiskTimerPerUke" to it.timer?.tilString(),
+        "prosentAvNormalt" to it.prosentAvNormalt,
+        "faktiskTimerAvNormalt" to faktiskTimerAvNormalArbeidstimer?.tilString(),
+        "normalTimerPerUke" to normalArbeidstid.timerPerUkeISnitt?.tilString()
     )
 }
 

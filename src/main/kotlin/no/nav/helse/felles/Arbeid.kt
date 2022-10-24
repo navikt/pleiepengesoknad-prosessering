@@ -45,8 +45,8 @@ enum class ArbeiderIPeriodenSvar {
 
 data class ArbeidsUke(
     val periode: Periode,
-    val timer: Duration,
-    val prosentAvNormalt: Double
+    val timer: Duration? = null,
+    val prosentAvNormalt: Double? = null
 )
 
 enum class ArbeidIPeriodeType {
@@ -56,5 +56,6 @@ enum class ArbeidIPeriodeType {
     ARBEIDER_FASTE_UKEDAGER,
     ARBEIDER_PROSENT_AV_NORMALT,
     ARBEIDER_TIMER_I_SNITT_PER_UKE,
-    ARBEIDER_ULIKE_UKER_TIMER
+    ARBEIDER_ULIKE_UKER_TIMER,
+    ARBEIDER_ULIKE_UKER_PROSENT
 }
