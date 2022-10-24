@@ -252,7 +252,7 @@ private fun Arbeidsforhold.somMap(): Map<String, Any?> = mapOf(
 private fun ArbeidIPeriode.somMap(normalArbeidstid: NormalArbeidstid): Map<String, Any?> = mapOf(
     "type" to this.type.name,
     "timerPerUke" to this.timerPerUke?.tilString(),
-    "prosentAvNormalt" to this.prosentAvNormalt,
+    "prosentAvNormalt" to this.prosentAvNormalt?.somString(),
     "enkeltdager" to this.enkeltdager?.somMap(),
     "fasteDager" to this.fasteDager?.somMap(false),
     "arbeidsuker" to this.arbeidsuker?.somMap(normalArbeidstid)
@@ -276,7 +276,7 @@ private fun List<ArbeidsUke>.somMap(normalArbeidstid: NormalArbeidstid) = map {
     mapOf(
         "uke" to it.periode.fraOgMed.get(WeekFields.of(Locale.getDefault()).weekOfYear()),
         "faktiskTimerPerUke" to it.timer?.tilString(),
-        "prosentAvNormalt" to it.prosentAvNormalt,
+        "prosentAvNormalt" to it.prosentAvNormalt?.somString(),
         "faktiskTimerAvNormalt" to faktiskTimerAvNormalArbeidstimer?.tilString(),
         "normalTimerPerUke" to normalArbeidstid.timerPerUkeISnitt?.tilString()
     )
@@ -409,6 +409,12 @@ private fun String.sprakTilTekst() = when (this.lowercase()) {
     "nb" -> "bokmål"
     "nn" -> "nynorsk"
     else -> this
+}
+
+private fun Double.somString(): String {
+    val split = toString().split(".")
+    return if (split[1] == "0") split[0]
+    else split.joinToString(".")
 }
 
 private fun MeldingV1.sjekkOmHarIkkeVedlegg(): Boolean = vedleggId.isEmpty()
