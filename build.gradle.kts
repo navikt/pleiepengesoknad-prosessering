@@ -1,7 +1,7 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-val dusseldorfKtorVersion = "3.2.1.2-ce40a5b"
+val dusseldorfKtorVersion = "3.2.1.2-93aa998"
 val ktorVersion = "2.1.2"
 val k9FormatVersion = "7.0.2"
 val kafkaEmbeddedEnvVersion = "3.2.1"
