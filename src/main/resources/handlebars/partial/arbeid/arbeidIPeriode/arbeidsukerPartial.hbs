@@ -1,11 +1,11 @@
-<p>Jobber varierende hver uke.</p>
+<p>Jobber varierende.</p>
 
 {{#each arbeidsforhold.arbeidIPeriode.arbeidsuker as |arbeidsuke|~}}
     {{#if arbeidsuke.prosentAvNormalt}}
-        <p>Uke {{arbeidsuke.uke}}: Jobber {{arbeidsuke.prosentAvNormalt}} prosent av normalt {{arbeidsuke.normalTimerPerUke}} (tilsvarer {{arbeidsuke.faktiskTimerAvNormalt}})</p>
+        <p>Uke {{arbeidsuke.uke}}: {{arbeidsuke.prosentAvNormalt}} prosent ({{arbeidsuke.faktiskTimerAvNormalt}})</p>
     {{/if}}
 
     {{#if arbeidsuke.faktiskTimerPerUke}}
-        <p>Uke {{arbeidsuke.uke}}: Jobber {{arbeidsuke.faktiskTimerPerUke}} av normalt {{arbeidsuke.normalTimerPerUke}}</p>
+        <p>Uke {{arbeidsuke.uke}}: {{arbeidsuke.faktiskTimerPerUke}} av normalt {{arbeidsuke.normalTimerPerUke}}</p>
     {{/if}}
 {{/each}}
