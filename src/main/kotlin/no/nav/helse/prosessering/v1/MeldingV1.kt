@@ -19,6 +19,7 @@ import java.time.LocalDate
 import java.time.ZonedDateTime
 
 data class MeldingV1 (
+    val apiDataVersjon: String? = null,
     val språk: String? = null,
     val søknadId: String,
     val mottatt: ZonedDateTime,
