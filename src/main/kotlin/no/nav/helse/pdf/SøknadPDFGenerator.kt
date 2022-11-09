@@ -38,8 +38,6 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.time.temporal.WeekFields
 import java.util.*
-import kotlin.time.toJavaDuration
-import kotlin.time.toKotlinDuration
 
 class SøknadPDFGenerator : PDFGenerator<MeldingV1>() {
 
@@ -246,18 +244,19 @@ private fun Duration?.harGyldigVerdi() = this != null && this != Duration.ZERO
 private fun Arbeidsforhold.somMap(): Map<String, Any?> = mapOf(
     "data" to this.toString(),
     "normalarbeidstid" to this.normalarbeidstid.somMap(),
-    "arbeidIPeriode" to this.arbeidIPeriode.somMap(normalarbeidstid)
+    "arbeidIPeriode" to this.arbeidIPeriode.somMap()
 )
 
-private fun ArbeidIPeriode.somMap(normalArbeidstid: NormalArbeidstid): Map<String, Any?> = mapOf(
+private fun ArbeidIPeriode.somMap(): Map<String, Any?> = mapOf(
     "type" to this.type.name,
     "timerPerUke" to this.timerPerUke?.tilString(),
     "prosentAvNormalt" to this.prosentAvNormalt?.somString(),
     "enkeltdager" to this.enkeltdager?.somMap(),
     "fasteDager" to this.fasteDager?.somMap(false),
-    "arbeidsuker" to this.arbeidsuker?.somMap(normalArbeidstid)
+    "arbeidsuker" to this.arbeidsuker?.somMap()
 )
 
+@Deprecated("Fjernes når nye endringer på arbeid er lansert.")
 private fun List<ArbeidstidEnkeltdag>.somMap() = map {
     mapOf(
         "dato" to DATE_FORMATTER.format(it.dato),
@@ -267,18 +266,11 @@ private fun List<ArbeidstidEnkeltdag>.somMap() = map {
 }
 
 @JvmName("somMapArbeidsUke")
-private fun List<ArbeidsUke>.somMap(normalArbeidstid: NormalArbeidstid) = map {
-    val faktiskTimerAvNormalArbeidstimer = normalArbeidstid.timerPerUkeISnitt?.toKotlinDuration()
-        ?.div(100)
-        ?.times(it.prosentAvNormalt ?: 0.0)
-        ?.toJavaDuration()
+private fun List<ArbeidsUke>.somMap() = map {
 
     mapOf(
         "uke" to it.periode.fraOgMed.get(WeekFields.of(Locale.getDefault()).weekOfYear()),
-        "faktiskTimerPerUke" to it.timer?.tilString(),
-        "prosentAvNormalt" to it.prosentAvNormalt?.somString(),
-        "faktiskTimerAvNormalt" to faktiskTimerAvNormalArbeidstimer?.tilString(),
-        "normalTimerPerUke" to normalArbeidstid.timerPerUkeISnitt?.tilString()
+        "faktiskTimerPerUke" to it.timer?.tilString()
     )
 }
 
