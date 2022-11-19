@@ -31,7 +31,6 @@ internal class PreprosseseringV1Service(
         val dokumentEier = DokumentEier(melding.søker.fødselsnummer)
 
         logger.info("Genererer Oppsummerings-PDF av søknaden.")
-        logger.info("Debugger melding: {}", melding)
         val oppsummeringPdf = søknadPDFGenerator.genererPDF(melding)
 
         logger.info("Mellomlagrer Oppsummerings-PDF.")

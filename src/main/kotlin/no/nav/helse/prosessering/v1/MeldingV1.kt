@@ -15,7 +15,6 @@ import no.nav.helse.felles.Søker
 import no.nav.helse.felles.UtenlandskNæring
 import no.nav.helse.felles.UtenlandsoppholdIPerioden
 import no.nav.k9.søknad.Søknad
-import org.json.JSONObject
 import java.time.LocalDate
 import java.time.ZonedDateTime
 
@@ -49,11 +48,7 @@ data class MeldingV1 (
     val barnRelasjonBeskrivelse: String? = null,
     val harVærtEllerErVernepliktig: Boolean? = null,
     val k9FormatSøknad: Søknad
-) {
-    override fun toString(): String {
-        return JSONObject(this).toString()
-    }
-}
+)
 
 data class Arbeidsgiver(
     val navn: String? = null,

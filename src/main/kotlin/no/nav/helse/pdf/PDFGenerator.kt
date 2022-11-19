@@ -96,6 +96,7 @@ abstract class PDFGenerator<in T> {
                 if (context == null) "" else {
                     val text = Handlebars.Utils.escapeExpression(context)
                         .toString()
+                        .replace(Regex("\\u0002"), " ")
                         .replace(Regex("\\r\\n|[\\n\\r]"), "<br/>")
                     Handlebars.SafeString(text)
                 }
