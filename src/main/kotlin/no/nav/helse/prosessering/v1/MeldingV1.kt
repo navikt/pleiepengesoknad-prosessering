@@ -15,6 +15,7 @@ import no.nav.helse.felles.Søker
 import no.nav.helse.felles.UtenlandskNæring
 import no.nav.helse.felles.UtenlandsoppholdIPerioden
 import no.nav.k9.søknad.Søknad
+import org.json.JSONObject
 import java.time.LocalDate
 import java.time.ZonedDateTime
 
@@ -50,7 +51,7 @@ data class MeldingV1 (
     val k9FormatSøknad: Søknad
 ) {
     override fun toString(): String {
-        return "MeldingV1(apiDataVersjon=$apiDataVersjon, språk=$språk, søknadId='$søknadId', mottatt=$mottatt, fraOgMed=$fraOgMed, tilOgMed=$tilOgMed, vedleggId=$vedleggId, fødselsattestVedleggId=$fødselsattestVedleggId, medlemskap=$medlemskap, utenlandsoppholdIPerioden=$utenlandsoppholdIPerioden, ferieuttakIPerioden=$ferieuttakIPerioden, opptjeningIUtlandet=$opptjeningIUtlandet, utenlandskNæring=$utenlandskNæring, harMedsøker=$harMedsøker, samtidigHjemme=$samtidigHjemme, harForståttRettigheterOgPlikter=$harForståttRettigheterOgPlikter, harBekreftetOpplysninger=$harBekreftetOpplysninger, omsorgstilbud=$omsorgstilbud, beredskap=$beredskap, nattevåk=$nattevåk, frilans=$frilans, selvstendigNæringsdrivende=$selvstendigNæringsdrivende, arbeidsgivere=$arbeidsgivere, barnRelasjon=$barnRelasjon, barnRelasjonBeskrivelse=$barnRelasjonBeskrivelse, harVærtEllerErVernepliktig=$harVærtEllerErVernepliktig)"
+        return JSONObject(this).toString()
     }
 }
 
