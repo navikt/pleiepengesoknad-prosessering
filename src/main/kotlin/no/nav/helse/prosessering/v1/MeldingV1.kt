@@ -48,7 +48,11 @@ data class MeldingV1 (
     val barnRelasjonBeskrivelse: String? = null,
     val harVærtEllerErVernepliktig: Boolean? = null,
     val k9FormatSøknad: Søknad
-)
+) {
+    override fun toString(): String {
+        return "MeldingV1(apiDataVersjon=$apiDataVersjon, språk=$språk, søknadId='$søknadId', mottatt=$mottatt, fraOgMed=$fraOgMed, tilOgMed=$tilOgMed, vedleggId=$vedleggId, fødselsattestVedleggId=$fødselsattestVedleggId, medlemskap=$medlemskap, utenlandsoppholdIPerioden=$utenlandsoppholdIPerioden, ferieuttakIPerioden=$ferieuttakIPerioden, opptjeningIUtlandet=$opptjeningIUtlandet, utenlandskNæring=$utenlandskNæring, harMedsøker=$harMedsøker, samtidigHjemme=$samtidigHjemme, harForståttRettigheterOgPlikter=$harForståttRettigheterOgPlikter, harBekreftetOpplysninger=$harBekreftetOpplysninger, omsorgstilbud=$omsorgstilbud, beredskap=$beredskap, nattevåk=$nattevåk, frilans=$frilans, selvstendigNæringsdrivende=$selvstendigNæringsdrivende, arbeidsgivere=$arbeidsgivere, barnRelasjon=$barnRelasjon, barnRelasjonBeskrivelse=$barnRelasjonBeskrivelse, harVærtEllerErVernepliktig=$harVærtEllerErVernepliktig)"
+    }
+}
 
 data class Arbeidsgiver(
     val navn: String? = null,
