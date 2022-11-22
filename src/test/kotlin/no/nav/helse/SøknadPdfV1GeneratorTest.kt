@@ -92,7 +92,7 @@ class SøknadPdfV1GeneratorTest {
             ),
             beredskap = Beredskap(
                 beredskap = true,
-                tilleggsinformasjon = "Jeg er i beredskap\rmed\nlinje\r\nlinjeskift."
+                tilleggsinformasjon = "Jeg er i beredskap\rmed\nlinje\r\nlinjeskift. Jeg har snakket med NAV\u0002konsulent"
             ),
             utenlandsoppholdIPerioden = UtenlandsoppholdIPerioden(
                 skalOppholdeSegIUtlandetIPerioden = true,
