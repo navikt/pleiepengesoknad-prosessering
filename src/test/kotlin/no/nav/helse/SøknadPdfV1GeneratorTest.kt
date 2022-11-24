@@ -3,6 +3,7 @@ package no.nav.helse
 import no.nav.helse.felles.ArbeidIPeriode
 import no.nav.helse.felles.ArbeidIPeriodeType
 import no.nav.helse.felles.ArbeiderIPeriodenSvar
+import no.nav.helse.felles.ArbeidsUke
 import no.nav.helse.felles.Arbeidsforhold
 import no.nav.helse.felles.Barn
 import no.nav.helse.felles.BarnRelasjon
@@ -562,6 +563,60 @@ class SøknadPdfV1GeneratorTest {
                     årsakManglerIdentitetsnummer = ÅrsakManglerIdentitetsnummer.BARNET_BOR_I_UTLANDET
                 ),
                 fødselsattestVedleggId = listOf()
+            )
+        )
+        if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
+
+        id = "22-ulike-uker_ulike_timer"
+        pdf = generator.genererPDF(
+            melding = fullGyldigMelding(id).copy(
+                arbeidsgivere = listOf(
+                    Arbeidsgiver(
+                        navn = "Varierende frisør",
+                        organisasjonsnummer = "917755736",
+                        erAnsatt = true,
+                        arbeidsforhold = Arbeidsforhold(
+                            normalarbeidstid = NormalArbeidstid(
+                                erLiktHverUke = false,
+                                timerPerUkeISnitt = Duration.ofHours(37).plusMinutes(30)
+                            ),
+                            arbeidIPeriode = ArbeidIPeriode(
+                                type = ArbeidIPeriodeType.ARBEIDER_ULIKE_UKER_TIMER,
+                                arbeiderIPerioden = ArbeiderIPeriodenSvar.REDUSERT,
+                                arbeidsuker = listOf(
+                                    ArbeidsUke(
+                                        periode = Periode(
+                                            fraOgMed = LocalDate.parse("2022-10-17"),
+                                            tilOgMed = LocalDate.parse("2022-10-23")
+                                        ),
+                                        timer = Duration.ofHours(37).plusMinutes(30)
+                                    ),
+                                    ArbeidsUke(
+                                        periode = Periode(
+                                            fraOgMed = LocalDate.parse("2022-10-24"),
+                                            tilOgMed = LocalDate.parse("2022-10-30")
+                                        ),
+                                        timer = Duration.ofHours(25).plusMinutes(30)
+                                    ),
+                                    ArbeidsUke(
+                                        periode = Periode(
+                                            fraOgMed = LocalDate.parse("2022-10-31"),
+                                            tilOgMed = LocalDate.parse("2022-11-06")
+                                        ),
+                                        timer = Duration.ofHours(15).plusMinutes(30)
+                                    ),
+                                    ArbeidsUke(
+                                        periode = Periode(
+                                            fraOgMed = LocalDate.parse("2022-11-14"),
+                                            tilOgMed = LocalDate.parse("2022-11-20")
+                                        ),
+                                        timer = Duration.ofHours(5).plusMinutes(30)
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
             )
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)

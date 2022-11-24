@@ -2,6 +2,7 @@ package no.nav.helse.pdf
 
 import com.fasterxml.jackson.core.type.TypeReference
 import no.nav.helse.felles.ArbeidIPeriode
+import no.nav.helse.felles.ArbeidsUke
 import no.nav.helse.felles.Arbeidsforhold
 import no.nav.helse.felles.ArbeidstidEnkeltdag
 import no.nav.helse.felles.Barn
@@ -249,16 +250,27 @@ private fun Arbeidsforhold.somMap(): Map<String, Any?> = mapOf(
 private fun ArbeidIPeriode.somMap(): Map<String, Any?> = mapOf(
     "type" to this.type.name,
     "timerPerUke" to this.timerPerUke?.tilString(),
-    "prosentAvNormalt" to this.prosentAvNormalt,
+    "prosentAvNormalt" to this.prosentAvNormalt?.somString(),
     "enkeltdager" to this.enkeltdager?.somMap(),
-    "fasteDager" to this.fasteDager?.somMap(false)
+    "fasteDager" to this.fasteDager?.somMap(false),
+    "arbeidsuker" to this.arbeidsuker?.somMap()
 )
 
+@Deprecated("Fjernes når nye endringer på arbeid er lansert.")
 private fun List<ArbeidstidEnkeltdag>.somMap() = map {
     mapOf(
         "dato" to DATE_FORMATTER.format(it.dato),
         "normalTimer" to it.arbeidstimer.normalTimer.tilString(),
         "faktiskTimer" to it.arbeidstimer.faktiskTimer.tilString()
+    )
+}
+
+@JvmName("somMapArbeidsUke")
+private fun List<ArbeidsUke>.somMap() = map {
+
+    mapOf(
+        "uke" to it.periode.fraOgMed.get(WeekFields.of(Locale.getDefault()).weekOfYear()),
+        "faktiskTimerPerUke" to it.timer?.tilString()
     )
 }
 
@@ -389,6 +401,12 @@ private fun String.sprakTilTekst() = when (this.lowercase()) {
     "nb" -> "bokmål"
     "nn" -> "nynorsk"
     else -> this
+}
+
+private fun Double.somString(): String {
+    val split = toString().split(".")
+    return if (split[1] == "0") split[0]
+    else split.joinToString(".")
 }
 
 private fun MeldingV1.sjekkOmHarIkkeVedlegg(): Boolean = vedleggId.isEmpty()

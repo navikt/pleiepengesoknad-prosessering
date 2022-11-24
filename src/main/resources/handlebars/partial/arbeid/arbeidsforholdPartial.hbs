@@ -3,10 +3,10 @@
         <li>
             {{#with arbeidsforhold.arbeidIPeriode}}
                 {{#eq type "ARBEIDER_IKKE" }}
-                    <p>Arbeider ikke i perioden.</p>
+                    <p>Jobber ikke i perioden.</p>
                 {{/eq}}
                 {{#eq type "ARBEIDER_VANLIG" }}
-                    <p>Arbeider som vanlig i perioden.</p>
+                    <p>Jobber som normalt i perioden. Har ikke fravær fra jobb.</p>
                 {{/eq}}
                 {{#eq type "ARBEIDER_ENKELTDAGER" }}
                     {{> partial/arbeid/arbeidIPeriode/arbeiderEnkeltdagerPartial}}
@@ -18,7 +18,10 @@
                     <p>Jobber {{arbeidsforhold.arbeidIPeriode.prosentAvNormalt}} prosent av normalt i perioden.</p>
                 {{/eq}}
                 {{#eq type "ARBEIDER_TIMER_I_SNITT_PER_UKE" }}
-                    <p>Jobber {{arbeidsforhold.arbeidIPeriode.timerPerUke}} i snitt per uke i perioden.</p>
+                    <p>Jobber {{arbeidsforhold.arbeidIPeriode.timerPerUke}} hver uke.</p>
+                {{/eq}}
+                {{#eq type "ARBEIDER_ULIKE_UKER_TIMER" }}
+                    {{> partial/arbeid/arbeidIPeriode/arbeidsukerPartial}}
                 {{/eq}}
             {{/with}}
         </li>
