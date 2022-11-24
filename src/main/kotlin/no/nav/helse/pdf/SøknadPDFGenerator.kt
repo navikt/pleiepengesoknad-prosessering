@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.type.TypeReference
 import no.nav.helse.felles.ArbeidIPeriode
 import no.nav.helse.felles.ArbeidsUke
 import no.nav.helse.felles.Arbeidsforhold
-import no.nav.helse.felles.ArbeidstidEnkeltdag
 import no.nav.helse.felles.Barn
 import no.nav.helse.felles.Beredskap
 import no.nav.helse.felles.Bosted
@@ -251,19 +250,8 @@ private fun ArbeidIPeriode.somMap(): Map<String, Any?> = mapOf(
     "type" to this.type.name,
     "timerPerUke" to this.timerPerUke?.tilString(),
     "prosentAvNormalt" to this.prosentAvNormalt?.somString(),
-    "enkeltdager" to this.enkeltdager?.somMap(),
-    "fasteDager" to this.fasteDager?.somMap(false),
     "arbeidsuker" to this.arbeidsuker?.somMap()
 )
-
-@Deprecated("Fjernes når nye endringer på arbeid er lansert.")
-private fun List<ArbeidstidEnkeltdag>.somMap() = map {
-    mapOf(
-        "dato" to DATE_FORMATTER.format(it.dato),
-        "normalTimer" to it.arbeidstimer.normalTimer.tilString(),
-        "faktiskTimer" to it.arbeidstimer.faktiskTimer.tilString()
-    )
-}
 
 @JvmName("somMapArbeidsUke")
 private fun List<ArbeidsUke>.somMap() = map {
@@ -275,8 +263,7 @@ private fun List<ArbeidsUke>.somMap() = map {
 }
 
 private fun NormalArbeidstid.somMap(): Map<String, Any?> = mapOf(
-    "timerPerUkeISnitt" to this.timerPerUkeISnitt?.tilString(),
-    "timerFasteDager" to this.timerFasteDager?.somMap(false)
+    "timerPerUkeISnitt" to this.timerPerUkeISnitt?.tilString()
 )
 
 private fun Frilans.somMap(): Map<String, Any?> = mapOf(

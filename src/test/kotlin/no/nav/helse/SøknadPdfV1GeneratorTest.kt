@@ -165,12 +165,7 @@ class SøknadPdfV1GeneratorTest {
                 jobberFortsattSomFrilans = false,
                 arbeidsforhold = Arbeidsforhold(
                     normalarbeidstid = NormalArbeidstid(
-                        erLiktHverUke = true,
-                        timerFasteDager = PlanUkedager(
-                            mandag = Duration.ofHours(3),
-                            onsdag = Duration.ofHours(3),
-                            fredag = Duration.ofHours(3)
-                        ),
+                        timerPerUkeISnitt = Duration.ofHours(37).plusMinutes(30)
                     ),
                     arbeidIPeriode = ArbeidIPeriode(
                         type = ArbeidIPeriodeType.ARBEIDER_VANLIG,
@@ -205,7 +200,6 @@ class SøknadPdfV1GeneratorTest {
                 ),
                 arbeidsforhold = Arbeidsforhold(
                     normalarbeidstid = NormalArbeidstid(
-                        erLiktHverUke = true,
                         timerPerUkeISnitt = Duration.ofHours(37).plusMinutes(30)
                     ),
                     arbeidIPeriode = ArbeidIPeriode(
@@ -221,12 +215,7 @@ class SøknadPdfV1GeneratorTest {
                     erAnsatt = true,
                     arbeidsforhold = Arbeidsforhold(
                         normalarbeidstid = NormalArbeidstid(
-                            erLiktHverUke = true,
-                            timerFasteDager = PlanUkedager(
-                                mandag = Duration.ofHours(3),
-                                onsdag = Duration.ofHours(3),
-                                fredag = Duration.ofHours(3)
-                            )
+                            timerPerUkeISnitt = Duration.ofHours(37).plusMinutes(30)
                         ),
                         arbeidIPeriode = ArbeidIPeriode(
                             type = ArbeidIPeriodeType.ARBEIDER_VANLIG,
@@ -240,17 +229,12 @@ class SøknadPdfV1GeneratorTest {
                     erAnsatt = true,
                     arbeidsforhold = Arbeidsforhold(
                         normalarbeidstid = NormalArbeidstid(
-                            erLiktHverUke = true,
                             timerPerUkeISnitt = Duration.ofHours(37).plusMinutes(30)
                         ),
                         arbeidIPeriode = ArbeidIPeriode(
-                            type = ArbeidIPeriodeType.ARBEIDER_FASTE_UKEDAGER,
+                            type = ArbeidIPeriodeType.ARBEIDER_TIMER_I_SNITT_PER_UKE,
                             arbeiderIPerioden = ArbeiderIPeriodenSvar.REDUSERT,
-                            fasteDager = PlanUkedager(
-                                mandag = Duration.ofHours(7),
-                                onsdag = Duration.ofHours(8),
-                                fredag = Duration.ofHours(5)
-                            )
+                            timerPerUke = Duration.ofHours(37).plusMinutes(30)
                         )
                     )
                 ),
@@ -577,7 +561,6 @@ class SøknadPdfV1GeneratorTest {
                         erAnsatt = true,
                         arbeidsforhold = Arbeidsforhold(
                             normalarbeidstid = NormalArbeidstid(
-                                erLiktHverUke = false,
                                 timerPerUkeISnitt = Duration.ofHours(37).plusMinutes(30)
                             ),
                             arbeidIPeriode = ArbeidIPeriode(

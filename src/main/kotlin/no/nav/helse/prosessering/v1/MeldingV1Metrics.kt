@@ -146,12 +146,7 @@ internal fun MeldingV1.reportMetrics() {
 
     arbeidsgivere.forEach { arbeidsforhold ->
         arbeidsforhold.arbeidsforhold?.let {
-            it.arbeidIPeriode.let { arbeidIPeriode ->
-                if(!arbeidIPeriode.enkeltdager.isNullOrEmpty()) typeRegistrertTimeCounter.labels("arbeidsgivere", "enkeltdager").inc()
-                if(arbeidIPeriode.fasteDager != null) typeRegistrertTimeCounter.labels("arbeidsgivere", "fasteDager").inc()
-            }
             it.normalarbeidstid.let { normalArbeidstid ->
-                if(normalArbeidstid.timerFasteDager != null) typeRegistrertTimeCounter.labels("arbeidsgivere", "normalArbeidstid.timerFasteDager").inc()
                 if(normalArbeidstid.timerPerUkeISnitt != null) typeRegistrertTimeCounter.labels("arbeidsgivere", "normalArbeidstid.timerPerUkeISnitt").inc()
             }
         }

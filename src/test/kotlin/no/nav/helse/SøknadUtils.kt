@@ -151,7 +151,6 @@ internal object SøknadUtils {
             jobberFortsattSomFrilans = true,
             arbeidsforhold = Arbeidsforhold(
                 normalarbeidstid = NormalArbeidstid(
-                    erLiktHverUke = true,
                     timerPerUkeISnitt = Duration.ofHours(37).plusMinutes(30)
                 ),
                 arbeidIPeriode = ArbeidIPeriode(
@@ -173,7 +172,6 @@ internal object SøknadUtils {
             ),
             arbeidsforhold = Arbeidsforhold(
                 normalarbeidstid = NormalArbeidstid(
-                    erLiktHverUke = true,
                     timerPerUkeISnitt = Duration.ofHours(37).plusMinutes(30)
                 ),
                 arbeidIPeriode = ArbeidIPeriode(
@@ -189,7 +187,6 @@ internal object SøknadUtils {
                 erAnsatt = true,
                 arbeidsforhold = Arbeidsforhold(
                     normalarbeidstid = NormalArbeidstid(
-                        erLiktHverUke = true,
                         timerPerUkeISnitt = Duration.ofHours(37).plusMinutes(30)
                     ),
                     arbeidIPeriode = ArbeidIPeriode(
@@ -204,7 +201,6 @@ internal object SøknadUtils {
                 erAnsatt = true,
                 arbeidsforhold = Arbeidsforhold(
                     normalarbeidstid = NormalArbeidstid(
-                        erLiktHverUke = true,
                         timerPerUkeISnitt = Duration.ofHours(37).plusMinutes(30)
                     ),
                     arbeidIPeriode = ArbeidIPeriode(

@@ -8,12 +8,6 @@
                 {{#eq type "ARBEIDER_VANLIG" }}
                     <p>Jobber som normalt i perioden. Har ikke fravær fra jobb.</p>
                 {{/eq}}
-                {{#eq type "ARBEIDER_ENKELTDAGER" }}
-                    {{> partial/arbeid/arbeidIPeriode/arbeiderEnkeltdagerPartial}}
-                {{/eq}}
-                {{#eq type "ARBEIDER_FASTE_UKEDAGER" }}
-                    {{> partial/arbeid/arbeidIPeriode/arbeiderFasteUkedagerPartial}}
-                {{/eq}}
                 {{#eq type "ARBEIDER_PROSENT_AV_NORMALT" }}
                     <p>Jobber {{arbeidsforhold.arbeidIPeriode.prosentAvNormalt}} prosent av normalt i perioden.</p>
                 {{/eq}}
