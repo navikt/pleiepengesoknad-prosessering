@@ -32,6 +32,7 @@ import no.nav.helse.prosessering.v1.somTekst
 import no.nav.helse.utils.DateUtils
 import no.nav.helse.utils.somNorskDag
 import no.nav.helse.utils.somNorskMåned
+import java.time.DayOfWeek
 import java.time.Duration
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -192,7 +193,7 @@ fun List<Enkeltdag>.somMapPerMnd(): List<Map<String, Any>> {
 
 private fun List<Enkeltdag>.somMapPerUke(): List<Map<String, Any>> {
     val omsorgsdagerPerUke = this.groupBy {
-        val uketall = it.dato.get(WeekFields.of(Locale.getDefault()).weekOfYear())
+        val uketall = it.dato.get(WeekFields.of(DayOfWeek.MONDAY, 7).weekOfYear())
         if (uketall == 0) 53 else uketall
     }
     return omsorgsdagerPerUke.map {
@@ -257,7 +258,7 @@ private fun ArbeidIPeriode.somMap(): Map<String, Any?> = mapOf(
 private fun List<ArbeidsUke>.somMap() = map {
 
     mapOf(
-        "uke" to it.periode.fraOgMed.get(WeekFields.of(Locale.getDefault()).weekOfYear()),
+        "uke" to it.periode.fraOgMed.get(WeekFields.of(DayOfWeek.MONDAY, 7).weekOfYear()),
         "faktiskTimerPerUke" to it.timer?.tilString()
     )
 }
