@@ -195,7 +195,7 @@ class PleiepengesoknadProsesseringTest {
         wireMockServer.stubJournalfor(201) // Simulerer journalføring fungerer igjen
         restartEngine()
         søknadcleanupConsumer
-            .hentCleanupMelding(melding.søknadId, topic = SøknadTopics.CLEANUP)
+            .hentCleanupMelding(melding.søknadId, topic = SøknadTopics.CLEANUP, maxWaitInSeconds = 120)
             .assertJournalførtFormat()
     }
 
