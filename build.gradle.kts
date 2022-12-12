@@ -30,7 +30,7 @@ dependencies {
     implementation("no.nav.helse:dusseldorf-ktor-auth:$dusseldorfKtorVersion")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-slf4j:$kotlinxCoroutinesVersion")
     implementation("com.github.kittinunf.fuel:fuel:$fuelVersion")
-    implementation("com.github.kittinunf.fuel:fuel-coroutines:$fuelVersion"){
+    implementation("com.github.kittinunf.fuel:fuel-coroutines:$fuelVersion") {
         exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-core")
     }
 

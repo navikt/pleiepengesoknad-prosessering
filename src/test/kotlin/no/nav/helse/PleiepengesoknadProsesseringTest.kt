@@ -183,34 +183,6 @@ class PleiepengesoknadProsesseringTest {
     }
 
     @Test
-    fun `En feilprosessert melding vil bli prosessert etter at tjenesten restartes`() {
-        val melding = SøknadUtils.defaultSøknad
-
-        wireMockServer.stubJournalfor(500) // Simulerer feil ved journalføring
-
-        søknadKafkaProducer.leggPåMelding(melding.søknadId, melding, topic = SøknadTopics.MOTTATT_v2)
-        ventPaaAtRetryMekanismeIStreamProsessering()
-        readyGir200HealthGir503()
-
-        wireMockServer.stubJournalfor(201) // Simulerer journalføring fungerer igjen
-        restartEngine()
-        søknadcleanupConsumer
-            .hentCleanupMelding(melding.søknadId, topic = SøknadTopics.CLEANUP, maxWaitInSeconds = 120)
-            .assertJournalførtFormat()
-    }
-
-    private fun readyGir200HealthGir503() {
-        with(engine) {
-            handleRequest(HttpMethod.Get, "/isready") {}.apply {
-                assertEquals(HttpStatusCode.OK, response.status())
-                handleRequest(HttpMethod.Get, "/health") {}.apply {
-                    assertEquals(HttpStatusCode.ServiceUnavailable, response.status())
-                }
-            }
-        }
-    }
-
-    @Test
     fun `Melding som gjeder søker med D-nummer`() {
         val melding = SøknadUtils.defaultSøknad
 
@@ -399,6 +371,23 @@ class PleiepengesoknadProsesseringTest {
     }
 
     @Test
+    fun `En feilprosessert melding vil bli prosessert etter at tjenesten restartes`() {
+        val melding = SøknadUtils.defaultSøknad.copy(søknadId = UUID.randomUUID().toString())
+
+        wireMockServer.stubJournalfor(500) // Simulerer feil ved journalføring
+
+        søknadKafkaProducer.leggPåMelding(melding.søknadId, melding, topic = SøknadTopics.MOTTATT_v2)
+        ventPaaAtRetryMekanismeIStreamProsessering()
+        readyGir200HealthGir503()
+
+        wireMockServer.stubJournalfor(201) // Simulerer journalføring fungerer igjen
+        restartEngine()
+        søknadcleanupConsumer
+            .hentCleanupMelding(melding.søknadId, topic = SøknadTopics.CLEANUP, maxWaitInSeconds = 120)
+            .assertJournalførtFormat()
+    }
+
+    @Test
     fun endringsmelding() {
         val søknadsId = UUID.randomUUID()
         val endringsmelding = defaultEndringsmelding(søknadsId)
@@ -421,6 +410,17 @@ class PleiepengesoknadProsesseringTest {
         )
         assertNotNull(cleanupEndringsmelding)
         cleanupEndringsmelding.assertJournalførtFormat()
+    }
+
+    private fun readyGir200HealthGir503() {
+        with(engine) {
+            handleRequest(HttpMethod.Get, "/isready") {}.apply {
+                assertEquals(HttpStatusCode.OK, response.status())
+                handleRequest(HttpMethod.Get, "/health") {}.apply {
+                    assertEquals(HttpStatusCode.ServiceUnavailable, response.status())
+                }
+            }
+        }
     }
 
     private fun ventPaaAtRetryMekanismeIStreamProsessering() = runBlocking { delay(Duration.ofSeconds(30)) }
