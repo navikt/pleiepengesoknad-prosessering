@@ -2,7 +2,12 @@ package no.nav.helse.prosessering.v1
 
 import io.prometheus.client.Counter
 import io.prometheus.client.Histogram
-import no.nav.helse.utils.*
+import no.nav.helse.utils.aarSiden
+import no.nav.helse.utils.erUnderEttAar
+import no.nav.helse.utils.fødselsdato
+import no.nav.helse.utils.idType
+import no.nav.helse.utils.tilJaEllerNei
+import no.nav.helse.utils.ukerSiden
 import java.time.temporal.ChronoUnit
 
 val periodeSoknadGjelderIUkerHistogram = Histogram.build()
@@ -52,7 +57,6 @@ internal fun PreprossesertMeldingV1.reportMetrics() {
             barnetsAlderIUkerCounter.labels(barnetsFodselsdato.ukerSiden()).inc()
         }
     }
-
 
     valgteArbeidsgivereHistogram.observe(arbeidsgivere?.size?.toDouble() ?: 0.0)
     idTypePaaBarnCounter.labels(barn.idType()).inc()

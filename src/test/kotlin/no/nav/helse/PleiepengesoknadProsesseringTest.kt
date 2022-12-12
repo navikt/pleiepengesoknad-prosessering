@@ -8,7 +8,6 @@ import io.ktor.server.engine.*
 import io.ktor.server.testing.*
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.time.delay
-import no.nav.common.KafkaEnvironment
 import no.nav.helse.EndringsmeldingUtils.defaultEndringsmelding
 import no.nav.helse.dusseldorf.testsupport.wiremock.WireMockBuilder
 import no.nav.helse.felles.Barn
@@ -40,8 +39,10 @@ import no.nav.helse.prosessering.v1.asynkron.SøknadTopics
 import no.nav.helse.prosessering.v1.asynkron.endringsmelding.EndringsmeldingV1
 import no.nav.helse.prosessering.v1.asynkron.endringsmelding.PreprossesertEndringsmeldingV1
 import org.junit.AfterClass
+import org.junit.jupiter.api.Assertions
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.testcontainers.containers.KafkaContainer
 import java.time.Duration
 import java.time.LocalDate
 import java.time.ZonedDateTime
@@ -107,20 +108,20 @@ class PleiepengesoknadProsesseringTest {
             start(wait = true)
         }
 
-        private fun getConfig(kafkaEnvironment: KafkaEnvironment?): ApplicationConfig {
+        private fun getConfig(kafkaContainer: KafkaContainer?): ApplicationConfig {
             val fileConfig = ConfigFactory.load()
             val testConfig = ConfigFactory.parseMap(
                 TestConfiguration.asMap(
                     wireMockServer = wireMockServer,
-                    kafkaEnvironment = kafkaEnvironment
+                    kafkaContainer = kafkaContainer
                 )
             )
             val mergedConfig = testConfig.withFallback(fileConfig)
             return HoconApplicationConfig(mergedConfig)
         }
 
-        private fun newEngine(kafkaEnvironment: KafkaEnvironment?) = TestApplicationEngine(createTestEnvironment {
-            config = getConfig(kafkaEnvironment)
+        private fun newEngine(kafkaContainer: KafkaContainer) = TestApplicationEngine(createTestEnvironment {
+            config = getConfig(kafkaContainer)
         })
 
         private fun stopEngine() = engine.stop(5, 60, TimeUnit.SECONDS)
@@ -146,27 +147,25 @@ class PleiepengesoknadProsesseringTest {
             endringsmeldingCleanupConsumer.close()
 
             stopEngine()
-            kafkaEnvironment.tearDown()
+            kafkaEnvironment.stop()
 
             logger.info("Tear down complete")
         }
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     fun `test isready, isalive, health og metrics`() {
         with(engine) {
-            handleRequest(HttpMethod.Get, "/isready") {}.apply {
-                assertEquals(HttpStatusCode.OK, response.status())
-                handleRequest(HttpMethod.Get, "/isalive") {}.apply {
-                    assertEquals(HttpStatusCode.OK, response.status())
-                    handleRequest(HttpMethod.Get, "/metrics") {}.apply {
-                        assertEquals(HttpStatusCode.OK, response.status())
-                        handleRequest(HttpMethod.Get, "/health") {}.apply {
-                            assertEquals(HttpStatusCode.OK, response.status())
-                        }
-                    }
-                }
+            val healthEndpoints = listOf("/isready", "/isalive", "/metrics", "/health")
+
+            val responses = healthEndpoints.map { endpoint ->
+                handleRequest(HttpMethod.Get, endpoint).response.status()
             }
+
+            for(statusCode in responses) {
+                Assertions.assertEquals(HttpStatusCode.OK, statusCode)
+            }
+
         }
     }
 
@@ -181,34 +180,6 @@ class PleiepengesoknadProsesseringTest {
         søknadcleanupConsumer
             .hentCleanupMelding(melding.søknadId, topic = SøknadTopics.CLEANUP)
             .assertJournalførtFormat()
-    }
-
-    @Test
-    fun `En feilprosessert melding vil bli prosessert etter at tjenesten restartes`() {
-        val melding = SøknadUtils.defaultSøknad
-
-        wireMockServer.stubJournalfor(500) // Simulerer feil ved journalføring
-
-        søknadKafkaProducer.leggPåMelding(melding.søknadId, melding, topic = SøknadTopics.MOTTATT_v2)
-        ventPaaAtRetryMekanismeIStreamProsessering()
-        readyGir200HealthGir503()
-
-        wireMockServer.stubJournalfor(201) // Simulerer journalføring fungerer igjen
-        restartEngine()
-        søknadcleanupConsumer
-            .hentCleanupMelding(melding.søknadId, topic = SøknadTopics.CLEANUP)
-            .assertJournalførtFormat()
-    }
-
-    private fun readyGir200HealthGir503() {
-        with(engine) {
-            handleRequest(HttpMethod.Get, "/isready") {}.apply {
-                assertEquals(HttpStatusCode.OK, response.status())
-                handleRequest(HttpMethod.Get, "/health") {}.apply {
-                    assertEquals(HttpStatusCode.ServiceUnavailable, response.status())
-                }
-            }
-        }
     }
 
     @Test
@@ -400,6 +371,23 @@ class PleiepengesoknadProsesseringTest {
     }
 
     @Test
+    fun `En feilprosessert melding vil bli prosessert etter at tjenesten restartes`() {
+        val melding = SøknadUtils.defaultSøknad.copy(søknadId = UUID.randomUUID().toString())
+
+        wireMockServer.stubJournalfor(500) // Simulerer feil ved journalføring
+
+        søknadKafkaProducer.leggPåMelding(melding.søknadId, melding, topic = SøknadTopics.MOTTATT_v2)
+        ventPaaAtRetryMekanismeIStreamProsessering()
+        readyGir200HealthGir503()
+
+        wireMockServer.stubJournalfor(201) // Simulerer journalføring fungerer igjen
+        restartEngine()
+        søknadcleanupConsumer
+            .hentCleanupMelding(melding.søknadId, topic = SøknadTopics.CLEANUP, maxWaitInSeconds = 120)
+            .assertJournalførtFormat()
+    }
+
+    @Test
     fun endringsmelding() {
         val søknadsId = UUID.randomUUID()
         val endringsmelding = defaultEndringsmelding(søknadsId)
@@ -422,6 +410,17 @@ class PleiepengesoknadProsesseringTest {
         )
         assertNotNull(cleanupEndringsmelding)
         cleanupEndringsmelding.assertJournalførtFormat()
+    }
+
+    private fun readyGir200HealthGir503() {
+        with(engine) {
+            handleRequest(HttpMethod.Get, "/isready") {}.apply {
+                assertEquals(HttpStatusCode.OK, response.status())
+                handleRequest(HttpMethod.Get, "/health") {}.apply {
+                    assertEquals(HttpStatusCode.ServiceUnavailable, response.status())
+                }
+            }
+        }
     }
 
     private fun ventPaaAtRetryMekanismeIStreamProsessering() = runBlocking { delay(Duration.ofSeconds(30)) }

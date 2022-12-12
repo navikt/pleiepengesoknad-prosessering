@@ -72,26 +72,27 @@ internal object EndringsmeldingUtils {
             .medArbeidstid(
                 Arbeidstid().medArbeidstaker(
                     listOf(
-                        Arbeidstaker(
-                            NorskIdentitetsnummer.of("12345678910"),
-                            Organisasjonsnummer.of("926032925"),
-                            ArbeidstidInfo().medPerioder(
-                                mapOf(
-                                    K9Periode(
-                                        LocalDate.parse("2018-01-01"),
-                                        LocalDate.parse("2020-01-05")
-                                    ) to ArbeidstidPeriodeInfo()
-                                        .medJobberNormaltTimerPerDag(Duration.ofHours(8))
-                                        .medFaktiskArbeidTimerPerDag(Duration.ofHours(4)),
-                                    K9Periode(
-                                        LocalDate.parse("2020-01-06"),
-                                        LocalDate.parse("2020-01-10")
-                                    ) to ArbeidstidPeriodeInfo()
-                                        .medJobberNormaltTimerPerDag(Duration.ofHours(8))
-                                        .medFaktiskArbeidTimerPerDag(Duration.ofHours(2))
+                        Arbeidstaker()
+                            .medNorskIdentitetsnummer(NorskIdentitetsnummer.of("12345678910"))
+                            .medOrganisasjonsnummer(Organisasjonsnummer.of("926032925"))
+                            .medArbeidstidInfo(
+                                ArbeidstidInfo().medPerioder(
+                                    mapOf(
+                                        K9Periode(
+                                            LocalDate.parse("2018-01-01"),
+                                            LocalDate.parse("2020-01-05")
+                                        ) to ArbeidstidPeriodeInfo()
+                                            .medJobberNormaltTimerPerDag(Duration.ofHours(8))
+                                            .medFaktiskArbeidTimerPerDag(Duration.ofHours(4)),
+                                        K9Periode(
+                                            LocalDate.parse("2020-01-06"),
+                                            LocalDate.parse("2020-01-10")
+                                        ) to ArbeidstidPeriodeInfo()
+                                            .medJobberNormaltTimerPerDag(Duration.ofHours(8))
+                                            .medFaktiskArbeidTimerPerDag(Duration.ofHours(2))
+                                    )
                                 )
                             )
-                        )
                     )
                 )
             )

@@ -1,14 +1,14 @@
 package no.nav.helse
 import com.github.tomakehurst.wiremock.WireMockServer
-import no.nav.common.KafkaEnvironment
 import no.nav.helse.dusseldorf.testsupport.jws.ClientCredentials
 import no.nav.helse.dusseldorf.testsupport.wiremock.getAzureV2WellKnownUrl
+import org.testcontainers.containers.KafkaContainer
 
 object TestConfiguration {
 
     fun asMap(
         wireMockServer: WireMockServer? = null,
-        kafkaEnvironment: KafkaEnvironment? = null,
+        kafkaContainer: KafkaContainer? = null,
         port : Int = 8080,
         k9JoarkBaseUrl : String? = wireMockServer?.getK9JoarkBaseUrl(),
         k9MellomlagringBaseUrl : String? = wireMockServer?.getK9MellomlagringBaseUrl()
@@ -30,8 +30,8 @@ object TestConfiguration {
             map["nav.auth.scopes.k9_mellomlagring"] = "k9-mellomlagring/.default"
         }
 
-        kafkaEnvironment?.let {
-            map["nav.kafka.bootstrap_servers"] = it.brokersURL
+        kafkaContainer?.let {
+            map["nav.kafka.bootstrap_servers"] = it.bootstrapServers
             map["nav.kafka.soknad_auto_offset_reset"] = "earliest"
             map["nav.kafka.endringsmelding_auto_offset_reset"] = "earliest"
         }

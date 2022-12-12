@@ -2,7 +2,6 @@ package no.nav.helse.kafka
 
 import org.apache.kafka.clients.CommonClientConfigs
 import org.apache.kafka.clients.consumer.ConsumerConfig
-import org.apache.kafka.common.config.SaslConfigs
 import org.apache.kafka.common.config.SslConfigs
 import org.apache.kafka.common.security.auth.SecurityProtocol
 import org.apache.kafka.streams.StreamsConfig.APPLICATION_ID_CONFIG
@@ -34,7 +33,6 @@ class KafkaConfig(
         put(BOOTSTRAP_SERVERS_CONFIG, bootstrapServers)
         put(DEFAULT_DESERIALIZATION_EXCEPTION_HANDLER_CLASS_CONFIG, LogAndFailExceptionHandler::class.java)
         put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, autoOffsetReset)
-        if(trustStore == null || keyStore == null) medCredentials(Pair("srvkafkaclient", "kafkaclient")) //For å skille mellom test/miljø
         medTrustStore(trustStore)
         medKeyStore(keyStore)
         medProcessingGuarantee(exactlyOnce)
@@ -82,13 +80,4 @@ private fun Properties.medKeyStore(keyStore: Pair<String, String>?) {
             logger.info("Keystore på '${it.first}' konfigurert.")
         } catch (cause: Throwable) {}
     }
-}
-
-private fun Properties.medCredentials(credentials: Pair<String, String>) {
-    put(SaslConfigs.SASL_MECHANISM, "PLAIN")
-    put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, "SASL_PLAINTEXT")
-    put(
-        SaslConfigs.SASL_JAAS_CONFIG,
-        "org.apache.kafka.common.security.plain.PlainLoginModule required username=\"${credentials.first}\" password=\"${credentials.second}\";"
-    )
 }
