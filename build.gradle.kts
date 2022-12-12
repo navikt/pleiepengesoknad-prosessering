@@ -100,4 +100,7 @@ tasks.withType<Wrapper> {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+    this.testLogging {
+        this.exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+    }
 }
