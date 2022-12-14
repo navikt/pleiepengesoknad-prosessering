@@ -97,6 +97,9 @@ spec:
       application: pleiepengesoknad-api
       access: write
     - team: dusseldorf
+      application: k9-brukerdialog-api
+      access: write
+    - team: dusseldorf
       application: pleiepengesoknad-prosessering
       access: read
 
