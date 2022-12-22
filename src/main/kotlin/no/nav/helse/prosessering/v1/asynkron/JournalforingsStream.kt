@@ -3,7 +3,12 @@ package no.nav.helse.prosessering.v1.asynkron
 import no.nav.helse.CorrelationId
 import no.nav.helse.felles.tilTpsNavn
 import no.nav.helse.joark.JoarkGateway
-import no.nav.helse.kafka.*
+import no.nav.helse.kafka.KafkaConfig
+import no.nav.helse.kafka.ManagedKafkaStreams
+import no.nav.helse.kafka.ManagedStreamHealthy
+import no.nav.helse.kafka.ManagedStreamReady
+import no.nav.helse.kafka.TopicEntry
+import no.nav.helse.kafka.process
 import no.nav.helse.prosessering.v1.PreprossesertMeldingV1
 import org.apache.kafka.streams.StreamsBuilder
 import org.apache.kafka.streams.Topology
@@ -41,6 +46,7 @@ internal class JournalforingsStream(
                     Consumed.with(fraPreprossesert.keySerde, fraPreprossesert.valueSerde)
                 )
                 .filter { _, entry -> 1 == entry.metadata.version }
+                .filterNot {_, entry -> "generated-7b6f18b7-2f08-4818-9553-9053fb8eb675" == entry.metadata.correlationId }
                 .mapValues { soknadId, entry ->
                     process(NAME, soknadId, entry) {
                         logger.info("Journalfører dokumenter.")
