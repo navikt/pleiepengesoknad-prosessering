@@ -41,7 +41,6 @@ internal class CleanupStream(
                     fraCleanup.name, Consumed.with(fraCleanup.keySerde, fraCleanup.valueSerde)
                 )
                 .filter {_, entry -> 1 == entry.metadata.version }
-                .filterNot {_, entry -> "generated-7b6f18b7-2f08-4818-9553-9053fb8eb675" == entry.metadata.correlationId }
                 .mapValues { soknadId, entry ->
                     process(NAME, soknadId, entry) {
                         logger.info("Sletter dokumenter.")
