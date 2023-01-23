@@ -50,10 +50,8 @@ class SøknadPDFGenerator : PDFGenerator<MeldingV1>() {
         "soknad_id" to søknadId,
         "soknad_mottatt_dag" to mottatt.withZoneSameInstant(ZONE_ID).somNorskDag(),
         "soknad_mottatt" to DATE_TIME_FORMATTER.format(mottatt),
-        "har_medsoker" to harMedsøker,
         "harIkkeVedlegg" to sjekkOmHarIkkeVedlegg(),
         "harLastetOppFødselsattest" to !fødselsattestVedleggId.isNullOrEmpty(),
-        "samtidig_hjemme" to samtidigHjemme,
         "soker" to mapOf(
             "navn" to søker.formatertNavn().capitalizeName(),
             "fodselsnummer" to søker.fødselsnummer
@@ -75,7 +73,6 @@ class SøknadPDFGenerator : PDFGenerator<MeldingV1>() {
             "har_bekreftet_opplysninger" to harBekreftetOpplysninger
         ),
         "hjelp" to mapOf(
-            "har_medsoker" to harMedsøker,
             "ingen_arbeidsgivere" to arbeidsgivere.isEmpty(),
             "sprak" to språk?.sprakTilTekst()
         ),

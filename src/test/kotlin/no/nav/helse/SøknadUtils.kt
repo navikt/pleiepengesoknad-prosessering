@@ -80,7 +80,6 @@ internal object SøknadUtils {
             ),
             skalBoIUtlandetNeste12Mnd = false
         ),
-        harMedsøker = true,
         harBekreftetOpplysninger = true,
         harForståttRettigheterOgPlikter = true,
         beredskap = Beredskap(
@@ -212,7 +211,6 @@ internal object SøknadUtils {
         ),
         harVærtEllerErVernepliktig = true,
         k9FormatSøknad = defaultK9FormatPSB(),
-        samtidigHjemme = null,
         omsorgstilbud = null,
         barnRelasjon = null,
         barnRelasjonBeskrivelse = null,

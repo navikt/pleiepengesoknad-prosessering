@@ -84,28 +84,6 @@
         <ul>
             <li>
                 <strong>{{ periode.fra_og_med }} - {{ periode.til_og_med }}</strong><br/>
-                <ul>
-                    {{# if hjelp.har_medsoker }}
-                        <li>
-                            Du opplyser at en medsøker skal søke for samme periode som deg.<br/>
-                            <ul>
-                                {{# if samtidig_hjemme }}
-                                    <li>
-                                        Du opplyser at du og medsøker skal være hjemme eller på sykehus samtidig.
-                                    </li>
-                                {{/if}}
-                                {{#unless samtidig_hjemme}}
-                                    <li>
-                                        Du opplyser at du og medsøker ikke skal være hjemme eller på sykehus samtidig.
-                                    </li>
-                                {{/unless}}
-                            </ul>
-                        </li>
-
-                    {{else}}
-                        <li>Det er ikke oppgitt andre medsøkere.</li>
-                    {{/if}}
-                </ul>
             </li>
         </ul>
     </section>

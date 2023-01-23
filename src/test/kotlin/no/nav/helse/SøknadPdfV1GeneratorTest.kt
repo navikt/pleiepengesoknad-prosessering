@@ -82,8 +82,6 @@ class SøknadPdfV1GeneratorTest {
                 ),
                 skalBoIUtlandetNeste12Mnd = false
             ),
-            harMedsøker = true,
-            samtidigHjemme = true,
             harForståttRettigheterOgPlikter = true,
             harBekreftetOpplysninger = true,
             nattevåk = Nattevåk(
@@ -284,43 +282,19 @@ class SøknadPdfV1GeneratorTest {
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
-        id = "2-utenMedsøker"
+        id = "2-utenSpråk"
         pdf = generator.genererPDF(
-            melding = fullGyldigMelding(id).copy(harMedsøker = false)
+            melding = fullGyldigMelding(id).copy(språk = null)
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
-        id = "3-medsøkerSamtidigHjemme"
-        pdf = generator.genererPDF(
-            melding = fullGyldigMelding(id).copy(
-                harMedsøker = true,
-                samtidigHjemme = true
-            )
-        )
-        if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
-
-        id = "4-medsøkerIkkeSamtidigHjemme"
-        pdf = generator.genererPDF(
-            melding = fullGyldigMelding(id).copy(
-                harMedsøker = true,
-                samtidigHjemme = false
-            )
-        )
-        if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
-
-        id = "5-utenSpråk"
-        pdf = generator.genererPDF(
-            melding = fullGyldigMelding(id).copy(harMedsøker = false, språk = null)
-        )
-        if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
-
-        id = "6-utenArbeidsgivere"
+        id = "3-utenArbeidsgivere"
         pdf = generator.genererPDF(
             melding = fullGyldigMelding(id).copy(arbeidsgivere = listOf())
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
-        id = "7-flerePlanlagteUtenlandsopphold"
+        id = "4-flerePlanlagteUtenlandsopphold"
         pdf = generator.genererPDF(
             melding = fullGyldigMelding(id).copy(
                 medlemskap = Medlemskap(
@@ -343,16 +317,15 @@ class SøknadPdfV1GeneratorTest {
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
-        id = "8-har-lastet-opp-vedlegg"
+        id = "5-har-lastet-opp-vedlegg"
         pdf = generator.genererPDF(
             melding = fullGyldigMelding(id).copy(
-                harMedsøker = true,
                 vedleggId = listOf("12345")
             )
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
-        id = "9-omsorgstilbud-nei-til-omsorgstilbud"
+        id = "6-omsorgstilbud-nei-til-omsorgstilbud"
         pdf = generator.genererPDF(
             melding = fullGyldigMelding(id).copy(
                 omsorgstilbud = null
@@ -360,7 +333,7 @@ class SøknadPdfV1GeneratorTest {
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
-        id = "10-omsorgstilbud-omsorgstilbud-enkeltdager"
+        id = "7-omsorgstilbud-omsorgstilbud-enkeltdager"
         pdf = generator.genererPDF(
             melding = fullGyldigMelding(id).copy(
                 omsorgstilbud = Omsorgstilbud(
@@ -377,7 +350,7 @@ class SøknadPdfV1GeneratorTest {
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
-        id = "11-omsorgstilbud-omsorgstilbud-ukedager"
+        id = "8-omsorgstilbud-omsorgstilbud-ukedager"
         pdf = generator.genererPDF(
             melding = fullGyldigMelding(id).copy(
                 omsorgstilbud = Omsorgstilbud(
@@ -392,7 +365,7 @@ class SøknadPdfV1GeneratorTest {
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
-        id = "12-kun-frilans-arbeidsforhold"
+        id = "9-kun-frilans-arbeidsforhold"
         pdf = generator.genererPDF(
             melding = fullGyldigMelding(id).copy(
                 selvstendigNæringsdrivende = SelvstendigNæringsdrivende(harInntektSomSelvstendig = false),
@@ -401,7 +374,7 @@ class SøknadPdfV1GeneratorTest {
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
-        id = "13-barn-med-årsakManglerIdentitetsnummer"
+        id = "10-barn-med-årsakManglerIdentitetsnummer"
         pdf = generator.genererPDF(
             melding = fullGyldigMelding(id).copy(
                 barn = Barn(
@@ -414,7 +387,7 @@ class SøknadPdfV1GeneratorTest {
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
-        id = "14-med-opptjening-i-utlandet"
+        id = "11-med-opptjening-i-utlandet"
         pdf = generator.genererPDF(
             melding = fullGyldigMelding(id).copy(
                 utenlandskNæring = listOf(),
@@ -434,7 +407,7 @@ class SøknadPdfV1GeneratorTest {
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
-        id = "15-med-utenlandsk-næring"
+        id = "12-med-utenlandsk-næring"
         pdf = generator.genererPDF(
             melding = fullGyldigMelding(id).copy(
                 selvstendigNæringsdrivende = SelvstendigNæringsdrivende(false),
@@ -461,7 +434,7 @@ class SøknadPdfV1GeneratorTest {
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
-        id = "16-omsorgstilbud-kunFortid"
+        id = "13-omsorgstilbud-kunFortid"
         pdf = generator.genererPDF(
             melding = fullGyldigMelding(id).copy(
                 omsorgstilbud = Omsorgstilbud(
@@ -478,7 +451,7 @@ class SøknadPdfV1GeneratorTest {
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
-        id = "17-omsorgstilbud-kunFremtid"
+        id = "14-omsorgstilbud-kunFremtid"
         pdf = generator.genererPDF(
             melding = fullGyldigMelding(id).copy(
                 omsorgstilbud = Omsorgstilbud(
@@ -493,7 +466,7 @@ class SøknadPdfV1GeneratorTest {
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
-        id = "18-omsorgstilbud-ja-fortidOgFremtid"
+        id = "15-omsorgstilbud-ja-fortidOgFremtid"
         pdf = generator.genererPDF(
             melding = fullGyldigMelding(id).copy(
                 omsorgstilbud = Omsorgstilbud(
@@ -510,7 +483,7 @@ class SøknadPdfV1GeneratorTest {
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
-        id = "19-omsorgstilbud-nei-fortidOgFremtid"
+        id = "16-omsorgstilbud-nei-fortidOgFremtid"
         pdf = generator.genererPDF(
             melding = fullGyldigMelding(id).copy(
                 omsorgstilbud = Omsorgstilbud(
@@ -521,7 +494,7 @@ class SøknadPdfV1GeneratorTest {
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
-        id = "20-har-lastet-opp-id-ved-manglende-norskIdentifikator"
+        id = "17-har-lastet-opp-id-ved-manglende-norskIdentifikator"
         pdf = generator.genererPDF(
             melding = fullGyldigMelding(id).copy(
                 barn = Barn(
@@ -536,7 +509,7 @@ class SøknadPdfV1GeneratorTest {
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
-        id = "21-har-ikke-lastet-opp-id-ved-manglende-norskIdentifikator"
+        id = "18-har-ikke-lastet-opp-id-ved-manglende-norskIdentifikator"
         pdf = generator.genererPDF(
             melding = fullGyldigMelding(id).copy(
                 barn = Barn(
@@ -551,7 +524,7 @@ class SøknadPdfV1GeneratorTest {
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
-        id = "22-ulike-uker_ulike_timer"
+        id = "19-ulike-uker_ulike_timer"
         pdf = generator.genererPDF(
             melding = fullGyldigMelding(id).copy(
                 arbeidsgivere = listOf(

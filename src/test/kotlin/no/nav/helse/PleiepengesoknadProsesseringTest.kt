@@ -261,7 +261,6 @@ class PleiepengesoknadProsesseringTest {
                 mellomnavn = "Mellomnavn",
                 etternavn = "Nordmann"
             ),
-            harMedsøker = false,
             barn = Barn(
                 navn = "Bjarne",
                 fødselsnummer = gyldigFodselsnummerB,
@@ -335,7 +334,6 @@ class PleiepengesoknadProsesseringTest {
                     Ferieuttak(LocalDate.parse("2020-01-09"), LocalDate.parse("2020-01-10"))
                 )
             ),
-            samtidigHjemme = true,
             utenlandskNæring = listOf(
                 UtenlandskNæring(
                     næringstype = Næringstyper.DAGMAMMA,
