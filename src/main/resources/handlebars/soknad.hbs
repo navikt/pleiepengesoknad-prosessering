@@ -125,9 +125,20 @@
 
     <section id="frilans">
         {{# if frilans.harInntektSomFrilanser }}
-            <h2>Frilans</h2>
-            <p class="sporsmalstekst">Er du frilanser i perioden du søker for?</p>
+            <h2>Frilanser eller mottar honorarer for styreverv/andre små verv</h2>
+            <p class="sporsmalstekst">Jobber du som frilanser eller får du honorarer for verv?</p>
             <p>{{ jaNeiSvar true }}</p>
+            <p class="sporsmalstekst">Hva gjelder for deg?</p>
+            <ul>
+                {{#if frilans.jobberSomFrilanser}}
+                    <li>Jobber som frilanser</li>
+                {{/if}}
+                {{#if frilans.mottarHonorarerForVerv}}
+                    <li>Mottar honorarer for styreverv eller andre verv</li>
+                {{/if}}
+            </ul>
+            <p class="sporsmalstekst">Mister du honorarer fordi du må pleie barnet?</p>
+            <p>{{ jaNeiSvar frilans.misterHonorarer }}</p>
             <p class="sporsmalstekst">Når startet du som frilanser?</p>
             <p>{{frilans.startdato}}</p>
             {{#if frilans.arbeidsforhold}}
@@ -140,7 +151,7 @@
                 <p>{{frilans.sluttdato}}</p>
             {{/unless}}
         {{else}}
-            <h2>Frilans</h2>
+            <h2>Frilanser eller mottar honorarer for styreverv/andre små verv</h2>
             <p>Har ikke vært frilanser i perioden det søkes om.</p>
         {{/if}}
     </section>
@@ -244,6 +255,21 @@
             <ul class="ul-no-indent">
                 <li><b>Frilans</b></li>
                 {{> partial/arbeid/arbeidsforholdPartial arbeidsforhold=frilans.arbeidsforhold}}
+            </ul>
+        {{/if}}
+        {{#if frilans.misterHonorarer}}
+            <ul class="ul-no-indent">
+                <li><b>Honorarer for verv</b></li>
+                <li class="li-style-none">
+                    <ul>
+                        {{#eq frilans.misterHonorarerIPerioden "MISTER_ALLE_HONORARER" }}
+                            <li>Mister alle honorarer</li>
+                        {{/eq}}
+                        {{#eq frilans.misterHonorarerIPerioden "MISTER_DELER_AV_HONORARER" }}
+                            <li>Mister deler av honorarer</li>
+                        {{/eq}}
+                    </ul>
+                </li>
             </ul>
         {{/if}}
 

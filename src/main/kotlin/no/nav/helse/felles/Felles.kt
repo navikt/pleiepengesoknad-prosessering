@@ -64,8 +64,20 @@ data class Frilans(
     @JsonFormat(pattern = "yyyy-MM-dd")
     val sluttdato: LocalDate? = null,
     val jobberFortsattSomFrilans: Boolean? = null,
-    val arbeidsforhold: Arbeidsforhold? = null
+    val arbeidsforhold: Arbeidsforhold? = null,
+    val frilansTyper: List<FrilansType>? = null,
+    val misterHonorarer: Boolean? = null,
+    val misterHonorarerIPerioden: MisterHonorarerFraVervIPerioden? = null
 )
+
+enum class MisterHonorarerFraVervIPerioden {
+    MISTER_ALLE_HONORARER, MISTER_DELER_AV_HONORARER
+}
+
+enum class FrilansType {
+    FRILANS,
+    STYREVERV
+}
 
 data class Beredskap(
     val beredskap: Boolean,
