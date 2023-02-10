@@ -12,7 +12,9 @@ import no.nav.k9.søknad.ytelse.psb.v1.arbeidstid.Arbeidstid
 import no.nav.k9.søknad.ytelse.psb.v1.arbeidstid.ArbeidstidInfo
 import no.nav.k9.søknad.ytelse.psb.v1.arbeidstid.ArbeidstidPeriodeInfo
 import no.nav.k9.søknad.ytelse.psb.v1.tilsyn.TilsynPeriodeInfo
-import no.nav.k9.søknad.ytelse.psb.v1.tilsyn.Tilsynsordning
+import java.time.DayOfWeek
+import java.time.Duration
+import java.time.temporal.WeekFields
 
 class EndringsmeldingPDFGenerator : PDFGenerator<EndringsmeldingV1>() {
 
@@ -35,10 +37,6 @@ class EndringsmeldingPDFGenerator : PDFGenerator<EndringsmeldingV1>() {
                 ytelse.arbeidstid != null -> ytelse.arbeidstid.somMap()
                 else -> null
             },
-            "omsorgstilbud" to when {
-                ytelse.tilsynsordning != null && !ytelse.tilsynsordning.perioder.isNullOrEmpty() -> ytelse.tilsynsordning.somMap()
-                else -> null
-            },
             "samtykke" to mapOf(
                 "har_forstatt_rettigheter_og_plikter" to harForståttRettigheterOgPlikter,
                 "har_bekreftet_opplysninger" to harBekreftetOpplysninger
@@ -50,10 +48,6 @@ class EndringsmeldingPDFGenerator : PDFGenerator<EndringsmeldingV1>() {
         get() = mapOf()
 
 }
-
-private fun Tilsynsordning.somMap(): Map<String, Any?> = mapOf(
-    "perioder" to this.perioder.somMap()
-)
 
 @JvmName("somMapPeriodeTilsynPeriodeInfo")
 private fun MutableMap<Periode, TilsynPeriodeInfo>.somMap(): List<Map<String, Any?>> = map { entry ->
@@ -104,12 +98,21 @@ fun MutableMap<Periode, ArbeidstidPeriodeInfo>.somMap(): List<Map<String, Any?>>
     )
 }
 
+fun Periode.uke(): Int = fraOgMed.get(WeekFields.of(DayOfWeek.MONDAY, 7).weekOfYear())
+
 fun Periode.somMap(): Map<String, Any?> = mutableMapOf(
+    "uke" to uke(),
     "fraOgMed" to DATE_FORMATTER.format(fraOgMed),
     "tilOgMed" to DATE_FORMATTER.format(tilOgMed)
 )
 
 fun ArbeidstidPeriodeInfo.somMap(): Map<String, Any?> = mutableMapOf(
-    "jobberNormaltTimerPerDag" to jobberNormaltTimerPerDag.somTekst(),
-    "faktiskArbeidTimerPerDag" to faktiskArbeidTimerPerDag.somTekst()
+    "jobberNormaltTimerPerUke" to jobberNormaltTimerPerDag.tilTimerPerUke().formaterString(),
+    "faktiskArbeidTimerPerUke" to faktiskArbeidTimerPerDag.tilTimerPerUke().formaterString()
 )
+
+private fun Duration.formaterString(): String {
+    return "${timer()}t. ${toMinutesPart()}m."
+}
+
+private fun Duration.tilTimerPerUke(): Duration = this.multipliedBy(5)

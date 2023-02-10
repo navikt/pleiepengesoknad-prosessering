@@ -11,7 +11,6 @@
         <bookmark name="Søker" href="#søker"/>
         <bookmark name="Barn" href="#barn"/>
         <bookmark name="Arbeidstid" href="#arbeidstid"/>
-        <bookmark name="Omsorgstilbud" href="#omsorgstilbud"/>
         <bookmark name="Samtykke" href="#samtykke"/>
     </bookmarks>
     {{#block 'style-common' }} {{/block}}
@@ -44,41 +43,30 @@
     {{#if arbeidstid}}
         <section id="arbeidstid">
             {{#if arbeidstid.arbeidstakerList}}
-                <h2>Endringer i arbeidstid som arbeidstaker</h2>
-                <ul class="li-style-none">
+                <h2>Endringer i arbeidstid som areidstaker</h2>
+                <ul class="li-style-none ul-no-indent">
                     {{#each arbeidstid.arbeidstakerList as |arbeidsgiver|~}}
                         <li>
                             <b>Organisasjonsnummer</b>: {{arbeidsgiver.organisasjonsnummer}} <br/>
-                            <b>Arbeidstidsinfo:</b> <br/>
                             {{> partial/arbeid/arbeidstidinfoPartial arbeidstidinfo=arbeidsgiver.arbeidstidInfo}}
                         </li>
                     {{/each}}
                 </ul>
+                <br/>
             {{/if}}
 
             {{#if arbeidstid.frilanserArbeidstidInfo}}
                 <h2>Endringer i arbeidstid som frilanser</h2>
-                <b>Arbeidstidsinfo:</b> <br/>
                 {{> partial/arbeid/arbeidstidinfoPartial arbeidstidinfo=arbeidstid.frilanserArbeidstidInfo}}
+                <br/>
             {{/if}}
 
             {{#if arbeidstid.selvstendigNæringsdrivendeArbeidstidInfo}}
                 <h2>Endringer i arbeidstid som selvstendig næringsdrivende</h2>
-                <b>Arbeidstidsinfo:</b> <br/>
                 {{> partial/arbeid/arbeidstidinfoPartial arbeidstidinfo=arbeidstid.selvstendigNæringsdrivendeArbeidstidInfo}}
+                <br/>
             {{/if}}
 
-        </section>
-    {{/if}}
-
-    {{#if omsorgstilbud}}
-        <section id="omsorgstilbud">
-            <h2>Endringer i omsorgstilbud</h2>
-            <ul>
-                {{#each omsorgstilbud.perioder as |periode|~}}
-                    <li>{{periode.periode.fraOgMed}}: {{periode.tilsynPeriodeInfo.etablertTilsynTimerPerDag}}</li>
-                {{/each}}
-            </ul>
         </section>
     {{/if}}
 
