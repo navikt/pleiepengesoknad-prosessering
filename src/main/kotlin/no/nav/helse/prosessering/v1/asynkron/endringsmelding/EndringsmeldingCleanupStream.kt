@@ -4,9 +4,6 @@ import no.nav.helse.CorrelationId
 import no.nav.helse.k9mellomlagring.DokumentEier
 import no.nav.helse.k9mellomlagring.K9MellomlagringService
 import no.nav.helse.kafka.KafkaConfig
-import no.nav.helse.kafka.ManagedKafkaStreams
-import no.nav.helse.kafka.ManagedStreamHealthy
-import no.nav.helse.kafka.ManagedStreamReady
 import no.nav.helse.kafka.TopicEntry
 import no.nav.helse.kafka.process
 import no.nav.helse.prosessering.v1.asynkron.CleanupEndringsmelding
@@ -21,7 +18,7 @@ internal class EndringsmeldingCleanupStream(
     kafkaConfig: KafkaConfig,
     k9MellomlagringService: K9MellomlagringService
 ) {
-    private val stream = ManagedKafkaStreams(
+    /*private val stream = ManagedKafkaStreams(
         name = NAME,
         properties = kafkaConfig.stream(NAME),
         topology = topology(k9MellomlagringService),
@@ -29,7 +26,7 @@ internal class EndringsmeldingCleanupStream(
     )
 
     internal val ready = ManagedStreamReady(stream)
-    internal val healthy = ManagedStreamHealthy(stream)
+    internal val healthy = ManagedStreamHealthy(stream)*/
 
     private companion object {
         private const val NAME = "EndringsmeldingCleanupV1"
@@ -61,5 +58,5 @@ internal class EndringsmeldingCleanupStream(
         }
     }
 
-    internal fun stop() = stream.stop(becauseOfError = false)
+    /*internal fun stop() = stream.stop(becauseOfError = false)*/
 }

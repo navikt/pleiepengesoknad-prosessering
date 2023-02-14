@@ -16,7 +16,7 @@ internal class AsynkronEndringsmeldingProsesseringV1Service(
         private val logger = LoggerFactory.getLogger(AsynkronEndringsmeldingProsesseringV1Service::class.java)
     }
 
-    private val endringsmeldingPreprosseseringStream = EndringsmeldingPreprosseseringStream(
+    /*private val endringsmeldingPreprosseseringStream = EndringsmeldingPreprosseseringStream(
         kafkaConfig = kafkaConfig,
         endringsmeldingPreprosseseringV1Service = endringsmeldingPreprosseseringV1Service
     )
@@ -53,4 +53,5 @@ internal class AsynkronEndringsmeldingProsesseringV1Service(
 
     internal fun healthChecks() = healthChecks
     internal fun isReadyChecks() = isReadyChecks
+     */
 }

@@ -4,9 +4,6 @@ import no.nav.helse.CorrelationId
 import no.nav.helse.felles.tilTpsNavn
 import no.nav.helse.joark.JoarkGateway
 import no.nav.helse.kafka.KafkaConfig
-import no.nav.helse.kafka.ManagedKafkaStreams
-import no.nav.helse.kafka.ManagedStreamHealthy
-import no.nav.helse.kafka.ManagedStreamReady
 import no.nav.helse.kafka.TopicEntry
 import no.nav.helse.kafka.process
 import no.nav.helse.prosessering.v1.asynkron.CleanupEndringsmelding
@@ -24,7 +21,7 @@ internal class EndringsmeldingJournalforingsStream(
     kafkaConfig: KafkaConfig
 ) {
 
-    private val stream = ManagedKafkaStreams(
+    /*private val stream = ManagedKafkaStreams(
         name = NAME,
         properties = kafkaConfig.stream(NAME),
         topology = topology(joarkGateway),
@@ -32,7 +29,7 @@ internal class EndringsmeldingJournalforingsStream(
     )
 
     internal val ready = ManagedStreamReady(stream)
-    internal val healthy = ManagedStreamHealthy(stream)
+    internal val healthy = ManagedStreamHealthy(stream)*/
 
     private companion object {
         private const val NAME = "EndringsmeldingJournalforingV1"
@@ -76,5 +73,5 @@ internal class EndringsmeldingJournalforingsStream(
         }
     }
 
-    internal fun stop() = stream.stop(becauseOfError = false)
+   /* internal fun stop() = stream.stop(becauseOfError = false)*/
 }

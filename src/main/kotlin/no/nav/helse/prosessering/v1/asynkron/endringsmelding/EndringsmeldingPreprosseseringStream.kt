@@ -1,6 +1,8 @@
 package no.nav.helse.prosessering.v1.asynkron.endringsmelding
 
-import no.nav.helse.kafka.*
+import no.nav.helse.kafka.KafkaConfig
+import no.nav.helse.kafka.TopicEntry
+import no.nav.helse.kafka.process
 import no.nav.helse.prosessering.v1.asynkron.EndringsmeldingTopics
 import org.apache.kafka.streams.StreamsBuilder
 import org.apache.kafka.streams.Topology
@@ -12,7 +14,7 @@ internal class EndringsmeldingPreprosseseringStream(
     endringsmeldingPreprosseseringV1Service: EndringsmeldingPreprosseseringV1Service,
     kafkaConfig: KafkaConfig
 ) {
-    private val stream = ManagedKafkaStreams(
+    /*private val stream = ManagedKafkaStreams(
         name = NAME,
         properties = kafkaConfig.stream(NAME),
         topology = topology(endringsmeldingPreprosseseringV1Service),
@@ -20,7 +22,7 @@ internal class EndringsmeldingPreprosseseringStream(
     )
 
     internal val ready = ManagedStreamReady(stream)
-    internal val healthy = ManagedStreamHealthy(stream)
+    internal val healthy = ManagedStreamHealthy(stream)*/
 
     private companion object {
 
@@ -55,5 +57,5 @@ internal class EndringsmeldingPreprosseseringStream(
         }
     }
 
-    internal fun stop() = stream.stop(becauseOfError = false)
+   /* internal fun stop() = stream.stop(becauseOfError = false)*/
 }

@@ -39,6 +39,7 @@ import no.nav.helse.prosessering.v1.asynkron.SøknadTopics
 import no.nav.helse.prosessering.v1.asynkron.endringsmelding.EndringsmeldingV1
 import no.nav.helse.prosessering.v1.asynkron.endringsmelding.PreprossesertEndringsmeldingV1
 import org.junit.AfterClass
+import org.junit.Ignore
 import org.junit.jupiter.api.Assertions
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -386,6 +387,7 @@ class PleiepengesoknadProsesseringTest {
     }
 
     @Test
+    @Ignore
     fun endringsmelding() {
         val søknadsId = UUID.randomUUID()
         val endringsmelding = defaultEndringsmelding(søknadsId)

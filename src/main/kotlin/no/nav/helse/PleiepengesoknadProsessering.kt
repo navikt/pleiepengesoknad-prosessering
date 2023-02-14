@@ -98,9 +98,9 @@ fun Application.pleiepengesoknadProsessering() {
         asynkronProsesseringV1Service.stop()
         logger.info("AsynkronProsesseringV1Service Stoppet.")
 
-        logger.info("Stopper asynkronEndringsmeldingProsesseringV1Service.")
+        /*logger.info("Stopper asynkronEndringsmeldingProsesseringV1Service.")
         asynkronEndringsmeldingProsesseringV1Service.stop()
-        logger.info("asynkronEndringsmeldingProsesseringV1Service Stoppet.")
+        logger.info("asynkronEndringsmeldingProsesseringV1Service Stoppet.")*/
 
         CollectorRegistry.defaultRegistry.clear()
     }
@@ -111,7 +111,7 @@ fun Application.pleiepengesoknadProsessering() {
             path = Paths.DEFAULT_ALIVE_PATH,
             healthService = HealthService(
                 healthChecks = asynkronProsesseringV1Service.isReadyChecks().toSet()
-                    .plus(asynkronEndringsmeldingProsesseringV1Service.isReadyChecks().toSet())
+                    /*.plus(asynkronEndringsmeldingProsesseringV1Service.isReadyChecks().toSet())*/
             )
         )
         get(Paths.DEFAULT_READY_PATH) {
@@ -134,7 +134,7 @@ fun Application.pleiepengesoknadProsessering() {
                     )
                 )
                     .plus(asynkronProsesseringV1Service.healthChecks()).toSet()
-                    .plus(asynkronEndringsmeldingProsesseringV1Service.healthChecks()).toSet()
+                    /*.plus(asynkronEndringsmeldingProsesseringV1Service.healthChecks()).toSet()*/
             )
         )
     }
