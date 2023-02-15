@@ -39,7 +39,6 @@ import no.nav.helse.prosessering.v1.asynkron.SøknadTopics
 import no.nav.helse.prosessering.v1.asynkron.endringsmelding.EndringsmeldingV1
 import no.nav.helse.prosessering.v1.asynkron.endringsmelding.PreprossesertEndringsmeldingV1
 import org.junit.AfterClass
-import org.junit.Ignore
 import org.junit.jupiter.api.Assertions
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -49,6 +48,7 @@ import java.time.LocalDate
 import java.time.ZonedDateTime
 import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
