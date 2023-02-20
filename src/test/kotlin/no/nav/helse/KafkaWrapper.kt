@@ -2,7 +2,6 @@ package no.nav.helse
 
 import no.nav.helse.kafka.TopicEntry
 import no.nav.helse.prosessering.Metadata
-import no.nav.helse.prosessering.v1.asynkron.EndringsmeldingTopics
 import no.nav.helse.prosessering.v1.asynkron.SøknadTopics
 import no.nav.helse.prosessering.v1.asynkron.Topic
 import org.apache.kafka.clients.CommonClientConfigs
@@ -40,10 +39,7 @@ private fun KafkaContainer.createTopicsForTest() {
         listOf(
             NewTopic(SøknadTopics.MOTTATT_v2.name, 1, 1),
             NewTopic(SøknadTopics.PREPROSSESERT.name, 1, 1),
-            NewTopic(SøknadTopics.CLEANUP.name, 1, 1),
-            NewTopic(EndringsmeldingTopics.ENDRINGSMELDING_MOTTATT.name, 1, 1),
-            NewTopic(EndringsmeldingTopics.ENDRINGSMELDING_PREPROSSESERT.name, 1, 1),
-            NewTopic(EndringsmeldingTopics.ENDRINGSMELDING_CLEANUP.name, 1, 1),
+            NewTopic(SøknadTopics.CLEANUP.name, 1, 1)
         )
     )
 }

@@ -8,7 +8,6 @@ import io.ktor.server.engine.*
 import io.ktor.server.testing.*
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.time.delay
-import no.nav.helse.EndringsmeldingUtils.defaultEndringsmelding
 import no.nav.helse.dusseldorf.testsupport.wiremock.WireMockBuilder
 import no.nav.helse.felles.Barn
 import no.nav.helse.felles.Beredskap
@@ -33,11 +32,7 @@ import no.nav.helse.kafka.TopicEntry
 import no.nav.helse.prosessering.v1.MeldingV1
 import no.nav.helse.prosessering.v1.PreprossesertMeldingV1
 import no.nav.helse.prosessering.v1.asynkron.Cleanup
-import no.nav.helse.prosessering.v1.asynkron.CleanupEndringsmelding
-import no.nav.helse.prosessering.v1.asynkron.EndringsmeldingTopics
 import no.nav.helse.prosessering.v1.asynkron.SøknadTopics
-import no.nav.helse.prosessering.v1.asynkron.endringsmelding.EndringsmeldingV1
-import no.nav.helse.prosessering.v1.asynkron.endringsmelding.PreprossesertEndringsmeldingV1
 import org.junit.AfterClass
 import org.junit.jupiter.api.Assertions
 import org.slf4j.Logger
@@ -48,10 +43,8 @@ import java.time.LocalDate
 import java.time.ZonedDateTime
 import java.util.*
 import java.util.concurrent.TimeUnit
-import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
 
 
 class PleiepengesoknadProsesseringTest {
@@ -82,22 +75,6 @@ class PleiepengesoknadProsesseringTest {
 
         private val søknadKafkaConsumer =
             kafkaEnvironment.testConsumer<PreprossesertMeldingV1>(topic = SøknadTopics.PREPROSSESERT)
-
-        private val endringsmeldingKafkaProducer = kafkaEnvironment.testProducer<EndringsmeldingV1>(
-            producerClientId = "pleiepengesoknad-api",
-            topic = EndringsmeldingTopics.ENDRINGSMELDING_MOTTATT
-        )
-
-        private val endringsmeldingKafkConsumer =
-            kafkaEnvironment.testConsumer<PreprossesertEndringsmeldingV1>(
-                topic = EndringsmeldingTopics.ENDRINGSMELDING_PREPROSSESERT
-            )
-
-        private val endringsmeldingCleanupConsumer =
-            kafkaEnvironment.cleanupConsumer<CleanupEndringsmelding>(
-                topic = EndringsmeldingTopics.ENDRINGSMELDING_CLEANUP,
-                consumerClientId = "sif-innsyn-api"
-            )
 
         // Se https://github.com/navikt/dusseldorf-ktor#f%C3%B8dselsnummer
         private val gyldigFodselsnummerA = "02119970078"
@@ -142,10 +119,6 @@ class PleiepengesoknadProsesseringTest {
             søknadKafkaProducer.close()
             søknadKafkaConsumer.close()
             søknadcleanupConsumer.close()
-
-            endringsmeldingKafkaProducer.close()
-            endringsmeldingKafkConsumer.close()
-            endringsmeldingCleanupConsumer.close()
 
             stopEngine()
             kafkaEnvironment.stop()
@@ -384,32 +357,6 @@ class PleiepengesoknadProsesseringTest {
         søknadcleanupConsumer
             .hentCleanupMelding(melding.søknadId, topic = SøknadTopics.CLEANUP, maxWaitInSeconds = 120)
             .assertJournalførtFormat()
-    }
-
-    @Test
-    @Ignore
-    fun endringsmelding() {
-        val søknadsId = UUID.randomUUID()
-        val endringsmelding = defaultEndringsmelding(søknadsId)
-        endringsmeldingKafkaProducer.leggPåMelding(
-            søknadsId.toString(),
-            endringsmelding,
-            EndringsmeldingTopics.ENDRINGSMELDING_MOTTATT
-        )
-
-        val preprosessertEndringsMelding: TopicEntry<PreprossesertEndringsmeldingV1> =
-            endringsmeldingKafkConsumer.hentMelding(
-                soknadId = søknadsId.toString(),
-                topic = EndringsmeldingTopics.ENDRINGSMELDING_PREPROSSESERT
-            )
-
-        assertNotNull(preprosessertEndringsMelding)
-        val cleanupEndringsmelding = endringsmeldingCleanupConsumer.hentCleanupMelding(
-            soknadId = søknadsId.toString(),
-            topic = EndringsmeldingTopics.ENDRINGSMELDING_CLEANUP
-        )
-        assertNotNull(cleanupEndringsmelding)
-        cleanupEndringsmelding.assertJournalførtFormat()
     }
 
     private fun readyGir200HealthGir503() {

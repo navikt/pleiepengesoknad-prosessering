@@ -191,7 +191,8 @@ class JournalforingsFormatTest {
               },
               "perioderSomSkalSlettes": {}
             }
-          }
+          },
+          "kildesystem": null
         }
         """.trimIndent(), String(json), true
         )
