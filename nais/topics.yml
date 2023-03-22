@@ -1,6 +1,8 @@
 apiVersion: kafka.nais.io/v1
 kind: Topic
 metadata:
+  annotations:
+    kafka.nais.io/removeDataWhenResourceIsDeleted: "true"
   name: privat-pleiepengesoknad-mottatt-v2
   namespace: dusseldorf
   labels:
@@ -30,6 +32,8 @@ spec:
 apiVersion: kafka.nais.io/v1
 kind: Topic
 metadata:
+  annotations:
+    kafka.nais.io/removeDataWhenResourceIsDeleted: "true"
   name: privat-pleiepengesoknad-preprosessert
   namespace: dusseldorf
   labels:
@@ -53,6 +57,8 @@ spec:
 apiVersion: kafka.nais.io/v1
 kind: Topic
 metadata:
+  annotations:
+    kafka.nais.io/removeDataWhenResourceIsDeleted: "true"
   name: privat-pleiepengesoknad-cleanup
   namespace: dusseldorf
   labels:
