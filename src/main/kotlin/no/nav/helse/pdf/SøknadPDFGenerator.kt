@@ -10,6 +10,7 @@ import no.nav.helse.felles.Bosted
 import no.nav.helse.felles.Enkeltdag
 import no.nav.helse.felles.Ferieuttak
 import no.nav.helse.felles.Frilans
+import no.nav.helse.felles.FrilansType
 import no.nav.helse.felles.Land
 import no.nav.helse.felles.Nattevåk
 import no.nav.helse.felles.NormalArbeidstid
@@ -269,6 +270,10 @@ private fun Frilans.somMap(): Map<String, Any?> = mapOf(
     "startdato" to if (startdato != null) DATE_FORMATTER.format(startdato) else null,
     "sluttdato" to if (sluttdato != null) DATE_FORMATTER.format(sluttdato) else null,
     "jobberFortsattSomFrilans" to jobberFortsattSomFrilans,
+    "jobberSomFrilanser" to frilansTyper?.contains(FrilansType.FRILANS),
+    "mottarHonorarerForVerv" to frilansTyper?.contains(FrilansType.STYREVERV),
+    "misterHonorarer" to misterHonorarer,
+    "misterHonorarerIPerioden" to misterHonorarerIPerioden?.name,
     "arbeidsforhold" to arbeidsforhold?.somMap()
 )
 

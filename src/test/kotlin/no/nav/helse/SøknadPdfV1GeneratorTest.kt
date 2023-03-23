@@ -13,8 +13,10 @@ import no.nav.helse.felles.Enkeltdag
 import no.nav.helse.felles.Ferieuttak
 import no.nav.helse.felles.FerieuttakIPerioden
 import no.nav.helse.felles.Frilans
+import no.nav.helse.felles.FrilansType
 import no.nav.helse.felles.Land
 import no.nav.helse.felles.Medlemskap
+import no.nav.helse.felles.MisterHonorarerFraVervIPerioden
 import no.nav.helse.felles.Nattevåk
 import no.nav.helse.felles.NormalArbeidstid
 import no.nav.helse.felles.Næringstyper
@@ -573,6 +575,19 @@ class SøknadPdfV1GeneratorTest {
                         )
                     )
                 )
+            )
+        )
+        if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
+
+        id = "20-frilanser-med-styreverv"
+        val frilanser = fullGyldigMelding(id).frilans.copy(
+            frilansTyper = listOf(FrilansType.FRILANS, FrilansType.STYREVERV),
+            misterHonorarer = true,
+            misterHonorarerIPerioden = MisterHonorarerFraVervIPerioden.MISTER_DELER_AV_HONORARER
+        )
+        pdf = generator.genererPDF(
+            melding = fullGyldigMelding(id).copy(
+                frilans = frilanser
             )
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
